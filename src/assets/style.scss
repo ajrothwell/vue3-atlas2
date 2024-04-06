@@ -1,0 +1,13 @@
+@import 'node_modules/bulma/css/bulma.css';
+
+$primary-color: #0f4254;
+
+body {
+  height: 100vh;
+  padding: 1em;
+  // background-color: $primary-color;
+}
+
+#app {
+  height: 100vh;
+}
