@@ -2,9 +2,10 @@
 
 import { useAddressStore } from '@/stores/AddressStore.js'
 const AddressStore = useAddressStore();
-
 import { useParcelsStore } from '@/stores/ParcelsStore.js'
 const ParcelsStore = useParcelsStore();
+import { useOpaStore } from '@/stores/OpaStore.js'
+const OpaStore = useOpaStore();
 
 import { useRouter, useRoute } from 'vue-router';
 const route = useRoute();
@@ -12,8 +13,8 @@ const router = useRouter();
 
 import { ref, watch } from 'vue';
 
-import useAddressRequest from '../composables/useAddressRequest.js';
-const { addressRetrieved, fetchAddress } = useAddressRequest();
+// import useAddressRequest from '../composables/useAddressRequest.js';
+// const { addressRetrieved, fetchAddress } = useAddressRequest();
 
 const address = ref('');
 
@@ -25,7 +26,6 @@ const handleSearch = () => {
 
 // Create a ref to store the previous route path
 const previousRoutePath = ref('');
-
 // Use the router's navigation guard to track route changes
 router.beforeEach((to, from, next) => {
   previousRoutePath.value = from.fullPath;
@@ -35,19 +35,11 @@ router.beforeEach((to, from, next) => {
 // watch the route to know when to geocode
 watch(route, async (newValue, oldValue) => {
   if (newValue.params.address !== previousRoutePath.value) {
-    // await fetchAddress(newValue.params.address)
     await AddressStore.fillAddressData(newValue.params.address);
-    // console.log('addressRetrieved.value.features:', addressRetrieved.value.features[0].properties.pwd_parcel_id, 'addressRetrieved.features:', addressRetrieved.features);
-    getPwdParcel(AddressStore.addressData.features[0].properties.pwd_parcel_id);
-    // getPwdParcel(addressRetrieved.value.features[0].properties.pwd_parcel_id)
+    await ParcelsStore.fillPwdParcelData();
+    await OpaStore.fillOpaData();
   }
 });
-
-const getPwdParcel = (parcelnum) => {
-  const pwdParcelNumber = parcelnum
-  console.log('in getPwdParcel, pwdParcelNumber:', pwdParcelNumber);
-  ParcelsStore.fillPwdParcelData(pwdParcelNumber);
-}
 
 </script>
 
@@ -76,7 +68,6 @@ const getPwdParcel = (parcelnum) => {
         <component
           :is="Component"
         />
-        <!-- :address="address" -->
       </router-view>
 
     </div>
