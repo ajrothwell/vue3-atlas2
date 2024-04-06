@@ -13,7 +13,7 @@ export const useAddressStore = defineStore("AddressStore", {
     async fillAddressData(address) {
       console.log('fillAddressData');
       const response = await fetch(`https://api.phila.gov/ais/v1/search/${address}?include_units=false`);
-      this.addressData.value = await response.json()
+      this.addressData = await response.json()
     },
   },
 });

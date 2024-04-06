@@ -33,37 +33,21 @@ router.beforeEach((to, from, next) => {
 });
 
 // watch the route to know when to geocode
-watch(route, (newValue, oldValue) => {
+watch(route, async (newValue, oldValue) => {
   if (newValue.params.address !== previousRoutePath.value) {
-    fetchAddress(newValue.params.address)
-      .then(console.log(addressRetrieved.features))
-      // .then(console.log(address))
-    // AddressStore.fillAddressData(newValue.params.address)
-      // .then(getPwdParcel())
-      // .then(ParcelsStore.fillPwdParcelData())
+    // await fetchAddress(newValue.params.address)
+    await AddressStore.fillAddressData(newValue.params.address);
+    // console.log('addressRetrieved.value.features:', addressRetrieved.value.features[0].properties.pwd_parcel_id, 'addressRetrieved.features:', addressRetrieved.features);
+    getPwdParcel(AddressStore.addressData.features[0].properties.pwd_parcel_id);
+    // getPwdParcel(addressRetrieved.value.features[0].properties.pwd_parcel_id)
   }
 });
 
-// watch the geocode result to know when to get pwd parcels
-watch(addressRetrieved, (newValue, oldValue) => {
-  console.log('newValue.features:', newValue.features);
-  // console.log('watch address data is firing, newValue.features[0].properties.pwd_parcel_nums[0]:', newValue.features[0].properties.pwd_parcel_nums[0]);
-})
-
-const getPwdParcel = () => {
-  // console.log('AddressStore.addressData.value:', AddressStore.addressData.value);
-  // const pwdParcelNumber = AddressStore.addressData.value.features[0].properties.pwd_account_nums[0];
-  const pwdParcelNumber = newValue.features[0].properties.pwd_parcel_nums[0]
+const getPwdParcel = (parcelnum) => {
+  const pwdParcelNumber = parcelnum
   console.log('in getPwdParcel, pwdParcelNumber:', pwdParcelNumber);
   ParcelsStore.fillPwdParcelData(pwdParcelNumber);
 }
-
-// const fetchAISData = async (address: string) => {
-//   const baseURL = `https://api.phila.gov/ais/v1/search/${encodeURIComponent(address)}`;
-//   const response = await fetch(baseURL)
-//   const data = await response.json()
-//   console.log('fetchAISData, address:', address, 'data:', data);
-// }
 
 </script>
 
