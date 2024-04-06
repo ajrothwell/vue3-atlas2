@@ -18,6 +18,7 @@ import { ref, watch } from 'vue';
 
 const address = ref('');
 
+
 const handleSearch = () => {
   if (address.value) {
     router.push({ name: 'address', params: { address: address.value } });
