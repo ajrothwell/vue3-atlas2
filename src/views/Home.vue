@@ -6,6 +6,8 @@ import { useParcelsStore } from '@/stores/ParcelsStore.js'
 const ParcelsStore = useParcelsStore();
 import { useOpaStore } from '@/stores/OpaStore.js'
 const OpaStore = useOpaStore();
+import { useLiStore } from '@/stores/LiStore.js'
+const LiStore = useLiStore();
 
 import { useRouter, useRoute } from 'vue-router';
 const route = useRoute();
@@ -17,7 +19,6 @@ import { ref, watch } from 'vue';
 // const { addressRetrieved, fetchAddress } = useAddressRequest();
 
 const address = ref('');
-
 
 const handleSearch = () => {
   if (address.value) {
@@ -39,6 +40,8 @@ watch(route, async (newValue, oldValue) => {
     await AddressStore.fillAddressData(newValue.params.address);
     await ParcelsStore.fillPwdParcelData();
     await OpaStore.fillOpaData();
+    await LiStore.fillLiInspections();
+    await LiStore.fillLiPermits();
   }
 });
 
