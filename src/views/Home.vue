@@ -1,13 +1,5 @@
 <script setup>
 
-import { useAddressStore } from '@/stores/AddressStore.js'
-const AddressStore = useAddressStore();
-import { useParcelsStore } from '@/stores/ParcelsStore.js'
-const ParcelsStore = useParcelsStore();
-import { useOpaStore } from '@/stores/OpaStore.js'
-const OpaStore = useOpaStore();
-import { useLiStore } from '@/stores/LiStore.js'
-const LiStore = useLiStore();
 
 import { useRouter, useRoute } from 'vue-router';
 const route = useRoute();
@@ -15,35 +7,28 @@ const router = useRouter();
 
 import { ref, watch } from 'vue';
 
-// import useAddressRequest from '../composables/useAddressRequest.js';
-// const { addressRetrieved, fetchAddress } = useAddressRequest();
+import useAddressSearch from '@/composables/useAddressSearch';
+const { addressSearch } = useAddressSearch();
 
 const address = ref('');
 
-const handleSearch = () => {
-  if (address.value) {
-    router.push({ name: 'address', params: { address: address.value } });
+const handleAddressSearch = () => {
+  // console.log('route.params:', route.params);
+  if (address.value && route.params.topic) {
+    router.push({ name: 'address-and-topic', params: { address: address.value, topic: route.params.topic } });
+  } else if (address.value) {
+    router.push({ name: 'address-and-topic', params: { address: address.value, topic: 'Property' } });
   }
 }
 
-// Create a ref to store the previous route path
-const previousRoutePath = ref('');
 // Use the router's navigation guard to track route changes
-router.beforeEach((to, from, next) => {
-  previousRoutePath.value = from.fullPath;
-  next();
-});
-
-// watch the route to know when to geocode
-watch(route, async (newValue, oldValue) => {
-  if (newValue.params.address !== previousRoutePath.value) {
-    await AddressStore.fillAddressData(newValue.params.address);
-    await ParcelsStore.fillPwdParcelData();
-    await OpaStore.fillOpaData();
-    await LiStore.fillLiInspections();
-    await LiStore.fillLiPermits();
+router.beforeEach(async (to, from) => {
+  console.log('to:', to, 'from:', from);
+  if (to.params.address !== from.params.address) {
+    addressSearch(to.params.address);
   }
 });
+
 
 </script>
 
@@ -62,7 +47,7 @@ watch(route, async (newValue, oldValue) => {
         -->
         <button
           class="button"
-          @click="handleSearch"
+          @click="handleAddressSearch"
         >
           Search
         </button>
