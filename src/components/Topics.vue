@@ -6,7 +6,7 @@ import Topic from '../components/Topic.vue';
 
 import { useRoute } from 'vue-router';
 const route = useRoute();
-console.log('AddressShow setup, route.params:', route.params, 'route:', route);
+console.log('TopicPanel setup, route.params:', route.params, 'route:', route);
 
 const address = computed(() =>
   route.params.address

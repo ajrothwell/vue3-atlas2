@@ -4,10 +4,14 @@ $primary-color: #0f4254;
 
 body {
   height: 100vh;
-  padding: 1em;
+  // padding: 1em;
   // background-color: $primary-color;
 }
 
 #app {
   height: 100vh;
+}
+
+.small-container {
+  padding: 1em;
 }
