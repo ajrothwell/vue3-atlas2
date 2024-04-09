@@ -86,14 +86,14 @@ router.afterEach(async (to, from) => {
     await addressDataFetch(to.params.address);
     const currentAddress = AddressStore.addressData.features[0].properties.street_address;
     MainStore.setCurrentAddress(currentAddress);
-    await parcelsDataFetch();
-
+    
     // set the addressDataLoadedFlag value to true
     addressDataLoadedFlag.value = true;
   } else if (dataSourcesLoadedArray.value.includes(to.params.topic)) {
     console.log('data source already loaded, quitting router.afterEach');
     return;
   }
+  await parcelsDataFetch();
   await topicDataFetch(to.params.topic);
   dataSourcesLoadedArray.value.push(to.params.topic);
 });

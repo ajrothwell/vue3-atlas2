@@ -2,6 +2,7 @@ import { useAddressStore } from '@/stores/AddressStore.js'
 import { useParcelsStore } from '@/stores/ParcelsStore.js'
 import { useOpaStore } from '@/stores/OpaStore.js'
 import { useLiStore } from '@/stores/LiStore.js'
+import { useDorStore } from '@/stores/DorStore.js'
 
 export default function useDataFetch() {
 
@@ -29,6 +30,11 @@ export default function useDataFetch() {
       const LiStore = useLiStore();
       await LiStore.fillLiInspections();
       await LiStore.fillLiPermits();
+    }
+
+    if (topic === 'Deeds') {
+      const DorStore = useDorStore();
+      await DorStore.initializeDorDocuments();
     }
 
   }
