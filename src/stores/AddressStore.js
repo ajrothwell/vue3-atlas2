@@ -13,4 +13,9 @@ export const useAddressStore = defineStore("AddressStore", {
       this.addressData = await response.json()
     },
   },
+
+  getters: {
+    getOpaOwners: (state) => state.addressData.features[0].properties.opa_owners.join(', '),
+  },
+
 });

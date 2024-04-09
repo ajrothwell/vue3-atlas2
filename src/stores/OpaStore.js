@@ -1,6 +1,9 @@
 import { defineStore } from 'pinia';
 import { useAddressStore } from '@/stores/AddressStore.js'
 
+import useTransforms from '@/composables/useTransforms';
+const { currency, date } = useTransforms();
+
 export const useOpaStore = defineStore('OpaStore', {
   state: () => {
     return {
@@ -14,5 +17,10 @@ export const useOpaStore = defineStore('OpaStore', {
       const response = await fetch(`https://phl.carto.com/api/v2/sql?q=select+*+from+opa_properties_public+where+parcel_number+%3D+%27${OpaNum}%27`);
       this.opaData = await response.json()
     },
+  },
+  getters: {
+    getMarketValue: (state) => currency(state.opaData.rows[0].market_value),
+    getSaleDate: (state) => date(state.opaData.rows[0].sale_date),
+    getSalePrice: (state) => currency(state.opaData.rows[0].sale_price),
   },
 })
