@@ -57,6 +57,7 @@ const address = computed(() =>
         </div>
       </div>
       
+      
       <topic :topic-name="'Property'" :loading="!dataSourcesLoadedArray.includes('Property')">
         <Property v-if="dataSourcesLoadedArray.includes('Property')"></Property>
       </topic>
@@ -80,6 +81,7 @@ const address = computed(() =>
       <topic :topic-name="'Nearby Activity'" :loading="!dataSourcesLoadedArray.includes('Nearby Activity')">
         <Nearby v-if="dataSourcesLoadedArray.includes('Nearby')"/>
       </topic>
+
 
     </div>
     

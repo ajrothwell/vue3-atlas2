@@ -1,11 +1,11 @@
 <script setup>
-  console.log('Property.vue setup');
+console.log('Property.vue setup');
 
-  // import the AddressStore and OpaStore
-  import { useAddressStore } from '@/stores/AddressStore';
-  const AddressStore = useAddressStore();
-  import { useOpaStore } from '@/stores/OpaStore';
-  const OpaStore = useOpaStore();
+// import the AddressStore and OpaStore
+import { useAddressStore } from '@/stores/AddressStore';
+const AddressStore = useAddressStore();
+import { useOpaStore } from '@/stores/OpaStore';
+const OpaStore = useOpaStore();
 
 
 </script>
