@@ -1,6 +1,9 @@
 import { defineStore } from 'pinia';
 import { useAddressStore } from '@/stores/AddressStore.js'
 
+import useTransforms from '@/composables/useTransforms';
+const { currency, date } = useTransforms();
+
 export const useLiStore = defineStore('LiStore', {
   state: () => {
     return {
@@ -8,6 +11,7 @@ export const useLiStore = defineStore('LiStore', {
       liPermits: {},
     };
   },
+  // each of these functions was originally a single data-source file in atlas
   actions: {
     async fillLiInspections() {
       const AddressStore = useAddressStore();
@@ -47,7 +51,10 @@ export const useLiStore = defineStore('LiStore', {
       const response = await fetch(url);
       this.liPermits = await response.json()
     }
-
-
   },
+  // keeping formatting getters here in the store only works if the data is not looped
+  // through for a horizontal table
+  getters: {
+
+  }
 })
