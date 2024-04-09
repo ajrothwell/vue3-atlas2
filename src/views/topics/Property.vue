@@ -9,8 +9,9 @@
 
   
   import { inject, computed } from 'vue';
-  const dataLoaded = inject('dataLoadedKey');
+  // const dataSourcesLoadedArray = inject('dataSourcesLoadedArrayKey');
 
+  // this may be able to be done in the AddressStore with a getter
   const owners = computed(() => {
     return AddressStore.addressData.features[0].properties.opa_owners.join(', ');
   });
