@@ -77,7 +77,7 @@ router.afterEach(async (to, from) => {
 
   // this makes a repetitive and wasteful api call to AIS, but it is necessary for
   // the back button to work
-  if (from.params.address && to.params.address !== from.params.address) {
+  if (to.params.address !== from.params.address) {
     addressDataLoadedFlag.value = false;
     // on a new address search, clear all of the loaded data sources
     dataSourcesLoadedArray.value = [];
