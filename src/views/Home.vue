@@ -12,7 +12,7 @@ import { ref, onMounted, provide } from 'vue';
 
 // the useDataFetch composable contains the fetch calls to the various data sources
 import useDataFetch from '@/composables/useDataFetch';
-const { addressDataFetch, topicDataFetch } = useDataFetch();
+const { addressDataFetch, parcelsDataFetch, topicDataFetch } = useDataFetch();
 
 
 import TopicPanel from '@/views/TopicPanel.vue';
@@ -38,6 +38,9 @@ onMounted(async () => {
 });
 
 const handleAddressSearch = async () => {
+  // it does a first AIS call to make sure the address is good, and to correct it for the url
+  // for instance from '1234 mkt' to '1234 MARKET ST'
+
   // set address loaded to false
   addressDataLoadedFlag.value = false;
   // on a new address search, clear all of the loaded data sources
@@ -70,8 +73,25 @@ const handleAddressSearch = async () => {
 // I don't know whether this is a best practice
 // Use the router's navigation guard to track route changes
 router.afterEach(async (to, from) => {
-  console.log('to:', to, 'from:', from);
-  if (dataSourcesLoadedArray.value.includes(to.params.topic)) {
+  console.log('router.afterEach to:', to, 'from:', from);
+
+  // this makes a repetitive and wasteful api call to AIS, but it is necessary for
+  // the back button to work
+  if (from.params.address && to.params.address !== from.params.address) {
+    addressDataLoadedFlag.value = false;
+    // on a new address search, clear all of the loaded data sources
+    dataSourcesLoadedArray.value = [];
+
+    // on submit, immediately call AIS and put the full value in the AddressStore
+    await addressDataFetch(to.params.address);
+    const currentAddress = AddressStore.addressData.features[0].properties.street_address;
+    MainStore.setCurrentAddress(currentAddress);
+    await parcelsDataFetch();
+
+    // set the addressDataLoadedFlag value to true
+    addressDataLoadedFlag.value = true;
+  } else if (dataSourcesLoadedArray.value.includes(to.params.topic)) {
+    console.log('data source already loaded, quitting router.afterEach');
     return;
   }
   await topicDataFetch(to.params.topic);

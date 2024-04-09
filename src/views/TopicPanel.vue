@@ -45,12 +45,13 @@ const address = computed(() =>
     </div>
 
     <!-- IF AN ADDRESS TAKES A LONG TIME TO LOAD, DO NOT SHOW THE TOPICS -->
-    <div v-if="route.params.address && !addressDataLoadedFlag">
+    <!-- <div v-if="route.params.address && !addressDataLoadedFlag">
       Loading...
-    </div>
+    </div> -->
 
     <!-- IF AN ADDRESS IS LOADED, SHOW THE TOPICS  -->
-    <div v-if="route.params.address && addressDataLoadedFlag">
+    <!-- <div v-if="route.params.address && addressDataLoadedFlag"> -->
+    <div v-if="route.params.address">
       <div class="columns">
         <div class="column is-12">
           <h3 class="subtitle is-3">{{ address }}</h3>
