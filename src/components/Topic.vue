@@ -1,10 +1,14 @@
-
 <script setup>
 
 import { storeToRefs } from 'pinia';
 import { ref, reactive, computed } from 'vue';
 import { useMainStore } from '@/stores/MainStore.js';
 const MainStore = useMainStore();
+
+const props = defineProps({
+  topicName: String,
+  loading: Boolean
+});
 
 // both of these methods seem to work to get the reactive current address
 const { currentAddress } = storeToRefs(MainStore);
@@ -17,16 +21,9 @@ const route = useRoute();
 const router = useRouter();
 const currentTopic = route.params.topic;
 
-const props = defineProps({
-  topicName: String,
-  loading: Boolean
-});
-
-
 const open = computed(() => {
   return route.params.topic == props.topicName ? true : false;
 });
-
 
 const handleTopicClick = () => {
   console.log('topic clicked:', props.topicName);
@@ -46,16 +43,15 @@ const handleTopicClick = () => {
       class="topic"
       @click="handleTopicClick"
     >
-      <div class="topic-name">
+      <span class="topic-name has-text-left">
         {{ topicName }}
-      </div>
-      <div class="topic-loading" v-if="open && loading">Loading...</div>
+      </span>
+      <span class="topic-loading has-text-right" v-if="open && loading">Loading...</span>
     </div>
     <div
       v-if="open"
     >
       <div class="inside-topic">
-        <!-- <div v-if="loading">Loading...</div> -->
         <slot></slot>
       </div>
     </div>
@@ -76,20 +72,13 @@ const handleTopicClick = () => {
 
 .topic-name {
   font-size: 2em;
-  display: inline-block;
-  /* margin-left: 1em; */
-}
-
-.topic-loading {
-  display: inline-block;
-  text-align: right;
 }
 
 .inside-topic {
   background-color: #ffffff;
   border: 1px solid #929292;
   font-size: 1em;
-  min-height: 100px;
+  padding: 1em;
 }
 
 </style>

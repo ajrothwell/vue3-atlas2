@@ -1,11 +1,13 @@
 <script setup>
   console.log('Property.vue setup');
+
+  // import the AddressStore and OpaStore
   import { useAddressStore } from '@/stores/AddressStore';
   const AddressStore = useAddressStore();
-  // console.log('AddressStore:', AddressStore.addressData.features[0].properties);
   import { useOpaStore } from '@/stores/OpaStore';
   const OpaStore = useOpaStore();
 
+  
   import { inject, computed } from 'vue';
   const dataLoaded = inject('dataLoadedKey');
 
@@ -20,6 +22,7 @@
     <div class="box">
       Property assessment and sale information for this address. Source: Office of Property Assessments (OPA). OPA was formerly a part of the Bureau of Revision of Taxes (BRT) and some City records may still use that name.
     </div>
+
     <div class="vert-table">
       <div class="columns">
         <div class="column is-4">OPA Account #</div>

@@ -1,10 +1,10 @@
 <script setup>
 
-import { ref, computed, defineProps, inject } from 'vue';
+import { computed, inject } from 'vue';
 
-const dataLoaded = inject('dataLoadedKey');
-console.log('dataLoaded:', dataLoaded.value);
-
+const addressDataLoadedFlag = inject('addressDataLoadedFlagKey');
+const dataSourcesLoadedArray = inject('dataSourcesLoadedArrayKey');
+console.log('addressDataLoadedFlag:', addressDataLoadedFlag, 'dataSourcesLoadedArray:', dataSourcesLoadedArray.value);
 
 import Topic from '../components/Topic.vue';
 import Property from '@/views/topics/Property.vue';
@@ -22,15 +22,12 @@ const address = computed(() =>
   route.params.address
 );
 
-// defineProps({
-//   dataLoaded: Boolean
-// });
-
 </script>
 
 <template>
   <section>
 
+    <!-- FRONT PAGE CONTENT -->
     <div class="columns" v-if="!route.params.address">
       <div class="column is-12">
         <h3 class="subtitle is-3">Atlas is your front door to the City of Philadelphia.</h3>
@@ -47,35 +44,41 @@ const address = computed(() =>
       </div>
     </div>
 
-    <div v-if="route.params.address">
+    <!-- IF AN ADDRESS TAKES A LONG TIME TO LOAD, DO NOT SHOW THE TOPICS -->
+    <div v-if="route.params.address && !addressDataLoadedFlag">
+      Loading...
+    </div>
+
+    <!-- IF AN ADDRESS IS LOADED, SHOW THE TOPICS  -->
+    <div v-if="route.params.address && addressDataLoadedFlag">
       <div class="columns">
         <div class="column is-12">
           <h3 class="subtitle is-3">{{ address }}</h3>
         </div>
       </div>
       
-      <topic :topic-name="'Property'" :loading="!dataLoaded.includes('Property')">
-        <Property v-if="dataLoaded.includes('Property')"></Property>
+      <topic :topic-name="'Property'" :loading="!dataSourcesLoadedArray.includes('Property')">
+        <Property v-if="dataSourcesLoadedArray.includes('Property')"></Property>
       </topic>
 
-      <topic :topic-name="'Deeds'" :loading="!dataLoaded.includes('Deeds')">
-        <Deeds v-if="dataLoaded.includes('Deeds')"/>
+      <topic :topic-name="'Deeds'" :loading="!dataSourcesLoadedArray.includes('Deeds')">
+        <Deeds v-if="dataSourcesLoadedArray.includes('Deeds')"/>
       </topic>
 
-      <topic :topic-name="'Licenses & Inspections'" :loading="!dataLoaded.includes('Licenses & Inspections')">
-        <LI v-if="dataLoaded.includes('Licenses & Inspections')"/>
+      <topic :topic-name="'Licenses & Inspections'" :loading="!dataSourcesLoadedArray.includes('Licenses & Inspections')">
+        <LI v-if="dataSourcesLoadedArray.includes('Licenses & Inspections')"/>
       </topic>
 
-      <topic :topic-name="'Zoning'" :loading="!dataLoaded.includes('Zoning')">
-        <Zoning v-if="dataLoaded.includes('Zoning')"/>
+      <topic :topic-name="'Zoning'" :loading="!dataSourcesLoadedArray.includes('Zoning')">
+        <Zoning v-if="dataSourcesLoadedArray.includes('Zoning')"/>
       </topic>
 
-      <topic :topic-name="'Voting'" :loading="!dataLoaded.includes('Voting')">
-        <Voting v-if="dataLoaded.includes('Voting')"/>
+      <topic :topic-name="'Voting'" :loading="!dataSourcesLoadedArray.includes('Voting')">
+        <Voting v-if="dataSourcesLoadedArray.includes('Voting')"/>
       </topic>
 
-      <topic :topic-name="'Nearby Activity'" :loading="!dataLoaded.includes('Nearby Activity')">
-        <Nearby v-if="dataLoaded.includes('Nearby')"/>
+      <topic :topic-name="'Nearby Activity'" :loading="!dataSourcesLoadedArray.includes('Nearby Activity')">
+        <Nearby v-if="dataSourcesLoadedArray.includes('Nearby')"/>
       </topic>
 
     </div>

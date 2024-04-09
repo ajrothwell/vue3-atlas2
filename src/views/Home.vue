@@ -10,19 +10,46 @@ const router = useRouter();
 
 import { ref, onMounted, provide } from 'vue';
 
-import useAddressDataFetch from '@/composables/useAddressDataFetch';
-const { addressDataFetch, topicDataFetch } = useAddressDataFetch();
+// the useDataFetch composable contains the fetch calls to the various data sources
+import useDataFetch from '@/composables/useDataFetch';
+const { addressDataFetch, topicDataFetch } = useDataFetch();
+
 
 import TopicPanel from '@/views/TopicPanel.vue';
+// eventually there would be a map panel
+//import MapPanel from '@/views/MapPanel.vue';
+
+
+// use provide/inject for the addressDataLoaded and dataSourcesLoaded refs to the children
+// these are used to allow loading symbols to be displayed before the stores are loaded
+// while data is being fetched
+const addressDataLoadedFlag = ref(false);
+provide('addressDataLoadedFlagKey', addressDataLoadedFlag);
+const dataSourcesLoadedArray = ref([]);
+provide('dataSourcesLoadedArrayKey', dataSourcesLoadedArray);
 
 const inputAddress = ref('');
 
+onMounted(async () => {
+  if (route.params.address) {
+    inputAddress.value = route.params.address;
+    handleAddressSearch();
+  }
+});
+
 const handleAddressSearch = async () => {
-  dataLoaded.value = [];
+  // set address loaded to false
+  addressDataLoadedFlag.value = false;
+  // on a new address search, clear all of the loaded data sources
+  dataSourcesLoadedArray.value = [];
 
   // on submit, immediately call AIS and put the full value in the AddressStore
   await addressDataFetch(inputAddress.value);
-  // and the value for the street_address in the MainStore
+
+  // set the addressDataLoadedFlag value to true
+  addressDataLoadedFlag.value = true;
+
+  // add the value for the street_address in the MainStore
   const currentAddress = AddressStore.addressData.features[0].properties.street_address;
   MainStore.setCurrentAddress(currentAddress);
 
@@ -40,62 +67,37 @@ const handleAddressSearch = async () => {
   }
 }
 
-const dataLoaded = ref([]);
-provide('dataLoadedKey', dataLoaded);
-
 // I don't know whether this is a best practice
 // Use the router's navigation guard to track route changes
-router.beforeEach(async (to, from) => {
+router.afterEach(async (to, from) => {
   console.log('to:', to, 'from:', from);
-  if (dataLoaded.value.includes(to.params.topic)) {
+  if (dataSourcesLoadedArray.value.includes(to.params.topic)) {
     return;
   }
   await topicDataFetch(to.params.topic);
-  dataLoaded.value.push(to.params.topic);
-  // if (to.params.address !== from.params.address) {
-  //   // await addressDataFetch(to.params.address);
-  //   await topicDataFetch(to.params.topic);
-  //   console.log('to.params.topic:', to.params.topic, 'dataLoaded:', dataLoaded);
-  //   dataLoaded.value.push(to.params.topic);
-  // } else if (to.params.topic !== from.params.topic) {
-  //   await topicDataFetch(to.params.topic);
-  //   dataLoaded.value.push(to.params.topic);
-  // }
+  dataSourcesLoadedArray.value.push(to.params.topic);
 });
-
-const loadedAddress = ref('');
-onMounted(async () => {
-  console.log('route.params:', route.params);
-  if (route.params.address) {
-    loadedAddress.value = route.params.address;
-    await addressDataFetch(route.params.address);
-    await topicDataFetch(route.params.topic);
-    dataLoaded.value.push(route.params.topic);
-    // do the rest of the loading the Main Store
-    const currentAddress = AddressStore.addressData.features[0].properties.street_address;
-    MainStore.setCurrentAddress(currentAddress);
-    MainStore.setLastSearchMethod('address');
-  }
-});
-
 
 </script>
 
 <template>
   <main>
+
+    <!-- APP HEADER -->
     <div class="container">
-      <h1 class="title is-1">Atlas</h1>
+      <h1 class="title is-1">Vue3 Atlas</h1>
     </div>
+
+    <!-- MAIN CONTENT -->
     <div class="small-container">
       <div class="columns">
 
+        <!-- TOPIC PANEL ON LEFT -->
         <div class="column is-6">
-          <topic-panel
-          >
-          <!-- :data-loaded="dataLoaded" -->
-          </topic-panel>
+          <topic-panel></topic-panel>
         </div>
 
+        <!-- MAP PANEL ON RIGHT - right now only contains the address input -->
         <div class="column is-6">
           <div class="columns">
             <div class="column is-10">
@@ -118,23 +120,6 @@ onMounted(async () => {
           </div>
         </div>
       </div>
-
-      
-
-      <!-- <router-view v-slot="{ Component }">
-        <component
-          :is="Component"
-        />
-      </router-view> -->
-
     </div>
   </main>
 </template>
-
-<!-- <style scoped>
-
-.small-container {
-  padding: 1em;
-}
-
-</style> -->

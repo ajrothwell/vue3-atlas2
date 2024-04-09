@@ -14,13 +14,3 @@ export const useAddressStore = defineStore("AddressStore", {
     },
   },
 });
-
-// actions in your store are synonymous
-// with methods for your component
-// except that they are meant to mutate
-// your store's data instead of a component's
-// local data
-
-//getters
-
-// })

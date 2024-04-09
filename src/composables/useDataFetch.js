@@ -3,7 +3,7 @@ import { useParcelsStore } from '@/stores/ParcelsStore.js'
 import { useOpaStore } from '@/stores/OpaStore.js'
 import { useLiStore } from '@/stores/LiStore.js'
 
-export default function useAddressSearch() {
+export default function useDataFetch() {
 
   const addressDataFetch = async (address) => {
     console.log('addressDataFetch is running');
