@@ -21,7 +21,7 @@ export const useOpaStore = defineStore('OpaStore', {
   // keeping formatting getters here in the store only works if the data is not looped
   // through for a horizontal table
   getters: {
-    getMarketValue: (state) => currency(state.opaData.rows[0].market_value),
+    getMarketValue: (state) => currency(state.opaData.rows[0].market_value || null),
     getSaleDate: (state) => date(state.opaData.rows[0].sale_date),
     getSalePrice: (state) => currency(state.opaData.rows[0].sale_price),
   },

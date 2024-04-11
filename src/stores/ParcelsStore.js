@@ -25,4 +25,9 @@ export const useParcelsStore = defineStore('ParcelsStore', {
     },
 
   },
+  getters: {
+    getDorParcelData(state) {
+      return state.dorParcelData;
+    }
+  }
 })

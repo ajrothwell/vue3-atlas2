@@ -12,11 +12,11 @@ const OpaStore = useOpaStore();
 
 <template>
   <section>
-    <div class="box">
+    <div class="box" v-if="OpaStore.opaData.rows.length">
       Property assessment and sale information for this address. Source: Office of Property Assessments (OPA). OPA was formerly a part of the Bureau of Revision of Taxes (BRT) and some City records may still use that name.
     </div>
 
-    <div class="vert-table">
+    <div class="vert-table" v-if="OpaStore.opaData.rows.length">
       <div class="columns">
         <div class="column is-4">OPA Account #</div>
         <div class="column is-8">{{ AddressStore.addressData.features[0].properties.opa_account_num }}</div>
@@ -43,6 +43,10 @@ const OpaStore = useOpaStore();
         <div class="column is-4">Sale Price</div>
         <div class="column is-8">{{ OpaStore.getSalePrice }}</div>
       </div>
+    </div>
+
+    <div v-if="!OpaStore.opaData.rows.length">
+      <p>There is no property assessment record for this address.</p>
     </div>
   </section>
 </template>

@@ -94,6 +94,7 @@ router.afterEach(async (to, from) => {
     return;
   }
   await parcelsDataFetch();
+  // dataSourcesLoadedArray.value.push('pwdParcel', 'dorParcel');
   await topicDataFetch(to.params.topic);
   dataSourcesLoadedArray.value.push(to.params.topic);
 });
