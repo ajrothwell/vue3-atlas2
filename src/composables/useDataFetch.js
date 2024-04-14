@@ -3,6 +3,7 @@ import { useParcelsStore } from '@/stores/ParcelsStore.js'
 import { useOpaStore } from '@/stores/OpaStore.js'
 import { useLiStore } from '@/stores/LiStore.js'
 import { useDorStore } from '@/stores/DorStore.js'
+import { useNearbyActivityStore } from '@/stores/NearbyActivityStore.js'
 
 export default function useDataFetch() {
 
@@ -35,6 +36,11 @@ export default function useDataFetch() {
     if (topic === 'Deeds') {
       const DorStore = useDorStore();
       await DorStore.initializeDorDocuments();
+    }
+
+    if (topic === 'Nearby Activity') {
+      const NearbyActivityStore = useNearbyActivityStore();
+      await NearbyActivityStore.fillNearby311();
     }
 
   }

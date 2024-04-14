@@ -12,7 +12,7 @@ import Deeds from '@/views/topics/Deeds.vue';
 import LI from '@/views/topics/LI.vue';
 import Zoning from '@/views/topics/Zoning.vue';
 import Voting from '@/views/topics/Voting.vue';
-import Nearby from '@/views/topics/Nearby.vue';
+import NearbyActivity from '@/views/topics/NearbyActivity.vue';
 
 import { useRoute } from 'vue-router';
 const route = useRoute();
@@ -80,7 +80,7 @@ const address = computed(() =>
       </topic>
 
       <topic :topic-name="'Nearby Activity'" :loading="!dataSourcesLoadedArray.includes('Nearby Activity')">
-        <Nearby v-if="dataSourcesLoadedArray.includes('Nearby')"/>
+        <NearbyActivity v-if="dataSourcesLoadedArray.includes('Nearby Activity')"/>
       </topic>
 
 
