@@ -167,12 +167,17 @@ router.afterEach(async (to, from) => {
     return;
   }
 
-  
-  
-  map.setStyle(topicStyles[to.params.topic]);
-  MapStore.currentTopicMapStyle = topicStyles[to.params.topic];
+  const style = map.getStyle();
+  if (style.name !== 'imageryMap') {
+    if (to.params.topic) {
+      map.setStyle(topicStyles[to.params.topic]);
+      MapStore.currentTopicMapStyle = topicStyles[to.params.topic];
+    } else {
+      map.setStyle(pwdDrawnMapStyle);
+      MapStore.currentTopicMapStyle = pwdDrawnMapStyle;
+    }
+  }
 
-  
   // this makes a repetitive and wasteful api call to AIS, but it is necessary for
   // the back button to work
   if (to.params.address !== from.params.address) {
@@ -193,7 +198,8 @@ router.afterEach(async (to, from) => {
     return;
   }
 
-  if (to.params.address) {const coordinates = AddressStore.addressData.features[0].geometry.coordinates;
+  if (to.params.topic == null && to.params.address || to.params.topic == from.params.topic && to.params.address) {
+    const coordinates = AddressStore.addressData.features[0].geometry.coordinates;
     currentMarkers.forEach((marker) => marker.remove());
     if (MainStore.lastSearchMethod === 'address') {
       map.setCenter(coordinates);
