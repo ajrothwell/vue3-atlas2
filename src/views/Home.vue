@@ -49,12 +49,19 @@ const handleAddressSearch = async () => {
   // on submit, immediately call AIS and put the full value in the AddressStore
   await addressDataFetch(inputAddress.value);
 
-  // set the addressDataLoadedFlag value to true
-  addressDataLoadedFlag.value = true;
+  if (!AddressStore.addressData.features) {
+    // if the address is not found, return
+    router.push({ name: 'not-found' });
+    inputAddress.value = '';
+    return;
+  }
 
-  // add the value for the street_address in the MainStore
+  // if there is a value, add the value for the street_address in the MainStore
   const currentAddress = AddressStore.addressData.features[0].properties.street_address;
   MainStore.setCurrentAddress(currentAddress);
+
+  // set the addressDataLoadedFlag value to true
+  addressDataLoadedFlag.value = true;
 
   // set the last search method to address (the alternative will eventually be 'mapClick')
   MainStore.setLastSearchMethod('address');
@@ -127,6 +134,7 @@ router.afterEach(async (to, from) => {
                 type="text"
                 placeholder="Search an address"
                 v-model="inputAddress"
+                @keydown.enter="handleAddressSearch"
               />
             </div>
             <!-- I could not use a router-link here because the address is null at the start,

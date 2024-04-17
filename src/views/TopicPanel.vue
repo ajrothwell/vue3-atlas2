@@ -28,7 +28,7 @@ const address = computed(() =>
   <section>
 
     <!-- FRONT PAGE CONTENT -->
-    <div class="columns" v-if="!route.params.address">
+    <div class="columns" v-if="route.name == 'home'">
       <div class="column is-12">
         <h3 class="subtitle is-3">Atlas is your front door to the City of Philadelphia.</h3>
         <p class="subtitle is-5">Here are some things you can do with Atlas:</p>
@@ -41,6 +41,21 @@ const address = computed(() =>
           <li>Explore historical imagery and maps</li>
         </ul>
         <p>To get started, click anywhere on the map, or type an address, intersection, property assessment account number, or Department of Records Map Registry number into the search box.</p>
+      </div>
+    </div>
+
+    <!-- ADDRESS NOT FOUND CONTENT -->
+    <div class="columns" v-if="route.name == 'not-found'">
+      <div class="column is-12">
+        <p>We couldn't find that address. Are you sure everything was spelled correctly?</p>
+        <p>Here are some examples of things you can search for:</p>
+        <ul>
+          <li>1234 Market St</li>
+          <li>1001 Pine Street #201</li>
+          <li>12th & Market</li>
+          <li>12th & Market</li>
+          <li>883309050 (an OPA number with no hyphens or other characters)</li>
+        </ul>
       </div>
     </div>
 

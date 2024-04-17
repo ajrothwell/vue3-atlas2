@@ -40,6 +40,11 @@ const router = createRouter({
       component: Home,
       // component: () => import('@/views/TopicPanel.vue'),
     },
+    {
+      path: '/not-found',
+      name: 'not-found',
+      component: Home,
+    }
   ]
 })
 

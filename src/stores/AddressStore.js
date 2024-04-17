@@ -9,8 +9,18 @@ export const useAddressStore = defineStore("AddressStore", {
 
   actions: {
     async fillAddressData(address) {
-      const response = await fetch(`https://api.phila.gov/ais/v1/search/${address}?include_units=false`);
-      this.addressData = await response.json()
+      try {
+        const response = await fetch(`https://api.phila.gov/ais/v1/search/${address}?include_units=false`)
+        if (response.ok) {
+          console.log('Promise resolved and HTTP status is successful')
+          this.addressData = await response.json()
+        } else {
+          console.log('Promise resolved and HTTP status is not successful')
+          this.addressData = {}
+        }
+      } catch {
+        console.error('Failed to fetch address data')
+      }
     },
   },
 
