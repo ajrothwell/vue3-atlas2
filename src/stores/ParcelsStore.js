@@ -64,7 +64,9 @@ export const useParcelsStore = defineStore('ParcelsStore', {
       };
       const response = await axios(`https://services.arcgis.com/fLeGjb7u4uXqeF9q/ArcGIS/rest/services/${ESRILayer}/FeatureServer/0/query`, { params });
       console.log('response', response);
-      this[parcelLayer] = response.data.features[0];
+      if (response.data.features.length > 0) {
+        this[parcelLayer] = response.data.features[0];
+      }
     },
 
   }

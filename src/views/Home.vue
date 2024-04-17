@@ -1,4 +1,5 @@
 <script setup>
+// PACKAGE IMPORTS
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
@@ -13,6 +14,7 @@ import { useRouter, useRoute } from 'vue-router';
 import { useParcelsStore } from '@/stores/ParcelsStore';
 const ParcelsStore = useParcelsStore();
 
+// ROUTER
 const route = useRoute();
 const router = useRouter();
 
@@ -32,9 +34,8 @@ const {
 import useDataFetch from '@/composables/useDataFetch';
 const { addressDataFetch, parcelsDataFetch, topicDataFetch } = useDataFetch();
 
+// COMPONENTS
 import TopicPanel from '@/views/TopicPanel.vue';
-// eventually there would be a map panel
-//import MapPanel from '@/views/MapPanel.vue';
 
 // use provide/inject for the addressDataLoaded and dataSourcesLoaded refs to the children
 // these are used to allow loading symbols to be displayed before the stores are loaded
@@ -78,6 +79,15 @@ const toggleImagery = () => {
   }
 }
 
+const routeToAddress = (currentAddress) => {
+  console.log('routeToAddress is running, currentAddress:', currentAddress);
+  if (MainStore.currentAddress && route.params.topic) {
+    router.push({ name: 'address-and-topic', params: { address: MainStore.currentAddress, topic: route.params.topic } });
+  } else if (MainStore.currentAddress) {
+    router.push({ name: 'address-and-topic', params: { address: MainStore.currentAddress, topic: 'Property' } });
+  }
+}
+
 onMounted(async () => {
   if (route.params.address) {
     inputAddress.value = route.params.address;
@@ -85,19 +95,17 @@ onMounted(async () => {
   }
 
   let currentTopicMapStyle;
-  if (route.params.topic) {
-    currentTopicMapStyle = topicStyles[route.params.topic];
-  } else {
-    currentTopicMapStyle = pwdDrawnMapStyle;
-  }
+  route.params.topic ? currentTopicMapStyle = topicStyles[route.params.topic] : currentTopicMapStyle = pwdDrawnMapStyle;
   MapStore.currentTopicMapStyle = currentTopicMapStyle;
-  // map.setStyle(topicStyles[router.params.topic] || pwdDrawnMapStyle);
+
+  let zoom;
+  route.params.address ? zoom = 17 : zoom = 12;
 
   map = new maplibregl.Map({
     container: 'map',
     style: currentTopicMapStyle,
     center: [-75.163471, 39.953338],
-    zoom: 12,
+    zoom: zoom,
     minZoom: 6,
     maxZoom: 22,
   });
@@ -108,31 +116,21 @@ onMounted(async () => {
     const parcelLayer = parcelLayerForTopic[route.params.topic];
     await ParcelsStore.fillParcelDataByLngLat(e.lngLat.lng, e.lngLat.lat, parcelLayer);
     const addressField = parcelLayer === 'PWD' ? 'ADDRESS' : 'ADDR_SOURCE';
+    console.log('parcelLayer:', parcelLayer, 'ParcelsStore[parcelLayer].properties[addressField]:', ParcelsStore[parcelLayer].properties[addressField]);
     currentAddress = ParcelsStore[parcelLayer].properties[addressField];
-    // add the value for the street_address in the MainStore
+    console.log('currentAddress:', currentAddress);
     MainStore.setCurrentAddress(currentAddress);
-
-    // set the last search method to mapClick
     MainStore.setLastSearchMethod('mapClick');
-
-    // if the address is found, push the address to the router
-    if (currentAddress && route.params.topic) {
-      router.push({ name: 'address-and-topic', params: { address: currentAddress, topic: route.params.topic } });
-    } else if (currentAddress) {
-      router.push({ name: 'address-and-topic', params: { address: currentAddress, topic: 'Property' } });
-    }
+    routeToAddress(currentAddress);
   });
 });
 
-const handleAddressSearch = async () => {
-  // it does a first AIS call to make sure the address is good, and to correct it for the url
-  // for instance from '1234 mkt' to '1234 MARKET ST'
-
+const getAddressAndPutInStore = async() => {
+  console.log('getAddressAndPutInStore is running')
   // set address loaded to false
   addressDataLoadedFlag.value = false;
   // on a new address search, clear all of the loaded data sources
   dataSourcesLoadedArray.value = [];
-
   // on submit, immediately call AIS and put the full value in the AddressStore
   await addressDataFetch(inputAddress.value);
   if (!AddressStore.addressData.features) {
@@ -140,33 +138,37 @@ const handleAddressSearch = async () => {
     inputAddress.value = '';
     return;
   }
-
   // if there is a value, add the value for the street_address in the MainStore
   const currentAddress = AddressStore.addressData.features[0].properties.street_address;
   MainStore.setCurrentAddress(currentAddress);
-
   // set the addressDataLoadedFlag value to true
   addressDataLoadedFlag.value = true;
+}
 
+const handleAddressSearch = async () => {
+  // it does a first AIS call to make sure the address is good, and to correct it for the url
+  // for instance from '1234 mkt' to '1234 MARKET ST'
+  await getAddressAndPutInStore(); 
   // set the last search method to address (the alternative will eventually be 'mapClick')
   MainStore.setLastSearchMethod('address');
-
+  const currentAddress = MainStore.currentAddress;
+  console.log('currentAddress:', currentAddress);
   // if the address is found, push the address to the router
-  if (currentAddress && route.params.topic) {
-    router.push({ name: 'address-and-topic', params: { address: currentAddress, topic: route.params.topic } });
-  } else if (currentAddress) {
-    router.push({ name: 'address-and-topic', params: { address: currentAddress, topic: 'Property' } });
+  if (currentAddress) {
+    routeToAddress(currentAddress);
   }
 }
 
 // I don't know whether this is a best practice
 // Use the router's navigation guard to track route changes
 router.afterEach(async (to, from) => {
-  console.log('router.afterEach to:', to, 'from:', from);
+  console.log('router.afterEach to:', to, 'from:', from, 'to.name:', to.name);
   if (to.name === 'not-found') {
+    currentMarkers.forEach((marker) => marker.remove());
     return;
   }
 
+  // MAP STYLE CHANGE (NOT RELATED TO ADDRESS)
   const style = map.getStyle();
   if (style.name !== 'imageryMap') {
     if (to.params.topic) {
@@ -180,38 +182,30 @@ router.afterEach(async (to, from) => {
 
   // this makes a repetitive and wasteful api call to AIS, but it is necessary for
   // the back button to work
+  // this might become a problem if it resets the address from a DOR parcel address
+  // that was actually clicked
   if (to.params.address !== from.params.address) {
-    addressDataLoadedFlag.value = false;
-    // on a new address search, clear all of the loaded data sources
-    dataSourcesLoadedArray.value = [];
-
-    // on submit, immediately call AIS and put the full value in the AddressStore
-    await addressDataFetch(to.params.address);
-    const currentAddress = AddressStore.addressData.features[0].properties.street_address;
-    MainStore.setCurrentAddress(currentAddress);
-    
-    // set the addressDataLoadedFlag value to true
-    addressDataLoadedFlag.value = true;
-
+    await getAddressAndPutInStore();
   } else if (dataSourcesLoadedArray.value.includes(to.params.topic)) {
-    console.log('data source already loaded, quitting router.afterEach');
     return;
   }
 
-  if (to.params.topic == null && to.params.address || to.params.topic == from.params.topic && to.params.address) {
+  // ADDRESS MARKER MOVES
+  if (to.params.topic == from.params.topic && to.params.address || from.params.topic == null && to.params.address) {
     const coordinates = AddressStore.addressData.features[0].geometry.coordinates;
     currentMarkers.forEach((marker) => marker.remove());
-    if (MainStore.lastSearchMethod === 'address') {
-      map.setCenter(coordinates);
-    }
     const addressMarker = new maplibregl.Marker()
       .setLngLat(coordinates)
       .addTo(map);
     currentMarkers.push(addressMarker);
+    if (MainStore.lastSearchMethod === 'address') {
+      map.setCenter(coordinates);
+      map.setZoom(17);
+    }
   }
 
+  // GET PARCELS AND DATA FOR TOPIC
   await parcelsDataFetch();
-  // dataSourcesLoadedArray.value.push('pwdParcel', 'dorParcel');
   await topicDataFetch(to.params.topic);
   dataSourcesLoadedArray.value.push(to.params.topic);
 });

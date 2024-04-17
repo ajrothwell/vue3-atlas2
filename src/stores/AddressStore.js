@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { useMainStore } from '@/stores/MainStore.js'
 
 export const useAddressStore = defineStore("AddressStore", {
   state: () => {
@@ -17,6 +18,8 @@ export const useAddressStore = defineStore("AddressStore", {
         } else {
           console.log('Address - await resolved but HTTP status was not successful')
           this.addressData = {}
+          const MainStore = useMainStore();
+          MainStore.currentAddress = "";
         }
       } catch {
         console.error('Address - await never resolved, failed to fetch address data')
