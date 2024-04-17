@@ -104,7 +104,7 @@ export const useDorStore = defineStore("DorStore", {
         // REVIEW if the parcel has no address, we don't want to query
         // WHERE ADDRESS = 'null' (doesn't make sense), so use this for now
         if (!parcelBaseAddress || parcelBaseAddress === 'null'){
-          where = "MATCHED_REGMAP = '" + ParcelsStore.dorParcelData.features[0].properties.BASEREG + "'";
+          where = "MATCHED_REGMAP = '" + ParcelsStore.DOR.features[0].properties.BASEREG + "'";
         } else {
           // TODO make these all camel case
           var props = AddressStore.addressData.features[0].properties,
@@ -154,15 +154,15 @@ export const useDorStore = defineStore("DorStore", {
             where += " AND UNIT_NUM = '" + unitNum2 + "'";
           }
       
-          where += ") or MATCHED_REGMAP = '" + ParcelsStore.dorParcelData.features[0].properties.BASEREG + "'";
-          // where += ") or MATCHED_REGMAP like '%" + ParcelsStore.dorParcelData.features[0].properties.BASEREG + "%'";
-          where += " or REG_MAP_ID = '" + ParcelsStore.dorParcelData.features[0].properties.BASEREG + "'";
+          where += ") or MATCHED_REGMAP = '" + ParcelsStore.DOR.features[0].properties.BASEREG + "'";
+          // where += ") or MATCHED_REGMAP like '%" + ParcelsStore.DOR.features[0].properties.BASEREG + "%'";
+          where += " or REG_MAP_ID = '" + ParcelsStore.DOR.features[0].properties.BASEREG + "'";
         }
       
         return where;
       }
 
-      for (let feature of ParcelsStore.dorParcelData.features) {
+      for (let feature of ParcelsStore.DOR.features) {
         let theWhere = where(feature);
           
         const params = {

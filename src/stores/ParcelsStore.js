@@ -1,12 +1,13 @@
 
 import { defineStore } from 'pinia';
 import { useAddressStore } from '@/stores/AddressStore.js'
+import axios from 'axios';
 
 export const useParcelsStore = defineStore('ParcelsStore', {
   state: () => {
     return {
-      pwdParcelData: {},
-      dorParcelData: {},
+      PWD: {},
+      DOR: {},
     };
   },
   actions: {
@@ -20,7 +21,7 @@ export const useParcelsStore = defineStore('ParcelsStore', {
       try {
         const response = await fetch(`https://services.arcgis.com/fLeGjb7u4uXqeF9q/ArcGIS/rest/services/PWD_PARCELS/FeatureServer/0/query?where=PARCELID=%27${pwdParcelNumber}%27&outSR=4326&f=geojson&outFields=*&returnGeometry=true`);
         if (response.ok) {
-          this.pwdParcelData = await response.json()
+          this.PWD = await response.json()
         } else {
           console.error('Failed to fetch PWD parcel data')
         }
@@ -39,7 +40,7 @@ export const useParcelsStore = defineStore('ParcelsStore', {
       try {
         const response = await fetch(`https://services.arcgis.com/fLeGjb7u4uXqeF9q/ArcGIS/rest/services/DOR_Parcel/FeatureServer/0/query?where=MAPREG=%27${dorParcelId}%27&outSR=4326&f=geojson&outFields=*&returnGeometry=true`);
         if (response.ok) {
-          this.dorParcelData = await response.json()
+          this.DOR = await response.json()
         } else {
           console.error('Failed to fetch DOR parcel data')
         }
@@ -48,10 +49,23 @@ export const useParcelsStore = defineStore('ParcelsStore', {
       }
     },
 
-  },
-  getters: {
-    getDorParcelData(state) {
-      return state.dorParcelData;
-    }
+    async fillParcelDataByLngLat(lng, lat, parcelLayer) {
+      console.log('fillParcelDataByLngLat, lng:', lng, 'lat:', lat, 'parcelLayer:', parcelLayer);
+      let ESRILayer = parcelLayer === 'PWD' ? 'PWD_PARCELS' : 'DOR_Parcel';
+      let params = {
+        'where': '1=1',
+        'outSR': 4326,
+        'f': 'geojson',
+        'outFields': '*',
+        'returnGeometry': true,
+        'geometry': `{ "x": ${lng}, "y": ${lat}, "spatialReference":{ "wkid":4326 }}`,
+        'geometryType': 'esriGeometryPoint',
+        'spatialRel': 'esriSpatialRelWithin',
+      };
+      const response = await axios(`https://services.arcgis.com/fLeGjb7u4uXqeF9q/ArcGIS/rest/services/${ESRILayer}/FeatureServer/0/query`, { params });
+      console.log('response', response);
+      this[parcelLayer] = response.data.features[0];
+    },
+
   }
 })
