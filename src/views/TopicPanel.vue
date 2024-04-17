@@ -59,11 +59,6 @@ const address = computed(() =>
       </div>
     </div>
 
-    <!-- IF AN ADDRESS TAKES A LONG TIME TO LOAD, DO NOT SHOW THE TOPICS -->
-    <!-- <div v-if="route.params.address && !addressDataLoadedFlag">
-      Loading...
-    </div> -->
-
     <!-- IF AN ADDRESS IS LOADED, SHOW THE TOPICS  -->
     <!-- <div v-if="route.params.address && addressDataLoadedFlag"> -->
     <div v-if="route.params.address">
@@ -72,7 +67,6 @@ const address = computed(() =>
           <h3 class="subtitle is-3">{{ address }}</h3>
         </div>
       </div>
-      
       
       <topic :topic-name="'Property'" :loading="!dataSourcesLoadedArray.includes('Property')">
         <Property v-if="dataSourcesLoadedArray.includes('Property')"></Property>
@@ -97,7 +91,6 @@ const address = computed(() =>
       <topic :topic-name="'Nearby Activity'" :loading="!dataSourcesLoadedArray.includes('Nearby Activity')">
         <NearbyActivity v-if="dataSourcesLoadedArray.includes('Nearby Activity')"/>
       </topic>
-
 
     </div>
     

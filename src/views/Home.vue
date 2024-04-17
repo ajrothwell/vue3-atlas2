@@ -14,11 +14,9 @@ import { ref, onMounted, provide } from 'vue';
 import useDataFetch from '@/composables/useDataFetch';
 const { addressDataFetch, parcelsDataFetch, topicDataFetch } = useDataFetch();
 
-
 import TopicPanel from '@/views/TopicPanel.vue';
 // eventually there would be a map panel
 //import MapPanel from '@/views/MapPanel.vue';
-
 
 // use provide/inject for the addressDataLoaded and dataSourcesLoaded refs to the children
 // these are used to allow loading symbols to be displayed before the stores are loaded
@@ -48,9 +46,7 @@ const handleAddressSearch = async () => {
 
   // on submit, immediately call AIS and put the full value in the AddressStore
   await addressDataFetch(inputAddress.value);
-
   if (!AddressStore.addressData.features) {
-    // if the address is not found, return
     router.push({ name: 'not-found' });
     inputAddress.value = '';
     return;
@@ -66,9 +62,6 @@ const handleAddressSearch = async () => {
   // set the last search method to address (the alternative will eventually be 'mapClick')
   MainStore.setLastSearchMethod('address');
 
-  // TODO - handle the case where the address is not found
-  // (I think this comes to some incredibly convoluted thing involving using DOR parcels)
-
   // if the address is found, push the address to the router
   if (currentAddress && route.params.topic) {
     router.push({ name: 'address-and-topic', params: { address: currentAddress, topic: route.params.topic } });
@@ -81,6 +74,9 @@ const handleAddressSearch = async () => {
 // Use the router's navigation guard to track route changes
 router.afterEach(async (to, from) => {
   console.log('router.afterEach to:', to, 'from:', from);
+  if (to.name === 'not-found') {
+    return;
+  }
 
   // this makes a repetitive and wasteful api call to AIS, but it is necessary for
   // the back button to work
