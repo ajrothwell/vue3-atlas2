@@ -125,14 +125,14 @@ onMounted(async () => {
   });
 });
 
-const getAddressAndPutInStore = async() => {
-  console.log('getAddressAndPutInStore is running')
+const getAddressAndPutInStore = async(address) => {
+  console.log('getAddressAndPutInStore is running, address:', address);
   // set address loaded to false
   addressDataLoadedFlag.value = false;
   // on a new address search, clear all of the loaded data sources
   dataSourcesLoadedArray.value = [];
   // on submit, immediately call AIS and put the full value in the AddressStore
-  await addressDataFetch(inputAddress.value);
+  await addressDataFetch(address);
   if (!AddressStore.addressData.features) {
     router.push({ name: 'not-found' });
     inputAddress.value = '';
@@ -148,7 +148,7 @@ const getAddressAndPutInStore = async() => {
 const handleAddressSearch = async () => {
   // it does a first AIS call to make sure the address is good, and to correct it for the url
   // for instance from '1234 mkt' to '1234 MARKET ST'
-  await getAddressAndPutInStore(); 
+  await getAddressAndPutInStore(inputAddress.value); 
   // set the last search method to address (the alternative will eventually be 'mapClick')
   MainStore.setLastSearchMethod('address');
   const currentAddress = MainStore.currentAddress;
@@ -185,7 +185,7 @@ router.afterEach(async (to, from) => {
   // this might become a problem if it resets the address from a DOR parcel address
   // that was actually clicked
   if (to.params.address !== from.params.address) {
-    await getAddressAndPutInStore();
+    await getAddressAndPutInStore(to.params.address);
   } else if (dataSourcesLoadedArray.value.includes(to.params.topic)) {
     return;
   }
