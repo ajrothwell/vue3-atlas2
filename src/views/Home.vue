@@ -135,7 +135,7 @@ const getAddressAndPutInStore = async(address) => {
   await addressDataFetch(address);
   if (!AddressStore.addressData.features) {
     router.push({ name: 'not-found' });
-    inputAddress.value = '';
+    // inputAddress.value = '';
     return;
   }
   // if there is a value, add the value for the street_address in the MainStore
