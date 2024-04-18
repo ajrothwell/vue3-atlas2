@@ -6,8 +6,12 @@ const addressDataLoadedFlag = inject('addressDataLoadedFlagKey');
 const dataSourcesLoadedArray = inject('dataSourcesLoadedArrayKey');
 console.log('addressDataLoadedFlag:', addressDataLoadedFlag, 'dataSourcesLoadedArray:', dataSourcesLoadedArray.value);
 
+import { useCondosStore } from '@/stores/CondosStore.js'
+const CondosStore = useCondosStore();
+
 import Topic from '../components/Topic.vue';
 import Property from '@/views/topics/Property.vue';
+import Condos from '@/views/topics/Condos.vue';
 import Deeds from '@/views/topics/Deeds.vue';
 import LI from '@/views/topics/LI.vue';
 import Zoning from '@/views/topics/Zoning.vue';
@@ -70,6 +74,10 @@ const address = computed(() =>
       
       <topic :topic-name="'Property'" :loading="!dataSourcesLoadedArray.includes('Property')">
         <Property v-if="dataSourcesLoadedArray.includes('Property')"></Property>
+      </topic>
+
+      <topic v-show="CondosStore.condosData.length > 0":topic-name="'Condominiums'" :loading="!dataSourcesLoadedArray.includes('Condominiums')">
+        <Condos v-if="dataSourcesLoadedArray.includes('Condominiums')"></Condos>
       </topic>
 
       <topic :topic-name="'Deeds'" :loading="!dataSourcesLoadedArray.includes('Deeds')">

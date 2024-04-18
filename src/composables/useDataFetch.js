@@ -1,4 +1,5 @@
 import { useAddressStore } from '@/stores/AddressStore.js'
+import { useCondosStore } from '@/stores/CondosStore.js'
 import { useParcelsStore } from '@/stores/ParcelsStore.js'
 import { useOpaStore } from '@/stores/OpaStore.js'
 import { useLiStore } from '@/stores/LiStore.js'
@@ -11,6 +12,12 @@ export default function useDataFetch() {
     console.log('addressDataFetch is running');
     const AddressStore = useAddressStore();
     await AddressStore.fillAddressData(address);
+  }
+
+  const condosDataFetch = async (address) => {
+    console.log('condosDataFetch is running');
+    const CondosStore = useCondosStore();
+    await CondosStore.fillCondoData(address);
   }
   
   const parcelsDataFetch = async () => {
@@ -48,6 +55,7 @@ export default function useDataFetch() {
   return {
     addressDataFetch,
     parcelsDataFetch,
+    condosDataFetch,
     topicDataFetch,
   }
 

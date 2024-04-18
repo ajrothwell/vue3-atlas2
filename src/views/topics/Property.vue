@@ -6,6 +6,8 @@ import { useAddressStore } from '@/stores/AddressStore';
 const AddressStore = useAddressStore();
 import { useOpaStore } from '@/stores/OpaStore';
 const OpaStore = useOpaStore();
+import { useCondosStore } from '@/stores/CondosStore';
+const CondosStore = useCondosStore();
 
 
 </script>
@@ -45,7 +47,11 @@ const OpaStore = useOpaStore();
       </div>
     </div>
 
-    <div v-if="!OpaStore.opaData.rows.length">
+    <div v-if="!OpaStore.opaData.rows.length && CondosStore.condosData.length">
+      <h5 class="title is-5">There are {{ CondosStore.condosData.length }} condominium units at this address.</h5>
+      <p>You can use the Condominiums tab below to see information for an individual unit.</p>
+    </div>
+    <div v-else-if="!OpaStore.opaData.rows.length">
       <p>There is no property assessment record for this address.</p>
     </div>
   </section>

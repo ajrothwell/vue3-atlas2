@@ -32,10 +32,11 @@ const {
 
 // the useDataFetch composable contains the fetch calls to the various data sources
 import useDataFetch from '@/composables/useDataFetch';
-const { addressDataFetch, parcelsDataFetch, topicDataFetch } = useDataFetch();
+const { addressDataFetch, parcelsDataFetch, condosDataFetch, topicDataFetch } = useDataFetch();
 
 // COMPONENTS
 import TopicPanel from '@/views/TopicPanel.vue';
+import Condos from './topics/Condos.vue';
 
 // use provide/inject for the addressDataLoaded and dataSourcesLoaded refs to the children
 // these are used to allow loading symbols to be displayed before the stores are loaded
@@ -53,6 +54,7 @@ const currentMarkers = [];
 const parcelLayerForTopic = {
   undefined: 'PWD',
   Property: 'PWD',
+  Condos: 'PWD',
   Deeds: 'DOR',
   'Licenses & Inspections': 'PWD',
   Zoning: 'DOR',
@@ -62,6 +64,7 @@ const parcelLayerForTopic = {
 
 const topicStyles = {
   Property: pwdDrawnMapStyle,
+  Condos: pwdDrawnMapStyle,
   Deeds: dorDrawnMapStyle,
   'Licenses & Inspections': pwdDrawnMapStyle,
   Zoning: zoningDrawnMapStyle,
@@ -89,6 +92,9 @@ const routeToAddress = (currentAddress) => {
 }
 
 onMounted(async () => {
+  if (route.name === 'not-found') {
+    router.push({ name: 'home' });
+  }
   if (route.params.address) {
     inputAddress.value = route.params.address;
     handleAddressSearch();
@@ -116,8 +122,8 @@ onMounted(async () => {
     const parcelLayer = parcelLayerForTopic[route.params.topic];
     await ParcelsStore.fillParcelDataByLngLat(e.lngLat.lng, e.lngLat.lat, parcelLayer);
     const addressField = parcelLayer === 'PWD' ? 'ADDRESS' : 'ADDR_SOURCE';
-    console.log('parcelLayer:', parcelLayer, 'ParcelsStore[parcelLayer].properties[addressField]:', ParcelsStore[parcelLayer].properties[addressField]);
-    currentAddress = ParcelsStore[parcelLayer].properties[addressField];
+    console.log('parcelLayer:', parcelLayer, 'ParcelsStore[parcelLayer].features[0].properties[addressField]:', ParcelsStore[parcelLayer].features[0].properties[addressField]);
+    currentAddress = ParcelsStore[parcelLayer].features[0].properties[addressField];
     console.log('currentAddress:', currentAddress);
     MainStore.setCurrentAddress(currentAddress);
     MainStore.setLastSearchMethod('mapClick');
@@ -170,7 +176,7 @@ router.afterEach(async (to, from) => {
 
   // MAP STYLE CHANGE (NOT RELATED TO ADDRESS)
   const style = map.getStyle();
-  if (style.name !== 'imageryMap') {
+  if (style && style.name !== 'imageryMap') {
     if (to.params.topic) {
       map.setStyle(topicStyles[to.params.topic]);
       MapStore.currentTopicMapStyle = topicStyles[to.params.topic];
@@ -206,6 +212,7 @@ router.afterEach(async (to, from) => {
 
   // GET PARCELS AND DATA FOR TOPIC
   await parcelsDataFetch();
+  await condosDataFetch(to.params.address);
   await topicDataFetch(to.params.topic);
   dataSourcesLoadedArray.value.push(to.params.topic);
 });
