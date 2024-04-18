@@ -10,6 +10,8 @@ import { useMainStore } from '@/stores/MainStore.js'
 const MainStore = useMainStore();
 import { useAddressStore } from '@/stores/AddressStore.js'
 const AddressStore = useAddressStore();
+import { useCondosStore } from '@/stores/CondosStore.js'
+const CondosStore = useCondosStore();
 import { useRouter, useRoute } from 'vue-router';
 import { useParcelsStore } from '@/stores/ParcelsStore';
 const ParcelsStore = useParcelsStore();
@@ -213,6 +215,11 @@ router.afterEach(async (to, from) => {
   // GET PARCELS AND DATA FOR TOPIC
   await parcelsDataFetch();
   await condosDataFetch(to.params.address);
+  if (to.params.topic == "Condominiums" && !CondosStore.condosData.length) {
+    router.push({ name: 'address-and-topic', params: { address: to.params.address, topic: 'Property' } });
+    return
+  }
+
   await topicDataFetch(to.params.topic);
   dataSourcesLoadedArray.value.push(to.params.topic);
 });

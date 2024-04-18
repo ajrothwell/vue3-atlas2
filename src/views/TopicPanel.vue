@@ -6,6 +6,8 @@ const addressDataLoadedFlag = inject('addressDataLoadedFlagKey');
 const dataSourcesLoadedArray = inject('dataSourcesLoadedArrayKey');
 console.log('addressDataLoadedFlag:', addressDataLoadedFlag, 'dataSourcesLoadedArray:', dataSourcesLoadedArray.value);
 
+import { useMainStore } from '@/stores/MainStore.js'
+const MainStore = useMainStore();
 import { useCondosStore } from '@/stores/CondosStore.js'
 const CondosStore = useCondosStore();
 
@@ -23,7 +25,8 @@ const route = useRoute();
 console.log('TopicPanel setup, route.params:', route.params, 'route:', route);
 
 const address = computed(() =>
-  route.params.address
+  // route.params.address
+  MainStore.currentAddress
 );
 
 </script>
