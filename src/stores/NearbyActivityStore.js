@@ -103,10 +103,24 @@ export const useNearbyActivityStore = defineStore('NearbyActivityStore', {
   state: () => {
     return {
       nearby311: {},
+      nearbyCrimeIncidents: null,
+      nearbyZoningAppeals: null,
+      nearbyVacantIndicatorPoints: null,
+      nearbyConstructionPermits: null,
+      nearbyDemolitionPermits: null,
+      nearbyImminentlyDangerous: null,
     };
   },
 
   actions: {
+    async fetchData(dataType) {
+      console.log("fetchData is runnning, dataType:", dataType);
+      if (dataType === 'nearby311') {
+        await this.fillNearby311();
+      } else if (dataType === 'nearbyCrimeIncidents') {
+        await this.fillNearbyCrimeIncidents();
+      }
+    },
     async fillNearby311() {
       const AddressStore = useAddressStore();
       const feature = AddressStore.addressData.features[0];
@@ -123,6 +137,23 @@ export const useNearbyActivityStore = defineStore('NearbyActivityStore', {
       // console.log('params:', params);
       const response = await axios.get(dataSource.url, { params })
       this.nearby311 = response;
+    },
+    async fillNearbyCrimeIncidents() {
+      const AddressStore = useAddressStore();
+      const feature = AddressStore.addressData.features[0];
+      let dataSource = {
+        url: 'https://phl.carto.com/api/v2/sql?',
+        options: {
+          table: 'incidents_part1_part2',
+          dateMinNum: 30,
+          dateMinType: 'day',
+          dateField: 'dispatch_date',
+        },
+      };
+      let params = fetchNearby(feature, dataSource);
+      // console.log('params:', params);
+      const response = await axios.get(dataSource.url, { params })
+      this.nearbyCrimeIncidents = response;
     },
   },
 
