@@ -23,10 +23,16 @@ const open = computed(() => {
   return route.params.topic == props.topicName ? true : false;
 });
 
+const currentNearbyDataType = computed(() => {
+  return MainStore.currentNearbyDataType;
+});
+
 const handleTopicClick = () => {
   console.log('topic clicked:', props.topicName);
   if (route.params.topic == props.topicName) {
     router.push({ name: 'address', params: { address: currentAddress.value } });
+  } else if (props.topicName == 'Nearby Activity') {
+    router.push({ name: 'address-topic-and-data', params: { address: currentAddress.value, topic: props.topicName, data: currentNearbyDataType.value } });
   } else {
     router.push({ name: 'address-and-topic', params: { address: currentAddress.value, topic: props.topicName } });
   }

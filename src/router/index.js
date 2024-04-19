@@ -41,6 +41,12 @@ const router = createRouter({
       // component: () => import('@/views/TopicPanel.vue'),
     },
     {
+      path: '/:address/:topic/:data',
+      name: 'address-topic-and-data',
+      component: Home,
+      // component: () => import('@/views/TopicPanel.vue'),
+    },
+    {
       path: '/not-found',
       name: 'not-found',
       component: Home,

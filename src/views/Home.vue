@@ -20,7 +20,7 @@ const ParcelsStore = useParcelsStore();
 const route = useRoute();
 const router = useRouter();
 
-import { ref, onMounted, provide } from 'vue';
+import { ref, onMounted, provide, computed } from 'vue';
 
 // COMPOSABLES
 import useMapStyle from '@/composables/useMapStyle';
@@ -52,6 +52,7 @@ const inputAddress = ref('');
 
 let map;
 const currentMarkers = [];
+const currentMarkersForTopic = [];
 
 const parcelLayerForTopic = {
   undefined: 'PWD',
@@ -84,9 +85,15 @@ const toggleImagery = () => {
   }
 }
 
+const currentNearbyDataType = computed(() => {
+  return MainStore.currentNearbyDataType;
+});
+
 const routeToAddress = (currentAddress) => {
   console.log('routeToAddress is running, currentAddress:', currentAddress);
-  if (MainStore.currentAddress && route.params.topic) {
+  if (MainStore.currentAddress && route.params.topic == 'Nearby Activity') {
+    router.push({ name: 'address-topic-and-data', params: { address: currentAddress.value, topic: "Nearby Activity", data: currentNearbyDataType.value } });
+  } else if (MainStore.currentAddress && route.params.topic) {
     router.push({ name: 'address-and-topic', params: { address: MainStore.currentAddress, topic: route.params.topic } });
   } else if (MainStore.currentAddress) {
     router.push({ name: 'address-and-topic', params: { address: MainStore.currentAddress, topic: 'Property' } });
@@ -173,6 +180,7 @@ router.afterEach(async (to, from) => {
   console.log('router.afterEach to:', to, 'from:', from, 'to.name:', to.name);
   if (to.name === 'not-found') {
     currentMarkers.forEach((marker) => marker.remove());
+    currentMarkersForTopic.forEach((marker) => marker.remove());
     return;
   }
 
@@ -222,6 +230,8 @@ router.afterEach(async (to, from) => {
 
   await topicDataFetch(to.params.topic);
   dataSourcesLoadedArray.value.push(to.params.topic);
+
+  // currentMarkersForTopic.push
 });
 
 </script>

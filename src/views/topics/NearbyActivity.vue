@@ -1,14 +1,20 @@
 <script setup>
 console.log('Nearby.vue setup');
-import { ref, computed, nextTick } from 'vue';
+import { ref, computed, watch, onMounted } from 'vue';
 
 import { useNearbyActivityStore } from '@/stores/NearbyActivityStore';
 const NearbyActivityStore = useNearbyActivityStore();
+import { useMainStore } from '@/stores/MainStore';
+const MainStore = useMainStore();
 import { useMapStore } from '@/stores/MapStore';
 const MapStore = useMapStore();
 
 import useTransforms from '@/composables/useTransforms';
 const { currency, date } = useTransforms();
+
+import { useRouter, useRoute } from 'vue-router';
+const route = useRoute();
+const router = useRouter();
 
 const timeReverseFn = (a, b, fieldName) => new Date(b[fieldName]) - new Date(a[fieldName]);
 const timeFn  = (a, b, fieldName) => new Date(a[fieldName]) - new Date(b[fieldName]);
@@ -25,10 +31,24 @@ const dataTypes = {
 
 const dataDropdownOpen = ref(false);
 const toggleDataDropdown = () => dataDropdownOpen.value = !dataDropdownOpen.value;
-const dataType = ref('nearby311');
+// const dataType = ref('nearby311');
+const currentNearbyDataType = computed(() => {
+  return MainStore.currentNearbyDataType;
+});
 const loadingData = computed(() => NearbyActivityStore.loadingData );
+const setDataTypeInRouter = (newDataType) => {
+  router.push({ name: 'address-topic-and-data', params: { address: MainStore.currentAddress, topic: route.params.topic, data: newDataType } });
+}
+
+watch(() => route.params.data, async (newDataType) => {
+  if (newDataType) {
+    MainStore.setCurrentNearbyDataType(newDataType);
+    await setDataType(newDataType);
+  }
+})
+
 const setDataType = async (newDataType) => {
-  dataType.value = newDataType;
+  // dataType.value = newDataType;
   if (NearbyActivityStore[newDataType] === null) {
     console.log('fetching new data')
     await NearbyActivityStore.fetchData(newDataType);
@@ -45,8 +65,19 @@ const setSortby = (newSortby) => {
 
 const timeDropdownOpen = ref(false);
 const toggleTimeDropdown = () => timeDropdownOpen.value = !timeDropdownOpen.value;
-const timeInterval = ref(30);
-const timeIntervalLabel = computed(() => timeIntervals[dataType.value].labels[timeIntervals[dataType.value].values.indexOf(timeInterval.value)]);
+const timeInterval = ref(null);
+onMounted( () => {
+  timeInterval.value = timeIntervals[currentNearbyDataType.value].values[0];
+})
+// const timeInterval = computed({
+//   get() {
+//     return timeIntervals[currentNearbyDataType.value].values[0];
+//   },
+//   set(newTimeInterval) {
+//     timeInterval.value = newTimeInterval;
+//   }
+// });
+const timeIntervalLabel = computed(() => timeIntervals[currentNearbyDataType.value].labels[timeIntervals[currentNearbyDataType.value].values.indexOf(timeInterval.value)]);
 const setTimeInterval = (newTimeInterval) => {
   timeInterval.value = newTimeInterval;
 }
@@ -198,17 +229,17 @@ const nearbyVacantIndicatorPoints = computed(() => {
       </div>
       <div class="dropdown-menu" id="dropdown-menu" role="menu">
         <div class="dropdown-content">
-          <a class="dropdown-item" @click="setDataType('nearby311')">311 Requests</a>
-          <a class="dropdown-item" @click="setDataType('nearbyCrimeIncidents')">Crime Incidents</a>
-          <a class="dropdown-item" @click="setDataType('nearbyZoningAppeals')">Zoning Appeals</a>
-          <a class="dropdown-item" @click="setDataType('nearbyVacantIndicatorPoints')">Vacant Properties</a>
-          <a class="dropdown-item" @click="setDataType('nearbyConstructionPermits')">Construction Permits</a>
-          <a class="dropdown-item" @click="setDataType('nearbyDemolitionPermits')">Demolition Permits</a>
-          <a class="dropdown-item" @click="setDataType('nearbyImminentlyDangerous')">Imminently Dangerous</a>
+          <a class="dropdown-item" @click="setDataTypeInRouter('nearby311')">311 Requests</a>
+          <a class="dropdown-item" @click="setDataTypeInRouter('nearbyCrimeIncidents')">Crime Incidents</a>
+          <a class="dropdown-item" @click="setDataTypeInRouter('nearbyZoningAppeals')">Zoning Appeals</a>
+          <a class="dropdown-item" @click="setDataTypeInRouter('nearbyVacantIndicatorPoints')">Vacant Properties</a>
+          <a class="dropdown-item" @click="setDataTypeInRouter('nearbyConstructionPermits')">Construction Permits</a>
+          <a class="dropdown-item" @click="setDataTypeInRouter('nearbyDemolitionPermits')">Demolition Permits</a>
+          <a class="dropdown-item" @click="setDataTypeInRouter('nearbyImminentlyDangerous')">Imminently Dangerous</a>
         </div>
       </div>
     </div>
-    <span>{{ dataTypes[dataType] }}</span>
+    <span>{{ dataTypes[currentNearbyDataType] }}</span>
     <br>
 
     <!-- TIME INTERVAL DROPDOWN -->
@@ -227,11 +258,11 @@ const nearbyVacantIndicatorPoints = computed(() => {
       <div class="dropdown-menu" id="dropdown-menu" role="menu">
         <div class="dropdown-content">
           <a
-            v-for="(item, index) of timeIntervals[dataType].values"
+            v-for="(item, index) of timeIntervals[currentNearbyDataType].values"
             class="dropdown-item"
             @click="setTimeInterval(item)"
           >
-            {{ timeIntervals[dataType].labels[index] }}
+            {{ timeIntervals[currentNearbyDataType].labels[index] }}
           </a>
         </div>
       </div>
@@ -262,7 +293,7 @@ const nearbyVacantIndicatorPoints = computed(() => {
     <br>
 
     <!-- nearby311 -->
-    <div class='mt-5' v-if="dataType == 'nearby311'">
+    <div class='mt-5' v-if="currentNearbyDataType == 'nearby311'">
       <h5 class="subtitle is-5">311 Requests</h5>
       <div v-if="loadingData">Loading...</div>
       <table class="table is-fullwidth is-striped">
@@ -286,7 +317,7 @@ const nearbyVacantIndicatorPoints = computed(() => {
     </div>
     
     <!-- nearbyCrimeIncidents -->
-    <div class='mt-5' v-if="dataType == 'nearbyCrimeIncidents'">
+    <div class='mt-5' v-if="currentNearbyDataType == 'nearbyCrimeIncidents'">
       <h5 class="subtitle is-5">Crime Incidents</h5>
       <div v-if="loadingData">Loading...</div>
       <table class="table is-fullwidth is-striped">
@@ -310,7 +341,7 @@ const nearbyVacantIndicatorPoints = computed(() => {
     </div>
 
     <!-- nearbyZoningAppeals -->
-    <div class='mt-5' v-if="dataType == 'nearbyZoningAppeals'">
+    <div class='mt-5' v-if="currentNearbyDataType == 'nearbyZoningAppeals'">
       <h5 class="subtitle is-5">Zoning Appeals</h5>
       <div v-if="loadingData">Loading...</div>
       <table class="table is-fullwidth is-striped">
@@ -334,7 +365,7 @@ const nearbyVacantIndicatorPoints = computed(() => {
     </div>
 
     <!-- nearbyVacantIndicatorPoints -->
-    <div class='mt-5' v-if="dataType == 'nearbyVacantIndicatorPoints'">
+    <div class='mt-5' v-if="currentNearbyDataType == 'nearbyVacantIndicatorPoints'">
       <h5 class="subtitle is-5">Likely Vacant Properties</h5>
       <div v-if="loadingData">Loading...</div>
       <table class="table is-fullwidth is-striped">

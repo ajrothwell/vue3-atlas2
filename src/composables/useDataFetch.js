@@ -6,6 +6,7 @@ import { useLiStore } from '@/stores/LiStore.js'
 import { useDorStore } from '@/stores/DorStore.js'
 import { useNearbyActivityStore } from '@/stores/NearbyActivityStore.js'
 import { useMapStore } from '@/stores/MapStore.js'
+import { useMainStore } from '@/stores/MainStore.js'
 
 export default function useDataFetch() {
 
@@ -47,8 +48,10 @@ export default function useDataFetch() {
     }
 
     if (topic === 'Nearby Activity') {
+      const MainStore = useMainStore();
+      const currentNearbyDataType = MainStore.currentNearbyDataType;
       const NearbyActivityStore = useNearbyActivityStore();
-      await NearbyActivityStore.fillNearby311();
+      await NearbyActivityStore.fetchData(currentNearbyDataType);
       const AddressStore = useAddressStore();
       const coordinates = AddressStore.addressData.features[0].geometry.coordinates;
       const MapStore = useMapStore();

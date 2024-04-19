@@ -5,6 +5,7 @@ export const useMainStore = defineStore("MainStore", {
     return {
       lastSearchMethod: '',
       currentAddress: '',
+      currentNearbyDataType: 'nearby311',
     };
   },
 
@@ -14,6 +15,9 @@ export const useMainStore = defineStore("MainStore", {
     },
     setLastSearchMethod(searchMethod) {
       this.lastSearchMethod = searchMethod;
+    },
+    setCurrentNearbyDataType(data) {
+      this.currentNearbyDataType = data;
     },
   },
 });
