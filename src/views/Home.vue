@@ -92,7 +92,7 @@ const currentNearbyDataType = computed(() => {
 const routeToAddress = (currentAddress) => {
   console.log('routeToAddress is running, currentAddress:', currentAddress);
   if (MainStore.currentAddress && route.params.topic == 'Nearby Activity') {
-    router.push({ name: 'address-topic-and-data', params: { address: currentAddress.value, topic: "Nearby Activity", data: currentNearbyDataType.value } });
+    router.push({ name: 'address-topic-and-data', params: { address: MainStore.currentAddress, topic: "Nearby Activity", data: currentNearbyDataType.value } });
   } else if (MainStore.currentAddress && route.params.topic) {
     router.push({ name: 'address-and-topic', params: { address: MainStore.currentAddress, topic: route.params.topic } });
   } else if (MainStore.currentAddress) {
