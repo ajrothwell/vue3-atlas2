@@ -5,6 +5,7 @@ import { useOpaStore } from '@/stores/OpaStore.js'
 import { useLiStore } from '@/stores/LiStore.js'
 import { useDorStore } from '@/stores/DorStore.js'
 import { useNearbyActivityStore } from '@/stores/NearbyActivityStore.js'
+import { useMapStore } from '@/stores/MapStore.js'
 
 export default function useDataFetch() {
 
@@ -48,6 +49,10 @@ export default function useDataFetch() {
     if (topic === 'Nearby Activity') {
       const NearbyActivityStore = useNearbyActivityStore();
       await NearbyActivityStore.fillNearby311();
+      const AddressStore = useAddressStore();
+      const coordinates = AddressStore.addressData.features[0].geometry.coordinates;
+      const MapStore = useMapStore();
+      await MapStore.fillBufferForAddress(coordinates[0], coordinates[1]);
     }
 
   }

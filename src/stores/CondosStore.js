@@ -10,7 +10,7 @@ export const useCondosStore = defineStore('CondosStore', {
   },
   actions: {
     async fillCondoData(address) {
-      console.log('fillCondoData is runnning, address', address);
+      // console.log('fillCondoData is runnning, address', address);
       const AddressStore = useAddressStore();
       const AddressData = AddressStore.addressData.features[0];
       let params = {
@@ -19,7 +19,6 @@ export const useCondosStore = defineStore('CondosStore', {
         page: 1,
       };
       const response = await axios(`//api.phila.gov/ais/v1/search/${address}`, { params });
-      console.log('response', response);
       if (response.data.features.length > 0) {
         let dataFeatures = [];
         // console.log('in condo-list, data:', data, 'state:', state);
