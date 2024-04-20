@@ -23,22 +23,13 @@ const router = useRouter();
 import { ref, onMounted, provide, computed } from 'vue';
 
 // COMPOSABLES
-import useMapStyle from '@/composables/useMapStyle';
-const {
-  noMapStyle,
-  pwdDrawnMapStyle,
-  dorDrawnMapStyle,
-  zoningDrawnMapStyle,
-  imageryMapStyle,
-} = useMapStyle();
-
 // the useDataFetch composable contains the fetch calls to the various data sources
 import useDataFetch from '@/composables/useDataFetch';
 const { addressDataFetch, parcelsDataFetch, condosDataFetch, topicDataFetch } = useDataFetch();
 
 // COMPONENTS
 import TopicPanel from '@/views/TopicPanel.vue';
-import Condos from './topics/Condos.vue';
+import MapPanel from '@/views/MapPanel.vue';
 
 // use provide/inject for the addressDataLoaded and dataSourcesLoaded refs to the children
 // these are used to allow loading symbols to be displayed before the stores are loaded
@@ -50,30 +41,18 @@ provide('dataSourcesLoadedArrayKey', dataSourcesLoadedArray);
 
 const inputAddress = ref('');
 
-let map;
+let map = MapStore.map;
 const currentMarkers = [];
 const currentMarkersForTopic = [];
 
-const parcelLayerForTopic = {
-  undefined: 'PWD',
-  Property: 'PWD',
-  Condos: 'PWD',
-  Deeds: 'DOR',
-  'Licenses & Inspections': 'PWD',
-  Zoning: 'DOR',
-  Voting: 'PWD',
-  'Nearby Activity': 'PWD',
-}
-
-const topicStyles = {
-  Property: pwdDrawnMapStyle,
-  Condos: pwdDrawnMapStyle,
-  Deeds: dorDrawnMapStyle,
-  'Licenses & Inspections': pwdDrawnMapStyle,
-  Zoning: zoningDrawnMapStyle,
-  Voting: pwdDrawnMapStyle,
-  'Nearby Activity': pwdDrawnMapStyle,
-}
+import useMapStyle from '@/composables/useMapStyle';
+const {
+  noMapStyle,
+  pwdDrawnMapStyle,
+  dorDrawnMapStyle,
+  zoningDrawnMapStyle,
+  imageryMapStyle,
+} = useMapStyle();
 
 const toggleImagery = () => {
   console.log('toggleImagery, map.getStyle:', map.getStyle());
@@ -108,36 +87,6 @@ onMounted(async () => {
     inputAddress.value = route.params.address;
     handleAddressSearch();
   }
-
-  let currentTopicMapStyle;
-  route.params.topic ? currentTopicMapStyle = topicStyles[route.params.topic] : currentTopicMapStyle = pwdDrawnMapStyle;
-  MapStore.currentTopicMapStyle = currentTopicMapStyle;
-
-  let zoom;
-  route.params.address ? zoom = 17 : zoom = 12;
-
-  map = new maplibregl.Map({
-    container: 'map',
-    style: currentTopicMapStyle,
-    center: [-75.163471, 39.953338],
-    zoom: zoom,
-    minZoom: 6,
-    maxZoom: 22,
-  });
-
-  map.on('click', async(e) => {
-    console.log('map click event:', e.lngLat, 'route.params.topic:', route.params.topic);
-    let currentAddress;
-    const parcelLayer = parcelLayerForTopic[route.params.topic];
-    await ParcelsStore.fillParcelDataByLngLat(e.lngLat.lng, e.lngLat.lat, parcelLayer);
-    const addressField = parcelLayer === 'PWD' ? 'ADDRESS' : 'ADDR_SOURCE';
-    console.log('parcelLayer:', parcelLayer, 'ParcelsStore[parcelLayer].features[0].properties[addressField]:', ParcelsStore[parcelLayer].features[0].properties[addressField]);
-    currentAddress = ParcelsStore[parcelLayer].features[0].properties[addressField];
-    console.log('currentAddress:', currentAddress);
-    MainStore.setCurrentAddress(currentAddress);
-    MainStore.setLastSearchMethod('mapClick');
-    routeToAddress(currentAddress);
-  });
 });
 
 const getAddressAndPutInStore = async(address) => {
@@ -188,11 +137,11 @@ router.afterEach(async (to, from) => {
   const style = map.getStyle();
   if (style && style.name !== 'imageryMap') {
     if (to.params.topic) {
-      map.setStyle(topicStyles[to.params.topic]);
-      MapStore.currentTopicMapStyle = topicStyles[to.params.topic];
+      map.setStyle(MapStore.topicStyles[to.params.topic]);
+      MapStore.currentTopicMapStyle = MapStore.topicStyles[to.params.topic];
     } else {
-      map.setStyle(pwdDrawnMapStyle);
-      MapStore.currentTopicMapStyle = pwdDrawnMapStyle;
+      map.setStyle(MapStore.topicStypes.pwdDrawnMapStyle);
+      MapStore.currentTopicMapStyle = MapStore.topicStyles.pwdDrawnMapStyle;
     }
   }
 
@@ -277,8 +226,12 @@ router.afterEach(async (to, from) => {
         </div>
 
         <!-- MAP PANEL ON RIGHT - right now only contains the address input -->
-        <div id="map-panel" class="column is-6">
-          <div id="map" class="map-class" />
+        <div class="column is-6">
+          <map-panel
+            @mapLoaded="map = $event"
+            @mapClicked="routeToAddress(MainStore.currentAddress)"
+          >
+          </map-panel>
         </div>
         
       </div>
