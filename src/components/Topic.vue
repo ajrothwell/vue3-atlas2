@@ -3,6 +3,7 @@
 import { storeToRefs } from 'pinia';
 import { ref, reactive, computed } from 'vue';
 import { useMainStore } from '@/stores/MainStore.js';
+
 const MainStore = useMainStore();
 
 const props = defineProps({
@@ -17,25 +18,22 @@ const { currentAddress } = storeToRefs(MainStore);
 import { useRoute, useRouter } from 'vue-router';
 const route = useRoute();
 const router = useRouter();
-const currentTopic = route.params.topic;
+
+import useRouting from '@/composables/useRouting';
+const { routeApp } = useRouting();
 
 const open = computed(() => {
   return route.params.topic == props.topicName ? true : false;
 });
 
-const currentNearbyDataType = computed(() => {
-  return MainStore.currentNearbyDataType;
-});
-
 const handleTopicClick = () => {
-  console.log('topic clicked:', props.topicName);
-  if (route.params.topic == props.topicName) {
-    router.push({ name: 'address', params: { address: currentAddress.value } });
-  } else if (props.topicName == 'Nearby Activity') {
-    router.push({ name: 'address-topic-and-data', params: { address: currentAddress.value, topic: props.topicName, data: currentNearbyDataType.value } });
+  if (props.topicName == MainStore.currentTopic) {
+    MainStore.currentTopic = '';
   } else {
-    router.push({ name: 'address-and-topic', params: { address: currentAddress.value, topic: props.topicName } });
+    MainStore.currentTopic = props.topicName;
   }
+  console.log('topic clicked:', props.topicName);
+  routeApp(router);
 }
 
 </script>

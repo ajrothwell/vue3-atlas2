@@ -5,7 +5,9 @@ export const useMainStore = defineStore("MainStore", {
     return {
       lastSearchMethod: '',
       currentAddress: '',
+      currentTopic: 'Property',
       currentNearbyDataType: 'nearby311',
+      dataSourcesLoadedArray: [],
     };
   },
 
@@ -18,6 +20,12 @@ export const useMainStore = defineStore("MainStore", {
     },
     setCurrentNearbyDataType(data) {
       this.currentNearbyDataType = data;
+    },
+    clearDataSourcesLoadedArray() {
+      this.dataSourcesLoadedArray = [];
+    },
+    addToDataSourcesLoadedArray(data) {
+      this.dataSourcesLoadedArray.push(data);
     },
   },
 });

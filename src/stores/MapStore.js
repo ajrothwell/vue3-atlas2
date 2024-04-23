@@ -2,47 +2,23 @@ import { defineStore } from 'pinia';
 import proj4 from 'proj4';
 import axios from 'axios';
 
-import useMapStyle from '@/composables/useMapStyle';
-const {
-  noMapStyle,
-  pwdDrawnMapStyle,
-  dorDrawnMapStyle,
-  zoningDrawnMapStyle,
-  imageryMapStyle,
-  parcelLayerForTopic,
-  topicStyles
-} = useMapStyle();
-
 export const useMapStore = defineStore("MapStore", {
   state: () => {
     return {
       map: {},
+      currentMapStyle: 'pwdDrawnMapStyle',
       currentTopicMapStyle: {},
       bufferForAddress: {},
-      topicStyles: {
-        Property: pwdDrawnMapStyle,
-        Condos: pwdDrawnMapStyle,
-        Deeds: dorDrawnMapStyle,
-        'Licenses & Inspections': pwdDrawnMapStyle,
-        Zoning: zoningDrawnMapStyle,
-        Voting: pwdDrawnMapStyle,
-        'Nearby Activity': pwdDrawnMapStyle,
-      },
-      parcelLayerForTopic: {
-        undefined: 'PWD',
-        Property: 'PWD',
-        Condos: 'PWD',
-        Deeds: 'DOR',
-        'Licenses & Inspections': 'PWD',
-        Zoning: 'DOR',
-        Voting: 'PWD',
-        'Nearby Activity': 'PWD',
-      },
+      currentMarkersForTopic: [],
+      addressMarker: null,
     };
   },
   actions: {
     setMap(map) {
       this.map = map;
+    },
+    setMapStyle(style) {
+      this.currentMapStyle = style;
     },
     async fillBufferForAddress(lng, lat) {
       const projection4326 = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
