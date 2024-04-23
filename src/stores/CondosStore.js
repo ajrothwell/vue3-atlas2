@@ -12,7 +12,9 @@ export const useCondosStore = defineStore('CondosStore', {
     async fillCondoData(address) {
       // console.log('fillCondoData is runnning, address', address);
       const AddressStore = useAddressStore();
-      const AddressData = AddressStore.addressData.features[0];
+      const AddressLoaded = AddressStore.addressData.features
+      if (!AddressLoaded) { return }
+      const AddressData = AddressLoaded[0];
       let params = {
         include_units: true,
         opa_only: true,

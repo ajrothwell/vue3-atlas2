@@ -1,17 +1,35 @@
+const $config = {
 
+  topicStyles: {
+    Property: 'pwdDrawnMapStyle',
+    Condos: 'pwdDrawnMapStyle',
+    Deeds: 'dorDrawnMapStyle',
+    'Licenses & Inspections': 'pwdDrawnMapStyle',
+    Zoning: 'zoningDrawnMapStyle',
+    Voting: 'pwdDrawnMapStyle',
+    'Nearby Activity': 'pwdDrawnMapStyle',
+  },
+  parcelLayerForTopic: {
+    undefined: 'PWD',
+    Property: 'PWD',
+    Condos: 'PWD',
+    Deeds: 'DOR',
+    'Licenses & Inspections': 'PWD',
+    Zoning: 'DOR',
+    Voting: 'PWD',
+    'Nearby Activity': 'PWD',
+  },
 
-export default function useMapStyle() {
-
-  const noMapStyle = {
+  noMapStyle: {
     version: 8,
     sources: {},
     // glyphs: 'mapbox://fonts/mapbox/{fontstack}/{range}.pbf',
     // glyphs: 'mapbox://fonts/mapbox/{fontstack}/{range}.pbf',
     glyphs: '//fonts.openmaptiles.org/{fontstack}/{range}.pbf',
     layers: [],
-  }
+  },
 
-  const pwdDrawnMapStyle = {
+  pwdDrawnMapStyle: {
     version: 8,
     name: 'pwdDrawnMap',
     sources: {
@@ -42,9 +60,9 @@ export default function useMapStyle() {
         type: 'raster',
       },
     ],
-  };
+  },
 
-  const dorDrawnMapStyle = {
+  dorDrawnMapStyle: {
     version: 8,
     name: 'dorDrawnMap',
     sources: {
@@ -75,9 +93,9 @@ export default function useMapStyle() {
         type: 'raster',
       },
     ],
-  };
+  },
 
-  const zoningDrawnMapStyle = {
+  zoningDrawnMapStyle: {
     version: 8,
     name: 'dorDrawnMap',
     sources: {
@@ -129,9 +147,9 @@ export default function useMapStyle() {
         type: 'raster',
       },
     ],
-  };
+  },
   
-  const imageryMapStyle = {
+  imageryMapStyle: {
     version: 8,
     name: 'imageryMap',
     sources: {
@@ -182,12 +200,14 @@ export default function useMapStyle() {
       //   type: 'raster',
       // },
     ],
-  }
+  },
 
-  return {
-    pwdDrawnMapStyle,
-    dorDrawnMapStyle,
-    zoningDrawnMapStyle,
-    imageryMapStyle,
-  }
+  // return {
+  //   pwdDrawnMapStyle,
+  //   dorDrawnMapStyle,
+  //   zoningDrawnMapStyle,
+  //   imageryMapStyle,
+  // }
 }
+
+export default $config;

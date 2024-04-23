@@ -13,7 +13,9 @@ export const useParcelsStore = defineStore('ParcelsStore', {
   actions: {
     async fillPwdParcelData() {
       const AddressStore = useAddressStore();
-      const AddressData = AddressStore.addressData.features[0];
+      const AddressLoaded = AddressStore.addressData.features
+      if (!AddressLoaded) { return }
+      const AddressData = AddressLoaded[0];
       const pwdParcelNumber = AddressData.properties.pwd_parcel_id;
       if (!pwdParcelNumber) {
         console.log('no PWD parcel in AIS')
@@ -34,7 +36,9 @@ export const useParcelsStore = defineStore('ParcelsStore', {
 
     async fillDorParcelData() {
       const AddressStore = useAddressStore();
-      const AddressData = AddressStore.addressData.features[0];
+      const AddressLoaded = AddressStore.addressData.features
+      if (!AddressLoaded) { return }
+      const AddressData = AddressLoaded[0];
       const dorParcelId = AddressData.properties.dor_parcel_id;
       if (!dorParcelId) {
         console.log('no DOR parcel in AIS')
@@ -69,7 +73,7 @@ export const useParcelsStore = defineStore('ParcelsStore', {
       const response = await axios(`https://services.arcgis.com/fLeGjb7u4uXqeF9q/ArcGIS/rest/services/${ESRILayer}/FeatureServer/0/query`, { params });
       console.log('response', response);
       if (response.data.features.length > 0) {
-        this[parcelLayer] = response.data;
+        this[parcelLayer] = await response.data;
       }
     },
 

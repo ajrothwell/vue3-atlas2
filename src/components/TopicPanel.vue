@@ -1,33 +1,25 @@
 <script setup>
 
-import { computed, inject } from 'vue';
-
-const addressDataLoadedFlag = inject('addressDataLoadedFlagKey');
-const dataSourcesLoadedArray = inject('dataSourcesLoadedArrayKey');
-console.log('addressDataLoadedFlag:', addressDataLoadedFlag, 'dataSourcesLoadedArray:', dataSourcesLoadedArray.value);
-
+import { computed } from 'vue';
 import { useMainStore } from '@/stores/MainStore.js'
 const MainStore = useMainStore();
 import { useCondosStore } from '@/stores/CondosStore.js'
 const CondosStore = useCondosStore();
 
 import Topic from '../components/Topic.vue';
-import Property from '@/views/topics/Property.vue';
-import Condos from '@/views/topics/Condos.vue';
-import Deeds from '@/views/topics/Deeds.vue';
-import LI from '@/views/topics/LI.vue';
-import Zoning from '@/views/topics/Zoning.vue';
-import Voting from '@/views/topics/Voting.vue';
-import NearbyActivity from '@/views/topics/NearbyActivity.vue';
+import Property from '@/components/topics/Property.vue';
+import Condos from '@/components/topics/Condos.vue';
+import Deeds from '@/components/topics/Deeds.vue';
+import LI from '@/components/topics/LI.vue';
+import Zoning from '@/components/topics/Zoning.vue';
+import Voting from '@/components/topics/Voting.vue';
+import NearbyActivity from '@/components/topics/NearbyActivity.vue';
 
 import { useRoute } from 'vue-router';
 const route = useRoute();
-console.log('TopicPanel setup, route.params:', route.params, 'route:', route);
 
-const address = computed(() =>
-  // route.params.address
-  MainStore.currentAddress
-);
+const address = computed(() => MainStore.currentAddress);
+const dataSourcesLoadedArray = computed(() => MainStore.dataSourcesLoadedArray);
 
 </script>
 
@@ -68,7 +60,7 @@ const address = computed(() =>
 
     <!-- IF AN ADDRESS IS LOADED, SHOW THE TOPICS  -->
     <!-- <div v-if="route.params.address && addressDataLoadedFlag"> -->
-    <div v-if="route.params.address">
+    <div v-if="address">
       <div class="columns">
         <div class="column is-12">
           <h3 class="subtitle is-3">{{ address }}</h3>
