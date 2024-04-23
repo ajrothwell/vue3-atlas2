@@ -1,5 +1,6 @@
-const $config = {
 
+
+const $config = {
   topicStyles: {
     Property: 'pwdDrawnMapStyle',
     Condos: 'pwdDrawnMapStyle',
@@ -201,13 +202,6 @@ const $config = {
       // },
     ],
   },
-
-  // return {
-  //   pwdDrawnMapStyle,
-  //   dorDrawnMapStyle,
-  //   zoningDrawnMapStyle,
-  //   imageryMapStyle,
-  // }
 }
 
 export default $config;

@@ -3,6 +3,7 @@ import $config from '@/config';
 // PACKAGE IMPORTS
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
+import { ControlPosition, IControl } from 'maplibre-gl';
 
 // STORES
 import { useMapStore } from '@/stores/MapStore.js';
@@ -11,25 +12,19 @@ import { useMainStore } from '@/stores/MainStore.js'
 const MainStore = useMainStore();
 import { useAddressStore } from '@/stores/AddressStore.js'
 const AddressStore = useAddressStore();
-import { useCondosStore } from '@/stores/CondosStore.js'
-const CondosStore = useCondosStore();
-import { useRouter, useRoute } from 'vue-router';
-import { useParcelsStore } from '@/stores/ParcelsStore';
-const ParcelsStore = useParcelsStore();
 
 // ROUTER
+import { useRouter, useRoute } from 'vue-router';
 const route = useRoute();
 const router = useRouter();
 
-import { onMounted, computed, watch, watchEffect } from 'vue';
-// const emit = defineEmits(['mapLoaded', 'mapClicked']);
+import { ref, onMounted, computed, watch, watchEffect } from 'vue';
+
+import useImageryToggleControl from '@/composables/useImageryToggleControl.js';
+const { imageryToggleControl } = useImageryToggleControl();
 
 let map;
 
-const currentMarkersForTopic = computed(() => MapStore.currentMarkersForTopic);
-const addressMarker = computed(() => MapStore.addressMarker);
-
-const currentAddress = computed(() => MainStore.currentAddress);
 watch(
   () => AddressStore.addressData,
   newAddress => {
@@ -60,18 +55,7 @@ watch(
   }
 )
 
-const toggleImagery = () => {
-  console.log('toggleImagery, map.getStyle:', map.getStyle());
-  const style = map.getStyle();
-  if (style.name === 'imageryMap') {
-    map.setStyle(MapStore.currentTopicMapStyle);
-  } else {
-    map.setStyle(imageryMapStyle);
-  }
-}
-
 onMounted(async () => {
-
   let currentTopicMapStyle;
   route.params.topic ? currentTopicMapStyle = $config.topicStyles[route.params.topic] : currentTopicMapStyle = 'pwdDrawnMapStyle';
   MapStore.currentTopicMapStyle = currentTopicMapStyle;
@@ -94,8 +78,9 @@ onMounted(async () => {
     router.push({ name: 'search', query: { lng: e.lngLat.lng, lat: e.lngLat.lat }})
   });
 
+  map.addControl(imageryToggleControl, 'top-right');
+
   MapStore.setMap(map);
-  // emit('mapLoaded', map);
 });
 
 </script>

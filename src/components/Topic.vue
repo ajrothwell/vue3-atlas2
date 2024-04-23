@@ -12,7 +12,7 @@ const props = defineProps({
 });
 
 // both of these methods seem to work to get the reactive current address
-const { currentAddress } = storeToRefs(MainStore);
+// const { currentAddress } = storeToRefs(MainStore);
 // const currentAddress = computed(() => route.params.address);
 
 import { useRoute, useRouter } from 'vue-router';

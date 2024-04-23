@@ -55,7 +55,6 @@ onMounted(async () => {
         >
           Search
         </button>
-        <button class="button" @click="toggleImagery">Toggle Imagery</button>
       </div>
     </div>
 
