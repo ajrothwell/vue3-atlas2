@@ -18,12 +18,10 @@ import { useRouter, useRoute } from 'vue-router';
 const route = useRoute();
 const router = useRouter();
 
-import { ref, onMounted, computed, watch, watchEffect, getCurrentInstance } from 'vue';
+import { onMounted, watch } from 'vue';
 
 import useImageryToggleControl from '@/composables/useImageryToggleControl.js';
 const { imageryToggleControl } = useImageryToggleControl();
-// import useAddressSearchControl from '@/composables/useAddressSearchControl.js';
-// const { addressSearchControl } = useAddressSearchControl();
 
 let map;
 
@@ -58,8 +56,6 @@ watch(
 )
 
 onMounted(async () => {
-  const instance = getCurrentInstance();
-  console.log('instance:', instance);
   let currentTopicMapStyle;
   route.params.topic ? currentTopicMapStyle = $config.topicStyles[route.params.topic] : currentTopicMapStyle = 'pwdDrawnMapStyle';
   MapStore.currentTopicMapStyle = currentTopicMapStyle;
@@ -83,7 +79,6 @@ onMounted(async () => {
   });
 
   map.addControl(imageryToggleControl, 'top-right');
-  // map.addControl(addressSearchControl, 'top-left');
   MapStore.initialized = true;
 
   MapStore.setMap(map);
@@ -92,10 +87,8 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div id="map-panel">
-    <div id="map" class="map-class">
-      <slot v-if="MapStore.initialized"></slot>
-    </div>
+  <div id="map" class="map-class">
+    <slot v-if="MapStore.initialized"></slot>
   </div>
 </template>
 
@@ -106,6 +99,6 @@ onMounted(async () => {
 }
 
 .map-class {
-  height: 100vh;
+  height: 89vh;
 }
 </style>

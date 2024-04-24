@@ -66,34 +66,36 @@ const dataSourcesLoadedArray = computed(() => MainStore.dataSourcesLoadedArray);
           <h3 class="subtitle is-3">{{ address }}</h3>
         </div>
       </div>
-      
-      <topic :topic-name="'Property'" :loading="!dataSourcesLoadedArray.includes('Property')">
-        <Property v-if="dataSourcesLoadedArray.includes('Property')"></Property>
-      </topic>
 
-      <topic v-show="CondosStore.condosData.length > 0":topic-name="'Condominiums'" :loading="!dataSourcesLoadedArray.includes('Condominiums')">
-        <Condos v-if="dataSourcesLoadedArray.includes('Condominiums')"></Condos>
-      </topic>
+      <div class="topics pr-4">      
+        <topic :topic-name="'Property'" :loading="!dataSourcesLoadedArray.includes('Property')">
+          <Property v-if="dataSourcesLoadedArray.includes('Property')"></Property>
+        </topic>
 
-      <topic :topic-name="'Deeds'" :loading="!dataSourcesLoadedArray.includes('Deeds')">
-        <Deeds v-if="dataSourcesLoadedArray.includes('Deeds')"/>
-      </topic>
+        <topic v-show="CondosStore.condosData.length > 0":topic-name="'Condominiums'" :loading="!dataSourcesLoadedArray.includes('Condominiums')">
+          <Condos v-if="dataSourcesLoadedArray.includes('Condominiums')"></Condos>
+        </topic>
 
-      <topic :topic-name="'Licenses & Inspections'" :loading="!dataSourcesLoadedArray.includes('Licenses & Inspections')">
-        <LI v-if="dataSourcesLoadedArray.includes('Licenses & Inspections')"/>
-      </topic>
+        <topic :topic-name="'Deeds'" :loading="!dataSourcesLoadedArray.includes('Deeds')">
+          <Deeds v-if="dataSourcesLoadedArray.includes('Deeds')"/>
+        </topic>
 
-      <topic :topic-name="'Zoning'" :loading="!dataSourcesLoadedArray.includes('Zoning')">
-        <Zoning v-if="dataSourcesLoadedArray.includes('Zoning')"/>
-      </topic>
+        <topic :topic-name="'Licenses & Inspections'" :loading="!dataSourcesLoadedArray.includes('Licenses & Inspections')">
+          <LI v-if="dataSourcesLoadedArray.includes('Licenses & Inspections')"/>
+        </topic>
 
-      <topic :topic-name="'Voting'" :loading="!dataSourcesLoadedArray.includes('Voting')">
-        <Voting v-if="dataSourcesLoadedArray.includes('Voting')"/>
-      </topic>
+        <topic :topic-name="'Zoning'" :loading="!dataSourcesLoadedArray.includes('Zoning')">
+          <Zoning v-if="dataSourcesLoadedArray.includes('Zoning')"/>
+        </topic>
 
-      <topic :topic-name="'Nearby Activity'" :loading="!dataSourcesLoadedArray.includes('Nearby Activity')">
-        <NearbyActivity v-if="dataSourcesLoadedArray.includes('Nearby Activity')"/>
-      </topic>
+        <topic :topic-name="'Voting'" :loading="!dataSourcesLoadedArray.includes('Voting')">
+          <Voting v-if="dataSourcesLoadedArray.includes('Voting')"/>
+        </topic>
+
+        <topic :topic-name="'Nearby Activity'" :loading="!dataSourcesLoadedArray.includes('Nearby Activity')">
+          <NearbyActivity v-if="dataSourcesLoadedArray.includes('Nearby Activity')"/>
+        </topic>
+      </div>
 
     </div>
     
@@ -103,6 +105,11 @@ const dataSourcesLoadedArray = computed(() => MainStore.dataSourcesLoadedArray);
 </template>
 
 <style scoped>
+
+.topics {
+  height: 77vh;
+  overflow-y: scroll;
+}
 
 .topic {
   height: 2em;

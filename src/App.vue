@@ -38,37 +38,18 @@ onMounted(async () => {
     <div class="container">
       <h1 class="title is-1">Vue3 Atlas</h1>
     </div>
-    <div class="container">
-      <div class="columns">
-        <div class="column is-10">
-          <input
-            class="input"
-            type="text"
-            placeholder="Search an address"
-            v-model="inputAddress"
-            @keydown.enter="router.replace({ name: 'search', query: { address: inputAddress }})"
-          />
-        </div>
-        <button
-          class="button"
-          @click="router.replace({ name: 'search', query: { address: inputAddress }})"
-        >
-          Search
-        </button>
-      </div>
-    </div>
 
     <!-- MAIN CONTENT -->
     <div class="small-container">
       <div class="columns">
 
         <!-- TOPIC PANEL ON LEFT -->
-        <div class="column is-6">
+        <div class="column is-6 pr-0 pb-0">
           <topic-panel></topic-panel>
         </div>
 
         <!-- MAP PANEL ON RIGHT - right now only contains the address input -->
-        <div class="column is-6">
+        <div class="column is-6 p-0 p-0">
           <map-panel></map-panel>
         </div>
         
@@ -79,5 +60,6 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+
 
 </style>

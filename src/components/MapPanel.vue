@@ -7,8 +7,9 @@
 </script>
 
 <template>
-  <Map>
-    <!-- <AddressSearchControl v-if="MapStore.initialized"></AddressSearchControl> -->
-    <AddressSearchControl></AddressSearchControl>
-  </Map>
+  <div id="map-panel">
+    <Map>
+      <AddressSearchControl></AddressSearchControl>
+    </Map>
+  </div>
 </template>
