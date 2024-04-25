@@ -90,13 +90,7 @@ export default {
   methods: {
     handleDeleteClick(e) {
       const MapStore = useMapStore();
-      // console.log('handleDeleteClick is running');
-      // MapStore.draw.delete(this.$data.selected);
-      // // this.$emit('drawDelete', this.$data.selected);
-      // location = this.labelLayers.filter(set => set.id === shapeId)[0];
-      // this.selected = null;
       let index = this.labelLayers.indexOf(this.labelLayers.filter(set => set.id === this.currentShape)[0]);
-      // console.log('deleteDrawDistances is running, index:', index);
       this.labelLayers.splice(index, 1);
       MapStore.draw.delete(this.$data.selected);
       this.$data.selected = null;
@@ -106,11 +100,11 @@ export default {
     //   this.$data.toggledOn = false;
     //   this.$emit('drawCancel', e);
     // },
-    handleFinishClick(e) {
-      console.log('handleFinishClick is running e:', e);
-      this.$emit('drawFinish', e);
-      this.$data.mode = 'simple_select';
-    },
+    // handleFinishClick(e) {
+    //   console.log('handleFinishClick is running e:', e);
+    //   this.$emit('drawFinish', e);
+    //   this.$data.mode = 'simple_select';
+    // },
     deleteDrawDistances(shapeId){
       // console.log('deleteDrawDistances is running, shapeId:', shapeId);
       // let shapeId = e.features[0].id;
@@ -141,32 +135,38 @@ export default {
       this.currentShape = shapeId;
       let feature;
       let currentArea;
-      // console.log('shapeId:', shapeId, 'draw.getSelectedIds():', draw.getSelectedIds());
+      console.log('shapeId:', shapeId, 'draw.getSelectedIds():', draw.getSelectedIds());
       if (shapeId) {
         feature = data.features.filter(feature => feature.id === shapeId)[0];
-        // console.log('if shapeId:', shapeId, 'feature:', feature);
+        console.log('if shapeId:', shapeId, 'feature:', feature, 'feature,geometry.coordinates.length:', feature.geometry.coordinates.length);
         if (feature.geometry.type === 'LineString') {
           coordinates = feature.geometry.coordinates;
+          console.log('its a linestring, coordinates.length:', coordinates.length);
         } else {
+          console.log('its not a linestring')
           coordinates = feature.geometry.coordinates[0];
         }
       } else {
         feature = data.features[data.features.length-1];
         // console.log('else (no shapeId), feature.id:', feature.id, 'feature:', feature);
         if (feature && feature.geometry && feature.geometry.type === 'LineString') {
+          console.log('its a linestring')
           coordinates = feature.geometry.coordinates;
         } else if (feature && feature.geometry) {
+          console.log('its not a linestring')
           coordinates = feature.geometry.coordinates[0];
         }
       }
-      // console.log('middle of getDrawDistances, draw:', draw, 'shapeId:', shapeId, 'e:', e, 'mode is draw_polygon, data:', data, 'coordinates:', coordinates);
+      console.log('middle of getDrawDistances, draw:', draw, 'shapeId:', shapeId, 'e:', e, 'mode is draw_polygon, data:', data, 'coordinates:', coordinates);
 
       // mapbox-gl-draw duplicates the points of a polygon in a way that has to be accounted for;
       if (e && e.point) {
-        // console.log('if e.point is running');
+      // if (feature && feature.geometry && feature.geometry.type === 'Polygon') {
+        console.log('if e.point is running');
         coordinates.splice(coordinates.length-2, 1);
       }
       if (feature && feature.geometry && feature.geometry.type === 'LineString') {
+        console.log('if feature.geometry.type === LineString is running');
         // coordinates.pop();
         coordinates.splice(0, 1);
       }
@@ -521,11 +521,11 @@ export default {
             :src="publicPath + 'images/check.png'"
             class="img-class"
             alt="finish"
-            @click="handleFinishClick"
+            @click="handleDrawFinish"
           >
           <div
             class="inline-block-div"
-            @click="handleFinishClick"
+            @click="handleDrawFinish"
           >
             Finish Measurement
           </div>

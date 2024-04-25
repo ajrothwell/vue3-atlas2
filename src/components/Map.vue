@@ -91,15 +91,15 @@ onMounted(async () => {
   });
   
   map.on('click', (e, data) => {
-    console.log('e:', e, 'data:', data, 'drawInfo.mode:', drawInfo.mode);
+    console.log('e:', e, 'data:', data, 'drawInfo.mode:', drawInfo.mode, draw.getMode());
     let drawMode = drawInfo.mode;
     let drawLayers = MapStore.map.queryRenderedFeatures(e.point).filter(feature => [ 'mapbox-gl-draw-cold', 'mapbox-gl-draw-hot' ].includes(feature.source));
     console.log('Map.vue handleMapClick, e:', e, 'drawLayers:', drawLayers, 'drawMode:', drawMode, 'e:', e, 'MapStore.map.getStyle():', MapStore.map.getStyle(), 'MapStore.drawStart:', MapStore.drawStart);
 
-    if (!drawLayers.length && drawMode !== 'draw_polygon') {
+    if (!drawLayers.length && draw.getMode() !== 'draw_polygon') {
       router.push({ name: 'search', query: { lng: e.lngLat.lng, lat: e.lngLat.lat }})
     }
-    if (drawMode === 'draw_polygon') {
+    if (draw.getMode() === 'draw_polygon') {
       distanceMeasureControlRef.value.getDrawDistances(e);
     }
   });
@@ -165,6 +165,7 @@ const drawCancel = () => {
 }
 const drawFinish = () => {
   console.log('drawFinish is running');
+  drawInfo.mode = 'simple_select';
 }
 const drawModeChange = (e) => {
   console.log('drawModeChange is running, e', e);
