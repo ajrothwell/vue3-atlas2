@@ -1,4 +1,5 @@
 <script setup>
+console.log('import.meta.env.VITE_PUBLICPATH:', import.meta.env.VITE_PUBLICPATH);
 // import { getCurrentInstance } from 'vue'
 // const app = getCurrentInstance()
 // const $config = app.appContext.config.globalProperties.$config;

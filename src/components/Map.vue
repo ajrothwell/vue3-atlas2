@@ -106,7 +106,6 @@ onMounted(async () => {
 
   map.addControl(imageryToggleControl, 'top-right');
   // MapStore.initialized = true;
-  console.log('import.meta.env.VITE_PUBLICPATH:', import.meta.env.VITE_PUBLICPATH);
 
   MapboxDraw.constants.classes.CONTROL_BASE  = 'maplibregl-ctrl';
   MapboxDraw.constants.classes.CONTROL_PREFIX = 'maplibregl-ctrl-';
