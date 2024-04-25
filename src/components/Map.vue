@@ -4,6 +4,8 @@ import $config from '@/config';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { ControlPosition, IControl } from 'maplibre-gl';
+import MapboxDraw from '@mapbox/mapbox-gl-draw'
+import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
 
 // STORES
 import { useMapStore } from '@/stores/MapStore.js';
@@ -18,10 +20,13 @@ import { useRouter, useRoute } from 'vue-router';
 const route = useRoute();
 const router = useRouter();
 
-import { onMounted, watch } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 
 import useImageryToggleControl from '@/composables/useImageryToggleControl.js';
 const { imageryToggleControl } = useImageryToggleControl();
+
+import AddressSearchControl from '@/components/map/AddressSearchControl.vue';
+import DistanceMeasureControl from '@/components/map/DistanceMeasureControl.vue';
 
 let map;
 
@@ -55,6 +60,18 @@ watch(
   }
 )
 
+const draw = ref({
+  mode: null,
+  selection: null,
+  currentShape: null,
+  labelLayers: [],
+  currentArea: null,
+})
+
+const distanceMeasureControlRef = ref(null)
+
+const $click = defineEmits(['click']);
+
 onMounted(async () => {
   let currentTopicMapStyle;
   route.params.topic ? currentTopicMapStyle = $config.topicStyles[route.params.topic] : currentTopicMapStyle = 'pwdDrawnMapStyle';
@@ -70,25 +87,89 @@ onMounted(async () => {
     zoom: zoom,
     minZoom: 6,
     maxZoom: 22,
+    attributionControl: false,
   });
+  
+  map.on('click', (e, data) => {
+    console.log('e:', e, 'data:', data, 'draw.mode:', draw.mode);
 
-  map.on('click', async(e) => {
-    console.log('map click event:', e.lngLat, 'route.params.topic:', route.params.topic);
-    MainStore.setLastSearchMethod('mapClick');
-    router.push({ name: 'search', query: { lng: e.lngLat.lng, lat: e.lngLat.lat }})
+    let drawMode = draw.mode;
+    let drawLayers = MapStore.map.queryRenderedFeatures(e.point).filter(feature => [ 'mapbox-gl-draw-cold', 'mapbox-gl-draw-hot' ].includes(feature.source));
+    console.log('Map.vue handleMapClick 2, e:', e, 'drawLayers:', drawLayers, 'drawMode:', drawMode, 'e:', e, 'MapStore.map.getStyle():', MapStore.map.getStyle(), 'MapStore.drawStart:', MapStore.drawStart);
+
+    if (!drawLayers.length && drawMode !== 'draw_polygon') {
+      router.push({ name: 'search', query: { lng: e.lngLat.lng, lat: e.lngLat.lat }})
+    }
+    if (drawMode === 'draw_polygon') {
+      distanceMeasureControlRef.value.getDrawDistances(e);
+    }
   });
 
   map.addControl(imageryToggleControl, 'top-right');
   MapStore.initialized = true;
 
+  MapboxDraw.constants.classes.CONTROL_BASE  = 'maplibregl-ctrl';
+  MapboxDraw.constants.classes.CONTROL_PREFIX = 'maplibregl-ctrl-';
+  MapboxDraw.constants.classes.CONTROL_GROUP = 'maplibregl-ctrl-group';
+
+  const draw = new MapboxDraw({
+    displayControlsDefault: false,
+    controls: {
+      polygon: true,
+      // trash: true
+    }
+  });
+  MapStore.draw = draw;
+  map.addControl(draw, 'bottom-right');
+
+  map.on('draw.create', drawCreate);
+  map.on('draw.delete', drawDelete);
+  map.on('draw.update', drawUpdate);
+  map.on('draw.selectionchange', drawSelectionChange);
+  map.on('draw.cancel', drawCancel);
+  map.on('draw.finish', drawFinish);
+  // map.on('draw.actionable', drawActionable);
+  map.on('draw.modechange', e => {
+    console.log('draw.modechange, e:', e);
+    draw.mode = e.mode;
+  });
+
   MapStore.setMap(map);
 });
+const drawCreate = (e) => {
+  console.log('drawCreate is running, e', e);
+  distanceMeasureControlRef.value.getDrawDistances(e);
+}
+
+const drawDelete = () => {
+  console.log('drawDelete is running');
+}
+const drawUpdate = () => {
+  console.log('drawUpdate is running');
+}
+const drawSelectionChange = () => {
+  console.log('drawSelectionChange is running');
+}
+const drawCancel = () => {
+  console.log('drawCancel is running');
+}
+const drawFinish = () => {
+  console.log('drawFinish is running');
+}
+const drawActionable = (e) => {
+  console.log('drawActionable is running');
+}
 
 </script>
 
 <template>
   <div id="map" class="map-class">
-    <slot v-if="MapStore.initialized"></slot>
+    <AddressSearchControl></AddressSearchControl>
+    <DistanceMeasureControl
+      ref="distanceMeasureControlRef"
+      :position="'bottom-right'"
+      >
+    </DistanceMeasureControl>
   </div>
 </template>
 

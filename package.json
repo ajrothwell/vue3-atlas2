@@ -11,9 +11,13 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
   },
   "dependencies": {
+    "@mapbox/mapbox-gl-draw": "^1.4.3",
+    "@turf/area": "^6.5.0",
+    "@turf/destination": "^6.5.0",
     "@turf/distance": "^6.5.0",
     "@turf/explode": "^6.5.0",
     "@turf/helpers": "^6.5.0",
+    "@turf/midpoint": "^6.5.0",
     "@turf/nearest": "^4.7.3",
     "@turf/nearest-point": "^6.5.0",
     "accounting": "^0.4.1",

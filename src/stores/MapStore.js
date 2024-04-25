@@ -12,6 +12,7 @@ export const useMapStore = defineStore("MapStore", {
       currentMarkersForTopic: [],
       addressMarker: null,
       initialized: false,
+      draw: null,
     };
   },
   actions: {
