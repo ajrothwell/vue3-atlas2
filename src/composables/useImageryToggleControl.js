@@ -56,7 +56,7 @@ export default function useImageryControl() {
     id:'imagery-toggle-control',
     className: "test",
     title: 'image',
-    imgSrc: '/images/imagery_small.png',
+    imgSrc: import.meta.env.VITE_PUBLICPATH + 'images/imagery_small.png',
     eventHandler: toggleImagery,
   });
 
