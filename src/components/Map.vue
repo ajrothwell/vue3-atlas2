@@ -1,9 +1,9 @@
 <script setup>
+
 import $config from '@/config';
 // PACKAGE IMPORTS
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import { ControlPosition, IControl } from 'maplibre-gl';
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
 
@@ -60,7 +60,7 @@ watch(
   }
 )
 
-const draw = ref({
+const drawInfo = ref({
   mode: null,
   selection: null,
   currentShape: null,
@@ -91,11 +91,10 @@ onMounted(async () => {
   });
   
   map.on('click', (e, data) => {
-    console.log('e:', e, 'data:', data, 'draw.mode:', draw.mode);
-
-    let drawMode = draw.mode;
+    console.log('e:', e, 'data:', data, 'drawInfo.mode:', drawInfo.mode);
+    let drawMode = drawInfo.mode;
     let drawLayers = MapStore.map.queryRenderedFeatures(e.point).filter(feature => [ 'mapbox-gl-draw-cold', 'mapbox-gl-draw-hot' ].includes(feature.source));
-    console.log('Map.vue handleMapClick 2, e:', e, 'drawLayers:', drawLayers, 'drawMode:', drawMode, 'e:', e, 'MapStore.map.getStyle():', MapStore.map.getStyle(), 'MapStore.drawStart:', MapStore.drawStart);
+    console.log('Map.vue handleMapClick, e:', e, 'drawLayers:', drawLayers, 'drawMode:', drawMode, 'e:', e, 'MapStore.map.getStyle():', MapStore.map.getStyle(), 'MapStore.drawStart:', MapStore.drawStart);
 
     if (!drawLayers.length && drawMode !== 'draw_polygon') {
       router.push({ name: 'search', query: { lng: e.lngLat.lng, lat: e.lngLat.lat }})
@@ -106,7 +105,8 @@ onMounted(async () => {
   });
 
   map.addControl(imageryToggleControl, 'top-right');
-  MapStore.initialized = true;
+  // MapStore.initialized = true;
+  console.log('import.meta.env.VITE_PUBLICPATH:', import.meta.env.VITE_PUBLICPATH);
 
   MapboxDraw.constants.classes.CONTROL_BASE  = 'maplibregl-ctrl';
   MapboxDraw.constants.classes.CONTROL_PREFIX = 'maplibregl-ctrl-';
@@ -116,22 +116,25 @@ onMounted(async () => {
     displayControlsDefault: false,
     controls: {
       polygon: true,
-      // trash: true
     }
   });
+
   MapStore.draw = draw;
   map.addControl(draw, 'bottom-right');
 
   map.on('draw.create', drawCreate);
   map.on('draw.delete', drawDelete);
   map.on('draw.update', drawUpdate);
-  map.on('draw.selectionchange', drawSelectionChange);
+  map.on('draw.selectionchange', e => {
+    console.log('draw.selectionchange, e:', e);
+    drawSelectionChange(e);
+  });
   map.on('draw.cancel', drawCancel);
   map.on('draw.finish', drawFinish);
-  // map.on('draw.actionable', drawActionable);
+  // map.on('draw.modechange', drawModeChange(e));
   map.on('draw.modechange', e => {
     console.log('draw.modechange, e:', e);
-    draw.mode = e.mode;
+    drawModeChange(e);
   });
 
   MapStore.setMap(map);
@@ -147,8 +150,16 @@ const drawDelete = () => {
 const drawUpdate = () => {
   console.log('drawUpdate is running');
 }
-const drawSelectionChange = () => {
-  console.log('drawSelectionChange is running');
+const drawSelectionChange = (e) => {
+  console.log('drawSelectionChange is running, e:', e);
+  distanceMeasureControlRef.value.handleDrawSelectionChange(e);
+  // if (e.features[0]) {
+  //   console.log('there are features');
+  //   // $this.$data.selected = e.features[0].id;
+  // } else {
+  //   console.log('there are no features');
+  //   // $this.$data.selected = null;
+  // }
 }
 const drawCancel = () => {
   console.log('drawCancel is running');
@@ -156,8 +167,10 @@ const drawCancel = () => {
 const drawFinish = () => {
   console.log('drawFinish is running');
 }
-const drawActionable = (e) => {
-  console.log('drawActionable is running');
+const drawModeChange = (e) => {
+  console.log('drawModeChange is running, e', e);
+  drawInfo.mode = e.mode;
+  distanceMeasureControlRef.value.handleDrawModeChange(e);
 }
 
 </script>
@@ -167,8 +180,8 @@ const drawActionable = (e) => {
     <AddressSearchControl></AddressSearchControl>
     <DistanceMeasureControl
       ref="distanceMeasureControlRef"
-      :position="'bottom-right'"
-      >
+      position="bottom-right"
+    >
     </DistanceMeasureControl>
   </div>
 </template>

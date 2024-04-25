@@ -1,13 +1,6 @@
 <script>
 
-import controlMixin from "./controlMixin";
-import withEvents from "./withEvents";
-import withSelfEvents from "./withSelfEvents";
-
 import { useMapStore} from '@/stores/MapStore.js';
-
-import MapboxDraw from '@mapbox/mapbox-gl-draw';
-import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
 
 // import mapbox-gl-draw-min.js, cloned from https://gist.github.com/godismyjudge95/a4ea43263db53b90b05511c911cd0034
 // this was recommended by a comment in https://github.com/mapbox/mapbox-gl-js/issues/9114
@@ -23,7 +16,6 @@ import { point, polygon, multiPolygon, convertArea, featureCollection } from '@t
 
 export default {
   name: 'DistanceMeasureControl',
-  mixins: [ withEvents, withSelfEvents, controlMixin ],
 
   props: {
     position: {
@@ -52,8 +44,18 @@ export default {
       }
       return id;
     },
+    newArea() {
+      let shape = this.$data.labelLayers.filter(layer => layer.id === this.currentOrSelectedShape);
+      console.log('newArea is recalculating, shape:', shape, 'this.currentOrSelectedShape:', this.currentOrSelectedShape);
+      let set;
+      if (shape[0]) {
+        set = shape[0].area;
+      }
+      return set;
+    },
     currentDistances() {
-      let shape = this.labelLayers.filter(layer => layer.id === this.currentOrSelectedShape);
+      console.log('currentDistances is recalculating');
+      let shape = this.$data.labelLayers.filter(layer => layer.id === this.currentOrSelectedShape);
       let set;
       if (shape[0]) {
         set = shape[0].distances;
@@ -84,18 +86,25 @@ export default {
   },
   methods: {
     handleDeleteClick(e) {
-      console.log('handleDeleteClick is running');
-      this.$mapboxElement.delete(this.$data.selected);
-      this.$emit('drawDelete', this.$data.selected);
-      this.selected = null;
+      const MapStore = useMapStore();
+      // console.log('handleDeleteClick is running');
+      // MapStore.draw.delete(this.$data.selected);
+      // // this.$emit('drawDelete', this.$data.selected);
+      // location = this.labelLayers.filter(set => set.id === shapeId)[0];
+      // this.selected = null;
+      let index = this.labelLayers.indexOf(this.labelLayers.filter(set => set.id === this.currentShape)[0]);
+      // console.log('deleteDrawDistances is running, index:', index);
+      this.labelLayers.splice(index, 1);
+      MapStore.draw.delete(this.$data.selected);
+      this.$data.selected = null;
     },
-    handleCancelClick(e) {
-      console.log('handleCancelClick is running');
-      this.$data.toggledOn = false;
-      this.$emit('drawCancel', e);
-    },
+    // handleCancelClick(e) {
+    //   console.log('handleCancelClick is running');
+    //   this.$data.toggledOn = false;
+    //   this.$emit('drawCancel', e);
+    // },
     handleFinishClick(e) {
-      // console.log('handleFinishClick is running e:', e, 'this.$mapboxElement.getSelectedPoints():', this.$mapboxElement.getSelectedPoints());
+      console.log('handleFinishClick is running e:', e, 'this.$mapboxElement.getSelectedPoints():', this.$mapboxElement.getSelectedPoints());
       this.$emit('drawFinish', e);
       this.$data.mode = 'simple_select';
     },
@@ -105,7 +114,7 @@ export default {
       let index = this.currentShape.indexOf(this.currentShape.filter(set => set.id === shapeId)[0]);
       // console.log('deleteDrawDistances is running, index:', index);
       this.currentShape.splice(index, 1);
-      draw.selection = null;
+      this.$data.selected = null;
     },
 
     getDrawDistances(e){
@@ -128,6 +137,7 @@ export default {
 
       this.currentShape = shapeId;
       let feature;
+      let currentArea;
       // console.log('shapeId:', shapeId, 'draw.getSelectedIds():', draw.getSelectedIds());
       if (shapeId) {
         feature = data.features.filter(feature => feature.id === shapeId)[0];
@@ -162,8 +172,8 @@ export default {
       if (coordinates && coordinates.length >=4) {
         const thePolygon = polygon([ coordinates ]);
         const theArea = convertArea(area(thePolygon), 'meters', 'feet');
-        // console.log('calculating the area:', theArea);
-        this.currentArea = theArea.toFixed(2) + ' Sq Feet';
+        console.log('calculating the area:', theArea);
+        currentArea = theArea.toFixed(2) + ' Sq Feet';
       }
 
       let i;
@@ -240,14 +250,15 @@ export default {
         } // end of loop
       }
 
-      console.log('near end of getDrawDistances, distancesArray.length:', distancesArray.length, 'distancesArray:', distancesArray, 'features:', features);
+      console.log('near end of getDrawDistances, currentArea:', currentArea, 'distancesArray.length:', distancesArray.length, 'distancesArray:', distancesArray, 'features:', features);
 
       if (distancesArray.length) {
         let theSet = {};
         if (shapeId) {
-          // console.log('if inside if is running, distancesArray[distancesArray.length-1].distance:', distancesArray[distancesArray.length-1].distance, 'distancesArray:', distancesArray);
+          console.log('if inside if is running, currentArea:', currentArea, 'distancesArray[distancesArray.length-1].distance:', distancesArray[distancesArray.length-1].distance, 'distancesArray:', distancesArray);
           theSet = {
             id: shapeId,
+            'area': currentArea,
             'distances': distancesArray,
             'source': {
               type: 'geojson',
@@ -282,6 +293,7 @@ export default {
             location = this.labelLayers.filter(set => set.id === shapeId)[0];
             // console.log('second try on location:', location);
           }
+          location.area = currentArea;
           location.distances = distancesArray;
           location.source.data.features = features;
         }
@@ -293,36 +305,43 @@ export default {
 
     handleDrawModeChange(e){
       console.log('handleDrawModeChange is running, e:', e, 'e.mode:', e.mode);
-      const MapStore = useMapStore();
-      draw.mode = e.mode;
+      this.$data.mode = e.mode;
+      if (e.mode === 'draw_polygon') {
+        this.$data.toggledOn = true;
+      } //else {
+      //   this.$data.toggledOn = false;
+      // }
+      // const MapStore = useMapStore();
       let currentShape = this.currentShape;
 
-      if (e.mode === 'simple_select' && this.currentShape) {
-        this.handleDrawFinish();
-      }
+      // if (e.mode === 'simple_select' && this.$data.currentShape) {
+      //   this.handleDrawFinish();
+      // }
     },
 
     handleDrawCancel(e){
+      console.log('handleDrawCancel is running, e:', e, 'this.currentShape:', this.$data.currentShape);
       const MapStore = useMapStore();
       // draw.mode = 'simple_select';
       let shapeId = this.currentShape;
-      console.log('MapPanel.vue handleDrawCancel is running, shapeId:', shapeId);
+      console.log('handleDrawCancel is running, shapeId:', shapeId);
       if (shapeId) {
-        let index = this.currentShape.indexOf(this.currentShape.filter(set => set.id === shapeId)[0]);
-        this.currentShape.splice(index, 1);
-        draw.selection = null;
-        this.currentShape = null;
-        MapStore.draw.trash();
+        let index = this.$data.labelLayers.indexOf(this.$data.labelLayers.filter(set => set.id === shapeId)[0]);
+        this.$data.labelLayers.splice(index, 1);
+        // this.$data.selected = null;
+        MapStore.draw.delete(this.currentShape);
+        this.$data.currentShape = null;
       }
       MapStore.draw.changeMode('simple_select');
+      this.$data.toggledOn = false;
     },
 
     handleDrawFinish(e){
       const MapStore = useMapStore();
-      let currentShape = this.currentShape;
+      let currentShape = this.$data.currentShape;
       // let currentPoints = [];
-      let fetchedPoints = this.currentShape.filter(set => set.id === this.currentShape)[0].distances;
-      // console.log('MapPanel.vue handleDrawFinish 1 is running, MapStore.draw.getMode():', MapStore.draw.getMode(), 'currentShape:', currentShape, 'fetchedPoints:', fetchedPoints);
+      let fetchedPoints = this.$data.labelLayers.filter(set => set.id === this.currentShape)[0].distances;
+      console.log('MapPanel.vue handleDrawFinish 1 is running, MapStore.draw.getMode():', MapStore.draw.getMode(), 'currentShape:', currentShape, 'fetchedPoints:', fetchedPoints);
 
       let currentPoints = [];
       for (let point of fetchedPoints) {
@@ -335,7 +354,7 @@ export default {
 
       if (fetchedPoints.length > 2) {
         MapStore.draw.changeMode('simple_select');
-        draw.mode = 'simple_select';
+        this.$data.mode = 'simple_select';
       } else if (fetchedPoints.length === 2) {
         MapStore.draw.delete(this.currentShape);
         MapStore.draw.changeMode('draw_line_string');
@@ -351,7 +370,7 @@ export default {
         };
         MapStore.draw.add(geojson);
         MapStore.draw.changeMode('simple_select');
-        draw.mode = 'simple_select';
+        this.$data.mode = 'simple_select';
       } else if (fetchedPoints.length === 1 ) {
         MapStore.draw.delete(this.currentShape);
         MapStore.draw.changeMode('draw_point');
@@ -367,19 +386,28 @@ export default {
         };
         MapStore.draw.add(geojson);
         MapStore.draw.changeMode('simple_select');
-        draw.mode = 'simple_select';
+        this.$data.mode = 'simple_select';
       } else {
         MapStore.draw.trash();
         this.handleDrawCancel();
       }
-      // console.log('MapPanel.vue handleDrawFinish 2 is running, MapStore.draw.getMode():', MapStore.draw.getMode(), 'currentShape:', currentShape, 'fetchedPoints:', fetchedPoints);
+      console.log('MapPanel.vue handleDrawFinish 2 is running, MapStore.draw.getMode():', MapStore.draw.getMode(), 'currentShape:', currentShape, 'fetchedPoints:', fetchedPoints);
     },
 
     handleDrawSelectionChange(e){
+      // console.log('handleDrawSelectionChange is running, e:', e);
+      const MapStore = useMapStore();
       let draw = MapStore.draw;
       let val = draw.getSelectedIds();
-      // console.log('handleDrawSelectionChange, e:', e, 'val:', val);
-      draw.selection = val;
+      console.log('handleDrawSelectionChange, e:', e, 'val:', val);
+      if (e.features[0]) {
+        console.log('there are features');
+        this.$data.selected = val[0];
+      } else {
+        console.log('there are no features');
+        this.$data.selected = null;
+      }
+      // this.$data.selected = val[0];
     }
   }
 };
@@ -388,8 +416,8 @@ export default {
 
 <template>
   <div>
-    <!-- v-if="shouldShowDistanceBox" -->
     <div
+      v-if="shouldShowDistanceBox"
       :class="'measure-tool-popup-bottom-right'"
     >
       <div
@@ -407,11 +435,11 @@ export default {
             :src="'@assets/images/cancel.png'"
             class="img-class"
             alt="cancel"
-            @click="handleCancelClick"
+            @click="handleDrawCancel"
           >
           <div
             class="inline-block-div"
-            @click="handleCancelClick"
+            @click="handleDrawCancel"
           >
             Cancel
           </div>
@@ -448,7 +476,7 @@ export default {
         <div
           v-if="currentDistances.length >= 3"
         >
-          Total Area: {{ currentArea }}
+          Total Area: {{ newArea }}
           <hr class="popup-line">
         </div>
 
@@ -478,11 +506,11 @@ export default {
             :src="'@/assets/images/cancel.png'"
             class="img-class"
             alt="cancel"
-            @click="handleCancelClick"
+            @click="handleDrawCancel"
           >
           <div
             class="inline-block-div"
-            @click="handleCancelClick"
+            @click="handleDrawCancel"
           >
             Cancel
           </div>
