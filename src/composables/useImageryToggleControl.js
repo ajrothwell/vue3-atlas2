@@ -56,7 +56,7 @@ export default function useImageryControl() {
     id:'imagery-toggle-control',
     className: "test",
     title: 'image',
-    imgSrc: './src/assets/imagery_small.png',
+    imgSrc: '/images/imagery_small.png',
     eventHandler: toggleImagery,
   });
 
