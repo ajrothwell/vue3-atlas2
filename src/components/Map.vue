@@ -14,13 +14,15 @@ import { useMainStore } from '@/stores/MainStore.js'
 const MainStore = useMainStore();
 import { useAddressStore } from '@/stores/AddressStore.js'
 const AddressStore = useAddressStore();
+import { useParcelsStore } from '@/stores/ParcelsStore.js'
+const ParcelsStore = useParcelsStore();
 
 // ROUTER
 import { useRouter, useRoute } from 'vue-router';
 const route = useRoute();
 const router = useRouter();
 
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch, computed } from 'vue';
 
 import useImageryToggleControl from '@/composables/useImageryToggleControl.js';
 const { imageryToggleControl } = useImageryToggleControl();
@@ -30,23 +32,78 @@ import DistanceMeasureControl from '@/components/map/DistanceMeasureControl.vue'
 
 let map;
 
-watch(
-  () => AddressStore.addressData,
-  newAddress => {
-  console.log('MapStore address watch, newAddress:', newAddress, 'MapStore.addressMarker:', MapStore.addressMarker);
-  const oldAddressMarker = MapStore.addressMarker;
-  if (oldAddressMarker) {
-    oldAddressMarker.remove();
+const pwdCoordinates = computed(() => {
+  if (AddressStore.addressData.features) {
+    return AddressStore.addressData.features[0].geometry.coordinates;
+  } else {
+    return [];
   }
-  const coordinates = AddressStore.addressData.features[0].geometry.coordinates;
-  const newAddressMarker = new maplibregl.Marker()
-    .setLngLat(coordinates)
-    .addTo(map);
-  MapStore.addressMarker = newAddressMarker;
+});
+
+const dorCoordinates = computed(() => {
+  if (ParcelsStore.DOR.features) {
+    return ParcelsStore.DOR.features[0].geometry.coordinates[0];
+  } else {
+    return [];
+  }
+});
+
+watch(
+  () => pwdCoordinates.value,
+  newCoords => {
+  console.log('Map address watch, newCoords:', newCoords, 'MapStore.addressMarker:', MapStore.addressMarker);
+  // let currentTopicMapStyle = 'pwdDrawnMapStyle';
+  // if (route.params.topic) {
+  //   currentTopicMapStyle = $config.topicStyles[route.params.topic];
+  // }
+  // console.log('Map.vue watch currentTopicMapStyle:', currentTopicMapStyle, 'route.params.topic:', route.params.topic, 'AddressStore.addressData:', AddressStore.addressData, 'ParcelsStore.DOR:', ParcelsStore.DOR);
+  // let pwdCoordinates = [];
+  // if (currentTopicMapStyle === 'pwdDrawnMapStyle') {
+  // pwdCoordinates = AddressStore.addressData.features[0].geometry.coordinates;
+  const address = {'type': 'Feature','geometry': {'type': 'Point','coordinates': newCoords}};
+  map.getSource('addressMarker').setData(address);
+
+  // } else {
+  // dorCoordinates = ParcelsStore.DOR.features[0].geometry.coordinates[0];
+  // console.log('dorCoordinates:', dorCoordinates);
+  // const newParcel = {'type': 'Feature','geometry': {'type': 'Polygon','coordinates': [ dorCoordinates ],}};
+  // console.log('map.getSource("dorParcel"):', map.getSource('dorParcel'));
+  // map.getSource('dorParcel').setData(newParcel);
+  // }
+
   if (MainStore.lastSearchMethod === 'address') {
-    map.setCenter(coordinates);
+    map.setCenter(newCoords);
     map.setZoom(17);
   }
+});
+
+watch(
+  () => dorCoordinates.value,
+  newCoords => {
+  console.log('Map Parcels watch, newCoords:', newCoords);
+  // let currentTopicMapStyle = 'pwdDrawnMapStyle';
+  // if (route.params.topic) {
+  //   currentTopicMapStyle = $config.topicStyles[route.params.topic];
+  // }
+  // console.log('Map.vue watch currentTopicMapStyle:', currentTopicMapStyle, 'route.params.topic:', route.params.topic, 'AddressStore.addressData:', AddressStore.addressData, 'ParcelsStore.DOR:', ParcelsStore.DOR);
+  // let dorCoordinates = [];
+  // if (currentTopicMapStyle === 'pwdDrawnMapStyle') {
+  // pwdCoordinates = AddressStore.addressData.features[0].geometry.coordinates;
+  // const address = {'type': 'Feature','geometry': {'type': 'Point','coordinates': pwdCoordinates,}};
+  // map.getSource('addressMarker').setData(address);
+
+  // } else {
+  // dorCoordinates = ParcelsStore.DOR.features[0].geometry.coordinates[0];
+  // console.log('dorCoordinates:', dorCoordinates);
+  const newParcel = {'type': 'Feature','geometry': {'type': 'Polygon','coordinates': [ newCoords ]}};
+  // console.log('map.getSource("dorParcel"):', map.getSource('dorParcel'));
+  map.getSource('dorParcel').setData(newParcel);
+  // }
+
+  // if (MainStore.lastSearchMethod === 'address') {
+  //   map.setCenter(pwdCoordinates);
+  //   map.setZoom(17);
+  // }
 });
 
 watch(
@@ -54,8 +111,30 @@ watch(
   async newTopic => {
     console.log('MapStore watch topic, newTopic:', newTopic);
     if (newTopic) {
-      MapStore.currentTopicMapStyle = $config.topicStyles[newTopic];
-      map.setStyle($config[MapStore.currentTopicMapStyle]);
+      // MapStore.currentTopicMapStyle = $config.topicStyles[newTopic];
+      map.setStyle($config[$config.topicStyles[newTopic]]);
+      // map.on('style.load', () => {
+      console.log('1 map.layers:', map.getStyle().layers, map.getStyle().sources);
+      map.getSource('addressMarker').setData({'type': 'Feature','geometry': {'type': 'Point','coordinates': pwdCoordinates.value }});
+      map.getSource('dorParcel').setData({'type': 'Feature','geometry': {'type': 'Polygon','coordinates': [ dorCoordinates.value ]}});
+      console.log('2 map.layers:', map.getStyle().layers, map.getStyle().sources);
+      // });
+      // if (style === 'pwdDrawnMapStyle') {
+        // map.removeLayer('dorBasemap');
+        // map.removeLayer('dorLabels');
+        // map.removeLayer('dorParcel');
+        // map.addLayer($config.mapLayers.filter((map) => map.id == 'pwdBasemap')[0]);
+        // map.addLayer($config.mapLayers.filter((map) => map.id == 'pwdLabels')[0]);
+        // map.addLayer($config.mapLayers.filter((map) => map.id == 'addressMarker')[0]);
+      // } else {
+        // map.removeLayer('pwdBasemap');
+        // map.removeLayer('pwdLabels');
+        // map.removeLayer('addressMarker');
+        // console.log(`"$config.mapLayers.filter((map) => map.id = 'dorBasemap'))[0]"`, $config.mapLayers.filter((map) => map.id == 'dorBasemap')[0])
+        // map.addLayer($config.mapLayers.filter((map) => map.id == 'dorBasemap')[0]);
+        // map.addLayer($config.mapLayers.filter((map) => map.id == 'dorLabels')[0]);
+        // map.addLayer($config.mapLayers.filter((map) => map.id == 'dorParcel')[0]);
+      // }
     }
   }
 )
@@ -69,8 +148,7 @@ const drawInfo = ref({
 })
 
 const distanceMeasureControlRef = ref(null)
-
-const $click = defineEmits(['click']);
+// const $click = defineEmits(['click']);
 
 onMounted(async () => {
   let currentTopicMapStyle;
@@ -103,6 +181,29 @@ onMounted(async () => {
       distanceMeasureControlRef.value.getDrawDistances(e);
     }
   });
+
+  // map.on('style-load', () => {
+  //   map.addSource('dorParcel', {
+  //     'type': 'geojson',
+  //     'data': {
+  //       'type': 'Feature',
+  //       'geometry': {
+  //         'type': 'Polygon',
+  //         'coordinates': [[[]]],
+  //       }
+  //     }
+  //   })
+  //   map.addLayer({
+  //     'id': 'dorParcel',
+  //     'type': 'fill',
+  //     'source': 'dorParcel',
+  //     'layout': {},
+  //     'paint': {
+  //         'fill-color': '#088',
+  //         'fill-opacity': 0.4
+  //     }
+  //   });
+  // })
 
   map.addControl(imageryToggleControl, 'top-right');
   // MapStore.initialized = true;
@@ -152,13 +253,6 @@ const drawUpdate = () => {
 const drawSelectionChange = (e) => {
   console.log('drawSelectionChange is running, e:', e);
   distanceMeasureControlRef.value.handleDrawSelectionChange(e);
-  // if (e.features[0]) {
-  //   console.log('there are features');
-  //   // $this.$data.selected = e.features[0].id;
-  // } else {
-  //   console.log('there are no features');
-  //   // $this.$data.selected = null;
-  // }
 }
 const drawCancel = () => {
   console.log('drawCancel is running');

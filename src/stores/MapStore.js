@@ -11,6 +11,7 @@ export const useMapStore = defineStore("MapStore", {
       bufferForAddress: {},
       currentMarkersForTopic: [],
       addressMarker: null,
+      addressParcel: null,
       initialized: false,
       draw: null,
     };

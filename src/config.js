@@ -30,6 +30,163 @@ const $config = {
     layers: [],
   },
 
+  initialStyle: {
+    version: 8,
+    name: 'mainMap',
+    sources: {
+      pwdBasemap: {
+        tiles: [
+          'https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityBasemap/MapServer/tile/{z}/{y}/{x}',
+        ],
+        type: 'raster',
+        tileSize: 256,
+      },
+      pwdLabels: {
+        tiles: [
+          'https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityBasemap_Labels/MapServer/tile/{z}/{y}/{x}',
+        ],
+        type: 'raster',
+        tileSize: 256,
+      },
+      dorBasemap: {
+        tiles: [
+          'https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/DORBasemap/MapServer/tile/{z}/{y}/{x}',
+        ],
+        type: 'raster',
+        tileSize: 256,
+      },
+      dorLabels: {
+        tiles: [
+          'https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/DORBasemap_Labels/MapServer/tile/{z}/{y}/{x}',
+        ],
+        type: 'raster',
+        tileSize: 256,
+      },
+      imagery: {
+        tiles: [
+          'https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2022_2in/MapServer/tile/{z}/{y}/{x}',
+        ],
+        type: 'raster',
+        tileSize: 256,
+      },
+      imageryLabels: {
+        tiles: [
+        'https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_Labels/MapServer/tile/{z}/{y}/{x}',
+        ],
+        type: 'raster',
+        tileSize: 256,
+      },
+      // zoning: {
+      //   tiles: [
+      //     'https://citygeo-geoserver.databridge.phila.gov/geoserver/wms?service=WMS&version=1.1.0&request=GetMap&layers=atlas_zoning_grouped&bbox={bbox-epsg-3857}&width=256&height=256&srs=EPSG%3A3857&styles=&format=image/png&transparent=true'
+      //     // 'https://citygeo-geocoder-pub.databridge.phila.gov/arcgis/rest/services/Atlas/ZoningMap/MapServer/export?dpi=120\
+      //     //   &transparent=true\
+      //     //   &format=png32\
+      //     //   &bbox={bbox-epsg-3857}\
+      //     //   &bboxSR=3857\
+      //     //   &imageSR=3857\
+      //     //   &size=512,512\
+      //     //   &f=image\
+      //     // ',
+      //   ],
+      //   type: 'raster',
+      //   tileSize: 256,
+      // },
+      addressMarker: {
+        type: 'geojson',
+        data: {
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: [],
+          }
+        }
+      },
+      dorParcel: {
+        type: 'geojson',
+        data: {
+          type: 'Feature',
+          geometry: {
+            type: 'Polygon',
+            coordinates: [[[]]],
+          }
+        }
+      },
+    },
+    layers: [
+      {
+        id: 'pwdBasemap',
+        source: 'pwdBasemap',
+        type: 'raster',
+      },
+      {
+        id: 'pwdLabels',
+        source: 'pwdLabels',
+        type: 'raster',
+      },
+      {
+        id: 'addressMarker',
+        source: 'addressMarker',
+        type: 'circle',
+      },
+    ],
+  },
+
+  mapLayers: [
+    {
+      id: 'pwdBasemap',
+      source: 'pwdBasemap',
+      type: 'raster',
+    },
+    {
+      id: 'pwdLabels',
+      source: 'pwdLabels',
+      type: 'raster',
+    },
+    {
+      id: 'dorBasemap',
+      source: 'dorBasemap',
+      type: 'raster',
+    },
+    {
+      id: 'dorLabels',
+      source: 'dorLabels',
+      type: 'raster',
+    },
+    {
+      id: 'imagery',
+      source: 'imagery',
+      type: 'raster',
+    },
+    {
+      id: 'imageryLabels',
+      source: 'imageryLabels',
+      type: 'raster',
+    },
+    {
+      id: 'zoning',
+      source: 'zoning',
+      type: 'raster',
+    },
+    {
+      id: 'addressMarker',
+      source: 'addressMarker',
+      type: 'circle',
+    },
+    {
+      id: 'dorParcel',
+      type: 'fill',
+      source: 'dorParcel',
+      layout: {},
+      paint: {
+        'fill-color': '#088',
+        'fill-opacity': 0.4
+      }
+    },
+  ],
+
+
+
   pwdDrawnMapStyle: {
     version: 8,
     name: 'pwdDrawnMap',
@@ -48,6 +205,26 @@ const $config = {
         type: 'raster',
         tileSize: 256,
       },
+      addressMarker: {
+        type: 'geojson',
+        data: {
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: [],
+          }
+        }
+      },
+      dorParcel: {
+        type: 'geojson',
+        data: {
+          type: 'Feature',
+          geometry: {
+            type: 'Polygon',
+            coordinates: [[[]]],
+          }
+        }
+      },
     },
     layers: [
       {
@@ -59,6 +236,11 @@ const $config = {
         id: 'pwdLabels',
         source: 'pwdLabels',
         type: 'raster',
+      },
+      {
+        id: 'addressMarker',
+        source: 'addressMarker',
+        type: 'circle',
       },
     ],
   },
@@ -81,6 +263,26 @@ const $config = {
         type: 'raster',
         tileSize: 256,
       },
+      addressMarker: {
+        type: 'geojson',
+        data: {
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: [],
+          }
+        }
+      },
+      dorParcel: {
+        type: 'geojson',
+        data: {
+          type: 'Feature',
+          geometry: {
+            type: 'Polygon',
+            coordinates: [[[]]],
+          }
+        }
+      },
     },
     layers: [
       {
@@ -93,6 +295,16 @@ const $config = {
         source: 'dorLabels',
         type: 'raster',
       },
+      {
+        id: 'dorParcel',
+        type: 'fill',
+        source: 'dorParcel',
+        layout: {},
+        paint: {
+          'fill-color': '#088',
+          'fill-opacity': 0.4
+        }
+      }
     ],
   },
 
@@ -129,7 +341,27 @@ const $config = {
         ],
         type: 'raster',
         tileSize: 256,
-      }
+      },
+      addressMarker: {
+        type: 'geojson',
+        data: {
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: [],
+          }
+        }
+      },
+      dorParcel: {
+        type: 'geojson',
+        data: {
+          type: 'Feature',
+          geometry: {
+            type: 'Polygon',
+            coordinates: [[[]]],
+          }
+        }
+      },
     },
     layers: [
       {
@@ -147,6 +379,16 @@ const $config = {
         source: 'zoning',
         type: 'raster',
       },
+      {
+        id: 'dorParcel',
+        type: 'fill',
+        source: 'dorParcel',
+        layout: {},
+        paint: {
+          'fill-color': '#088',
+          'fill-opacity': 0.4
+        }
+      }
     ],
   },
   
@@ -182,7 +424,27 @@ const $config = {
         ],
         type: 'raster',
         tileSize: 256,
-      }
+      },
+      addressMarker: {
+        type: 'geojson',
+        data: {
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: [],
+          }
+        }
+      },
+      dorParcel: {
+        type: 'geojson',
+        data: {
+          type: 'Feature',
+          geometry: {
+            type: 'Polygon',
+            coordinates: [[[]]],
+          }
+        }
+      },
     },
     layers: [
       {
