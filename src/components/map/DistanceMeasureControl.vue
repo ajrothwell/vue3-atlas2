@@ -35,6 +35,9 @@ export default {
     return data;
   },
   computed: {
+    publicPath() {
+      return import.meta.env.VITE_PUBLICPATH;
+    },
     currentOrSelectedShape() {
       let id;
       if (this.$data.selected) {
@@ -104,7 +107,7 @@ export default {
     //   this.$emit('drawCancel', e);
     // },
     handleFinishClick(e) {
-      console.log('handleFinishClick is running e:', e, 'this.$mapboxElement.getSelectedPoints():', this.$mapboxElement.getSelectedPoints());
+      console.log('handleFinishClick is running e:', e);
       this.$emit('drawFinish', e);
       this.$data.mode = 'simple_select';
     },
@@ -432,7 +435,7 @@ export default {
         <hr class="popup-line">
         <div>
           <img
-            :src="'@assets/images/cancel.png'"
+            :src="publicPath + 'images/cancel.png'"
             class="img-class"
             alt="cancel"
             @click="handleDrawCancel"
@@ -485,9 +488,9 @@ export default {
           class="drawn-shape-actions"
         >
           <img
-            :src="'@/assets/images/trash.png'"
+            :src="publicPath + 'images/trash.png'"
             class="img-class"
-            alt="cancel"
+            alt="trash"
             @click="handleDeleteClick"
           >
           <div
@@ -503,7 +506,7 @@ export default {
           class="draw-actions"
         >
           <img
-            :src="'@/assets/images/cancel.png'"
+            :src="publicPath + 'images/cancel.png'"
             class="img-class"
             alt="cancel"
             @click="handleDrawCancel"
@@ -515,7 +518,7 @@ export default {
             Cancel
           </div>
           <img
-            :src="'@/assets/images/check.png'"
+            :src="publicPath + 'images/check.png'"
             class="img-class"
             alt="finish"
             @click="handleFinishClick"
