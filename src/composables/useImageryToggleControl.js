@@ -44,11 +44,11 @@ export default function useImageryControl() {
     if (style.name === 'imageryMap') {
       map.setStyle($config[MapStore.currentTopicMapStyle]);
       const image = document.getElementById('imagery-toggle-control');
-      image.src = './src/assets/imagery_small.png';
+      image.src = import.meta.env.VITE_PUBLICPATH + 'images/imagery_small.png';
     } else {
       map.setStyle($config.imageryMapStyle);
       const image = document.getElementById('imagery-toggle-control');
-      image.src = './src/assets/basemap_small.png';
+      image.src = import.meta.env.VITE_PUBLICPATH + 'images/basemap_small.png';
     }
   }
 

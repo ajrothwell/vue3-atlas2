@@ -11,14 +11,14 @@ const $config = {
     'Nearby Activity': 'pwdDrawnMapStyle',
   },
   parcelLayerForTopic: {
-    undefined: 'PWD',
-    Property: 'PWD',
-    Condos: 'PWD',
-    Deeds: 'DOR',
-    'Licenses & Inspections': 'PWD',
-    Zoning: 'DOR',
-    Voting: 'PWD',
-    'Nearby Activity': 'PWD',
+    undefined: 'pwd',
+    Property: 'pwd',
+    Condos: 'pwd',
+    Deeds: 'dor',
+    'Licenses & Inspections': 'pwd',
+    Zoning: 'dor',
+    Voting: 'pwd',
+    'Nearby Activity': 'pwd',
   },
 
   noMapStyle: {
