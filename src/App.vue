@@ -23,8 +23,8 @@ import MapPanel from '@/components/MapPanel.vue';
 const inputAddress = ref('');
 
 onMounted(async () => {
-  console.log('App onMounted, route.params.topic:', route.params.topic, 'route.params.address:', route.params.address);
   await router.isReady()
+  console.log('App onMounted, route.params.topic:', route.params.topic, 'route.params.address:', route.params.address);
   if (route.name === 'not-found') {
     router.push({ name: 'home' });
   }

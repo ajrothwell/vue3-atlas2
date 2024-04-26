@@ -51,19 +51,15 @@ const dorCoordinates = computed(() => {
 watch(
   () => pwdCoordinates.value,
   newCoords => {
-  console.log('Map address watch, newCoords:', newCoords, 'MapStore.addressMarker:', MapStore.addressMarker);
+  console.log('Map pwdCoordinates watch, newCoords:', newCoords, 'MapStore.addressMarker:', MapStore.addressMarker);
   const address = {'type': 'Feature','geometry': {'type': 'Point','coordinates': newCoords}};
   map.getSource('addressMarker').setData(address);
-  if (MainStore.lastSearchMethod === 'address') {
-    map.setCenter(newCoords);
-    map.setZoom(17);
-  }
 });
 
 watch(
   () => dorCoordinates.value,
   newCoords => {
-  console.log('Map Parcels watch, newCoords:', newCoords);
+  console.log('Map dorCoordinates watch, newCoords:', newCoords);
   const newParcel = {'type': 'Feature','geometry': {'type': 'Polygon','coordinates': [ newCoords ]}};
   map.getSource('dorParcel').setData(newParcel);
 });
@@ -71,7 +67,7 @@ watch(
 watch(
   () => route.params.topic,
   async newTopic => {
-    console.log('MapStore watch topic, newTopic:', newTopic);
+    console.log('Map route.params.topic watch, newTopic:', newTopic);
     if (newTopic) {
       map.setStyle($config[$config.topicStyles[newTopic]]);
       const addressMarker = map.getSource('addressMarker');
@@ -86,6 +82,19 @@ watch(
   }
 )
 
+watch(
+  () => AddressStore.addressData,
+  async newAddress => {
+    console.log('MapStore route.params.address watch, newAddress:', newAddress);
+    const newCoords = newAddress.features[0].geometry.coordinates;
+    if (MainStore.lastSearchMethod === 'address') {
+      map.setCenter(newCoords);
+      map.setZoom(17);
+    }
+  }
+)
+
+
 const drawInfo = ref({
   mode: null,
   selection: null,
@@ -97,6 +106,8 @@ const drawInfo = ref({
 const distanceMeasureControlRef = ref(null)
 
 onMounted(async () => {
+  // await router.isReady();
+  console.log('Map.vue onMounted route.params.topic:', route.params.topic, 'route.params.address:', route.params.address);
   let currentTopicMapStyle;
   route.params.topic ? currentTopicMapStyle = $config.topicStyles[route.params.topic] : currentTopicMapStyle = 'pwdDrawnMapStyle';
   MapStore.currentTopicMapStyle = currentTopicMapStyle;
