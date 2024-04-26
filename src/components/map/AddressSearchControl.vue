@@ -30,17 +30,17 @@ const inputAddress = ref('');
 
 .address-input {
   position: absolute;
+  left: 20px;
+  top: 20px;
   width: 300px;
-  margin-top: 20px;
-  margin-left: 20px;
   z-index: 1000;
 }
 
 .button {
   position: absolute;
+  top: 20px;
+  left: 325px;
   width: 50px;
-  margin-top: 20px;
-  margin-left: 160px;
   z-index: 1000;
 }
 

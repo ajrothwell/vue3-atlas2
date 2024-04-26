@@ -24,11 +24,12 @@ const router = useRouter();
 
 import { ref, onMounted, watch, computed } from 'vue';
 
-import useImageryToggleControl from '@/composables/useImageryToggleControl.js';
-const { imageryToggleControl } = useImageryToggleControl();
+// import useImageryToggleControl from '@/composables/useImageryToggleControl.js';
+// const { imageryToggleControl } = useImageryToggleControl();
 
 import AddressSearchControl from '@/components/map/AddressSearchControl.vue';
 import DistanceMeasureControl from '@/components/map/DistanceMeasureControl.vue';
+import ImageryToggleControl from '@/components/map/ImageryToggleControl.vue';
 
 let map;
 
@@ -139,7 +140,7 @@ onMounted(async () => {
     }
   });
 
-  map.addControl(imageryToggleControl, 'top-right');
+  // map.addControl(imageryToggleControl, 'top-right');
   // MapStore.initialized = true;
 
   MapboxDraw.constants.classes.CONTROL_BASE  = 'maplibregl-ctrl';
@@ -195,11 +196,27 @@ const drawModeChange = (e) => {
 //   console.log('drawCancel is running');
 // }
 
+const toggleImagery = () => {
+  console.log('toggleImagery, map.getStyle:', map.getStyle());
+  const style = map.getStyle();
+  if (style.name === 'imageryMap') {
+    MapStore.imageryOn = false;
+    map.setStyle($config[MapStore.currentTopicMapStyle]);
+  } else {
+    MapStore.imageryOn = true;
+    map.setStyle($config.imageryMapStyle);
+  }
+}
+
 </script>
 
 <template>
   <div id="map" class="map-class">
     <AddressSearchControl></AddressSearchControl>
+    <ImageryToggleControl
+      @toggleImagery="toggleImagery"
+    >
+    </ImageryToggleControl>
     <DistanceMeasureControl
       ref="distanceMeasureControlRef"
       position="bottom-right"
@@ -210,7 +227,7 @@ const drawModeChange = (e) => {
 
 <style scoped>
 
-#map-panel {
+#map {
   position: relative;
 }
 

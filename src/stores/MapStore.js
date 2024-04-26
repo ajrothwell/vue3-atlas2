@@ -14,6 +14,7 @@ export const useMapStore = defineStore("MapStore", {
       addressParcel: null,
       initialized: false,
       draw: null,
+      imageryOn: false,
     };
   },
   actions: {
