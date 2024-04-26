@@ -23,11 +23,13 @@ import MapPanel from '@/components/MapPanel.vue';
 const inputAddress = ref('');
 
 onMounted(async () => {
+  console.log('App onMounted, route.params.topic:', route.params.topic, 'route.params.address:', route.params.address);
+  await router.isReady()
   if (route.name === 'not-found') {
     router.push({ name: 'home' });
   }
-  if (route.params.address) {
-    inputAddress.value = route.params.address;
+  if (route.params.topic) {
+    MainStore.currentTopic = route.params.topic;
   }
 });
 

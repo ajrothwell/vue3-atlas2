@@ -50,7 +50,7 @@ const statusKey = {
   </div>
 
   <h5 class="title is-5">Parcel Details</h5>
-  <div class="vert-table" v-if="ParcelsStore.dor.features.length">
+  <div class="vert-table" v-if="selectedParcel">
     <div class="columns">
       <div class="column is-4">Map Registry #</div>
       <div class="column is-8">{{ selectedParcel.properties.MAPREG }}</div>

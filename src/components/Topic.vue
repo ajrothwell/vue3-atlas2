@@ -27,7 +27,7 @@ const open = computed(() => {
 });
 
 const handleTopicClick = () => {
-  if (props.topicName == MainStore.currentTopic) {
+  if (props.topicName == route.params.topic) {
     MainStore.currentTopic = '';
   } else {
     MainStore.currentTopic = props.topicName;
