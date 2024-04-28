@@ -88,7 +88,7 @@ export const useDorStore = defineStore("DorStore", {
   },
 
   actions: {
-    async initializeDorDocuments() {
+    async fillDorDocuments() {
       this.dorDocuments = {};
       const ParcelsStore = useParcelsStore();
       const AddressStore = useAddressStore();
@@ -104,7 +104,7 @@ export const useDorStore = defineStore("DorStore", {
         // REVIEW if the parcel has no address, we don't want to query
         // WHERE ADDRESS = 'null' (doesn't make sense), so use this for now
         if (!parcelBaseAddress || parcelBaseAddress === 'null'){
-          where = "MATCHED_REGMAP = '" + ParcelsStore.DOR.features[0].properties.BASEREG + "'";
+          where = "MATCHED_REGMAP = '" + ParcelsStore.dor.features[0].properties.BASEREG + "'";
         } else {
           // TODO make these all camel case
           var props = AddressStore.addressData.features[0].properties,
@@ -135,7 +135,7 @@ export const useDorStore = defineStore("DorStore", {
             where += " AND ADDRESS_LOW_SUFFIX = ''";
           }
       
-          // this is hardcoded right now to handle DOR address suffixes that are actually fractions
+          // this is hardcoded right now to handle dor address suffixes that are actually fractions
           if (geocode.address_low_frac === '1/2') {
             where += " AND ADDRESS_LOW_SUFFIX = '2'"; //+ geocode.address_low_frac + "'";
           }
@@ -154,15 +154,15 @@ export const useDorStore = defineStore("DorStore", {
             where += " AND UNIT_NUM = '" + unitNum2 + "'";
           }
       
-          where += ") or MATCHED_REGMAP = '" + ParcelsStore.DOR.features[0].properties.BASEREG + "'";
-          // where += ") or MATCHED_REGMAP like '%" + ParcelsStore.DOR.features[0].properties.BASEREG + "%'";
-          where += " or REG_MAP_ID = '" + ParcelsStore.DOR.features[0].properties.BASEREG + "'";
+          where += ") or MATCHED_REGMAP = '" + ParcelsStore.dor.features[0].properties.BASEREG + "'";
+          // where += ") or MATCHED_REGMAP like '%" + ParcelsStore.dor.features[0].properties.BASEREG + "%'";
+          where += " or REG_MAP_ID = '" + ParcelsStore.dor.features[0].properties.BASEREG + "'";
         }
       
         return where;
       }
 
-      for (let feature of ParcelsStore.DOR.features) {
+      for (let feature of ParcelsStore.dor.features) {
         let theWhere = where(feature);
           
         const params = {

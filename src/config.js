@@ -1,4 +1,354 @@
+import mergeDeep from './util/merge-deep.js';
 
+const imageryInfo = {
+  sources: {
+    imageryLabels: {
+      tiles: [
+      'https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_Labels/MapServer/tile/{z}/{y}/{x}',
+      ],
+      type: 'raster',
+      tileSize: 256,
+    },
+    2023: {
+      tiles: [
+        'https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2023/MapServer/tile/{z}/{y}/{x}',
+      ],
+      type: 'raster',
+      tileSize: 256,
+    },
+    2022: {
+      tiles: [
+        'https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2022_2in/MapServer/tile/{z}/{y}/{x}',
+      ],
+      type: 'raster',
+      tileSize: 256,
+    },
+    2020: {
+      tiles: [
+        'https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2020_3in/MapServer/tile/{z}/{y}/{x}',
+      ],
+      type: 'raster',
+      tileSize: 256,
+    },
+    2019: {
+      tiles: [
+        'https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2019_3in/MapServer/tile/{z}/{y}/{x}',
+      ],
+      type: 'raster',
+      tileSize: 256,
+    },
+    2018: {
+      tiles: [
+        'https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2018_3in/MapServer/tile/{z}/{y}/{x}',
+      ],
+      type: 'raster',
+      tileSize: 256,
+    },
+    2017: {
+      tiles: [
+        'https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2017_3in/MapServer/tile/{z}/{y}/{x}',
+      ],
+      type: 'raster',
+      tileSize: 256,
+    },
+    2016: {
+      tiles: [
+        'https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2016_3in/MapServer/tile/{z}/{y}/{x}',
+      ],
+      type: 'raster',
+      tileSize: 256,
+    },
+    2015: {
+      tiles: [
+        'https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2015_3in/MapServer/tile/{z}/{y}/{x}',
+      ],
+      type: 'raster',
+      tileSize: 256,
+    },
+    2012: {
+      tiles: [
+        'https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2012_3in/MapServer/tile/{z}/{y}/{x}',
+      ],
+      type: 'raster',
+      tileSize: 256,
+    },
+    2010: {
+      tiles: [
+        'https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2010_3in/MapServer/tile/{z}/{y}/{x}',
+      ],
+      type: 'raster',
+      tileSize: 256,
+    },
+    2008: {
+      tiles: [
+        'https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2008_3in/MapServer/tile/{z}/{y}/{x}',
+      ],
+      type: 'raster',
+      tileSize: 256,
+    },
+    2004: {
+      tiles: [
+        'https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2004_6in/MapServer/tile/{z}/{y}/{x}',
+      ],
+      type: 'raster',
+      tileSize: 256,
+    },
+    1996: {
+      tiles: [
+        'https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_1996_6in/MapServer/tile/{z}/{y}/{x}',
+      ],
+      type: 'raster',
+      tileSize: 256,
+    },
+    1962: {
+      tiles: [
+        'https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/HistoricLandUse_1962/MapServer/tile/{z}/{y}/{x}',
+      ],
+      type: 'raster',
+      tileSize: 256,
+    },
+    1942: {
+      tiles: [
+        'https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/HistoricLandUse_1942/MapServer/tile/{z}/{y}/{x}',
+      ],
+      type: 'raster',
+      tileSize: 256,
+    },
+    1910: {
+      tiles: [
+        'https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/HistoricBromleyAtlas_1910/MapServer/tile/{z}/{y}/{x}',
+      ],
+      type: 'raster',
+      tileSize: 256,
+    },
+    1895: {
+      tiles: [
+        'https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/HistoricBromleyAtlas_1895/MapServer/tile/{z}/{y}/{x}',
+      ],
+      type: 'raster',
+      tileSize: 256,
+    },
+    1875: {
+      tiles: [
+        'https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/HistoricGMHopkinsAtlas_1875/MapServer/tile/{z}/{y}/{x}',
+      ],
+      type: 'raster',
+      tileSize: 256,
+    },
+    1860: {
+      tiles: [
+        'https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/HistoricHexamerLocherAtlas_1860/MapServer/tile/{z}/{y}/{x}',
+      ],
+      type: 'raster',
+      tileSize: 256,
+    }
+  }
+}
+
+const pwdDrawnMapStyle = mergeDeep(imageryInfo,{
+  version: 8,
+  name: 'pwdDrawnMap',
+  sources: {
+    pwd: {
+      tiles: [
+        'https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityBasemap/MapServer/tile/{z}/{y}/{x}',
+      ],
+      type: 'raster',
+      tileSize: 256,
+    },
+    pwdLabels: {
+      tiles: [
+        'https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityBasemap_Labels/MapServer/tile/{z}/{y}/{x}',
+      ],
+      type: 'raster',
+      tileSize: 256,
+    },
+    addressMarker: {
+      type: 'geojson',
+      data: {
+        type: 'Feature',
+        geometry: {
+          type: 'Point',
+          coordinates: [],
+        }
+      }
+    },
+    dorParcel: {
+      type: 'geojson',
+      data: {
+        type: 'Feature',
+        geometry: {
+          type: 'Polygon',
+          coordinates: [[[]]],
+        }
+      }
+    },
+  },
+  layers: [
+    {
+      id: 'pwd',
+      source: 'pwd',
+      type: 'raster',
+    },
+    {
+      id: 'pwdLabels',
+      source: 'pwdLabels',
+      type: 'raster',
+    },
+    {
+      id: 'addressMarker',
+      source: 'addressMarker',
+      type: 'circle',
+    },
+  ],
+});
+
+const dorDrawnMapStyle = mergeDeep(imageryInfo,{
+  version: 8,
+  name: 'dorDrawnMap',
+  sources: {
+    dor: {
+      tiles: [
+        'https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/DORBasemap/MapServer/tile/{z}/{y}/{x}',
+      ],
+      type: 'raster',
+      tileSize: 256,
+    },
+    dorLabels: {
+      tiles: [
+        'https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/DORBasemap_Labels/MapServer/tile/{z}/{y}/{x}',
+      ],
+      type: 'raster',
+      tileSize: 256,
+    },
+    addressMarker: {
+      type: 'geojson',
+      data: {
+        type: 'Feature',
+        geometry: {
+          type: 'Point',
+          coordinates: [],
+        }
+      }
+    },
+    dorParcel: {
+      type: 'geojson',
+      data: {
+        type: 'Feature',
+        geometry: {
+          type: 'Polygon',
+          coordinates: [[[]]],
+        }
+      }
+    },
+  },
+  layers: [
+    {
+      id: 'dor',
+      source: 'dor',
+      type: 'raster',
+    },
+    {
+      id: 'dorLabels',
+      source: 'dorLabels',
+      type: 'raster',
+    },
+    {
+      id: 'dorParcel',
+      type: 'fill',
+      source: 'dorParcel',
+      layout: {},
+      paint: {
+        'fill-color': '#088',
+        'fill-opacity': 0.4
+      }
+    }
+  ],
+});
+
+const zoningDrawnMapStyle = mergeDeep(imageryInfo,{
+  version: 8,
+  name: 'dorDrawnMap',
+  sources: {
+    dor: {
+      tiles: [
+        'https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/DORBasemap/MapServer/tile/{z}/{y}/{x}',
+      ],
+      type: 'raster',
+      tileSize: 256,
+    },
+    dorLabels: {
+      tiles: [
+        'https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/DORBasemap_Labels/MapServer/tile/{z}/{y}/{x}',
+      ],
+      type: 'raster',
+      tileSize: 256,
+    },
+    zoning: {
+      tiles: [
+        'https://citygeo-geoserver.databridge.phila.gov/geoserver/wms?service=WMS&version=1.1.0&request=GetMap&layers=atlas_zoning_grouped&bbox={bbox-epsg-3857}&width=256&height=256&srs=EPSG%3A3857&styles=&format=image/png&transparent=true'
+        // 'https://citygeo-geocoder-pub.databridge.phila.gov/arcgis/rest/services/Atlas/ZoningMap/MapServer/export?dpi=120\
+        //   &transparent=true\
+        //   &format=png32\
+        //   &bbox={bbox-epsg-3857}\
+        //   &bboxSR=3857\
+        //   &imageSR=3857\
+        //   &size=512,512\
+        //   &f=image\
+        // ',
+      ],
+      type: 'raster',
+      tileSize: 256,
+    },
+    addressMarker: {
+      type: 'geojson',
+      data: {
+        type: 'Feature',
+        geometry: {
+          type: 'Point',
+          coordinates: [],
+        }
+      }
+    },
+    dorParcel: {
+      type: 'geojson',
+      data: {
+        type: 'Feature',
+        geometry: {
+          type: 'Polygon',
+          coordinates: [[[]]],
+        }
+      }
+    },
+  },
+  layers: [
+    {
+      id: 'dor',
+      source: 'dor',
+      type: 'raster',
+    },
+    {
+      id: 'dorLabels',
+      source: 'dorLabels',
+      type: 'raster',
+    },
+    {
+      id: 'zoning',
+      source: 'zoning',
+      type: 'raster',
+    },
+    {
+      id: 'dorParcel',
+      type: 'fill',
+      source: 'dorParcel',
+      layout: {},
+      paint: {
+        'fill-color': '#088',
+        'fill-opacity': 0.4
+      }
+    }
+  ],
+});
 
 const $config = {
   topicStyles: {
@@ -11,197 +361,161 @@ const $config = {
     'Nearby Activity': 'pwdDrawnMapStyle',
   },
   parcelLayerForTopic: {
-    undefined: 'PWD',
-    Property: 'PWD',
-    Condos: 'PWD',
-    Deeds: 'DOR',
-    'Licenses & Inspections': 'PWD',
-    Zoning: 'DOR',
-    Voting: 'PWD',
-    'Nearby Activity': 'PWD',
+    undefined: 'pwd',
+    Property: 'pwd',
+    Condos: 'pwd',
+    Deeds: 'dor',
+    'Licenses & Inspections': 'pwd',
+    Zoning: 'dor',
+    Voting: 'pwd',
+    'Nearby Activity': 'pwd',
   },
-
-  noMapStyle: {
-    version: 8,
-    sources: {},
-    // glyphs: 'mapbox://fonts/mapbox/{fontstack}/{range}.pbf',
-    // glyphs: 'mapbox://fonts/mapbox/{fontstack}/{range}.pbf',
-    glyphs: '//fonts.openmaptiles.org/{fontstack}/{range}.pbf',
-    layers: [],
-  },
-
-  pwdDrawnMapStyle: {
-    version: 8,
-    name: 'pwdDrawnMap',
-    sources: {
-      pwd: {
-        tiles: [
-          'https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityBasemap/MapServer/tile/{z}/{y}/{x}',
-        ],
-        type: 'raster',
-        tileSize: 256,
-      },
-      pwdLabels: {
-        tiles: [
-          'https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityBasemap_Labels/MapServer/tile/{z}/{y}/{x}',
-        ],
-        type: 'raster',
-        tileSize: 256,
-      },
+  mapLayers: {
+    pwdBasemap: {
+      id: 'pwdBasemap',
+      source: 'pwdBasemap',
+      type: 'raster',
     },
-    layers: [
-      {
-        id: 'pwd',
-        source: 'pwd',
-        type: 'raster',
-      },
-      {
-        id: 'pwdLabels',
-        source: 'pwdLabels',
-        type: 'raster',
-      },
-    ],
-  },
-
-  dorDrawnMapStyle: {
-    version: 8,
-    name: 'dorDrawnMap',
-    sources: {
-      dor: {
-        tiles: [
-          'https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/DORBasemap/MapServer/tile/{z}/{y}/{x}',
-        ],
-        type: 'raster',
-        tileSize: 256,
-      },
-      dorLabels: {
-        tiles: [
-          'https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/DORBasemap_Labels/MapServer/tile/{z}/{y}/{x}',
-        ],
-        type: 'raster',
-        tileSize: 256,
-      },
+    pwdLabels: {
+      id: 'pwdLabels',
+      source: 'pwdLabels',
+      type: 'raster',
     },
-    layers: [
-      {
-        id: 'dor',
-        source: 'dor',
-        type: 'raster',
-      },
-      {
-        id: 'dorLabels',
-        source: 'dorLabels',
-        type: 'raster',
-      },
-    ],
-  },
-
-  zoningDrawnMapStyle: {
-    version: 8,
-    name: 'dorDrawnMap',
-    sources: {
-      dor: {
-        tiles: [
-          'https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/DORBasemap/MapServer/tile/{z}/{y}/{x}',
-        ],
-        type: 'raster',
-        tileSize: 256,
-      },
-      dorLabels: {
-        tiles: [
-          'https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/DORBasemap_Labels/MapServer/tile/{z}/{y}/{x}',
-        ],
-        type: 'raster',
-        tileSize: 256,
-      },
-      zoning: {
-        tiles: [
-          'https://citygeo-geoserver.databridge.phila.gov/geoserver/wms?service=WMS&version=1.1.0&request=GetMap&layers=atlas_zoning_grouped&bbox={bbox-epsg-3857}&width=256&height=256&srs=EPSG%3A3857&styles=&format=image/png&transparent=true'
-          // 'https://citygeo-geocoder-pub.databridge.phila.gov/arcgis/rest/services/Atlas/ZoningMap/MapServer/export?dpi=120\
-          //   &transparent=true\
-          //   &format=png32\
-          //   &bbox={bbox-epsg-3857}\
-          //   &bboxSR=3857\
-          //   &imageSR=3857\
-          //   &size=512,512\
-          //   &f=image\
-          // ',
-        ],
-        type: 'raster',
-        tileSize: 256,
+    dorBasemap: {
+      id: 'dorBasemap',
+      source: 'dorBasemap',
+      type: 'raster',
+    },
+    dorLabels: {
+      id: 'dorLabels',
+      source: 'dorLabels',
+      type: 'raster',
+    },
+    zoning: {
+      id: 'zoning',
+      source: 'zoning',
+      type: 'raster',
+    },
+    addressMarker: {
+      id: 'addressMarker',
+      source: 'addressMarker',
+      type: 'circle',
+    },
+    dorParcel: {
+      id: 'dorParcel',
+      type: 'fill',
+      source: 'dorParcel',
+      layout: {},
+      paint: {
+        'fill-color': '#088',
+        'fill-opacity': 0.4
       }
     },
-    layers: [
-      {
-        id: 'dor',
-        source: 'dor',
-        type: 'raster',
-      },
-      {
-        id: 'dorLabels',
-        source: 'dorLabels',
-        type: 'raster',
-      },
-      {
-        id: 'zoning',
-        source: 'zoning',
-        type: 'raster',
-      },
-    ],
-  },
-  
-  imageryMapStyle: {
-    version: 8,
-    name: 'imageryMap',
-    sources: {
-      imagery: {
-        tiles: [
-          'https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2022_2in/MapServer/tile/{z}/{y}/{x}',
-        ],
-        type: 'raster',
-        tileSize: 256,
-      },
-      imageryLabels: {
-        tiles: [
-        'https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_Labels/MapServer/tile/{z}/{y}/{x}',
-        ],
-        type: 'raster',
-        tileSize: 256,
-      },
-      stormwater: {
-        tiles: [
-          'https://stormwater.phila.gov/arcgis/rest/services/parcel_viewer/pv_data/MapServer/export?dpi=110\
-            &transparent=true\
-            &format=png36\
-            &bbox={bbox-epsg-3857}\
-            &bboxSR=3857\
-            &imageSR=3857\
-            &size=512,512\
-            &f=image\
-          ',
-        ],
-        type: 'raster',
-        tileSize: 256,
-      }
+    imageryLabels: {
+      id: 'imageryLabels',
+      source: 'imageryLabels',
+      type: 'raster',
     },
-    layers: [
-      {
-        id: 'imagery',
-        source: 'imagery',
-        type: 'raster',
-      },
-      {
-        id: 'imageryLabels',
-        source: 'imageryLabels',
-        type: 'raster',
-      },
-      // {
-      //   id: 'stormwater',
-      //   source: 'stormwater',
-      //   type: 'raster',
-      // },
-    ],
+    2023: {
+      id: '2023',
+      source: '2023',
+      type: 'raster',
+    },
+    2022: {
+      id: '2022',
+      source: '2022',
+      type: 'raster',
+    },
+    2020: {
+      id: '2020',
+      source: '2020',
+      type: 'raster',
+    },
+    2019: {
+      id: '2019',
+      source: '2019',
+      type: 'raster',
+    },
+    2018: {
+      id: '2018',
+      source: '2018',
+      type: 'raster',
+    },
+    2017: {
+      id: '2017',
+      source: '2017',
+      type: 'raster',
+    },
+    2016: {
+      id: '2016',
+      source: '2016',
+      type: 'raster',
+    },
+    2015: {
+      id: '2015',
+      source: '2015',
+      type: 'raster',
+    },
+    2012: {
+      id: '2012',
+      source: '2012',
+      type: 'raster',
+    },
+    2010: {
+      id: '2010',
+      source: '2010',
+      type: 'raster',
+    },
+    2008: {
+      id: '2008',
+      source: '2008',
+      type: 'raster',
+    },
+    2004: {
+      id: '2004',
+      source: '2004',
+      type: 'raster',
+    },
+    1996: {
+      id: '1996',
+      source: '1996',
+      type: 'raster',
+    },
+    1962: {
+      id: '1962',
+      source: '1962',
+      type: 'raster',
+    },
+    1942: {
+      id: '1942',
+      source: '1942',
+      type: 'raster',
+    },
+    1910: {
+      id: '1910',
+      source: '1910',
+      type: 'raster',
+    },
+    1895: {
+      id: '1895',
+      source: '1895',
+      type: 'raster',
+    },
+    1875: {
+      id: '1875',
+      source: '1875',
+      type: 'raster',
+    },
+    1860: {
+      id: '1860',
+      source: '1860',
+      type: 'raster',
+    },
   },
 }
+
+$config['pwdDrawnMapStyle'] = pwdDrawnMapStyle;
+$config['dorDrawnMapStyle'] = dorDrawnMapStyle;
+$config['zoningDrawnMapStyle'] = zoningDrawnMapStyle;
 
 export default $config;

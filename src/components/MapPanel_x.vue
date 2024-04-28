@@ -1,5 +1,6 @@
 <script setup>
-import $config from '@/config';
+import config from '@/config';
+const $config = config.$config;
 // PACKAGE IMPORTS
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';

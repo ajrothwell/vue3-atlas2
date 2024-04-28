@@ -13,7 +13,7 @@ const DorStore = useDorStore();
 
 const selected = ref('');
 const selectedParcel = computed(() => {
-  return ParcelsStore.DOR.features.filter(feature => feature.id === selected.value)[0];
+  return ParcelsStore.dor.features.filter(feature => feature.id === selected.value)[0];
 });
 const selectedDocs = computed(() => {
   return DorStore.dorDocuments[selected.value].data.features;
@@ -21,7 +21,7 @@ const selectedDocs = computed(() => {
 
 onBeforeMount(() => {
   console.log('Deeds.vue onBeforeMount');
-  selected.value = ParcelsStore.DOR.features[0].properties.OBJECTID;
+  selected.value = ParcelsStore.dor.features[0].properties.OBJECTID;
 });
 
 onMounted(() => {
@@ -39,7 +39,7 @@ const statusKey = {
   <div class="box">Deed information and document transactions for this address. The map faithfully reflects property boundaries as described in recorded deeds including multiple types of easements. The property boundaries displayed on the map are for reference only and should not be used in place of the recorded deeds or land surveys. Source: Department of Records</div>
   <div class="columns is-multiline">
     <div
-      v-for="parcel in ParcelsStore.DOR.features"
+      v-for="parcel in ParcelsStore.dor.features"
       :key="parcel.properties.OBJECTID"
       @click="selected = parcel.properties.OBJECTID"
       class="column is-3 add-borders"
@@ -50,7 +50,7 @@ const statusKey = {
   </div>
 
   <h5 class="title is-5">Parcel Details</h5>
-  <div class="vert-table" v-if="ParcelsStore.DOR.features.length">
+  <div class="vert-table" v-if="selectedParcel">
     <div class="columns">
       <div class="column is-4">Map Registry #</div>
       <div class="column is-8">{{ selectedParcel.properties.MAPREG }}</div>

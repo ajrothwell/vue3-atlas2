@@ -3,7 +3,7 @@ import { defineStore } from 'pinia';
 export const useMainStore = defineStore("MainStore", {
   state: () => {
     return {
-      lastSearchMethod: '',
+      lastSearchMethod: 'address',
       currentAddress: '',
       currentTopic: 'Property',
       currentNearbyDataType: 'nearby311',

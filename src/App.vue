@@ -1,4 +1,5 @@
 <script setup>
+console.log('import.meta.env.VITE_PUBLICPATH:', import.meta.env.VITE_PUBLICPATH);
 // import { getCurrentInstance } from 'vue'
 // const app = getCurrentInstance()
 // const $config = app.appContext.config.globalProperties.$config;
@@ -22,11 +23,13 @@ import MapPanel from '@/components/MapPanel.vue';
 const inputAddress = ref('');
 
 onMounted(async () => {
+  await router.isReady()
+  console.log('App onMounted, route.params.topic:', route.params.topic, 'route.params.address:', route.params.address);
   if (route.name === 'not-found') {
     router.push({ name: 'home' });
   }
-  if (route.params.address) {
-    inputAddress.value = route.params.address;
+  if (route.params.topic) {
+    MainStore.currentTopic = route.params.topic;
   }
 });
 

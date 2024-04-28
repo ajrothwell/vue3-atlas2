@@ -7,11 +7,15 @@ export const useMapStore = defineStore("MapStore", {
     return {
       map: {},
       currentMapStyle: 'pwdDrawnMapStyle',
-      currentTopicMapStyle: {},
+      // currentTopicMapStyle: {},
       bufferForAddress: {},
       currentMarkersForTopic: [],
       addressMarker: null,
+      addressParcel: null,
       initialized: false,
+      draw: null,
+      imageryOn: false,
+      imagerySelected: '2023',
     };
   },
   actions: {

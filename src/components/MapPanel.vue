@@ -1,15 +1,13 @@
 <script setup>
 
-  import { useMapStore } from '@/stores/MapStore.js'
-  const MapStore = useMapStore();
-  import Map from '@/components/Map.vue';
-  import AddressSearchControl from '@/components/map/AddressSearchControl.vue';
+import { useMapStore } from '@/stores/MapStore.js'
+const MapStore = useMapStore();
+import Map from '@/components/Map.vue';
+
 </script>
 
 <template>
   <div id="map-panel">
-    <Map>
-      <AddressSearchControl></AddressSearchControl>
-    </Map>
+    <Map></Map>
   </div>
 </template>

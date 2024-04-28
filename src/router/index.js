@@ -1,6 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
 import App from '@/App.vue';
 import $config from '@/config';
+// const $config = config.$config;
 
 import { useAddressStore } from '@/stores/AddressStore.js'
 import { useCondosStore } from '@/stores/CondosStore.js'
@@ -41,7 +42,7 @@ const getParcelAndPutInStore = async(lng, lat) => {
     router.push({ name: 'not-found' });
     return;
   }
-  const addressField = parcelLayer === 'PWD' ? 'ADDRESS' : 'ADDR_SOURCE';
+  const addressField = parcelLayer === 'pwd' ? 'ADDRESS' : 'ADDR_SOURCE';
   currentAddress = ParcelsStore[parcelLayer].features[0].properties[addressField];
   console.log('getParcelAndPutInStore, currentAddress:', currentAddress, 'parcelLayer:', parcelLayer, 'addressField', addressField, 'ParcelsStore[parcelLayer].features[0].properties:', ParcelsStore[parcelLayer].features[0].properties, 'ParcelsStore[parcelLayer].features[0].properties[addressField]:', ParcelsStore[parcelLayer].features[0].properties[addressField]);
   MainStore.setCurrentAddress(currentAddress);
@@ -96,7 +97,7 @@ const topicDataFetch = async (topic) => {
 
   if (topic === 'Deeds') {
     const DorStore = useDorStore();
-    await DorStore.initializeDorDocuments();
+    await DorStore.fillDorDocuments();
   }
 
   if (topic === 'Nearby Activity') {
