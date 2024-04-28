@@ -1,6 +1,5 @@
 <script setup>
 import { ref, computed } from 'vue';
-// import $config from '@/config';
 import { useMapStore } from '@/stores/MapStore.js';
 const MapStore = useMapStore();
 
@@ -71,10 +70,6 @@ const emitValue = (value) => {
   max-width: 100%; 
   border-radius: 5px;
 }
-
-/* .imagery-dropdown .dropdown-menu {
-  width: 100px !important;
-} */
 
 .imagery-dropdown .dropdown-menu .dropdown-content {
   width: 100px !important;

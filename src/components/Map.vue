@@ -1,9 +1,7 @@
 <script setup>
 
 import $config from '@/config';
-// const $config = config.$config;
-// const pwdDrawnMapStyle = config.pwdDrawnMapStyle;
-console.log('$config:', $config);
+console.log('Map.vue $config:', $config);
 // PACKAGE IMPORTS
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
@@ -107,11 +105,9 @@ const drawInfo = ref({
 const distanceMeasureControlRef = ref(null)
 
 onMounted(async () => {
-  // await router.isReady();
   console.log('Map.vue onMounted route.params.topic:', route.params.topic, 'route.params.address:', route.params.address);
   let currentTopicMapStyle;
   route.params.topic ? currentTopicMapStyle = $config.topicStyles[route.params.topic] : currentTopicMapStyle = 'pwdDrawnMapStyle';
-  // MapStore.currentTopicMapStyle = currentTopicMapStyle;
 
   let zoom;
   route.params.address ? zoom = 17 : zoom = 12;
@@ -159,10 +155,6 @@ onMounted(async () => {
   map.on('draw.finish', drawFinish);
   map.on('draw.modechange', drawModeChange);
 
-  // map.on('draw.delete', drawDelete);
-  // map.on('draw.update', drawUpdate);
-  // map.on('draw.cancel', drawCancel);
-
   MapStore.setMap(map);
 });
 const drawCreate = (e) => {
@@ -183,32 +175,9 @@ const drawModeChange = (e) => {
   distanceMeasureControlRef.value.handleDrawModeChange(e);
 }
 
-// const drawDelete = () => {
-//   console.log('drawDelete is running');
-// }
-// const drawUpdate = () => {
-//   console.log('drawUpdate is running');
-// }
-// const drawCancel = () => {
-//   console.log('drawCancel is running');
-// }
-
 const imagerySelected = computed(() => {
   return MapStore.imagerySelected;
 })
-
-console.log('Map.vue, imagerySelected.value:', imagerySelected.value);
-
-// const imageryLayer = {
-//   id: 'imagery',
-//   source: 'imagery',
-//   type: 'raster',
-// }
-// const imageryLabelsLayer = {
-//   id: 'imageryLabels',
-//   source: 'imageryLabels',
-//   type: 'raster',
-// }
 
 const toggleImagery = () => {
   console.log('toggleImagery, map.getStyle:', map.getStyle());
@@ -217,13 +186,11 @@ const toggleImagery = () => {
     MapStore.imageryOn = true;
     map.addLayer($config.mapLayers[imagerySelected.value], 'addressMarker')
     map.addLayer($config.mapLayers.imageryLabels, 'addressMarker')
-    // map.setStyle($config[MapStore.currentTopicMapStyle]);
   } else {
     console.log('map.getStyle().layers:', map.getStyle().layers);
     MapStore.imageryOn = false;
     map.removeLayer(imagerySelected.value);
     map.removeLayer('imageryLabels');
-    // map.setStyle($config.imageryMapStyle);
   }
 }
 
