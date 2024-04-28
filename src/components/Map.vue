@@ -1,6 +1,9 @@
 <script setup>
 
 import $config from '@/config';
+// const $config = config.$config;
+// const pwdDrawnMapStyle = config.pwdDrawnMapStyle;
+console.log('$config:', $config);
 // PACKAGE IMPORTS
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
@@ -24,12 +27,10 @@ const router = useRouter();
 
 import { ref, onMounted, watch, computed } from 'vue';
 
-// import useImageryToggleControl from '@/composables/useImageryToggleControl.js';
-// const { imageryToggleControl } = useImageryToggleControl();
-
 import AddressSearchControl from '@/components/map/AddressSearchControl.vue';
 import DistanceMeasureControl from '@/components/map/DistanceMeasureControl.vue';
 import ImageryToggleControl from '@/components/map/ImageryToggleControl.vue';
+import ImageryDropdownControl from '@/components/map/ImageryDropdownControl.vue';
 
 let map;
 
@@ -95,7 +96,6 @@ watch(
   }
 )
 
-
 const drawInfo = ref({
   mode: null,
   selection: null,
@@ -111,7 +111,7 @@ onMounted(async () => {
   console.log('Map.vue onMounted route.params.topic:', route.params.topic, 'route.params.address:', route.params.address);
   let currentTopicMapStyle;
   route.params.topic ? currentTopicMapStyle = $config.topicStyles[route.params.topic] : currentTopicMapStyle = 'pwdDrawnMapStyle';
-  MapStore.currentTopicMapStyle = currentTopicMapStyle;
+  // MapStore.currentTopicMapStyle = currentTopicMapStyle;
 
   let zoom;
   route.params.address ? zoom = 17 : zoom = 12;
@@ -139,9 +139,6 @@ onMounted(async () => {
       distanceMeasureControlRef.value.getDrawDistances(e);
     }
   });
-
-  // map.addControl(imageryToggleControl, 'top-right');
-  // MapStore.initialized = true;
 
   MapboxDraw.constants.classes.CONTROL_BASE  = 'maplibregl-ctrl';
   MapboxDraw.constants.classes.CONTROL_PREFIX = 'maplibregl-ctrl-';
@@ -196,16 +193,46 @@ const drawModeChange = (e) => {
 //   console.log('drawCancel is running');
 // }
 
+const imagerySelected = computed(() => {
+  return MapStore.imagerySelected;
+})
+
+console.log('Map.vue, imagerySelected.value:', imagerySelected.value);
+
+// const imageryLayer = {
+//   id: 'imagery',
+//   source: 'imagery',
+//   type: 'raster',
+// }
+// const imageryLabelsLayer = {
+//   id: 'imageryLabels',
+//   source: 'imageryLabels',
+//   type: 'raster',
+// }
+
 const toggleImagery = () => {
   console.log('toggleImagery, map.getStyle:', map.getStyle());
   const style = map.getStyle();
-  if (style.name === 'imageryMap') {
-    MapStore.imageryOn = false;
-    map.setStyle($config[MapStore.currentTopicMapStyle]);
-  } else {
+  if (!MapStore.imageryOn) {
     MapStore.imageryOn = true;
-    map.setStyle($config.imageryMapStyle);
+    map.addLayer($config.mapLayers[imagerySelected.value], 'addressMarker')
+    map.addLayer($config.mapLayers.imageryLabels, 'addressMarker')
+    // map.setStyle($config[MapStore.currentTopicMapStyle]);
+  } else {
+    console.log('map.getStyle().layers:', map.getStyle().layers);
+    MapStore.imageryOn = false;
+    map.removeLayer(imagerySelected.value);
+    map.removeLayer('imageryLabels');
+    // map.setStyle($config.imageryMapStyle);
   }
+}
+
+const setImagery = async (newImagery) => {
+  const oldLayer = imagerySelected.value;
+  console.log('setImagery, newImagery:', newImagery, 'oldLayer:', oldLayer, 'imagerySelected.value:', imagerySelected.value);
+  MapStore.imagerySelected = newImagery;
+  await map.addLayer($config.mapLayers[imagerySelected.value], 'addressMarker')
+  map.removeLayer(oldLayer);
 }
 
 </script>
@@ -213,15 +240,9 @@ const toggleImagery = () => {
 <template>
   <div id="map" class="map-class">
     <AddressSearchControl></AddressSearchControl>
-    <ImageryToggleControl
-      @toggleImagery="toggleImagery"
-    >
-    </ImageryToggleControl>
-    <DistanceMeasureControl
-      ref="distanceMeasureControlRef"
-      position="bottom-right"
-    >
-    </DistanceMeasureControl>
+    <ImageryToggleControl @toggleImagery="toggleImagery"></ImageryToggleControl>
+    <ImageryDropdownControl v-if="MapStore.imageryOn" @setImagery="setImagery"></ImageryDropdownControl>
+    <DistanceMeasureControl ref="distanceMeasureControlRef"></DistanceMeasureControl>
   </div>
 </template>
 

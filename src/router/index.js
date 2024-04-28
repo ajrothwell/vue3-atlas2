@@ -1,6 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
 import App from '@/App.vue';
 import $config from '@/config';
+// const $config = config.$config;
 
 import { useAddressStore } from '@/stores/AddressStore.js'
 import { useCondosStore } from '@/stores/CondosStore.js'

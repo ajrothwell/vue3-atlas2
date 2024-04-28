@@ -7,7 +7,7 @@ export const useMapStore = defineStore("MapStore", {
     return {
       map: {},
       currentMapStyle: 'pwdDrawnMapStyle',
-      currentTopicMapStyle: {},
+      // currentTopicMapStyle: {},
       bufferForAddress: {},
       currentMarkersForTopic: [],
       addressMarker: null,
@@ -15,6 +15,7 @@ export const useMapStore = defineStore("MapStore", {
       initialized: false,
       draw: null,
       imageryOn: false,
+      imagerySelected: '2023',
     };
   },
   actions: {
