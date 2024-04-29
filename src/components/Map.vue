@@ -97,6 +97,36 @@ watch(
   }
 )
 
+const hoveredStateId = computed(() => { return MainStore.hoveredStateId; })
+
+watch(
+  () => hoveredStateId.value,
+  newHoveredStateId => {
+    console.log('Map.vue hoveredStateId watch, newHoveredStateId:', newHoveredStateId);
+    if (newHoveredStateId) {
+      const feature = map.getStyle().sources.nearby.data.features.filter(feature => feature.properties.id === newHoveredStateId)[0];
+      const index = map.getStyle().sources.nearby.data.features.indexOf(feature);
+      console.log('index:', index, 'map.getStyle().sources.nearby.data.features:', map.getStyle().sources.nearby.data.features.filter(feature => feature.properties.id === newHoveredStateId)[0]);
+      map.getStyle().sources.nearby.data.features.splice(index, 1);
+      map.getStyle().sources.nearby.data.features.push(feature);
+      map.getSource('nearby').setData(map.getStyle().sources.nearby.data);
+      // console.log('map.getStyle().sources:', map.getStyle().sources.filter(source => source.id === 'nearby')[0]);
+      console.log('there is a new hoveredStateId, setting paint property');
+      map.setPaintProperty(
+        'nearby', 
+        'circle-color', 
+        ['match', ['get', 'id'], newHoveredStateId, "#FFFF00", "#FF0000"]
+      );
+    } else {
+      map.setPaintProperty(
+        'nearby', 
+        'circle-color', 
+        '#FF0000'
+      );
+    }
+  }
+)
+
 const drawInfo = ref({
   mode: null,
   selection: null,
@@ -143,65 +173,18 @@ onMounted(async () => {
     }
   });
 
-  let hoveredStateId = null;
-
   map.on('mouseenter', 'nearby', (e) => {
     if (e.features.length > 0) {
       console.log('map.getSource(nearby):', map.getSource('nearby'), 'map.getStyle().sources:', map.getStyle().sources);
-      // if (hoveredStateId) {
-      //   console.log('mouse on Feature hoveredStateId:', hoveredStateId);
-      // }
-      hoveredStateId = e.features[0].properties.id;
-      console.log('mouse on Feature hoveredStateId:', hoveredStateId);
-      map.setPaintProperty(
-        'nearby', 
-        'circle-color', 
-        // ['match', ['number', ['get', 'id']], '16728850', "#FFFF00" , "#FF0000"]
-        ['match', ['get', 'id'], hoveredStateId, "#FFFF00", "#FF0000"]
-      );
+      MainStore.hoveredStateId = e.features[0].properties.id;
     }
   });
 
   map.on('mouseleave', 'nearby', () => {
     if (hoveredStateId) {
-      console.log('mouse leave Feature hoveredStateId:', hoveredStateId);
-      map.setPaintProperty(
-        'nearby', 
-        'circle-color', 
-        '#FF0000'
-      );
+      MainStore.hoveredStateId = null;
     }
-    hoveredStateId = null;
   });
-
-  // map.on('mousemove', 'nearby', (e) => {
-  //   if (e.features.length > 0) {
-  //     if (hoveredStateId) {
-  //       map.setFeatureState(
-  //         {source: 'nearby', id: hoveredStateId},
-  //         {hover: false}
-  //       );
-  //     }
-  //     hoveredStateId = e.features[0].properties.id;
-  //     console.log('e.features[0].properties.id:', e.features[0].properties.id, 'e.features[0].id:', e.features[0].id);
-  //     map.setFeatureState(
-  //       {source: 'nearby', id: hoveredStateId},
-  //       {hover: true}
-  //     );
-  //   }
-  // });
-
-  // // When the mouse leaves the state-fill layer, update the feature state of the
-  // // previously hovered feature.
-  // map.on('mouseleave', 'nearby', () => {
-  //   if (hoveredStateId) {
-  //     map.setFeatureState(
-  //       {source: 'nearby', id: hoveredStateId},
-  //       {hover: false}
-  //     );
-  //   }
-  //   hoveredStateId = null;
-  // });
 
   MapboxDraw.constants.classes.CONTROL_BASE  = 'maplibregl-ctrl';
   MapboxDraw.constants.classes.CONTROL_PREFIX = 'maplibregl-ctrl-';

@@ -71,35 +71,6 @@ const toggleTimeDropdown = () => timeDropdownOpen.value = !timeDropdownOpen.valu
 const timeInterval = ref(null);
 onMounted( () => {
   timeInterval.value = timeIntervals[currentNearbyDataType.value].values[0];
-
-  // let hoveredStateId = null;
-  // console.log('map.getStyle().sources:', map.getStyle().sources, 'map.getStyle().layers:', map.getStyle().layers);
-  // map.on('mouseenter', 'nearby', (e) => {
-  //   if (e.features.length > 0) {
-  //     // if (hoveredStateId) {
-  //     //   console.log('mouse on Feature hoveredStateId:', hoveredStateId);
-  //     // }
-  //     hoveredStateId = e.features[0].id;
-  //     console.log('mouse on Feature hoveredStateId:', hoveredStateId);
-  //     map.setPaintProperty(
-  //       'nearby', 
-  //       'circle-color', 
-  //       ['match', ['get', 'id'], hoveredStateId, "#FFFF00" , "#FF0000"]
-  //     );
-  //   }
-  // });
-
-  // map.on('mouseleave', 'nearby', () => {
-  //   if (hoveredStateId) {
-  //     console.log('mouse leave Feature hoveredStateId:', hoveredStateId);
-  //     map.setPaintProperty(
-  //       'nearby', 
-  //       'circle-color', 
-  //       '#FF0000'
-  //     );
-  //   }
-  //   hoveredStateId = null;
-  // });
 })
 // const timeInterval = computed({
 //   get() {
@@ -175,7 +146,6 @@ const nearby311Geojson = computed(() => {
         type: 'Point',
         coordinates: [item.lng, item.lat]
       },
-      // id: item.service_request_id,
       properties: {
         id: item.service_request_id,
       }
@@ -228,9 +198,9 @@ const nearbyCrimeIncidentsGeojson = computed(() => {
         type: 'Point',
         coordinates: [item.lng, item.lat]
       },
-      // properties: {
-      id: item.id,
-      // }
+      properties: {
+        id: item.objectid,
+      }
     })
   }
   return features;
@@ -246,18 +216,7 @@ watch (() => nearbyCrimeIncidentsGeojson.value, async (newGeojson) => {
       'features': newGeojson,
     }
     await map.getSource('nearby').setData(geojson);
-    map.setPaintProperty(
-      'nearby',
-      'fill-color',
-      '#faafee'
-    );
-    // map.getLayer('nearby').setPaintProperty({
-    //   'circle-color': 'blue',
-    //   'circle-radius': 6,
-    //   'circle-stroke-width': 1,
-    //   'circle-stroke-color': 'white',
-    // });
-    console.log('geojson:', geojson, 'map.getSource(nearby):', map.getSource('nearby'));
+    // console.log('geojson:', geojson, 'map.getSource(nearby):', map.getSource('nearby'));
   }
 })
 
@@ -306,13 +265,56 @@ const nearbyVacantIndicatorPoints = computed(() => {
   }
 });
 
+const hoveredStateId = computed(() => { return MainStore.hoveredStateId; });
+
+const isElementInViewport = (el) => {
+  const rect = el.getBoundingClientRect();
+  // console.log('bounding box', rect);
+  const visibility = {
+    // TODO the 108 below is account for the combined height of the
+    // app header and address header. this is not a good long-term
+    // solution - instead, use the `bottom` value of the address header's
+    // bounding rect. however, this should only fire on small devices,
+    // which would require again hard-coding screen breakpoints from
+    // standards or some other magic, which might not a huge
+    // improvement in terms of decoupling logic and presentation. hmm.
+    top: rect.top >= 108,
+    left: rect.left >= 0,
+    bottom: rect.bottom <= (window.innerHeight || document.documentElement.clientHeight),
+    right: rect.right <= (window.innerWidth || document.documentElement.clientWidth),
+  };
+  // return if all sides are visible
+  return Object.values(visibility).every(val => val);
+}
+
+watch(() => hoveredStateId.value, (newHoveredStateId) => {
+  console.log('hoveredStateId watch, newHoveredStateId:', newHoveredStateId);
+  if (newHoveredStateId) {
+    const el = document.getElementById(newHoveredStateId);
+    const visible = isElementInViewport(el);
+    if (!visible) {
+      el.scrollIntoView({ block: 'center' });
+    }
+    // const feature = map.getStyle().sources.nearby.data.features.filter(feature => feature.properties.id === newHoveredStateId)[0];
+    // console.log('feature:', feature);
+  }
+});
+
 // nearbyConstructionPermits computed
 
 // nearbyDemolitionPermits computed
 
 // nearbyImminentlyDangerous computed
 
-
+const handleRowMouseover = (e) => {
+  console.log('handleRowMouseover, e.target.parentElement.id:', e.target.parentElement.id);
+  MainStore.hoveredStateId = parseInt(e.target.parentElement.id);
+  // document.getElementById
+}
+const handleRowMouseleave = (e) => {
+  console.log('handleRowMouseleave, e.target.id:', e.target.id);
+  MainStore.hoveredStateId = '';
+}
 
 </script>
 
@@ -414,7 +416,13 @@ const nearbyVacantIndicatorPoints = computed(() => {
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in nearby311">
+          <tr
+            v-for="item in nearby311" :key="item.service_request_id"
+            :id="item.service_request_id"
+            @mouseover="handleRowMouseover"
+            @mouseleave="handleRowMouseleave"
+            :class="hoveredStateId == item.service_request_id ? 'active' : 'inactive'"
+          >
             <td>{{ date(item.requested_datetime) }}</td>
             <td>{{ item.address }}</td>
             <td>{{ item.service_name }}</td>
@@ -438,7 +446,7 @@ const nearbyVacantIndicatorPoints = computed(() => {
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in nearbyCrimeIncidents">
+          <tr v-for="item in nearbyCrimeIncidents" :key=item.objectid>
             <td>{{ item.dispatch_date }}</td>
             <td>{{ item.location_block }}</td>
             <td>{{ item.text_general_code }}</td>
@@ -462,7 +470,7 @@ const nearbyVacantIndicatorPoints = computed(() => {
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in nearbyZoningAppeals">
+          <tr v-for="item in nearbyZoningAppeals" :key=item.objectid>
             <td>{{ item.scheduleddate }}</td>
             <td>{{ item.address }}</td>
             <td>{{ item.appeal_grounds }}</td>
@@ -485,7 +493,7 @@ const nearbyVacantIndicatorPoints = computed(() => {
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in nearbyVacantIndicatorPoints">
+          <tr v-for="item in nearbyVacantIndicatorPoints" :key="item.OBJECTID">
             <td>{{ item.properties.ADDRESS }}</td>
             <td>{{ item.properties.VACANT_FLAG }}</td>
             <td>{{ (item._distance * 3.28084).toFixed(0) }} ft</td>
@@ -495,3 +503,11 @@ const nearbyVacantIndicatorPoints = computed(() => {
     </div>
   </section>
 </template>
+
+<style scoped>
+
+.active {
+  background-color: #FFFF00 !important;
+}
+
+</style>
