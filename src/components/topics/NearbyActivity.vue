@@ -1,4 +1,6 @@
 <script setup>
+import $config from '@/config';
+
 console.log('Nearby.vue setup');
 import { ref, computed, watch, onMounted } from 'vue';
 
@@ -8,6 +10,7 @@ import { useMainStore } from '@/stores/MainStore';
 const MainStore = useMainStore();
 import { useMapStore } from '@/stores/MapStore';
 const MapStore = useMapStore();
+const map = MapStore.map;
 
 import useTransforms from '@/composables/useTransforms';
 const { currency, date } = useTransforms();
@@ -133,6 +136,41 @@ const nearby311 = computed(() => {
   }
 });
 
+const nearby311Geojson = computed(() => {
+  let features = [];
+  for (let item of nearby311.value) {
+    features.push({
+      type: 'Feature',
+      geometry: {
+        type: 'Point',
+        coordinates: [item.lng, item.lat]
+      },
+      properties: {
+        id: item.service_request_id,
+        // address: item.address,
+        // service_name: item.service_name,
+        // requested_datetime: item.requested_datetime,
+        // distance: item.distance
+      }
+    })
+  }
+  return features;
+})
+
+watch (() => nearby311Geojson.value, (newGeojson) => {
+  console.log('nearby311Geojson watch, newGeojson:', newGeojson);
+  if (newGeojson.length > 0) {
+    // $config.nearbyDrawnMapStyle.sources.nearby.data.features = newGeojson;
+    console.log('$config:', $config, 'map.getStyle().sources:', map.getStyle().sources, 'map.getStyle().layers:', map.getStyle().layers);
+    let geojson = {
+      'type': 'FeatureCollection',
+      'features': newGeojson,
+    }
+    console.log('geojson:', geojson, 'map.getSource(nearby):', map.getSource('nearby'));
+    map.getSource('nearby').setData(geojson);
+  }
+})
+
 // nearbyCrimeIncidents computed
 const nearbyCrimeIncidents = computed(() => {
   if (NearbyActivityStore.nearbyCrimeIncidents) {
@@ -152,6 +190,20 @@ const nearbyCrimeIncidents = computed(() => {
     return data;
   }
 });
+
+watch (() => nearbyCrimeIncidents.value, (newGeojson) => {
+  console.log('nearby311Geojson watch, newGeojson:', newGeojson);
+  if (newGeojson.length > 0) {
+    // $config.nearbyDrawnMapStyle.sources.nearby.data.features = newGeojson;
+    console.log('$config:', $config, 'map.getStyle().sources:', map.getStyle().sources, 'map.getStyle().layers:', map.getStyle().layers);
+    let geojson = {
+      'type': 'FeatureCollection',
+      'features': newGeojson,
+    }
+    console.log('geojson:', geojson, 'map.getSource(nearby):', map.getSource('nearby'));
+    map.getSource('nearby').setData(geojson);
+  }
+})
 
 // nearbyZoningAppeals computed
 const nearbyZoningAppeals = computed(() => {

@@ -199,6 +199,10 @@ const pwdDrawnMapStyle = mergeDeep(imageryInfo,{
       id: 'addressMarker',
       source: 'addressMarker',
       type: 'circle',
+      paint: {
+        'circle-radius': 7,
+        'circle-color': '#ff0000',
+      },
     },
   ],
 });
@@ -350,6 +354,94 @@ const zoningDrawnMapStyle = mergeDeep(imageryInfo,{
   ],
 });
 
+const nearbyDrawnMapStyle = mergeDeep(imageryInfo,{
+  version: 8,
+  name: 'pwdDrawnMap',
+  // "sprite": 'https://docs.mapbox.com/mapbox-gl-js/assets/custom_marker.png',
+  sources: {
+    pwd: {
+      tiles: [
+        'https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityBasemap/MapServer/tile/{z}/{y}/{x}',
+      ],
+      type: 'raster',
+      tileSize: 256,
+    },
+    pwdLabels: {
+      tiles: [
+        'https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityBasemap_Labels/MapServer/tile/{z}/{y}/{x}',
+      ],
+      type: 'raster',
+      tileSize: 256,
+    },
+    addressMarker: {
+      type: 'geojson',
+      data: {
+        type: 'Feature',
+        geometry: {
+          type: 'Point',
+          coordinates: [],
+        },
+        // properties: {
+        //   'marker-color': '#3bb2d0',
+        //   'marker-size': 'large',
+        //   'marker-symbol': 'rocket'
+        // }
+      }
+    },
+    dorParcel: {
+      type: 'geojson',
+      data: {
+        type: 'Feature',
+        geometry: {
+          type: 'Polygon',
+          coordinates: [[[]]],
+        }
+      }
+    },
+    nearby: {
+      type: 'geojson',
+      data: {
+        type: 'FeatureCollection',
+        features: []
+      },
+    },
+  },
+  layers: [
+    {
+      id: 'pwd',
+      source: 'pwd',
+      type: 'raster',
+    },
+    {
+      id: 'pwdLabels',
+      source: 'pwdLabels',
+      type: 'raster',
+    },
+    {
+      id: 'addressMarker',
+      source: 'addressMarker',
+      type: 'symbol',
+      layout: {
+        'icon-image': 'custom-marker',
+      }
+      // type: 'circle',
+      // paint: {
+      //   'circle-radius': 7,
+      //   'circle-color': '#ff0000',
+      // },
+    },
+    {
+      id: 'nearby',
+      source: 'nearby',
+      type: 'circle',
+      paint: {
+        'circle-radius': 7,
+        'circle-color': '#ff0000',
+      },
+    },
+  ],
+});
+
 const $config = {
   topicStyles: {
     Property: 'pwdDrawnMapStyle',
@@ -358,7 +450,7 @@ const $config = {
     'Licenses & Inspections': 'pwdDrawnMapStyle',
     Zoning: 'zoningDrawnMapStyle',
     Voting: 'pwdDrawnMapStyle',
-    'Nearby Activity': 'pwdDrawnMapStyle',
+    'Nearby Activity': 'nearbyDrawnMapStyle',
   },
   parcelLayerForTopic: {
     undefined: 'pwd',
@@ -517,5 +609,6 @@ const $config = {
 $config['pwdDrawnMapStyle'] = pwdDrawnMapStyle;
 $config['dorDrawnMapStyle'] = dorDrawnMapStyle;
 $config['zoningDrawnMapStyle'] = zoningDrawnMapStyle;
+$config['nearbyDrawnMapStyle'] = nearbyDrawnMapStyle;
 
 export default $config;

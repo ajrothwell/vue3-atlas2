@@ -91,6 +91,9 @@ watch(
       map.setCenter(newCoords);
       map.setZoom(17);
     }
+    // const marker = new maplibregl.Marker()
+    //   .setLngLat(newCoords)
+    //   .addTo(map);
   }
 )
 
@@ -121,6 +124,10 @@ onMounted(async () => {
     maxZoom: 22,
     attributionControl: false,
   });
+
+  const imageurl = 'https://docs.mapbox.com/mapbox-gl-js/assets/custom_marker.png'
+  const image = await map.loadImage(imageurl)
+  map.addImage('custom-marker', image.data);
   
   map.on('click', (e, data) => {
     console.log('e:', e, 'data:', data, 'drawInfo.mode:', drawInfo.mode, draw.getMode());
