@@ -71,6 +71,35 @@ const toggleTimeDropdown = () => timeDropdownOpen.value = !timeDropdownOpen.valu
 const timeInterval = ref(null);
 onMounted( () => {
   timeInterval.value = timeIntervals[currentNearbyDataType.value].values[0];
+
+  // let hoveredStateId = null;
+  // console.log('map.getStyle().sources:', map.getStyle().sources, 'map.getStyle().layers:', map.getStyle().layers);
+  // map.on('mouseenter', 'nearby', (e) => {
+  //   if (e.features.length > 0) {
+  //     // if (hoveredStateId) {
+  //     //   console.log('mouse on Feature hoveredStateId:', hoveredStateId);
+  //     // }
+  //     hoveredStateId = e.features[0].id;
+  //     console.log('mouse on Feature hoveredStateId:', hoveredStateId);
+  //     map.setPaintProperty(
+  //       'nearby', 
+  //       'circle-color', 
+  //       ['match', ['get', 'id'], hoveredStateId, "#FFFF00" , "#FF0000"]
+  //     );
+  //   }
+  // });
+
+  // map.on('mouseleave', 'nearby', () => {
+  //   if (hoveredStateId) {
+  //     console.log('mouse leave Feature hoveredStateId:', hoveredStateId);
+  //     map.setPaintProperty(
+  //       'nearby', 
+  //       'circle-color', 
+  //       '#FF0000'
+  //     );
+  //   }
+  //   hoveredStateId = null;
+  // });
 })
 // const timeInterval = computed({
 //   get() {
@@ -138,6 +167,7 @@ const nearby311 = computed(() => {
 
 const nearby311Geojson = computed(() => {
   let features = [];
+  if (!nearby311.value) return features;
   for (let item of nearby311.value) {
     features.push({
       type: 'Feature',
@@ -145,12 +175,9 @@ const nearby311Geojson = computed(() => {
         type: 'Point',
         coordinates: [item.lng, item.lat]
       },
+      // id: item.service_request_id,
       properties: {
         id: item.service_request_id,
-        // address: item.address,
-        // service_name: item.service_name,
-        // requested_datetime: item.requested_datetime,
-        // distance: item.distance
       }
     })
   }
@@ -191,8 +218,26 @@ const nearbyCrimeIncidents = computed(() => {
   }
 });
 
-watch (() => nearbyCrimeIncidents.value, (newGeojson) => {
-  console.log('nearby311Geojson watch, newGeojson:', newGeojson);
+const nearbyCrimeIncidentsGeojson = computed(() => {
+  let features = [];
+  if (!nearbyCrimeIncidents.value) return features;
+  for (let item of nearbyCrimeIncidents.value) {
+    features.push({
+      type: 'Feature',
+      geometry: {
+        type: 'Point',
+        coordinates: [item.lng, item.lat]
+      },
+      // properties: {
+      id: item.id,
+      // }
+    })
+  }
+  return features;
+})
+
+watch (() => nearbyCrimeIncidentsGeojson.value, async (newGeojson) => {
+  console.log('nearbyCrimeIncidents watch, newGeojson:', newGeojson);
   if (newGeojson.length > 0) {
     // $config.nearbyDrawnMapStyle.sources.nearby.data.features = newGeojson;
     console.log('$config:', $config, 'map.getStyle().sources:', map.getStyle().sources, 'map.getStyle().layers:', map.getStyle().layers);
@@ -200,8 +245,19 @@ watch (() => nearbyCrimeIncidents.value, (newGeojson) => {
       'type': 'FeatureCollection',
       'features': newGeojson,
     }
+    await map.getSource('nearby').setData(geojson);
+    map.setPaintProperty(
+      'nearby',
+      'fill-color',
+      '#faafee'
+    );
+    // map.getLayer('nearby').setPaintProperty({
+    //   'circle-color': 'blue',
+    //   'circle-radius': 6,
+    //   'circle-stroke-width': 1,
+    //   'circle-stroke-color': 'white',
+    // });
     console.log('geojson:', geojson, 'map.getSource(nearby):', map.getSource('nearby'));
-    map.getSource('nearby').setData(geojson);
   }
 })
 

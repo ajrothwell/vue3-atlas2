@@ -143,6 +143,66 @@ onMounted(async () => {
     }
   });
 
+  let hoveredStateId = null;
+
+  map.on('mouseenter', 'nearby', (e) => {
+    if (e.features.length > 0) {
+      console.log('map.getSource(nearby):', map.getSource('nearby'), 'map.getStyle().sources:', map.getStyle().sources);
+      // if (hoveredStateId) {
+      //   console.log('mouse on Feature hoveredStateId:', hoveredStateId);
+      // }
+      hoveredStateId = e.features[0].properties.id;
+      console.log('mouse on Feature hoveredStateId:', hoveredStateId);
+      map.setPaintProperty(
+        'nearby', 
+        'circle-color', 
+        // ['match', ['number', ['get', 'id']], '16728850', "#FFFF00" , "#FF0000"]
+        ['match', ['get', 'id'], hoveredStateId, "#FFFF00", "#FF0000"]
+      );
+    }
+  });
+
+  map.on('mouseleave', 'nearby', () => {
+    if (hoveredStateId) {
+      console.log('mouse leave Feature hoveredStateId:', hoveredStateId);
+      map.setPaintProperty(
+        'nearby', 
+        'circle-color', 
+        '#FF0000'
+      );
+    }
+    hoveredStateId = null;
+  });
+
+  // map.on('mousemove', 'nearby', (e) => {
+  //   if (e.features.length > 0) {
+  //     if (hoveredStateId) {
+  //       map.setFeatureState(
+  //         {source: 'nearby', id: hoveredStateId},
+  //         {hover: false}
+  //       );
+  //     }
+  //     hoveredStateId = e.features[0].properties.id;
+  //     console.log('e.features[0].properties.id:', e.features[0].properties.id, 'e.features[0].id:', e.features[0].id);
+  //     map.setFeatureState(
+  //       {source: 'nearby', id: hoveredStateId},
+  //       {hover: true}
+  //     );
+  //   }
+  // });
+
+  // // When the mouse leaves the state-fill layer, update the feature state of the
+  // // previously hovered feature.
+  // map.on('mouseleave', 'nearby', () => {
+  //   if (hoveredStateId) {
+  //     map.setFeatureState(
+  //       {source: 'nearby', id: hoveredStateId},
+  //       {hover: false}
+  //     );
+  //   }
+  //   hoveredStateId = null;
+  // });
+
   MapboxDraw.constants.classes.CONTROL_BASE  = 'maplibregl-ctrl';
   MapboxDraw.constants.classes.CONTROL_PREFIX = 'maplibregl-ctrl-';
   MapboxDraw.constants.classes.CONTROL_GROUP = 'maplibregl-ctrl-group';

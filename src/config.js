@@ -437,6 +437,14 @@ const nearbyDrawnMapStyle = mergeDeep(imageryInfo,{
       paint: {
         'circle-radius': 7,
         'circle-color': '#ff0000',
+        // 'circle-color': [
+        //   'case'
+        //   ['boolean', ['feature-state', 'hover'], false],
+        //   '#FFFF00',
+        //   '#ff0000',
+        // ],
+        'circle-stroke-width': 1,
+        'circle-stroke-color': 'white',
       },
     },
   ],

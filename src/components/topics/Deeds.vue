@@ -10,6 +10,9 @@ import { useParcelsStore } from '@/stores/ParcelsStore';
 const ParcelsStore = useParcelsStore();
 import { useDorStore } from '@/stores/DorStore';
 const DorStore = useDorStore();
+import { useMapStore } from '@/stores/MapStore';
+const MapStore = useMapStore();
+const map = MapStore.map;
 
 const selected = ref('');
 const selectedParcel = computed(() => {
@@ -25,7 +28,7 @@ onBeforeMount(() => {
 });
 
 onMounted(() => {
-  console.log('Deeds.vue onMounted');
+  console.log('Deeds.vue onMounted, map.getStyle().sources:', map.getStyle().sources, 'map.getStyle.layers:', map.getStyle().layers);
 });
 
 const statusKey = {
