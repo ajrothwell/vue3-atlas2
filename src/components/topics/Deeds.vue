@@ -10,21 +10,28 @@ import { useParcelsStore } from '@/stores/ParcelsStore';
 const ParcelsStore = useParcelsStore();
 import { useDorStore } from '@/stores/DorStore';
 const DorStore = useDorStore();
+import { useMainStore } from '@/stores/MainStore';
+const MainStore = useMainStore();
 import { useMapStore } from '@/stores/MapStore';
 const MapStore = useMapStore();
 const map = MapStore.map;
 
-const selected = ref('');
+let selected = computed(() => { return MainStore.selectedParcelId });
 const selectedParcel = computed(() => {
   return ParcelsStore.dor.features.filter(feature => feature.id === selected.value)[0];
 });
 const selectedDocs = computed(() => {
-  return DorStore.dorDocuments[selected.value].data.features;
+  if (selected) {
+    console.log('selected.value:', selected.value);
+    return DorStore.dorDocuments[selected.value].data.features;
+  } else {
+    return null;
+  }
 });
 
 onBeforeMount(() => {
   console.log('Deeds.vue onBeforeMount');
-  selected.value = ParcelsStore.dor.features[0].properties.OBJECTID;
+  MainStore.selectedParcelId = ParcelsStore.dor.features[0].properties.OBJECTID;
 });
 
 onMounted(() => {
@@ -44,7 +51,7 @@ const statusKey = {
     <div
       v-for="parcel in ParcelsStore.dor.features"
       :key="parcel.properties.OBJECTID"
-      @click="selected = parcel.properties.OBJECTID"
+      @click="MainStore.selectedParcelId = parcel.properties.OBJECTID"
       class="column is-3 add-borders"
       :class="{ 'is-selected': parcel.properties.OBJECTID === selected }"
     >

@@ -48,7 +48,13 @@ export const useParcelsStore = defineStore('ParcelsStore', {
       try {
         const response = await fetch(`https://services.arcgis.com/fLeGjb7u4uXqeF9q/ArcGIS/rest/services/DOR_Parcel/FeatureServer/0/query?where=MAPREG=%27${dorParcelId}%27&outSR=4326&f=geojson&outFields=*&returnGeometry=true`);
         if (response.ok) {
-          this.dor = await response.json()
+          const originalJson = await response.json()
+          const features1 = originalJson.features.filter(f => f.properties.STATUS === 1);
+          const features2 = originalJson.features.filter(f => f.properties.STATUS === 2);
+          const features3 = originalJson.features.filter(f => f.properties.STATUS === 3);
+          originalJson.features = features1.concat(features2).concat(features3);
+          // console.log('originalJson', originalJson);
+          this.dor = originalJson;
         } else {
           console.error('Failed to fetch dor parcel data')
         }

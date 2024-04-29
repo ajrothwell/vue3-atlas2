@@ -148,6 +148,7 @@ const nearby311Geojson = computed(() => {
       },
       properties: {
         id: item.service_request_id,
+        type: 'nearby311',
       }
     })
   }
@@ -157,7 +158,6 @@ const nearby311Geojson = computed(() => {
 watch (() => nearby311Geojson.value, (newGeojson) => {
   console.log('nearby311Geojson watch, newGeojson:', newGeojson);
   if (newGeojson.length > 0) {
-    // $config.nearbyDrawnMapStyle.sources.nearby.data.features = newGeojson;
     console.log('$config:', $config, 'map.getStyle().sources:', map.getStyle().sources, 'map.getStyle().layers:', map.getStyle().layers);
     let geojson = {
       'type': 'FeatureCollection',
@@ -200,6 +200,7 @@ const nearbyCrimeIncidentsGeojson = computed(() => {
       },
       properties: {
         id: item.objectid,
+        type: 'nearbyCrimeIncidents',
       }
     })
   }
@@ -209,14 +210,12 @@ const nearbyCrimeIncidentsGeojson = computed(() => {
 watch (() => nearbyCrimeIncidentsGeojson.value, async (newGeojson) => {
   console.log('nearbyCrimeIncidents watch, newGeojson:', newGeojson);
   if (newGeojson.length > 0) {
-    // $config.nearbyDrawnMapStyle.sources.nearby.data.features = newGeojson;
     console.log('$config:', $config, 'map.getStyle().sources:', map.getStyle().sources, 'map.getStyle().layers:', map.getStyle().layers);
     let geojson = {
       'type': 'FeatureCollection',
       'features': newGeojson,
     }
     await map.getSource('nearby').setData(geojson);
-    // console.log('geojson:', geojson, 'map.getSource(nearby):', map.getSource('nearby'));
   }
 })
 
@@ -295,8 +294,6 @@ watch(() => hoveredStateId.value, (newHoveredStateId) => {
     if (!visible) {
       el.scrollIntoView({ block: 'center' });
     }
-    // const feature = map.getStyle().sources.nearby.data.features.filter(feature => feature.properties.id === newHoveredStateId)[0];
-    // console.log('feature:', feature);
   }
 });
 
@@ -417,7 +414,8 @@ const handleRowMouseleave = (e) => {
         </thead>
         <tbody>
           <tr
-            v-for="item in nearby311" :key="item.service_request_id"
+            v-for="item in nearby311"
+            :key="item.service_request_id"
             :id="item.service_request_id"
             @mouseover="handleRowMouseover"
             @mouseleave="handleRowMouseleave"
@@ -446,7 +444,14 @@ const handleRowMouseleave = (e) => {
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in nearbyCrimeIncidents" :key=item.objectid>
+          <tr
+            v-for="item in nearbyCrimeIncidents"
+            :key=item.objectid
+            :id="item.objectid"
+            @mouseover="handleRowMouseover"
+            @mouseleave="handleRowMouseleave"
+            :class="hoveredStateId == item.objectid ? 'active' : 'inactive'"
+          >
             <td>{{ item.dispatch_date }}</td>
             <td>{{ item.location_block }}</td>
             <td>{{ item.text_general_code }}</td>
@@ -470,7 +475,14 @@ const handleRowMouseleave = (e) => {
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in nearbyZoningAppeals" :key=item.objectid>
+          <tr
+            v-for="item in nearbyZoningAppeals"
+            :key=item.objectid
+            :id="item.objectid"
+            @mouseover="handleRowMouseover"
+            @mouseleave="handleRowMouseleave"
+            :class="hoveredStateId == item.objectid ? 'active' : 'inactive'"
+          >
             <td>{{ item.scheduleddate }}</td>
             <td>{{ item.address }}</td>
             <td>{{ item.appeal_grounds }}</td>
@@ -493,7 +505,14 @@ const handleRowMouseleave = (e) => {
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in nearbyVacantIndicatorPoints" :key="item.OBJECTID">
+          <tr
+            v-for="item in nearbyVacantIndicatorPoints"
+            :key="item.OBJECTID"
+            :id="item.OBJECTID"
+            @mouseover="handleRowMouseover"
+            @mouseleave="handleRowMouseleave"
+            :class="hoveredStateId == item.OBJECTID ? 'active' : 'inactive'"
+          >
             <td>{{ item.properties.ADDRESS }}</td>
             <td>{{ item.properties.VACANT_FLAG }}</td>
             <td>{{ (item._distance * 3.28084).toFixed(0) }} ft</td>

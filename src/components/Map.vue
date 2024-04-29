@@ -40,9 +40,12 @@ const pwdCoordinates = computed(() => {
   }
 });
 
+const selectedParcelId = computed(() => { return MainStore.selectedParcelId; });
+
 const dorCoordinates = computed(() => {
-  if (ParcelsStore.dor.features) {
-    return ParcelsStore.dor.features[0].geometry.coordinates[0];
+  if (selectedParcelId.value && ParcelsStore.dor.features) {
+    console.log('selectedParcelId.value:', selectedParcelId.value, 'ParcelsStore.dor.features.filter(parcel => parcel.id === selectedParcelId.value)[0]:', ParcelsStore.dor.features.filter(parcel => parcel.id === selectedParcelId.value)[0]);
+    return ParcelsStore.dor.features.filter(parcel => parcel.id === selectedParcelId.value)[0].geometry.coordinates[0];
   } else {
     return [];
   }
@@ -115,13 +118,32 @@ watch(
       map.setPaintProperty(
         'nearby', 
         'circle-color', 
-        ['match', ['get', 'id'], newHoveredStateId, "#FFFF00", "#FF0000"]
+        ['match',
+        ['get', 'id'],
+        newHoveredStateId,
+        "#FFFF00",
+        ['match',
+        ['get', 'type'],
+        'nearby311',
+        '#FF0000',
+        'nearbyCrimeIncidents',
+        '#0096FF',
+        /* other */ '#000000'
+        ]
+      ]
       );
     } else {
       map.setPaintProperty(
         'nearby', 
         'circle-color', 
-        '#FF0000'
+        ['match',
+        ['get', 'type'],
+        'nearby311',
+        '#FF0000',
+        'nearbyCrimeIncidents',
+        '#0096FF',
+        /* other */ '#000000'
+        ]
       );
     }
   }

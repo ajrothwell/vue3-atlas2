@@ -9,6 +9,7 @@ export const useMainStore = defineStore("MainStore", {
       currentNearbyDataType: 'nearby311',
       dataSourcesLoadedArray: [],
       hoveredStateId: null,
+      selectedParcelId: null,
     };
   },
 

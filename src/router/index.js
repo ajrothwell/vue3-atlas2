@@ -34,6 +34,7 @@ const getAddressAndPutInStore = async(address) => {
 const getParcelAndPutInStore = async(lng, lat) => {
   let currentAddress;
   const MainStore = useMainStore();
+  MainStore.selectedParcelId = null;
   let currentTopic = MainStore.currentTopic;
   const parcelLayer = $config.parcelLayerForTopic[currentTopic];
   const ParcelsStore = useParcelsStore();

@@ -424,11 +424,6 @@ const nearbyDrawnMapStyle = mergeDeep(imageryInfo,{
       layout: {
         'icon-image': 'custom-marker',
       }
-      // type: 'circle',
-      // paint: {
-      //   'circle-radius': 7,
-      //   'circle-color': '#ff0000',
-      // },
     },
     {
       id: 'nearby',
@@ -436,7 +431,16 @@ const nearbyDrawnMapStyle = mergeDeep(imageryInfo,{
       type: 'circle',
       paint: {
         'circle-radius': 7,
-        'circle-color': '#ff0000',
+        // 'circle-color': '#ff0000',
+        'circle-color': [
+          'match',
+          ['get', 'type'],
+          'nearby311',
+          '#FF0000',
+          'nearbyCrimeIncidents',
+          '#0096FF',
+          /* other */ '#000000'
+        ],
         // 'circle-color': [
         //   'case'
         //   ['boolean', ['feature-state', 'hover'], false],
