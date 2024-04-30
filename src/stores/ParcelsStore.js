@@ -45,10 +45,44 @@ export const useParcelsStore = defineStore('ParcelsStore', {
         await this.fillParcelDataByLngLat(AddressData.geometry.coordinates[0], AddressData.geometry.coordinates[1], 'dor');
         return;
       }
+
+      const url = 'https://services.arcgis.com/fLeGjb7u4uXqeF9q/ArcGIS/rest/services/DOR_Parcel/FeatureServer/0/query';
+      // const configForParcelLayer = this.config.parcels[parcelLayer];
+      // const geocodeField = configForParcelLayer.geocodeField;
+      // console.log('url:', url);
+      let parcelQuery;
+
+      if (dorParcelId.includes('|')) {
+        const idSplit = dorParcelId.split('|');
+        let queryString = "MAPREG = '";
+        let i;
+        for (i=0; i<idSplit.length; i++) {
+          queryString = queryString + idSplit[i] + "'";
+          if (i < idSplit.length - 1) {
+            queryString = queryString + " or MAPREG = '";
+          }
+        }
+
+        parcelQuery = url + '?where=' + queryString;
+
+      } else if (Array.isArray(dorParcelId)) {
+        parcelQuery = url + '?where=MAPREG IN (' + dorParcelId + ')';
+      } else {
+        parcelQuery = url + "?where=MAPREG='" + dorParcelId + "'";
+      }
+
+      let params = {
+        'outSR': 4326,
+        'f': 'geojson',
+        'outFields': '*',
+        'returnGeometry': true,
+      };
+
       try {
-        const response = await fetch(`https://services.arcgis.com/fLeGjb7u4uXqeF9q/ArcGIS/rest/services/DOR_Parcel/FeatureServer/0/query?where=MAPREG=%27${dorParcelId}%27&outSR=4326&f=geojson&outFields=*&returnGeometry=true`);
-        if (response.ok) {
-          const originalJson = await response.json()
+        const response = await axios(parcelQuery, { params });
+        if (response.status === 200) {
+          console.log('response', response);
+          const originalJson = await response.data;
           const features1 = originalJson.features.filter(f => f.properties.STATUS === 1);
           const features2 = originalJson.features.filter(f => f.properties.STATUS === 2);
           const features3 = originalJson.features.filter(f => f.properties.STATUS === 3);
@@ -56,10 +90,10 @@ export const useParcelsStore = defineStore('ParcelsStore', {
           // console.log('originalJson', originalJson);
           this.dor = originalJson;
         } else {
-          console.error('Failed to fetch dor parcel data')
+          console.error('Failed to fetch dor parcel data 1')
         }
       } catch {
-        console.error('Failed to fetch dor parcel data')
+        console.error('Failed to fetch dor parcel data 2')
       }
     },
 

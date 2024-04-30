@@ -16,14 +16,14 @@ import { useMapStore } from '@/stores/MapStore';
 const MapStore = useMapStore();
 const map = MapStore.map;
 
-let selected = computed(() => { return MainStore.selectedParcelId });
+let selectedParcelId = computed(() => { return MainStore.selectedParcelId });
 const selectedParcel = computed(() => {
-  return ParcelsStore.dor.features.filter(feature => feature.id === selected.value)[0];
+  return ParcelsStore.dor.features.filter(feature => feature.id === selectedParcelId.value)[0];
 });
 const selectedDocs = computed(() => {
-  if (selected) {
-    console.log('selected.value:', selected.value);
-    return DorStore.dorDocuments[selected.value].data.features;
+  if (selectedParcelId.value) {
+    console.log('selected.value:', selectedParcelId.value);
+    return DorStore.dorDocuments[selectedParcelId.value].data.features;
   } else {
     return null;
   }
@@ -31,7 +31,9 @@ const selectedDocs = computed(() => {
 
 onBeforeMount(() => {
   console.log('Deeds.vue onBeforeMount');
-  MainStore.selectedParcelId = ParcelsStore.dor.features[0].properties.OBJECTID;
+  if (ParcelsStore.dor.features.length > 0) {
+    MainStore.selectedParcelId = ParcelsStore.dor.features[0].properties.OBJECTID;
+  }
 });
 
 onMounted(() => {
@@ -53,7 +55,7 @@ const statusKey = {
       :key="parcel.properties.OBJECTID"
       @click="MainStore.selectedParcelId = parcel.properties.OBJECTID"
       class="column is-3 add-borders"
-      :class="{ 'is-selected': parcel.properties.OBJECTID === selected }"
+      :class="{ 'is-selected': parcel.properties.OBJECTID === selectedParcelId }"
     >
       {{ parcel.properties.MAPREG }}
     </div>
