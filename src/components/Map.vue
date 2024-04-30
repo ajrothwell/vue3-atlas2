@@ -164,6 +164,10 @@ const drawInfo = ref({
 
 const distanceMeasureControlRef = ref(null)
 
+const markerSrc = computed(() => {
+  return import.meta.env.VITE_PUBLICPATH + 'images/marker_blue.png';
+})
+
 onMounted(async () => {
   console.log('Map.vue onMounted route.params.topic:', route.params.topic, 'route.params.address:', route.params.address);
   let currentTopicMapStyle;
@@ -189,7 +193,7 @@ onMounted(async () => {
   const image = await map.loadImage(imageurl)
   map.addImage('custom-marker', image.data);
 
-  const image2 = await map.loadImage('../../public/images/marker_blue.png')
+  const image2 = await map.loadImage(markerSrc.value)
   map.addImage('marker-blue', image2.data);
 
   map.on('click', (e, data) => {
