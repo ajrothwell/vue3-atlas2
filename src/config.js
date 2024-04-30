@@ -198,10 +198,17 @@ const pwdDrawnMapStyle = mergeDeep(imageryInfo,{
     {
       id: 'addressMarker',
       source: 'addressMarker',
-      type: 'circle',
+      type: 'symbol',
+      layout: {
+        'icon-image': 'location-dot',
+        'icon-anchor' : 'bottom',
+        'icon-size': 0.08,
+      },
       paint: {
-        'circle-radius': 7,
-        'circle-color': '#ff0000',
+        "icon-color": "#ff0000",
+        "icon-opacity": 1,
+        // "icon-halo-color": "#000000",
+        // "icon-halo-width": 0,
       },
     },
   ],
@@ -358,6 +365,7 @@ const nearbyDrawnMapStyle = mergeDeep(imageryInfo,{
   version: 8,
   name: 'pwdDrawnMap',
   // "sprite": 'https://docs.mapbox.com/mapbox-gl-js/assets/custom_marker.png',
+  // "glyphs": 'mapbox://fonts/mapbox/{fontstack}/{range}.pbf',
   sources: {
     pwd: {
       tiles: [
@@ -381,11 +389,6 @@ const nearbyDrawnMapStyle = mergeDeep(imageryInfo,{
           type: 'Point',
           coordinates: [],
         },
-        // properties: {
-        //   'marker-color': '#3bb2d0',
-        //   'marker-size': 'large',
-        //   'marker-symbol': 'rocket'
-        // }
       }
     },
     dorParcel: {
@@ -418,20 +421,11 @@ const nearbyDrawnMapStyle = mergeDeep(imageryInfo,{
       type: 'raster',
     },
     {
-      id: 'addressMarker',
-      source: 'addressMarker',
-      type: 'symbol',
-      layout: {
-        'icon-image': 'custom-marker',
-      }
-    },
-    {
       id: 'nearby',
       source: 'nearby',
       type: 'circle',
       paint: {
         'circle-radius': 7,
-        // 'circle-color': '#ff0000',
         'circle-color': [
           'match',
           ['get', 'type'],
@@ -441,15 +435,18 @@ const nearbyDrawnMapStyle = mergeDeep(imageryInfo,{
           '#0096FF',
           /* other */ '#000000'
         ],
-        // 'circle-color': [
-        //   'case'
-        //   ['boolean', ['feature-state', 'hover'], false],
-        //   '#FFFF00',
-        //   '#ff0000',
-        // ],
         'circle-stroke-width': 1,
         'circle-stroke-color': 'white',
       },
+    },
+    {
+      id: 'addressMarker',
+      source: 'addressMarker',
+      type: 'symbol',
+      layout: {
+        'icon-image': 'custom-marker',
+        'icon-anchor' : 'bottom',
+      }
     },
   ],
 });

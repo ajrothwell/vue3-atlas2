@@ -1,5 +1,8 @@
 <script setup>
 
+import locationDot from '../../public/images/location-dot-solid.png';
+console.log('locationDot:', locationDot);
+
 import $config from '@/config';
 console.log('Map.vue $config:', $config);
 // PACKAGE IMPORTS
@@ -180,6 +183,20 @@ onMounted(async () => {
   const imageurl = 'https://docs.mapbox.com/mapbox-gl-js/assets/custom_marker.png'
   const image = await map.loadImage(imageurl)
   map.addImage('custom-marker', image.data);
+
+  const image2 = await map.loadImage('../../public/images/location-dot-solid.png')
+  // map.addImage('location-dot', image2.data, { 'sdf': true });
+  map.addImage('location-dot', image2.data);
+
+  // const image2 = await map.loadImage('@/assets/images/location-dot-solid.png')
+  // const image2 = new Image(35, 35);
+  // // image2.src = locationDot;
+  // image2.src = locationDot;
+  // map.addImage('location-dot', image2);
+  // const image3 = await map.loadImage('../assets/images/location-dot-solid.png', (error, image) => {
+  //   if (error) throw error;
+  //   map.addImage('location-dot', image.data);
+  // });
   
   map.on('click', (e, data) => {
     console.log('e:', e, 'data:', data, 'drawInfo.mode:', drawInfo.mode, draw.getMode());
