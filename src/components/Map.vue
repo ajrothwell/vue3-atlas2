@@ -32,8 +32,9 @@ import AddressSearchControl from '@/components/map/AddressSearchControl.vue';
 import DistanceMeasureControl from '@/components/map/DistanceMeasureControl.vue';
 import ImageryToggleControl from '@/components/map/ImageryToggleControl.vue';
 import ImageryDropdownControl from '@/components/map/ImageryDropdownControl.vue';
-import CyclomediaControl from './map/CyclomediaControl.vue';
-import PictometryControl from './map/PictometryControl.vue';
+import CyclomediaControl from '@/components/map/CyclomediaControl.vue';
+import PictometryControl from '@/components/map/PictometryControl.vue';
+import OpacitySlider from '@/components/map/OpacitySlider.vue';
 
 let map;
 
@@ -86,6 +87,7 @@ watch(
         dorParcel.setData({'type': 'Feature','geometry': {'type': 'Polygon','coordinates': [ dorCoordinates.value ]}});
         // console.log('2 map.layers:', map.getStyle().layers, map.getStyle().sources);
       }
+      MapStore.selectedRegmap = null;
     }
   }
 )
@@ -104,6 +106,68 @@ watch(
     //   .addTo(map);
   }
 )
+
+const selectedRegmap = computed(() => { return MapStore.selectedRegmap; });
+
+watch(
+  () => selectedRegmap.value,
+  (newRegmap, oldRegmap) => {
+    console.log('addRegmapLayer, newRegmap:', newRegmap, 'oldRegmap:', oldRegmap);
+    if (newRegmap == null) {
+      console.log('remove old regmap');
+      if (map.getLayer('regmap')) {
+        map.removeLayer('regmap');
+        map.removeSource('regmap');
+      }
+      MapStore.selectedRegmap = null;
+    } else if (oldRegmap == null) {
+      if (map.getSource('regmap')) {
+        map.removeSource('regmap');
+      }
+      console.log('add newRegmap:', newRegmap);
+      const tiles =  `https://ags-regmaps.phila.gov/arcgis/rest/services/RegMaps/MapServer/export?dpi=96&layerDefs=0:NAME=\'g${newRegmap.toLowerCase()}.tif\'&transparent=true&format=png24&bbox={bbox-epsg-3857}&bboxSR=3857&imageSR=3857&size=700,700&f=image&layers=show%3A0`;
+      $config.dorDrawnMapStyle.sources.regmap = {
+        type: 'raster',
+        tiles: [tiles],
+        tileSize: 256,
+      }
+      map.addLayer({
+        id: 'regmap',
+        type: 'raster',
+        source: $config.dorDrawnMapStyle.sources.regmap,
+        paint: {
+          'raster-opacity': MapStore.regmapOpacity,
+        },
+      }, 'dorParcel');
+    } else {
+      map.removeLayer('regmap');
+      map.removeSource('regmap');
+      const tiles =  `https://ags-regmaps.phila.gov/arcgis/rest/services/RegMaps/MapServer/export?dpi=96&layerDefs=0:NAME=\'g${newRegmap.toLowerCase()}.tif\'&transparent=true&format=png24&bbox={bbox-epsg-3857}&bboxSR=3857&imageSR=3857&size=700,700&f=image&layers=show%3A0`;
+      $config.dorDrawnMapStyle.sources.regmap = {
+        type: 'raster',
+        tiles: [tiles],
+        tileSize: 256,
+      }
+      map.addLayer({
+        id: 'regmap',
+        type: 'raster',
+        source: $config.dorDrawnMapStyle.sources.regmap,
+        paint: {
+          'raster-opacity': MapStore.regmapOpacity,
+        },
+      }, 'dorParcel');
+    }
+  }
+);
+
+const handleRegmapOpacityChange = (opacity) => {
+  MapStore.regmapOpacity = opacity/100;
+  map.setPaintProperty(
+    'regmap',
+    'raster-opacity',
+    parseFloat(opacity/100),
+  );
+}
 
 const hoveredStateId = computed(() => { return MainStore.hoveredStateId; })
 
@@ -299,6 +363,15 @@ const togglePictometry = () => {
   MapStore.pictometryOn = !MapStore.pictometryOn;
 }
 
+const handleZoningOpacityChange = (opacity) => {
+  MapStore.zoningOpacity = opacity/100;
+  map.setPaintProperty(
+    'zoning',
+    'raster-opacity',
+    opacity/100,
+  );
+}
+
 </script>
 
 <template>
@@ -309,6 +382,8 @@ const togglePictometry = () => {
     <CyclomediaControl @toggleCyclomedia="toggleCyclomedia"></CyclomediaControl>
     <PictometryControl @togglePictometry="togglePictometry"></PictometryControl>
     <DistanceMeasureControl ref="distanceMeasureControlRef"></DistanceMeasureControl>
+    <OpacitySlider v-if="selectedRegmap" :initialOpacity="MapStore.regmapOpacity"@opacityChange="handleRegmapOpacityChange"></OpacitySlider>
+    <OpacitySlider v-if="MainStore.currentTopic == 'Zoning'" :initialOpacity="MapStore.zoningOpacity"@opacityChange="handleZoningOpacityChange"></OpacitySlider>
   </div>
 </template>
 

@@ -1,5 +1,5 @@
 <script setup>
-
+import $config from '@/config';
 import { ref, computed, onMounted, onBeforeMount } from 'vue';
 // import { storeToRefs } from 'pinia';
 
@@ -29,6 +29,10 @@ const selectedDocs = computed(() => {
   }
 });
 
+const regmaps = computed(() => {
+  return DorStore.regmaps.data.features;
+});
+
 onBeforeMount(() => {
   console.log('Deeds.vue onBeforeMount');
   if (ParcelsStore.dor.features.length > 0) {
@@ -36,15 +40,28 @@ onBeforeMount(() => {
   }
 });
 
-onMounted(() => {
-  console.log('Deeds.vue onMounted, map.getStyle().sources:', map.getStyle().sources, 'map.getStyle.layers:', map.getStyle().layers);
-});
+// onMounted(() => {
+//   console.log('Deeds.vue onMounted, map.getStyle().sources:', map.getStyle().sources, 'map.getStyle.layers:', map.getStyle().layers);
+// });
 
 const statusKey = {
   1: 'Active',
   2: 'Inactive',
   3: 'Remainder',
 }
+
+const addRegmapLayer = (regmap) => {
+  if (MapStore.selectedRegmap === regmap) {
+    MapStore.selectedRegmap = null;
+  } else {
+    MapStore.selectedRegmap = regmap;
+  }
+}
+
+const selectedRegmap = computed(() => {
+  return MapStore.selectedRegmap;
+});
+
 </script>
 
 <template>
@@ -54,7 +71,7 @@ const statusKey = {
       v-for="parcel in ParcelsStore.dor.features"
       :key="parcel.properties.OBJECTID"
       @click="MainStore.selectedParcelId = parcel.properties.OBJECTID"
-      class="column is-3 add-borders"
+      class="column is-2 add-borders has-text-centered"
       :class="{ 'is-selected': parcel.properties.OBJECTID === selectedParcelId }"
     >
       {{ parcel.properties.MAPREG }}
@@ -125,6 +142,21 @@ const statusKey = {
       </tbody>
     </table>
   </div>
+
+  <!-- Registry Maps -->
+  <div class="mt-6">
+    <h5 class="subtitle is-5">Registry Maps</h5>
+    <div class="columns is-multiline">
+      <div
+        v-for="regmap in regmaps"
+        class="column is-2 add-borders has-text-centered regmap-div"
+        :class="{ 'is-selected': regmap.properties.RECMAP === selectedRegmap }"
+        @click="addRegmapLayer(regmap.properties.RECMAP)"
+      >
+        {{ regmap.properties.RECMAP }}
+      </div>
+    </div>
+  </div>
     
 </template>
 
@@ -137,6 +169,17 @@ const statusKey = {
 
 .is-selected {
   background-color: #b8b8b8
+}
+
+.regmap-div.is-selected {
+  background-color: orange;
+  color: white !important;
+}
+
+.add-borders.regmap-div {
+  color: orange;
+  border-color: orange;
+  cursor: pointer;
 }
 
 </style>

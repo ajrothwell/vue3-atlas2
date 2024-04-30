@@ -99,6 +99,7 @@ const topicDataFetch = async (topic) => {
   if (topic === 'Deeds') {
     const DorStore = useDorStore();
     await DorStore.fillDorDocuments();
+    await DorStore.fillRegmaps();
   }
 
   if (topic === 'Nearby Activity') {

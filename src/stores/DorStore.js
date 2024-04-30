@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import { useParcelsStore } from './ParcelsStore';
 import { useAddressStore } from './AddressStore';
 
+import bboxPolygon from '@turf/bbox-polygon';
 import axios from 'axios';
 
 const cleanDorAttribute = function(attr) {
@@ -84,11 +85,95 @@ export const useDorStore = defineStore("DorStore", {
   state: () => {
     return {
       dorDocuments: {},
+      regmaps: {},
     };
   },
 
   actions: {
+    async fillRegmaps() {
+      console.log('fillRegmaps is running');
+      const ParcelsStore = useParcelsStore();
+      const parcels = ParcelsStore.dor.features;
+      var xVals = [],
+        yVals = [];
+
+      // loop over parcels
+      parcels.forEach(function (parcel) {
+        var geom = parcel.geometry,
+          parts = geom.coordinates;
+
+        // loop over parts (whether it's simple or multipart)
+        parts.forEach(function (coordPairs) {
+          coordPairs.forEach(function (coordPair) {
+            // if the polygon has a hole, it has another level of coord
+            // pairs, presumably one for the outer coords and another for
+            // inner. for simplicity, add them all.
+            var hasHole = Array.isArray(coordPair[0]);
+
+            if (hasHole) {
+              // loop through inner pairs
+              coordPair.forEach(function (innerCoordPair) {
+                var x = innerCoordPair[0],
+                  y = innerCoordPair[1];
+
+                xVals.push(x);
+                yVals.push(y);
+              });
+            // for all other polys
+            } else {
+              var x = coordPair[0],
+                y = coordPair[1];
+
+              xVals.push(x);
+              yVals.push(y);
+            }
+          });
+        });
+      });
+
+      // take max/min
+      var xMin = Math.min.apply(null, xVals);
+      var xMax = Math.max.apply(null, xVals);
+      var yMin = Math.min.apply(null, yVals);
+      var yMax = Math.max.apply(null, yVals);
+
+      // make sure all coords are defined. no NaNs allowed.
+      var coordsAreDefined = [ xMin, xMax, yMin, yMax ].every(
+        function (coord) {
+          return coord;
+        },
+      );
+
+      // if they aren't
+      if (!coordsAreDefined) {
+        //  exit with null to avoid an error calling lat lng bounds constructor
+        return null;
+      }
+
+      // construct geometry
+      var bbox = [ xMin, yMin, xMax, yMax ];
+      var bounds = bboxPolygon(bbox).geometry;
+
+      console.log('regmaps.js, bounds:', bounds);
+
+      let url = '//services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/MASTERMAPINDEX/FeatureServer/0/query'; //+ [relationship](targetGeom);
+      let params = {
+        'returnGeometry': true,
+        'where': '1=1',
+        'outSR': 4326,
+        'outFields': '*',
+        'inSr': 4326,
+        'geometryType': 'esriGeometryEnvelope',
+        'spatialRel': 'esriSpatialRelIntersects',
+        'f': 'geojson',
+        'geometry': `{ "xmin": ${bounds.coordinates[0][0][0]}, "ymin": ${bounds.coordinates[0][0][1]}, "xmax": ${bounds.coordinates[0][2][0]}, "ymax": ${bounds.coordinates[0][2][1]}, "spatialReference": { "wkid":4326 }}`,
+      };
+
+      const response = await axios.get(url, { params })
+      this.regmaps = response;
+    },
     async fillDorDocuments() {
+      console.log('fillDorDocuments is running');
       this.dorDocuments = {};
       const ParcelsStore = useParcelsStore();
       const AddressStore = useAddressStore();
@@ -179,6 +264,7 @@ export const useDorStore = defineStore("DorStore", {
         const response = await axios(url, { params });
         this.dorDocuments[feature.properties.OBJECTID] = response;
       }
+      return;
     },
   },
 })

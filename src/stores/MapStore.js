@@ -18,6 +18,9 @@ export const useMapStore = defineStore("MapStore", {
       imagerySelected: '2023',
       cyclomediaOn: false,
       pictometryOn: false,
+      selectedRegmap: null,
+      regmapOpacity: 0.5,
+      zoningOpacity: 1,
     };
   },
   actions: {

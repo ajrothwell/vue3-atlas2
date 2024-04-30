@@ -347,6 +347,9 @@ const zoningDrawnMapStyle = mergeDeep(imageryInfo,{
       id: 'zoning',
       source: 'zoning',
       type: 'raster',
+      paint: {
+        'raster-opacity': 1,
+      }
     },
     {
       id: 'dorParcel',
