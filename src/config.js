@@ -200,9 +200,9 @@ const pwdDrawnMapStyle = mergeDeep(imageryInfo,{
       source: 'addressMarker',
       type: 'symbol',
       layout: {
-        'icon-image': 'location-dot',
+        'icon-image': 'marker-blue',
         'icon-anchor' : 'bottom',
-        'icon-size': 0.08,
+        'icon-size': .05,
       },
       paint: {
         "icon-color": "#ff0000",
@@ -444,8 +444,9 @@ const nearbyDrawnMapStyle = mergeDeep(imageryInfo,{
       source: 'addressMarker',
       type: 'symbol',
       layout: {
-        'icon-image': 'custom-marker',
+        'icon-image': 'marker-blue',
         'icon-anchor' : 'bottom',
+        'icon-size': .05,
       }
     },
   ],
