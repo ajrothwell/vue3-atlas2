@@ -32,6 +32,8 @@ import AddressSearchControl from '@/components/map/AddressSearchControl.vue';
 import DistanceMeasureControl from '@/components/map/DistanceMeasureControl.vue';
 import ImageryToggleControl from '@/components/map/ImageryToggleControl.vue';
 import ImageryDropdownControl from '@/components/map/ImageryDropdownControl.vue';
+import CyclomediaControl from './map/CyclomediaControl.vue';
+import PictometryControl from './map/PictometryControl.vue';
 
 let map;
 
@@ -283,6 +285,16 @@ const setImagery = async (newImagery) => {
   map.removeLayer(oldLayer);
 }
 
+const toggleCyclomedia = () => {
+  console.log('toggleCyclomedia');
+  MapStore.cyclomediaOn = !MapStore.cyclomediaOn;
+}
+
+const togglePictometry = () => {
+  console.log('togglePictometry');
+  MapStore.pictometryOn = !MapStore.pictometryOn;
+}
+
 </script>
 
 <template>
@@ -290,6 +302,8 @@ const setImagery = async (newImagery) => {
     <AddressSearchControl></AddressSearchControl>
     <ImageryToggleControl @toggleImagery="toggleImagery"></ImageryToggleControl>
     <ImageryDropdownControl v-if="MapStore.imageryOn" @setImagery="setImagery"></ImageryDropdownControl>
+    <CyclomediaControl @toggleCyclomedia="toggleCyclomedia"></CyclomediaControl>
+    <PictometryControl @togglePictometry="togglePictometry"></PictometryControl>
     <DistanceMeasureControl ref="distanceMeasureControlRef"></DistanceMeasureControl>
   </div>
 </template>
@@ -301,6 +315,6 @@ const setImagery = async (newImagery) => {
 }
 
 .map-class {
-  height: 89vh;
+  height: 100%;
 }
 </style>
