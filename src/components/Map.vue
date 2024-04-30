@@ -20,6 +20,8 @@ import { useAddressStore } from '@/stores/AddressStore.js'
 const AddressStore = useAddressStore();
 import { useParcelsStore } from '@/stores/ParcelsStore.js'
 const ParcelsStore = useParcelsStore();
+import { useLiStore } from '@/stores/LiStore.js'
+const LiStore = useLiStore();
 
 // ROUTER
 import { useRouter, useRoute } from 'vue-router';
@@ -169,6 +171,25 @@ const handleRegmapOpacityChange = (opacity) => {
   );
 }
 
+const selectedLiBuildingNumber = computed(() => { return LiStore.selectedLiBuildingNumber; });
+
+watch(
+  () => selectedLiBuildingNumber.value,
+  newSelectedLiBuildingNumber => {
+    console.log('Map.vue watch selectedLiBuildingNumber.value:', selectedLiBuildingNumber.value);
+    map.setPaintProperty(
+      'liBuildingFootprints',
+      'fill-color',
+      ['match',
+      ['get', 'id'],
+      newSelectedLiBuildingNumber,
+      '#FFFA80',
+      /* other */ '#C2B7FF'
+      ],
+    )
+  }
+)
+
 const hoveredStateId = computed(() => { return MainStore.hoveredStateId; })
 
 watch(
@@ -260,7 +281,16 @@ onMounted(async () => {
   const image2 = await map.loadImage(markerSrc.value)
   map.addImage('marker-blue', image2.data);
 
+  map.on('click', 'liBuildingFootprints', (e) => {
+    console.log('liBuildingFootprints click, e:', e);
+    e.clickOnLayer = true;
+    LiStore.selectedLiBuildingNumber = e.features[0].properties.id;
+  });
+
   map.on('click', (e, data) => {
+    if (e.clickOnLayer) {
+      return;
+    }
     console.log('e:', e, 'data:', data, 'drawInfo.mode:', drawInfo.mode, draw.getMode());
     let drawMode = drawInfo.mode;
     let drawLayers = MapStore.map.queryRenderedFeatures(e.point).filter(feature => [ 'mapbox-gl-draw-cold', 'mapbox-gl-draw-hot' ].includes(feature.source));

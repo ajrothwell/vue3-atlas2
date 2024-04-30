@@ -207,8 +207,97 @@ const pwdDrawnMapStyle = mergeDeep(imageryInfo,{
       paint: {
         "icon-color": "#ff0000",
         "icon-opacity": 1,
-        // "icon-halo-color": "#000000",
-        // "icon-halo-width": 0,
+      },
+    },
+  ],
+});
+
+const liDrawnMapStyle = mergeDeep(imageryInfo,{
+  version: 8,
+  name: 'liDrawnMap',
+  sources: {
+    pwd: {
+      tiles: [
+        'https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityBasemap/MapServer/tile/{z}/{y}/{x}',
+      ],
+      type: 'raster',
+      tileSize: 256,
+    },
+    pwdLabels: {
+      tiles: [
+        'https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityBasemap_Labels/MapServer/tile/{z}/{y}/{x}',
+      ],
+      type: 'raster',
+      tileSize: 256,
+    },
+    liBuildingFootprints: {
+      type: 'geojson',
+      data: {
+        type: 'FeatureCollection',
+        features: []
+      },
+    },
+    addressMarker: {
+      type: 'geojson',
+      data: {
+        type: 'Feature',
+        geometry: {
+          type: 'Point',
+          coordinates: [],
+        }
+      }
+    },
+    dorParcel: {
+      type: 'geojson',
+      data: {
+        type: 'Feature',
+        geometry: {
+          type: 'Polygon',
+          coordinates: [[[]]],
+        }
+      }
+    },
+  },
+  layers: [
+    {
+      id: 'pwd',
+      source: 'pwd',
+      type: 'raster',
+    },
+    {
+      id: 'pwdLabels',
+      source: 'pwdLabels',
+      type: 'raster',
+    },
+    {
+      id: 'liBuildingFootprints',
+      type: 'fill',
+      source: 'liBuildingFootprints',
+      layout: {},
+      paint: {
+        // 'fill-color': '#C2B7FF',
+        'fill-color': [
+        'match',
+        ['get', 'type'],
+        'nearby311',
+        '#FF0000',
+        /* other */ '#C2B7FF'
+        ],
+        'fill-opacity': 0.5
+      }
+    },
+    {
+      id: 'addressMarker',
+      source: 'addressMarker',
+      type: 'symbol',
+      layout: {
+        'icon-image': 'marker-blue',
+        'icon-anchor' : 'bottom',
+        'icon-size': .05,
+      },
+      paint: {
+        "icon-color": "#ff0000",
+        "icon-opacity": 1,
       },
     },
   ],
@@ -460,7 +549,7 @@ const $config = {
     Property: 'pwdDrawnMapStyle',
     Condos: 'pwdDrawnMapStyle',
     Deeds: 'dorDrawnMapStyle',
-    'Licenses & Inspections': 'pwdDrawnMapStyle',
+    'Licenses & Inspections': 'liDrawnMapStyle',
     Zoning: 'zoningDrawnMapStyle',
     Voting: 'pwdDrawnMapStyle',
     'Nearby Activity': 'nearbyDrawnMapStyle',
@@ -621,6 +710,7 @@ const $config = {
 
 $config['pwdDrawnMapStyle'] = pwdDrawnMapStyle;
 $config['dorDrawnMapStyle'] = dorDrawnMapStyle;
+$config['liDrawnMapStyle'] = liDrawnMapStyle;
 $config['zoningDrawnMapStyle'] = zoningDrawnMapStyle;
 $config['nearbyDrawnMapStyle'] = nearbyDrawnMapStyle;
 
