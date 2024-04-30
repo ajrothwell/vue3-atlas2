@@ -180,6 +180,9 @@ onMounted(async () => {
     attributionControl: false,
   });
 
+  map.addControl(new maplibregl.NavigationControl(), 'bottom-left');
+  map.addControl(new maplibregl.GeolocateControl(), 'bottom-left');
+
   const imageurl = 'https://docs.mapbox.com/mapbox-gl-js/assets/custom_marker.png'
   const image = await map.loadImage(imageurl)
   map.addImage('custom-marker', image.data);
