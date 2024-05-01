@@ -1,7 +1,5 @@
 <script setup>
 import { computed } from 'vue';
-// import { useMapStore } from '@/stores/MapStore.js';
-// const MapStore = useMapStore();
 
 defineEmits(['toggleCyclomedia']);
 
