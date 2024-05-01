@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory } from 'vue-router';
+import { createRouter, createWebHistory, createWebHashHistory } from 'vue-router';
 import App from '@/App.vue';
 import $config from '@/config';
 // const $config = config.$config;
@@ -118,7 +118,8 @@ const topicDataFetch = async (topic) => {
 }
 
 const router = createRouter({
-  history: createWebHashHistory(import.meta.env.BASE_URL),
+  // history: createWebHashHistory(import.meta.env.BASE_URL),
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/:pathMatch(.*)*',
