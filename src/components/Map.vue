@@ -405,7 +405,7 @@ let cyclomediaRecordings = null;
 
 const updateCyclomediaRecordings = () =>{
   console.log('updateCyclomediaRecordings is running');
-  const map = MapStore.map;
+  // const map = MapStore.map;
   const zoom = map.getZoom();
   console.log('updateCyclomediaRecordings is running, zoom:', zoom);
   // if (!MapStore.cyclomediaOn || zoom < 17.99) {
