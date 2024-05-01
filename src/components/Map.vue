@@ -278,12 +278,27 @@ onMounted(async () => {
   map.addControl(new maplibregl.NavigationControl(), 'bottom-left');
   map.addControl(new maplibregl.GeolocateControl(), 'bottom-left');
 
-  const imageurl = 'https://docs.mapbox.com/mapbox-gl-js/assets/custom_marker.png'
-  const image = await map.loadImage(imageurl)
-  map.addImage('custom-marker', image.data);
+  map.on('moveend', (e) => {
+    console.log('map moveend event, e:', e);
 
-  const image2 = await map.loadImage(markerSrc.value)
-  map.addImage('marker-blue', image2.data);
+    if (MapStore.cyclomediaOn) {
+      map.getZoom() > 17 ? MapStore.cyclomediaRecordingsOn = true : MapStore.cyclomediaRecordingsOn = false;
+      if (MapStore.cyclomediaRecordingsOn) {
+        updateCyclomediaRecordings();
+      } else {
+        let geojson = {
+          type: 'FeatureCollection',
+          features: []
+        }
+        map.getSource('cyclomediaRecordings').setData(geojson);
+        $config.dorDrawnMapStyle.sources.cyclomediaRecordings.data.features = [];
+      }
+    }
+
+  });
+
+  const markerImage = await map.loadImage(markerSrc.value)
+  map.addImage('marker-blue', markerImage.data);
 
   map.on('click', 'liBuildingFootprints', (e) => {
     console.log('liBuildingFootprints click, e:', e);
