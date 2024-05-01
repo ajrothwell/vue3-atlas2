@@ -3,6 +3,8 @@
 import { useMapStore } from '@/stores/MapStore.js'
 const MapStore = useMapStore();
 import Map from '@/components/Map.vue';
+import CyclomediaPanel from '@/components/map/CyclomediaPanel.vue';
+
 import { computed } from 'vue';
 
 const mapPanelClass = computed(() => {
@@ -19,6 +21,7 @@ const mapPanelClass = computed(() => {
 <template>
   <div id="map-panel" :class="mapPanelClass">
     <Map></Map>
+    <CyclomediaPanel v-if="MapStore.cyclomediaOn"></CyclomediaPanel>
   </div>
 </template>
 
