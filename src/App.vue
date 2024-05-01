@@ -1,6 +1,6 @@
 <script setup>
 console.log('import.meta.env.VITE_PUBLICPATH:', import.meta.env.VITE_PUBLICPATH);
-console.log('import.meta.env.VITE_CAK:', import.meta.env.VITE_CYCLOMEDIA_API_KEY);
+console.log('import.meta.env.VITE_CyApKe:', import.meta.env.VITE_CYCLOMEDIA_API_KEY);
 // import { getCurrentInstance } from 'vue'
 // const app = getCurrentInstance()
 // const $config = app.appContext.config.globalProperties.$config;
