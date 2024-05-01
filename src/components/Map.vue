@@ -255,6 +255,8 @@ const markerSrc = computed(() => {
   return import.meta.env.VITE_PUBLICPATH + 'images/marker_blue.png';
 })
 
+let cyclomediaRecordingsClient = null;
+
 onMounted(async () => {
   console.log('Map.vue onMounted route.params.topic:', route.params.topic, 'route.params.address:', route.params.address);
   let currentTopicMapStyle;
@@ -400,7 +402,7 @@ const setImagery = async (newImagery) => {
   map.removeLayer(oldLayer);
 }
 
-let cyclomediaRecordingsClient = null;
+
 let cyclomediaRecordings = null;
 
 const updateCyclomediaRecordings = () =>{
