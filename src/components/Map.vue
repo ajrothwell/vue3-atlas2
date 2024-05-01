@@ -255,8 +255,6 @@ const markerSrc = computed(() => {
   return import.meta.env.VITE_PUBLICPATH + 'images/marker_blue.png';
 })
 
-let cyclomediaRecordingsClient = null;
-
 onMounted(async () => {
   console.log('Map.vue onMounted route.params.topic:', route.params.topic, 'route.params.address:', route.params.address);
   let currentTopicMapStyle;
@@ -347,14 +345,6 @@ onMounted(async () => {
   map.on('draw.finish', drawFinish);
   map.on('draw.modechange', drawModeChange);
 
-
-  cyclomediaRecordingsClient = new CyclomediaRecordingsClient(
-    'https://atlasapi.cyclomedia.com/api/recording/wfs',
-    import.meta.env.VITE_CYCLOMEDIA_USERNAME,
-    import.meta.env.VITE_CYCLOMEDIA_PASSWORD,
-    4326,
-  );
-
   MapStore.setMap(map);
 });
 const drawCreate = (e) => {
@@ -402,8 +392,12 @@ const setImagery = async (newImagery) => {
   map.removeLayer(oldLayer);
 }
 
-
-let cyclomediaRecordings = null;
+let cyclomediaRecordingsClient = new CyclomediaRecordingsClient(
+  'https://atlasapi.cyclomedia.com/api/recording/wfs',
+  import.meta.env.VITE_CYCLOMEDIA_USERNAME,
+  import.meta.env.VITE_CYCLOMEDIA_PASSWORD,
+  4326,
+);
 
 const updateCyclomediaRecordings = () =>{
   console.log('updateCyclomediaRecordings is running');
