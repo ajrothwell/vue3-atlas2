@@ -6,7 +6,8 @@ import { computed } from 'vue';
 defineEmits(['togglePictometry']);
 
 const imgSrc = computed(() => {
-  return import.meta.env.VITE_PUBLICPATH + 'images/pictometry.png';
+  // return import.meta.env.VITE_PUBLICPATH + 'images/pictometry.png';
+  return 'images/pictometry.png';
 });
 
 </script>

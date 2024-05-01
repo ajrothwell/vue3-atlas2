@@ -4,7 +4,8 @@ import { computed } from 'vue';
 defineEmits(['toggleCyclomedia']);
 
 const imgSrc = computed(() => {
-  return import.meta.env.VITE_PUBLICPATH + 'images/cyclomedia.png';
+  // return import.meta.env.VITE_PUBLICPATH + 'images/cyclomedia.png';
+  return 'images/cyclomedia.png';
 });
 
 </script>

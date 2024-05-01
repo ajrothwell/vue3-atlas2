@@ -434,8 +434,9 @@ export default {
         </div>
         <hr class="popup-line">
         <div>
+          <!-- :src="publicPath + 'images/cancel.png'" -->
           <img
-            :src="publicPath + 'images/cancel.png'"
+            :src="'images/cancel.png'"
             class="img-class"
             alt="cancel"
             @click="handleDrawCancel"
@@ -487,8 +488,9 @@ export default {
           v-if="mode === 'simple_select'"
           class="drawn-shape-actions"
         >
+          <!-- :src="publicPath + 'images/trash.png'" -->
           <img
-            :src="publicPath + 'images/trash.png'"
+            :src="'images/trash.png'"
             class="img-class"
             alt="trash"
             @click="handleDeleteClick"
@@ -505,8 +507,9 @@ export default {
           v-if="mode !== 'simple_select'"
           class="draw-actions"
         >
+        <!-- :src="publicPath + 'images/cancel.png'" -->
           <img
-            :src="publicPath + 'images/cancel.png'"
+            :src="'images/cancel.png'"
             class="img-class"
             alt="cancel"
             @click="handleDrawCancel"
@@ -517,8 +520,9 @@ export default {
           >
             Cancel
           </div>
+          <!-- :src="publicPath + 'images/check.png'" -->
           <img
-            :src="publicPath + 'images/check.png'"
+            :src="'images/check.png'"
             class="img-class"
             alt="finish"
             @click="handleDrawFinish"

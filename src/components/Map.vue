@@ -252,7 +252,8 @@ const drawInfo = ref({
 const distanceMeasureControlRef = ref(null)
 
 const markerSrc = computed(() => {
-  return import.meta.env.VITE_PUBLICPATH + 'images/marker_blue.png';
+  return 'images/marker_blue.png';
+  // return import.meta.env.VITE_PUBLICPATH + 'images/marker_blue.png';
 })
 
 onMounted(async () => {
