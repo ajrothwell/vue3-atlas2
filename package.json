@@ -1,12 +1,13 @@
 {
-  "name": "vue3-atlas2",
+  "name": "vue3-atlas",
   "version": "0.0.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "build-dev": "vite build --mode=development",
     "build": "vite build",
-    "build-git": "vite build --base=/vue3-atlas2 --mode=build-git",
+    "build-git": "vite build --base=/vue3-atlas --mode=build-git",
     "github-pages": "vite build --mode=github-pages",
     "preview": "vite preview",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
