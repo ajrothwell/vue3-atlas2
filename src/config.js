@@ -141,8 +141,35 @@ const imageryInfo = {
       ],
       type: 'raster',
       tileSize: 256,
-    }
-  }
+    },
+    cyclomediaRecordings: {
+      type: 'geojson',
+      data: {
+        type: 'FeatureCollection',
+        features: []
+      },
+    },
+    camera: {
+      type: 'geojson',
+      data: {
+        type: 'Feature',
+        geometry: {
+          type: 'Point',
+          coordinates: [],
+        }
+      }
+    },
+    viewCone: {
+      type: 'geojson',
+      data: {
+        type: 'Feature',
+        geometry: {
+          type: 'Polygon',
+          coordinates: [[[]]],
+        }
+      }
+    },
+  },
 }
 
 const pwdDrawnMapStyle = mergeDeep(imageryInfo,{
@@ -208,6 +235,18 @@ const pwdDrawnMapStyle = mergeDeep(imageryInfo,{
         "icon-color": "#ff0000",
         "icon-opacity": 1,
       },
+    },
+    {
+      id: 'cyclomediaRecordings',
+      source: 'cyclomediaRecordings',
+      type: 'circle',
+      paint: {
+        'circle-radius': 6,
+        'circle-color': '#80A5E6',
+        'circle-stroke-width': 1,
+        'circle-stroke-color': 'black',
+        'circle-opacity': 0.5,
+      }
     },
   ],
 });
@@ -287,6 +326,18 @@ const liDrawnMapStyle = mergeDeep(imageryInfo,{
       }
     },
     {
+      id: 'cyclomediaRecordings',
+      source: 'cyclomediaRecordings',
+      type: 'circle',
+      paint: {
+        'circle-radius': 6,
+        'circle-color': '#80A5E6',
+        'circle-stroke-width': 1,
+        'circle-stroke-color': 'black',
+        'circle-opacity': 0.5,
+      }
+    },
+    {
       id: 'addressMarker',
       source: 'addressMarker',
       type: 'symbol',
@@ -352,6 +403,18 @@ const dorDrawnMapStyle = mergeDeep(imageryInfo,{
       id: 'dorLabels',
       source: 'dorLabels',
       type: 'raster',
+    },
+    {
+      id: 'cyclomediaRecordings',
+      source: 'cyclomediaRecordings',
+      type: 'circle',
+      paint: {
+        'circle-radius': 6,
+        'circle-color': '#80A5E6',
+        'circle-stroke-width': 1,
+        'circle-stroke-color': 'black',
+        'circle-opacity': 0.5,
+      }
     },
     {
       id: 'dorParcel',
@@ -441,6 +504,18 @@ const zoningDrawnMapStyle = mergeDeep(imageryInfo,{
       }
     },
     {
+      id: 'cyclomediaRecordings',
+      source: 'cyclomediaRecordings',
+      type: 'circle',
+      paint: {
+        'circle-radius': 6,
+        'circle-color': '#80A5E6',
+        'circle-stroke-width': 1,
+        'circle-stroke-color': 'black',
+        'circle-opacity': 0.5,
+      }
+    },
+    {
       id: 'dorParcel',
       type: 'fill',
       source: 'dorParcel',
@@ -511,6 +586,18 @@ const nearbyDrawnMapStyle = mergeDeep(imageryInfo,{
       id: 'pwdLabels',
       source: 'pwdLabels',
       type: 'raster',
+    },
+    {
+      id: 'cyclomediaRecordings',
+      source: 'cyclomediaRecordings',
+      type: 'circle',
+      paint: {
+        'circle-radius': 6,
+        'circle-color': '#80A5E6',
+        'circle-stroke-width': 1,
+        'circle-stroke-color': 'black',
+        'circle-opacity': 0.5,
+      }
     },
     {
       id: 'nearby',

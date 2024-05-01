@@ -3,6 +3,8 @@
 // import markerColorChange from '../../public/images/marker_color_change.png';
 // console.log('markerColorChange:', markerColorChange);
 
+import CyclomediaRecordingsClient from '@/components/map/recordings-client.js';
+
 import $config from '@/config';
 console.log('Map.vue $config:', $config);
 // PACKAGE IMPORTS
@@ -287,6 +289,13 @@ onMounted(async () => {
     LiStore.selectedLiBuildingNumber = e.features[0].properties.id;
   });
 
+  map.on('click', 'cyclomediaRecordings', (e) => {
+    console.log('cyclomediaRecordings click, e:', e, 'e.features[0]:', e.features[0]);
+    // MapStore.clickedCyclomediaRecording = e.features[0];
+    MapStore.clickedCyclomediaRecordingCoords = [ e.lngLat.lng, e.lngLat.lat ];
+    e.clickOnLayer = true;
+  });
+
   map.on('click', (e, data) => {
     if (e.clickOnLayer) {
       return;
@@ -336,6 +345,14 @@ onMounted(async () => {
   map.on('draw.finish', drawFinish);
   map.on('draw.modechange', drawModeChange);
 
+
+  cyclomediaRecordingsClient = new CyclomediaRecordingsClient(
+    'https://atlasapi.cyclomedia.com/api/recording/wfs',
+    import.meta.env.VITE_CYCLOMEDIA_USERNAME,
+    import.meta.env.VITE_CYCLOMEDIA_PASSWORD,
+    4326,
+  );
+
   MapStore.setMap(map);
 });
 const drawCreate = (e) => {
@@ -383,9 +400,70 @@ const setImagery = async (newImagery) => {
   map.removeLayer(oldLayer);
 }
 
+let cyclomediaRecordingsClient = null;
+let cyclomediaRecordings = null;
+
+const updateCyclomediaRecordings = () =>{
+  console.log('updateCyclomediaRecordings is running');
+  const map = MapStore.map;
+  const zoom = map.getZoom();
+  console.log('updateCyclomediaRecordings is running, zoom:', zoom);
+  // if (!MapStore.cyclomediaOn || zoom < 17.99) {
+  if (!MapStore.cyclomediaOn || zoom < 17) {
+    cyclomediaRecordings = [];
+    return;
+  }
+  const bounds = map.getBounds();
+  console.log('bounds:', bounds);
+  cyclomediaRecordingsClient.getRecordings(
+    bounds,
+    recordings => {
+      console.log('recordings:', recordings);
+      let geojson = {
+        type: 'FeatureCollection',
+        features: []
+      }
+      console.log('map:', map);
+      let features = [];
+      for (let item of recordings) {
+        features.push({
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: [item.lng, item.lat]
+          },
+          properties: {
+            id: item.imageId,
+            type: 'cyclomediaRecording',
+          }
+        })
+      }
+      geojson.features = features;
+      console.log("map.getSource('cyclomediaRecordings'):", 'map.getStyle().layers:', map.getStyle().layers);
+      map.getSource('cyclomediaRecordings').setData(geojson);
+      $config.dorDrawnMapStyle.sources.cyclomediaRecordings.data.features = features;
+      $config.liDrawnMapStyle.sources.cyclomediaRecordings.data.features = features;
+      $config.pwdDrawnMapStyle.sources.cyclomediaRecordings.data.features = features;
+    },
+  );
+}
+
 const toggleCyclomedia = () => {
   console.log('toggleCyclomedia');
   MapStore.cyclomediaOn = !MapStore.cyclomediaOn;
+  if (MapStore.cyclomediaOn) {
+    updateCyclomediaRecordings();
+  } else {
+    let geojson = {
+      type: 'FeatureCollection',
+      features: []
+    }
+    map.getSource('cyclomediaRecordings').setData(geojson);
+  }
+  //   map.addLayer($config.mapLayers.cyclomedia, 'addressMarker');
+  // } else {
+  //   map.removeLayer('cyclomedia');
+  // }
 }
 
 const togglePictometry = () => {

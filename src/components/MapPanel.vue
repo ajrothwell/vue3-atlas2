@@ -21,7 +21,7 @@ const mapPanelClass = computed(() => {
 <template>
   <div id="map-panel" :class="mapPanelClass">
     <Map></Map>
-    <CyclomediaPanel v-if="MapStore.cyclomediaOn"></CyclomediaPanel>
+    <keep-alive><CyclomediaPanel v-if="MapStore.cyclomediaOn"></CyclomediaPanel></keep-alive>
   </div>
 </template>
 
