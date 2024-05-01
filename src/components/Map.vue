@@ -374,10 +374,15 @@ const imagerySelected = computed(() => {
 const toggleImagery = () => {
   console.log('toggleImagery, map.getStyle:', map.getStyle());
   const style = map.getStyle();
+  // let beforeLayer = 'addressMarker';
+  // // console.log('map.getLayer("addressMarker"):', map.getLayer('addressMarker'), 'map.getLayer("dorParcel"):', map.getLayer('dorParcel'));
+  // if (map.getLayer('addressMarker') === undefined) {
+  //   beforeLayer = 'dorParcel';
+  // }
   if (!MapStore.imageryOn) {
     MapStore.imageryOn = true;
-    map.addLayer($config.mapLayers[imagerySelected.value], 'addressMarker')
-    map.addLayer($config.mapLayers.imageryLabels, 'addressMarker')
+    map.addLayer($config.mapLayers[imagerySelected.value], 'cyclomediaRecordings')
+    map.addLayer($config.mapLayers.imageryLabels, 'cyclomediaRecordings')
   } else {
     console.log('map.getStyle().layers:', map.getStyle().layers);
     MapStore.imageryOn = false;
@@ -390,7 +395,12 @@ const setImagery = async (newImagery) => {
   const oldLayer = imagerySelected.value;
   console.log('setImagery, newImagery:', newImagery, 'oldLayer:', oldLayer, 'imagerySelected.value:', imagerySelected.value);
   MapStore.imagerySelected = newImagery;
-  await map.addLayer($config.mapLayers[imagerySelected.value], 'addressMarker')
+  // let beforeLayer = 'addressMarker';
+  // console.log('map.getLayer("addressMarker"):', map.getLayer('addressMarker'));
+  // if (!map.getLayer('addressMarker') === undefined) {
+  //   beforeLayer = 'dorParcel';
+  // }
+  await map.addLayer($config.mapLayers[imagerySelected.value], 'cyclomediaRecordings')
   map.removeLayer(oldLayer);
 }
 
@@ -439,9 +449,10 @@ const updateCyclomediaRecordings = () =>{
       geojson.features = features;
       console.log("map.getSource('cyclomediaRecordings'):", 'map.getStyle().layers:', map.getStyle().layers);
       map.getSource('cyclomediaRecordings').setData(geojson);
+      // I don't know why this works
       $config.dorDrawnMapStyle.sources.cyclomediaRecordings.data.features = features;
-      $config.liDrawnMapStyle.sources.cyclomediaRecordings.data.features = features;
-      $config.pwdDrawnMapStyle.sources.cyclomediaRecordings.data.features = features;
+      // $config.liDrawnMapStyle.sources.cyclomediaRecordings.data.features = features;
+      // $config.pwdDrawnMapStyle.sources.cyclomediaRecordings.data.features = features;
     },
   );
 }
@@ -457,11 +468,10 @@ const toggleCyclomedia = () => {
       features: []
     }
     map.getSource('cyclomediaRecordings').setData(geojson);
+    $config.dorDrawnMapStyle.sources.cyclomediaRecordings.data.features = [];
+    // $config.liDrawnMapStyle.sources.cyclomediaRecordings.data.features = [];
+    // $config.pwdDrawnMapStyle.sources.cyclomediaRecordings.data.features = [];
   }
-  //   map.addLayer($config.mapLayers.cyclomedia, 'addressMarker');
-  // } else {
-  //   map.removeLayer('cyclomedia');
-  // }
 }
 
 const togglePictometry = () => {

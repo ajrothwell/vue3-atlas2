@@ -223,6 +223,18 @@ const pwdDrawnMapStyle = mergeDeep(imageryInfo,{
       type: 'raster',
     },
     {
+      id: 'cyclomediaRecordings',
+      source: 'cyclomediaRecordings',
+      type: 'circle',
+      paint: {
+        'circle-radius': 6,
+        'circle-color': '#80A5E6',
+        'circle-stroke-width': 1,
+        'circle-stroke-color': 'black',
+        'circle-opacity': 0.5,
+      }
+    },
+    {
       id: 'addressMarker',
       source: 'addressMarker',
       type: 'symbol',
@@ -235,18 +247,6 @@ const pwdDrawnMapStyle = mergeDeep(imageryInfo,{
         "icon-color": "#ff0000",
         "icon-opacity": 1,
       },
-    },
-    {
-      id: 'cyclomediaRecordings',
-      source: 'cyclomediaRecordings',
-      type: 'circle',
-      paint: {
-        'circle-radius': 6,
-        'circle-color': '#80A5E6',
-        'circle-stroke-width': 1,
-        'circle-stroke-color': 'black',
-        'circle-opacity': 0.5,
-      }
     },
   ],
 });
@@ -309,6 +309,18 @@ const liDrawnMapStyle = mergeDeep(imageryInfo,{
       type: 'raster',
     },
     {
+      id: 'cyclomediaRecordings',
+      source: 'cyclomediaRecordings',
+      type: 'circle',
+      paint: {
+        'circle-radius': 6,
+        'circle-color': '#80A5E6',
+        'circle-stroke-width': 1,
+        'circle-stroke-color': 'black',
+        'circle-opacity': 0.5,
+      }
+    },
+    {
       id: 'liBuildingFootprints',
       type: 'fill',
       source: 'liBuildingFootprints',
@@ -323,18 +335,6 @@ const liDrawnMapStyle = mergeDeep(imageryInfo,{
         /* other */ '#C2B7FF'
         ],
         'fill-opacity': 0.5
-      }
-    },
-    {
-      id: 'cyclomediaRecordings',
-      source: 'cyclomediaRecordings',
-      type: 'circle',
-      paint: {
-        'circle-radius': 6,
-        'circle-color': '#80A5E6',
-        'circle-stroke-width': 1,
-        'circle-stroke-color': 'black',
-        'circle-opacity': 0.5,
       }
     },
     {
@@ -496,14 +496,6 @@ const zoningDrawnMapStyle = mergeDeep(imageryInfo,{
       type: 'raster',
     },
     {
-      id: 'zoning',
-      source: 'zoning',
-      type: 'raster',
-      paint: {
-        'raster-opacity': 1,
-      }
-    },
-    {
       id: 'cyclomediaRecordings',
       source: 'cyclomediaRecordings',
       type: 'circle',
@@ -513,6 +505,14 @@ const zoningDrawnMapStyle = mergeDeep(imageryInfo,{
         'circle-stroke-width': 1,
         'circle-stroke-color': 'black',
         'circle-opacity': 0.5,
+      }
+    },
+    {
+      id: 'zoning',
+      source: 'zoning',
+      type: 'raster',
+      paint: {
+        'raster-opacity': 1,
       }
     },
     {
