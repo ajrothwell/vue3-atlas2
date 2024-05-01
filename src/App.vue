@@ -1,14 +1,19 @@
 <script setup>
-console.log('import.meta.env.VITE_PUBLICPATH:', import.meta.env.VITE_PUBLICPATH);
-console.log('import.meta.env.VITE_CyApKe:', import.meta.env.VITE_CYCLOMEDIA_API_KEY);
-// import { getCurrentInstance } from 'vue'
-// const app = getCurrentInstance()
-// const $config = app.appContext.config.globalProperties.$config;
-// import $config from '@/config';
 
 // STORES
 import { useMainStore } from '@/stores/MainStore.js'
 const MainStore = useMainStore();
+
+if (!import.meta.env.VITE_PUBLICPATH) {
+  MainStore.publicPath = '/';
+} else {
+  MainStore.publicPath = import.meta.env.VITE_PUBLICPATH;
+}
+console.log('import.meta.env.VITE_PUBLICPATH:', import.meta.env.VITE_PUBLICPATH, 'MainStore.publicPath:', MainStore.publicPath);
+// import { getCurrentInstance } from 'vue'
+// const app = getCurrentInstance()
+// const $config = app.appContext.config.globalProperties.$config;
+// import $config from '@/config';
 
 // ROUTER
 import { useRouter, useRoute } from 'vue-router';

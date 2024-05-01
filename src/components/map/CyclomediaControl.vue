@@ -1,10 +1,14 @@
 <script setup>
+import { useMainStore } from '@/stores/MainStore.js'
+const MainStore = useMainStore();
+
 import { computed } from 'vue';
 
 defineEmits(['toggleCyclomedia']);
 
 const imgSrc = computed(() => {
-  return import.meta.env.VITE_PUBLICPATH + 'images/cyclomedia.png';
+  return MainStore.publicPath + 'images/cyclomedia.png';
+  // return import.meta.env.VITE_PUBLICPATH + 'images/cyclomedia.png';
   // return 'images/cyclomedia.png';
 });
 

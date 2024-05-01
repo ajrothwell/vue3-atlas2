@@ -1,12 +1,15 @@
 <script setup>
 import { computed } from 'vue';
+import { useMainStore } from '@/stores/MainStore.js'
+const MainStore = useMainStore();
 // import { useMapStore } from '@/stores/MapStore.js';
 // const MapStore = useMapStore();
 
 defineEmits(['togglePictometry']);
 
 const imgSrc = computed(() => {
-  return import.meta.env.VITE_PUBLICPATH + 'images/pictometry.png';
+  return MainStore.publicPath + 'images/pictometry.png';
+  // return import.meta.env.VITE_PUBLICPATH + 'images/pictometry.png';
   // return 'images/pictometry.png';
 });
 

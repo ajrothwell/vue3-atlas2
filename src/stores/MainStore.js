@@ -3,6 +3,7 @@ import { defineStore } from 'pinia';
 export const useMainStore = defineStore("MainStore", {
   state: () => {
     return {
+      publicPath: null,
       lastSearchMethod: 'address',
       currentAddress: '',
       currentTopic: 'Property',
