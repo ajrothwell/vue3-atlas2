@@ -12,7 +12,7 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    environment: github-pages
+    environment: development
 
     steps:
     - uses: actions/checkout@v2
@@ -25,15 +25,15 @@ jobs:
       run: |
         printf "@fortawesome:registry=https://npm.fontawesome.com/\n//npm.fontawesome.com/:_authToken=${FONTAWESOME_NPM_AUTH_TOKEN}" >> ~/.npmrc
         npm install
-        npm run github-pages
+        npm run dev
       env:
         FONTAWESOME_NPM_AUTH_TOKEN: ${{ secrets.FA_AUTH_TOKEN }}
-        VUE_APP_GATEKEEPER_KEY: ${{ secrets.VUE_APP_GATEKEEPER_KEY }}
-        VUE_APP_CYCLOMEDIA_API_KEY: ${{ secrets.VUE_APP_CYCLOMEDIA_API_KEY }}
-        VUE_APP_CYCLOMEDIA_PASSWORD: ${{ secrets.VUE_APP_CYCLOMEDIA_PASSWORD }}
-        VUE_APP_CYCLOMEDIA_USERNAME: ${{ secrets.VUE_APP_CYCLOMEDIA_USERNAME }}
-        VUE_APP_PICTOMETRY_API_KEY: ${{ secrets.VUE_APP_PICTOMETRY_API_KEY }}
-        VUE_APP_PICTOMETRY_SECRET_KEY: ${{ secrets.VUE_APP_PICTOMETRY_SECRET_KEY }}
+        VITE_GATEKEEPER_KEY: ${{ secrets.VITE_GATEKEEPER_KEY }}
+        VITE_CYCLOMEDIA_API_KEY: ${{ secrets.VITE_CYCLOMEDIA_API_KEY }}
+        VITE_CYCLOMEDIA_PASSWORD: ${{ secrets.VITE_CYCLOMEDIA_PASSWORD }}
+        VITE_CYCLOMEDIA_USERNAME: ${{ secrets.VITE_CYCLOMEDIA_USERNAME }}
+        VITE_PICTOMETRY_API_KEY: ${{ secrets.VITE_PICTOMETRY_API_KEY }}
+        VITE_PICTOMETRY_SECRET_KEY: ${{ secrets.VITE_PICTOMETRY_SECRET_KEY }}
 
     - name: Deploy to Dev s3, Set index headers, and Invalidate Cloudfront
       env:
