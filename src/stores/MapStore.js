@@ -39,14 +39,14 @@ export const useMapStore = defineStore("MapStore", {
     setCyclomediaYaw(yaw) {
       this.cyclomediaOrientation.yaw = yaw;
     },
-    setCyclomediaOrientation(lnglat, xyz) {
-      console.log('setCyclomediaOrientation is running, lnglat:', lnglat, 'xyz:', xyz);
+    setCyclomediaOrientation(lngLat, xyz) {
+      console.log('setCyclomediaOrientation is running, xyz:', xyz);
       // this.cyclomediaYaw = yaw;
       // this.cyclomediaHFov = hFov;
       // this.cyclomediaXyz = xyz;
       // this.cyclomediaOrientation.yaw = yaw;
       // this.cyclomediaOrientation.hFov = hFov;
-      this.cyclomediaOrientation.lngLat = lnglat;
+      this.cyclomediaOrientation.lngLat = lngLat;
       this.cyclomediaOrientation.xyz = xyz;
     },
     setMap(map) {

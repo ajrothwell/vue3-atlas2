@@ -244,6 +244,8 @@ const pwdDrawnMapStyle = mergeDeep(imageryInfo,{
         'icon-size': 0.09,
         'icon-rotate': 0,
         'icon-rotation-alignment': 'map',
+        "icon-allow-overlap" : true,
+        "text-allow-overlap": true,
       },
     },
     {
@@ -264,6 +266,8 @@ const pwdDrawnMapStyle = mergeDeep(imageryInfo,{
         'icon-image': 'marker-blue',
         'icon-anchor' : 'bottom',
         'icon-size': .05,
+        "icon-allow-overlap" : true,
+        "text-allow-overlap": true,
       },
     },
   ],

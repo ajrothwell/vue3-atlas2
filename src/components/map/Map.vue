@@ -2,6 +2,9 @@
 
 // import markerColorChange from '../../public/images/marker_color_change.png';
 // console.log('markerColorChange:', markerColorChange);
+import proj4 from 'proj4';
+const projection4326 = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
+const projection2272 = "+proj=lcc +lat_1=40.96666666666667 +lat_2=39.93333333333333 +lat_0=39.33333333333334 +lon_0=-77.75 +x_0=600000 +y_0=0 +ellps=GRS80 +datum=NAD83 +to_meter=0.3048006096012192 +no_defs";
 
 import CyclomediaPanel from '@/components/map/CyclomediaPanel.vue';
 import CyclomediaRecordingsClient from '@/components/map/recordings-client.js';
@@ -281,10 +284,10 @@ onMounted(async () => {
   map.addControl(new maplibregl.GeolocateControl(), 'bottom-left');
 
   map.on('moveend', (e) => {
-    // console.log('map moveend event, e:', e, 'map.getZoom()', map.getZoom());
+    console.log('map moveend event, e:', e, 'map.getZoom()', map.getZoom(), 'map.getStyle().layers:', map.getStyle().layers, 'map.getStyle().sources:', map.getStyle().sources);
 
     if (MapStore.cyclomediaOn) {
-      map.getZoom() > 16.5 ? MapStore.cyclomediaRecordingsOn = true : MapStore.cyclomediaRecordingsOn = false;
+      map.getZoom() > 18.5 ? MapStore.cyclomediaRecordingsOn = true : MapStore.cyclomediaRecordingsOn = false;
       if (MapStore.cyclomediaRecordingsOn) {
         updateCyclomediaRecordings();
       } else {
@@ -455,13 +458,6 @@ const updateCyclomediaRecordings = async () =>{
   );
 }
 
-watch(
-  () => MapStore.cyclomediaOrientation.lngLat,
-  newOrientation => {
-    updateCyclomediaCamera(newOrientation);
-  }
-)
-
 const updateCyclomediaCameraAngle = (newOrientation) => {
   console.log('updateCyclomediaCameraAngle is running, newOrientation:', newOrientation);
   const layer = map.getLayer('cyclomediaCamera');
@@ -469,14 +465,15 @@ const updateCyclomediaCameraAngle = (newOrientation) => {
   map.setLayoutProperty('cyclomediaCamera', 'icon-rotate', newOrientation);
 }
 
-const updateCyclomediaCamera = (orientation) => {
-  console.log('updateCyclomediaCamera is running, orientation:', orientation);
-  const map = MapStore.map;
+const updateCyclomediaCameraLngLat = (lngLat) => {
+  // const lngLat = proj4(projection2272, projection4326, [ e[0], e[1] ]);
+  console.log('updateCyclomediaCameraLngLat is running, lngLat:', lngLat);
+  // const map = MapStore.map;
   const zoom = map.getZoom();
-  if (!MapStore.cyclomediaOn || zoom < 16.5) {
+  if (!MapStore.cyclomediaOn) {
     return;
   } else {
-    const theData = {'type': 'Feature','geometry': {'type': 'Point','coordinates': orientation }};
+    const theData = {'type': 'Feature','geometry': {'type': 'Point','coordinates': lngLat }};
     map.getSource('cyclomediaCamera').setData(theData);
   }
 }
@@ -486,14 +483,30 @@ const toggleCyclomedia = async() => {
   console.log('toggleCyclomedia');
   MapStore.cyclomediaOn = !MapStore.cyclomediaOn;
   if (MapStore.cyclomediaOn) {
-    await updateCyclomediaRecordings();
+    const zoom = map.getZoom();
+    if (zoom > 16.5) {
+      await updateCyclomediaRecordings();
+    }
+    if (MapStore.cyclomediaOrientation.lngLat) {
+      updateCyclomediaCameraLngLat(MapStore.cyclomediaOrientation.lngLat);
+    }
   } else {
-    let geojson = {
+    let recordingsGeojson = {
       type: 'FeatureCollection',
       features: []
     }
-    map.getSource('cyclomediaRecordings').setData(geojson);
+    map.getSource('cyclomediaRecordings').setData(recordingsGeojson);
     $config.dorDrawnMapStyle.sources.cyclomediaRecordings.data.features = [];
+
+    let cameraGeojson = {
+      type: 'Feature',
+      geometry: {
+        type: 'Point',
+        coordinates: [],
+      }
+    }
+    map.getSource('cyclomediaCamera').setData(cameraGeojson);
+    MapStore.setCyclomediaOrientation(MapStore.cyclomediaOrientation.lngLat, null);
   }
 }
 
@@ -580,7 +593,11 @@ const handleZoningOpacityChange = (opacity) => {
     <OpacitySlider v-if="MainStore.currentTopic == 'Zoning'" :initialOpacity="MapStore.zoningOpacity"@opacityChange="handleZoningOpacityChange"></OpacitySlider>
   </div>
   <KeepAlive>
-    <CyclomediaPanel v-if="MapStore.cyclomediaOn" @updateYaw="updateCyclomediaCameraAngle"></CyclomediaPanel>
+    <CyclomediaPanel
+      v-if="MapStore.cyclomediaOn"
+      @updateCameraYaw="updateCyclomediaCameraAngle"
+      @updateCameraLngLat="updateCyclomediaCameraLngLat"
+    ></CyclomediaPanel>
   </KeepAlive>
 </template>
 
