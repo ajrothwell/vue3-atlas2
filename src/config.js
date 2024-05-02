@@ -149,7 +149,7 @@ const imageryInfo = {
         features: []
       },
     },
-    camera: {
+    cyclomediaCamera: {
       type: 'geojson',
       data: {
         type: 'Feature',
@@ -235,6 +235,16 @@ const pwdDrawnMapStyle = mergeDeep(imageryInfo,{
       }
     },
     {
+      id: 'cyclomediaCamera',
+      source: 'cyclomediaCamera',
+      type: 'symbol',
+      layout: {
+        'icon-image': 'camera-icon',
+        'icon-anchor' : 'bottom',
+        'icon-size': .12,
+      },
+    },
+    {
       id: 'addressMarker',
       source: 'addressMarker',
       type: 'symbol',
@@ -242,10 +252,6 @@ const pwdDrawnMapStyle = mergeDeep(imageryInfo,{
         'icon-image': 'marker-blue',
         'icon-anchor' : 'bottom',
         'icon-size': .05,
-      },
-      paint: {
-        "icon-color": "#ff0000",
-        "icon-opacity": 1,
       },
     },
   ],
@@ -345,10 +351,6 @@ const liDrawnMapStyle = mergeDeep(imageryInfo,{
         'icon-image': 'marker-blue',
         'icon-anchor' : 'bottom',
         'icon-size': .05,
-      },
-      paint: {
-        "icon-color": "#ff0000",
-        "icon-opacity": 1,
       },
     },
   ],

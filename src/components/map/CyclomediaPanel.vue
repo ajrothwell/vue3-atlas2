@@ -38,27 +38,6 @@ watch(
   }
 )
 
-// let cyclomediaRecordingsClient = null;
-// let cyclomediaRecordings = [];
-
-// const updateCyclomediaRecordings = () =>{
-//   // console.log('updateCyclomediaRecordings is running');
-//   const map = MapStore.map;
-//   const zoom = map.getZoom();
-//   // console.log('updateCyclomediaRecordings is running, zoom:', zoom);
-//   if (!MapStore.cyclomediaOn || zoom < 17.99) {
-//     cyclomediaRecordings = [];
-//     return;
-//   }
-//   const bounds = map.getBounds();
-//   cyclomediaRecordingsClient.getRecordings(
-//     bounds,
-//     recordings => {
-//       cyclomediaRecordings = recordings;
-//     },
-//   );
-// }
-
 onMounted( async() => {
 
   console.log('CyclomediaPanel.vue onMounted');
@@ -89,12 +68,6 @@ onMounted( async() => {
     setNewLocation([ -75.163471, 39.953338 ]);
   }
 
-  // cyclomediaRecordingsClient = new CyclomediaRecordingsClient(
-  //   'https://atlasapi.cyclomedia.com/api/recording/wfs',
-  //   import.meta.env.VITE_CYCLOMEDIA_USERNAME,
-  //   import.meta.env.VITE_CYCLOMEDIA_PASSWORD,
-  //   4326,
-  // );
 })
 
 </script>

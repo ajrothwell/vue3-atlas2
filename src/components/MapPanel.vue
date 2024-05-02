@@ -2,7 +2,7 @@
 
 import { useMapStore } from '@/stores/MapStore.js'
 const MapStore = useMapStore();
-import Map from '@/components/Map.vue';
+import Map from '@/components/map/Map.vue';
 import CyclomediaPanel from '@/components/map/CyclomediaPanel.vue';
 
 import { computed } from 'vue';

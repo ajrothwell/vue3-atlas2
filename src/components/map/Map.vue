@@ -252,9 +252,10 @@ const drawInfo = ref({
 const distanceMeasureControlRef = ref(null)
 
 const markerSrc = computed(() => {
-  // return 'images/marker_blue.png';
-  // return import.meta.env.VITE_PUBLICPATH + 'images/marker_blue.png';
   return MainStore.publicPath + 'images/marker_blue.png';
+})
+const cameraSrc = computed(() => {
+  return MainStore.publicPath + 'images/camera2.png';
 })
 
 onMounted(async () => {
@@ -279,10 +280,10 @@ onMounted(async () => {
   map.addControl(new maplibregl.GeolocateControl(), 'bottom-left');
 
   map.on('moveend', (e) => {
-    console.log('map moveend event, e:', e);
+    console.log('map moveend event, e:', e, 'map.getZoom()', map.getZoom());
 
     if (MapStore.cyclomediaOn) {
-      map.getZoom() > 17 ? MapStore.cyclomediaRecordingsOn = true : MapStore.cyclomediaRecordingsOn = false;
+      map.getZoom() > 16.5 ? MapStore.cyclomediaRecordingsOn = true : MapStore.cyclomediaRecordingsOn = false;
       if (MapStore.cyclomediaRecordingsOn) {
         updateCyclomediaRecordings();
       } else {
@@ -299,6 +300,8 @@ onMounted(async () => {
 
   const markerImage = await map.loadImage(markerSrc.value)
   map.addImage('marker-blue', markerImage.data);
+  const cameraImage = await map.loadImage(cameraSrc.value)
+  map.addImage('camera-icon', cameraImage.data);
 
   map.on('click', 'liBuildingFootprints', (e) => {
     console.log('liBuildingFootprints click, e:', e);
@@ -389,11 +392,6 @@ const imagerySelected = computed(() => {
 const toggleImagery = () => {
   console.log('toggleImagery, map.getStyle:', map.getStyle());
   const style = map.getStyle();
-  // let beforeLayer = 'addressMarker';
-  // // console.log('map.getLayer("addressMarker"):', map.getLayer('addressMarker'), 'map.getLayer("dorParcel"):', map.getLayer('dorParcel'));
-  // if (map.getLayer('addressMarker') === undefined) {
-  //   beforeLayer = 'dorParcel';
-  // }
   if (!MapStore.imageryOn) {
     MapStore.imageryOn = true;
     map.addLayer($config.mapLayers[imagerySelected.value], 'cyclomediaRecordings')
@@ -410,11 +408,6 @@ const setImagery = async (newImagery) => {
   const oldLayer = imagerySelected.value;
   console.log('setImagery, newImagery:', newImagery, 'oldLayer:', oldLayer, 'imagerySelected.value:', imagerySelected.value);
   MapStore.imagerySelected = newImagery;
-  // let beforeLayer = 'addressMarker';
-  // console.log('map.getLayer("addressMarker"):', map.getLayer('addressMarker'));
-  // if (!map.getLayer('addressMarker') === undefined) {
-  //   beforeLayer = 'dorParcel';
-  // }
   await map.addLayer($config.mapLayers[imagerySelected.value], 'cyclomediaRecordings')
   map.removeLayer(oldLayer);
 }
@@ -426,16 +419,8 @@ let cyclomediaRecordingsClient = new CyclomediaRecordingsClient(
   4326,
 );
 
-const updateCyclomediaRecordings = () =>{
+const updateCyclomediaRecordings = async () =>{
   console.log('updateCyclomediaRecordings is running');
-  // const map = MapStore.map;
-  const zoom = map.getZoom();
-  console.log('updateCyclomediaRecordings is running, zoom:', zoom);
-  // if (!MapStore.cyclomediaOn || zoom < 17.99) {
-  if (!MapStore.cyclomediaOn || zoom < 17) {
-    cyclomediaRecordings = [];
-    return;
-  }
   const bounds = map.getBounds();
   console.log('bounds:', bounds);
   cyclomediaRecordingsClient.getRecordings(
@@ -464,19 +449,34 @@ const updateCyclomediaRecordings = () =>{
       geojson.features = features;
       console.log("map.getSource('cyclomediaRecordings'):", 'map.getStyle().layers:', map.getStyle().layers);
       map.getSource('cyclomediaRecordings').setData(geojson);
-      // I don't know why this works
+      // I don't know why this works - maybe because the mergeDeep is still running
       $config.dorDrawnMapStyle.sources.cyclomediaRecordings.data.features = features;
-      // $config.liDrawnMapStyle.sources.cyclomediaRecordings.data.features = features;
-      // $config.pwdDrawnMapStyle.sources.cyclomediaRecordings.data.features = features;
     },
   );
 }
 
-const toggleCyclomedia = () => {
+const updateCyclomediaCamera = () => {
+  console.log('updateCyclomediaCamera is running');
+  const map = MapStore.map;
+  const zoom = map.getZoom();
+  if (!MapStore.cyclomediaOn || zoom < 16.5) {
+    return;
+  } else {
+    const theData = {'type': 'Feature','geometry': {'type': 'Point','coordinates': { 0: -75.16, 1: 39.95}}};
+    // console.log('$config.pwdDrawnMapStyle.sources.cyclomediaCamera.data.geometry.coordinates:', $config.pwdDrawnMapStyle.sources.cyclomediaCamera.data.geometry.coordinates);
+    // $config.pwdDrawnMapStyle.sources.cyclomediaCamera.data.geometry.coordinates = [[ map.getCenter().lng, map.getCenter().lat ]];
+    map.getSource('cyclomediaCamera').setData(theData);
+    // console.log('$config.pwdDrawnMapStyle.sources.cyclomediaCamera.data.geometry.coordinates:', $config.pwdDrawnMapStyle.sources.cyclomediaCamera.data.geometry.coordinates);
+  }
+}
+
+const toggleCyclomedia = async() => {
+  console.log('map.getStyle().sources:', map.getStyle().sources, 'map.getStyle().layers:', map.getStyle().layers);
   console.log('toggleCyclomedia');
   MapStore.cyclomediaOn = !MapStore.cyclomediaOn;
   if (MapStore.cyclomediaOn) {
-    updateCyclomediaRecordings();
+    await updateCyclomediaRecordings();
+    updateCyclomediaCamera();
   } else {
     let geojson = {
       type: 'FeatureCollection',
