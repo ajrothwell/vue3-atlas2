@@ -3,6 +3,7 @@
 // import markerColorChange from '../../public/images/marker_color_change.png';
 // console.log('markerColorChange:', markerColorChange);
 
+import CyclomediaPanel from '@/components/map/CyclomediaPanel.vue';
 import CyclomediaRecordingsClient from '@/components/map/recordings-client.js';
 
 import $config from '@/config';
@@ -255,7 +256,7 @@ const markerSrc = computed(() => {
   return MainStore.publicPath + 'images/marker_blue.png';
 })
 const cameraSrc = computed(() => {
-  return MainStore.publicPath + 'images/camera2.png';
+  return MainStore.publicPath + 'images/camera.png';
 })
 
 onMounted(async () => {
@@ -280,7 +281,7 @@ onMounted(async () => {
   map.addControl(new maplibregl.GeolocateControl(), 'bottom-left');
 
   map.on('moveend', (e) => {
-    console.log('map moveend event, e:', e, 'map.getZoom()', map.getZoom());
+    // console.log('map moveend event, e:', e, 'map.getZoom()', map.getZoom());
 
     if (MapStore.cyclomediaOn) {
       map.getZoom() > 16.5 ? MapStore.cyclomediaRecordingsOn = true : MapStore.cyclomediaRecordingsOn = false;
@@ -311,7 +312,6 @@ onMounted(async () => {
 
   map.on('click', 'cyclomediaRecordings', (e) => {
     console.log('cyclomediaRecordings click, e:', e, 'e.features[0]:', e.features[0]);
-    // MapStore.clickedCyclomediaRecording = e.features[0];
     MapStore.clickedCyclomediaRecordingCoords = [ e.lngLat.lng, e.lngLat.lat ];
     e.clickOnLayer = true;
   });
@@ -455,18 +455,29 @@ const updateCyclomediaRecordings = async () =>{
   );
 }
 
-const updateCyclomediaCamera = () => {
-  console.log('updateCyclomediaCamera is running');
+watch(
+  () => MapStore.cyclomediaOrientation.lngLat,
+  newOrientation => {
+    updateCyclomediaCamera(newOrientation);
+  }
+)
+
+const updateCyclomediaCameraAngle = (newOrientation) => {
+  console.log('updateCyclomediaCameraAngle is running, newOrientation:', newOrientation);
+  const layer = map.getLayer('cyclomediaCamera');
+  // console.log('layer:', layer);
+  map.setLayoutProperty('cyclomediaCamera', 'icon-rotate', newOrientation);
+}
+
+const updateCyclomediaCamera = (orientation) => {
+  console.log('updateCyclomediaCamera is running, orientation:', orientation);
   const map = MapStore.map;
   const zoom = map.getZoom();
   if (!MapStore.cyclomediaOn || zoom < 16.5) {
     return;
   } else {
-    const theData = {'type': 'Feature','geometry': {'type': 'Point','coordinates': { 0: -75.16, 1: 39.95}}};
-    // console.log('$config.pwdDrawnMapStyle.sources.cyclomediaCamera.data.geometry.coordinates:', $config.pwdDrawnMapStyle.sources.cyclomediaCamera.data.geometry.coordinates);
-    // $config.pwdDrawnMapStyle.sources.cyclomediaCamera.data.geometry.coordinates = [[ map.getCenter().lng, map.getCenter().lat ]];
+    const theData = {'type': 'Feature','geometry': {'type': 'Point','coordinates': orientation }};
     map.getSource('cyclomediaCamera').setData(theData);
-    // console.log('$config.pwdDrawnMapStyle.sources.cyclomediaCamera.data.geometry.coordinates:', $config.pwdDrawnMapStyle.sources.cyclomediaCamera.data.geometry.coordinates);
   }
 }
 
@@ -476,7 +487,6 @@ const toggleCyclomedia = async() => {
   MapStore.cyclomediaOn = !MapStore.cyclomediaOn;
   if (MapStore.cyclomediaOn) {
     await updateCyclomediaRecordings();
-    updateCyclomediaCamera();
   } else {
     let geojson = {
       type: 'FeatureCollection',
@@ -484,8 +494,6 @@ const toggleCyclomedia = async() => {
     }
     map.getSource('cyclomediaRecordings').setData(geojson);
     $config.dorDrawnMapStyle.sources.cyclomediaRecordings.data.features = [];
-    // $config.liDrawnMapStyle.sources.cyclomediaRecordings.data.features = [];
-    // $config.pwdDrawnMapStyle.sources.cyclomediaRecordings.data.features = [];
   }
 }
 
@@ -503,6 +511,61 @@ const handleZoningOpacityChange = (opacity) => {
   );
 }
 
+// const handleCycloChanges = () => {
+//   const halfAngle = this.cycloHFov / 2.0;
+//   let angle1 = this.cycloRotationAngle - halfAngle;
+//   let angle2 = this.cycloRotationAngle + halfAngle;
+//   // console.log('handleCycloChanges, halfAngle:', halfAngle, 'angle1:', angle1, 'this.cycloRotationAngle:', this.cycloRotationAngle, 'angle2:', angle2);
+
+//   let distance;
+//   if (this.$data.watchedZoom < 9) {
+//     distance = 2000 * (21 - this.$data.watchedZoom);
+//   } else if (this.$data.watchedZoom < 10) {
+//     distance = 1000 * (21 - this.$data.watchedZoom);
+//   } else if (this.$data.watchedZoom < 11) {
+//     distance = 670 * (21 - this.$data.watchedZoom);
+//   } else if (this.$data.watchedZoom < 12) {
+//     distance = 420 * (21 - this.$data.watchedZoom);
+//   } else if (this.$data.watchedZoom < 13) {
+//     distance = 270 * (21 - this.$data.watchedZoom);
+//   } else if (this.$data.watchedZoom < 14) {
+//     distance = 150 * (21 - this.$data.watchedZoom);
+//   } else if (this.$data.watchedZoom < 15) {
+//     distance = 100 * (21 - this.$data.watchedZoom);
+//   } else if (this.$data.watchedZoom < 16) {
+//     distance = 55 * (21 - this.$data.watchedZoom);
+//   } else if (this.$data.watchedZoom < 17) {
+//     distance = 30 * (21 - this.$data.watchedZoom);
+//   } else if (this.$data.watchedZoom < 18) {
+//     distance = 25 * (21 - this.$data.watchedZoom);
+//   } else if (this.$data.watchedZoom < 20.4) {
+//     distance = 15 * (21 - this.$data.watchedZoom);
+//   } else {
+//     distance = 10;
+//   }
+
+//   console.log('handleCycloChanges is running, this.$data.watchedZoom:', this.$data.watchedZoom, 'distance:', distance, 'this.cycloLatlng:', this.cycloLatlng);
+//   let options = { units: 'feet' };
+
+//   if (!this.cycloLatlng) {
+//     return;
+//   }
+
+//   var destination1 = destination([ this.cycloLatlng[1], this.cycloLatlng[0] ], distance, angle1, options);
+//   var destination2 = destination([ this.cycloLatlng[1], this.cycloLatlng[0] ], distance, angle2, options);
+//   // console.log('cyclocenter:', [this.cycloLatlng[1], this.cycloLatlng[0]], 'destination1:', destination1.geometry.coordinates, 'destination2:', destination2.geometry.coordinates);
+//   // console.log('destination1:', destination1.geometry.coordinates, 'destination2:', destination2.geometry.coordinates);
+
+//   this.$data.geojsonViewconeSource.data.geometry.coordinates = [
+//     [
+//       [ this.cycloLatlng[1], this.cycloLatlng[0] ],
+//       [ destination1.geometry.coordinates[0], destination1.geometry.coordinates[1] ],
+//       [ destination2.geometry.coordinates[0], destination2.geometry.coordinates[1] ],
+//       [ this.cycloLatlng[1], this.cycloLatlng[0] ],
+//     ],
+//   ];
+// }
+
 </script>
 
 <template>
@@ -516,6 +579,9 @@ const handleZoningOpacityChange = (opacity) => {
     <OpacitySlider v-if="selectedRegmap" :initialOpacity="MapStore.regmapOpacity"@opacityChange="handleRegmapOpacityChange"></OpacitySlider>
     <OpacitySlider v-if="MainStore.currentTopic == 'Zoning'" :initialOpacity="MapStore.zoningOpacity"@opacityChange="handleZoningOpacityChange"></OpacitySlider>
   </div>
+  <KeepAlive>
+    <CyclomediaPanel v-if="MapStore.cyclomediaOn" @updateYaw="updateCyclomediaCameraAngle"></CyclomediaPanel>
+  </KeepAlive>
 </template>
 
 <style scoped>

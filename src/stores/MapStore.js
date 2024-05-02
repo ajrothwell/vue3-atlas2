@@ -19,6 +19,15 @@ export const useMapStore = defineStore("MapStore", {
       cyclomediaOn: false,
       cyclomediaInitialized: false,
       cyclomediaRecordingsOn: false,
+      // cyclomediaYaw: null,
+      // cyclomediaHFov: null,
+      // cyclomediaXyz: null,
+      cyclomediaOrientation: {
+        yaw: null,
+        hFov: null,
+        xyz: null,
+        lngLat: null,
+      },
       clickedCyclomediaRecordingCoords: null,
       pictometryOn: false,
       selectedRegmap: null,
@@ -27,6 +36,19 @@ export const useMapStore = defineStore("MapStore", {
     };
   },
   actions: {
+    setCyclomediaYaw(yaw) {
+      this.cyclomediaOrientation.yaw = yaw;
+    },
+    setCyclomediaOrientation(lnglat, xyz) {
+      console.log('setCyclomediaOrientation is running, lnglat:', lnglat, 'xyz:', xyz);
+      // this.cyclomediaYaw = yaw;
+      // this.cyclomediaHFov = hFov;
+      // this.cyclomediaXyz = xyz;
+      // this.cyclomediaOrientation.yaw = yaw;
+      // this.cyclomediaOrientation.hFov = hFov;
+      this.cyclomediaOrientation.lngLat = lnglat;
+      this.cyclomediaOrientation.xyz = xyz;
+    },
     setMap(map) {
       this.map = map;
     },
