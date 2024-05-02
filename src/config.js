@@ -159,7 +159,7 @@ const imageryInfo = {
         }
       }
     },
-    viewCone: {
+    cyclomediaViewcone: {
       type: 'geojson',
       data: {
         type: 'Feature',
@@ -240,8 +240,20 @@ const pwdDrawnMapStyle = mergeDeep(imageryInfo,{
       type: 'symbol',
       layout: {
         'icon-image': 'camera-icon',
-        'icon-anchor' : 'bottom',
-        'icon-size': .12,
+        'icon-anchor' : 'center',
+        'icon-size': 0.09,
+        'icon-rotate': 0,
+        'icon-rotation-alignment': 'map',
+      },
+    },
+    {
+      'id': 'cyclomediaViewcone',
+      'type': 'fill',
+      'source': 'cyclomediaViewcone',
+      'layout': {},
+      'paint': {
+        'fill-color': 'rgb(0,102,255)',
+        'fill-opacity': 0.2,
       },
     },
     {
