@@ -3,6 +3,7 @@
 // import markerColorChange from '../../public/images/marker_color_change.png';
 // console.log('markerColorChange:', markerColorChange);
 
+import CyclomediaPanel from '@/components/map/CyclomediaPanel.vue';
 import CyclomediaRecordingsClient from '@/components/map/recordings-client.js';
 
 import $config from '@/config';
@@ -255,7 +256,7 @@ const markerSrc = computed(() => {
   return MainStore.publicPath + 'images/marker_blue.png';
 })
 const cameraSrc = computed(() => {
-  return MainStore.publicPath + 'images/camera2.png';
+  return MainStore.publicPath + 'images/camera.png';
 })
 
 onMounted(async () => {
@@ -311,7 +312,6 @@ onMounted(async () => {
 
   map.on('click', 'cyclomediaRecordings', (e) => {
     console.log('cyclomediaRecordings click, e:', e, 'e.features[0]:', e.features[0]);
-    // MapStore.clickedCyclomediaRecording = e.features[0];
     MapStore.clickedCyclomediaRecordingCoords = [ e.lngLat.lng, e.lngLat.lat ];
     e.clickOnLayer = true;
   });
@@ -456,44 +456,17 @@ const updateCyclomediaRecordings = async () =>{
 }
 
 watch(
-  () => MapStore.cyclomediaOrientation.yaw,
-  newOrientation => {
-    // console.log('Map.vue watch cyclomediaOrientation.yaw, newOrientation:', newOrientation);
-    // if (newOrientation) {
-    updateCyclomediaCameraAngle(newOrientation);
-    // }
-  }
-)
-
-watch(
   () => MapStore.cyclomediaOrientation.lngLat,
   newOrientation => {
-    // console.log('Map.vue watch cyclomediaOrientation.xyz, newOrientation:', newOrientation);
-    // if (newOrientation) {
     updateCyclomediaCamera(newOrientation);
-    // }
   }
 )
 
 const updateCyclomediaCameraAngle = (newOrientation) => {
   console.log('updateCyclomediaCameraAngle is running, newOrientation:', newOrientation);
   const layer = map.getLayer('cyclomediaCamera');
-  console.log('layer:', layer);
+  // console.log('layer:', layer);
   map.setLayoutProperty('cyclomediaCamera', 'icon-rotate', newOrientation);
-  // map.removeLayer('cyclomediaCamera');
-  // const newLayer = {
-  //   id: 'cyclomediaCamera',
-  //   source: 'cyclomediaCamera',
-  //   type: 'symbol',
-  //   layout: {
-  //     'icon-image': 'camera-icon',
-  //     'icon-anchor' : 'center',
-  //     'icon-size': 0.09,
-  //     'icon-rotate': newOrientation,
-  //     'icon-rotation-alignment': 'map',
-  //   }
-  // }
-  // map.addLayer(newLayer);
 }
 
 const updateCyclomediaCamera = (orientation) => {
@@ -504,10 +477,7 @@ const updateCyclomediaCamera = (orientation) => {
     return;
   } else {
     const theData = {'type': 'Feature','geometry': {'type': 'Point','coordinates': orientation }};
-    // console.log('$config.pwdDrawnMapStyle.sources.cyclomediaCamera.data.geometry.coordinates:', $config.pwdDrawnMapStyle.sources.cyclomediaCamera.data.geometry.coordinates);
-    // $config.pwdDrawnMapStyle.sources.cyclomediaCamera.data.geometry.coordinates = [[ map.getCenter().lng, map.getCenter().lat ]];
     map.getSource('cyclomediaCamera').setData(theData);
-    // console.log('$config.pwdDrawnMapStyle.sources.cyclomediaCamera.data.geometry.coordinates:', $config.pwdDrawnMapStyle.sources.cyclomediaCamera.data.geometry.coordinates);
   }
 }
 
@@ -517,7 +487,6 @@ const toggleCyclomedia = async() => {
   MapStore.cyclomediaOn = !MapStore.cyclomediaOn;
   if (MapStore.cyclomediaOn) {
     await updateCyclomediaRecordings();
-    // updateCyclomediaCamera();
   } else {
     let geojson = {
       type: 'FeatureCollection',
@@ -525,8 +494,6 @@ const toggleCyclomedia = async() => {
     }
     map.getSource('cyclomediaRecordings').setData(geojson);
     $config.dorDrawnMapStyle.sources.cyclomediaRecordings.data.features = [];
-    // $config.liDrawnMapStyle.sources.cyclomediaRecordings.data.features = [];
-    // $config.pwdDrawnMapStyle.sources.cyclomediaRecordings.data.features = [];
   }
 }
 
@@ -612,6 +579,9 @@ const handleZoningOpacityChange = (opacity) => {
     <OpacitySlider v-if="selectedRegmap" :initialOpacity="MapStore.regmapOpacity"@opacityChange="handleRegmapOpacityChange"></OpacitySlider>
     <OpacitySlider v-if="MainStore.currentTopic == 'Zoning'" :initialOpacity="MapStore.zoningOpacity"@opacityChange="handleZoningOpacityChange"></OpacitySlider>
   </div>
+  <KeepAlive>
+    <CyclomediaPanel v-if="MapStore.cyclomediaOn" @updateYaw="updateCyclomediaCameraAngle"></CyclomediaPanel>
+  </KeepAlive>
 </template>
 
 <style scoped>

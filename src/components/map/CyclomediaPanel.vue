@@ -20,6 +20,8 @@ const cyclomediaInitialized = ref(false);
 
 console.log('app:', app, 'app.cyclomediaInitialized:', app.cyclomediaInitialized);
 
+const $emit = defineEmits(['updateYaw']);
+
 const setNewLocation = async (coords) => {
   console.log('CyclomediaPanel.vue setNewLocation, coords:', coords);
   console.log(coords);
@@ -56,12 +58,13 @@ const setNewLocation = async (coords) => {
 
   viewer.on('VIEW_CHANGE', function(e) {
     console.log('on VIEW_CHANGE fired, type:', e.type, 'detail:', e.detail, 'viewer:', viewer);
-    if (e.detail.yaw !== MapStore.cyclomediaOrientation.yaw) {
-      console.log('if');
+    // if (e.detail.yaw !== MapStore.cyclomediaOrientation.yaw) {
+      // console.log('if');
       // console.log('VIEW_CHANGE first if, widget.$store.state.cyclomedia.orientation.xyz:', widget.$store.state.cyclomedia.orientation.xyz);
       // console.log('on VIEW_CHANGE fired with yaw change, viewer.props.orientation:', viewer.props.orientation);
-      sendYawToStore(e.detail);
-    } else if (viewer.props.orientation.xyz !== MapStore.cyclomediaOrientation.xyz) {
+      // sendYawToStore(e.detail);
+      $emit('updateYaw', e.detail.yaw);
+    if (viewer.props.orientation.xyz !== MapStore.cyclomediaOrientation.xyz) {
       console.log('else if');
       sendOrientationToStore(viewer.props.orientation.xyz);
     }
@@ -71,35 +74,28 @@ const setNewLocation = async (coords) => {
     // }
   });
 
-  viewer.on('VIEW_LOAD_END', function(e) {
-    console.log('on VIEW_LOAD_END fired, type:', e.type, 'e:', e, 'viewer.props.orientation:', viewer.props.orientation, 'MapStore.cyclomediaOrientation.xyz:', MapStore.cyclomediaOrientation.xyz);
+  // viewer.on('VIEW_LOAD_END', function(e) {
+  //   console.log('on VIEW_LOAD_END fired, type:', e.type, 'e:', e, 'viewer.props.orientation:', viewer.props.orientation, 'MapStore.cyclomediaOrientation.xyz:', MapStore.cyclomediaOrientation.xyz);
     
-    if (e.detail.yaw !== MapStore.cyclomediaOrientation.yaw) {
-      console.log('if');
-      // console.log('VIEW_CHANGE first if, widget.$store.state.cyclomedia.orientation.xyz:', widget.$store.state.cyclomedia.orientation.xyz);
-      // console.log('on VIEW_CHANGE fired with yaw change, viewer.props.orientation:', viewer.props.orientation);
-      sendYawToStore(e.detail);
-    } else if (viewer.props.orientation.xyz !== MapStore.cyclomediaOrientation.xyz) {
-      console.log('else if');
-      sendOrientationToStore(viewer.props.orientation.xyz);
-    }
+  //   if (e.detail.yaw !== MapStore.cyclomediaOrientation.yaw) {
+  //     console.log('if');
+  //     // console.log('VIEW_CHANGE first if, widget.$store.state.cyclomedia.orientation.xyz:', widget.$store.state.cyclomedia.orientation.xyz);
+  //     // console.log('on VIEW_CHANGE fired with yaw change, viewer.props.orientation:', viewer.props.orientation);
+  //     sendYawToStore(e.detail);
+  //   } else if (viewer.props.orientation.xyz !== MapStore.cyclomediaOrientation.xyz) {
+  //     console.log('else if');
+  //     sendOrientationToStore(viewer.props.orientation.xyz);
+  //   }
     
-    // if (viewer.props.orientation.xyz !== MapStore.cyclomediaOrientation.xyz) {
-    //   // console.log('VIEW_LOAD_END first if');
-    //   // sendOrientationToStore(e, viewer.props.orientation.xyz);
-    // } else if (viewer.getNavbarExpanded() !== this.navBarOpen) {
-      // console.log('VIEW_LOAD_END second if');
-      // widget.$store.commit('setCyclomediaNavBarOpen', viewer.getNavbarExpanded());
-    // }
-  });
+  //   // if (viewer.props.orientation.xyz !== MapStore.cyclomediaOrientation.xyz) {
+  //   //   // console.log('VIEW_LOAD_END first if');
+  //   //   // sendOrientationToStore(e, viewer.props.orientation.xyz);
+  //   // } else if (viewer.getNavbarExpanded() !== this.navBarOpen) {
+  //     // console.log('VIEW_LOAD_END second if');
+  //     // widget.$store.commit('setCyclomediaNavBarOpen', viewer.getNavbarExpanded());
+  //   // }
+  // });
 }
-
-const sendYawToStore = (e) => {
-  // const xy = [ xyz[0], xyz[1] ];
-  // const lnglat = proj4(projection2272, projection4326, xy);
-  MapStore.setCyclomediaYaw(e.yaw);
-}
-
 const sendOrientationToStore = (xyz) => {
   const xy = [ xyz[0], xyz[1] ];
   // const lnglat = xyz;
@@ -117,19 +113,15 @@ watch(
   }
 )
 
-// const viewer = ref(null);
-
 onMounted( async() => {
 
   console.log('CyclomediaPanel.vue onMounted');
-  // const MapStore = MapStore();
   if (!cyclomediaInitialized.value) {
     await StreetSmartApi.init({
       targetElement: cycloviewer,
       username: import.meta.env.VITE_CYCLOMEDIA_USERNAME,
       password: import.meta.env.VITE_CYCLOMEDIA_PASSWORD,
       apiKey: import.meta.env.VITE_CYCLOMEDIA_API_KEY,
-      // srs: 'EPSG:4326',
       srs: 'EPSG:2272',
       locale: 'en-us',
       addressSettings: {
