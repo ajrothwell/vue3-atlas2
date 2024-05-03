@@ -304,6 +304,9 @@ onMounted(async () => {
         $config.dorDrawnMapStyle.sources.cyclomediaRecordings.data.features = [];
       }
     }
+    if (MapStore.cyclomediaOn) {
+      updateCyclomediaCameraViewcone(MapStore.cyclomediaOrientation.hFov, MapStore.cyclomediaOrientation.yaw);
+    }
 
   });
 
@@ -495,12 +498,12 @@ const toggleCyclomedia = async() => {
     const zoom = map.getZoom();
     if (zoom > 16.5) {
       await updateCyclomediaRecordings();
-    }
-    if (MapStore.cyclomediaOrientation.lngLat) {
-      updateCyclomediaCameraLngLat(MapStore.cyclomediaOrientation.lngLat);
-    }
-    if (MapStore.cyclomediaOrientation.hFov && MapStore.cyclomediaOrientation.yaw) {
-      updateCyclomediaCameraViewcone(MapStore.cyclomediaOrientation.hFov, MapStore.cyclomediaOrientation.yaw);
+      if (MapStore.cyclomediaOrientation.lngLat) {
+        updateCyclomediaCameraLngLat(MapStore.cyclomediaOrientation.lngLat);
+      }
+      if (MapStore.cyclomediaOrientation.hFov && MapStore.cyclomediaOrientation.yaw) {
+        updateCyclomediaCameraViewcone(MapStore.cyclomediaOrientation.hFov, MapStore.cyclomediaOrientation.yaw);
+      }
     }
   } else {
     let recordingsGeojson = {
@@ -579,7 +582,7 @@ const updateCyclomediaCameraViewcone = (cycloHFov, cycloYaw) => {
   }
 
   const cycloLnglat = MapStore.cyclomediaOrientation.lngLat;
-  console.log('updateCyclomediaCameraViewcone is running, watchedZoom:', watchedZoom, 'distance:', distance, 'cycloLnglat:', cycloLnglat);
+  // console.log('updateCyclomediaCameraViewcone is running, watchedZoom:', watchedZoom, 'distance:', distance, 'cycloLnglat:', cycloLnglat);
   let options = { units: 'feet' };
 
   if (!cycloLnglat) {
@@ -588,8 +591,6 @@ const updateCyclomediaCameraViewcone = (cycloHFov, cycloYaw) => {
 
   var destination1 = destination([ cycloLnglat[0], cycloLnglat[1] ], distance, angle1, options);
   var destination2 = destination([ cycloLnglat[0], cycloLnglat[1] ], distance, angle2, options);
-  // console.log('cyclocenter:', [cycloLnglat[1], cycloLnglat[0]], 'destination1:', destination1.geometry.coordinates, 'destination2:', destination2.geometry.coordinates);
-  // console.log('destination1:', destination1.geometry.coordinates, 'destination2:', destination2.geometry.coordinates);
   let data = {
     type: 'Feature',
     geometry: {
@@ -605,15 +606,6 @@ const updateCyclomediaCameraViewcone = (cycloHFov, cycloYaw) => {
 
   map.getSource('cyclomediaViewcone').setData(data);
   $config.dorDrawnMapStyle.sources.cyclomediaViewcone.data = data;
-  console.log('map.getStyle().sources:', map.getStyle().sources, 'map.getStyle().layers:', map.getStyle().layers);
-  // this.$data.geojsonViewconeSource.data.geometry.coordinates = [
-  //   [
-  //     [ cycloLnglat[1], cycloLnglat[0] ],
-  //     [ destination1.geometry.coordinates[0], destination1.geometry.coordinates[1] ],
-  //     [ destination2.geometry.coordinates[0], destination2.geometry.coordinates[1] ],
-  //     [ cycloLnglat[1], cycloLnglat[0] ],
-  //   ],
-  // ];
 }
 
 </script>
