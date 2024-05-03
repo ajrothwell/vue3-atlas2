@@ -360,6 +360,30 @@ const liDrawnMapStyle = mergeDeep(imageryInfo,{
       }
     },
     {
+      id: 'cyclomediaCamera',
+      source: 'cyclomediaCamera',
+      type: 'symbol',
+      layout: {
+        'icon-image': 'camera-icon',
+        'icon-anchor' : 'center',
+        'icon-size': 0.09,
+        'icon-rotate': 0,
+        'icon-rotation-alignment': 'map',
+        "icon-allow-overlap" : true,
+        "text-allow-overlap": true,
+      },
+    },
+    {
+      'id': 'cyclomediaViewcone',
+      'type': 'fill',
+      'source': 'cyclomediaViewcone',
+      'layout': {},
+      'paint': {
+        'fill-color': 'rgb(0,102,255)',
+        'fill-opacity': 0.2,
+      },
+    },
+    {
       id: 'addressMarker',
       source: 'addressMarker',
       type: 'symbol',
@@ -433,6 +457,30 @@ const dorDrawnMapStyle = mergeDeep(imageryInfo,{
         'circle-stroke-color': 'black',
         'circle-opacity': 0.5,
       }
+    },
+    {
+      id: 'cyclomediaCamera',
+      source: 'cyclomediaCamera',
+      type: 'symbol',
+      layout: {
+        'icon-image': 'camera-icon',
+        'icon-anchor' : 'center',
+        'icon-size': 0.09,
+        'icon-rotate': 0,
+        'icon-rotation-alignment': 'map',
+        "icon-allow-overlap" : true,
+        "text-allow-overlap": true,
+      },
+    },
+    {
+      'id': 'cyclomediaViewcone',
+      'type': 'fill',
+      'source': 'cyclomediaViewcone',
+      'layout': {},
+      'paint': {
+        'fill-color': 'rgb(0,102,255)',
+        'fill-opacity': 0.2,
+      },
     },
     {
       id: 'dorParcel',
@@ -532,6 +580,30 @@ const zoningDrawnMapStyle = mergeDeep(imageryInfo,{
       paint: {
         'raster-opacity': 1,
       }
+    },
+    {
+      id: 'cyclomediaCamera',
+      source: 'cyclomediaCamera',
+      type: 'symbol',
+      layout: {
+        'icon-image': 'camera-icon',
+        'icon-anchor' : 'center',
+        'icon-size': 0.09,
+        'icon-rotate': 0,
+        'icon-rotation-alignment': 'map',
+        "icon-allow-overlap" : true,
+        "text-allow-overlap": true,
+      },
+    },
+    {
+      'id': 'cyclomediaViewcone',
+      'type': 'fill',
+      'source': 'cyclomediaViewcone',
+      'layout': {},
+      'paint': {
+        'fill-color': 'rgb(0,102,255)',
+        'fill-opacity': 0.2,
+      },
     },
     {
       id: 'dorParcel',
@@ -634,6 +706,30 @@ const nearbyDrawnMapStyle = mergeDeep(imageryInfo,{
         ],
         'circle-stroke-width': 1,
         'circle-stroke-color': 'white',
+      },
+    },
+    {
+      id: 'cyclomediaCamera',
+      source: 'cyclomediaCamera',
+      type: 'symbol',
+      layout: {
+        'icon-image': 'camera-icon',
+        'icon-anchor' : 'center',
+        'icon-size': 0.09,
+        'icon-rotate': 0,
+        'icon-rotation-alignment': 'map',
+        "icon-allow-overlap" : true,
+        "text-allow-overlap": true,
+      },
+    },
+    {
+      'id': 'cyclomediaViewcone',
+      'type': 'fill',
+      'source': 'cyclomediaViewcone',
+      'layout': {},
+      'paint': {
+        'fill-color': 'rgb(0,102,255)',
+        'fill-opacity': 0.2,
       },
     },
     {

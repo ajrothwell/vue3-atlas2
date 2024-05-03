@@ -20,7 +20,7 @@ const cyclomediaInitialized = ref(false);
 
 // console.log('app:', app, 'app.cyclomediaInitialized:', app.cyclomediaInitialized);
 
-const $emit = defineEmits(['updateCameraYaw', 'updateCameraLngLat']);
+const $emit = defineEmits(['updateCameraYaw', 'updateCameraLngLat', 'updateCameraHFov']);
 
 const setNewLocation = async (coords) => {
   console.log('CyclomediaPanel.vue setNewLocation, coords:', coords);
@@ -62,12 +62,16 @@ const setNewLocation = async (coords) => {
       // console.log('VIEW_CHANGE first if, widget.$store.state.cyclomedia.orientation.xyz:', widget.$store.state.cyclomedia.orientation.xyz);
       // console.log('on VIEW_CHANGE fired with yaw change, viewer.props.orientation:', viewer.props.orientation);
       // sendYawToStore(e.detail);
+      MapStore.cyclomediaOrientation.yaw = e.detail.yaw;
+      MapStore.cyclomediaOrientation.hFov = e.detail.hFov;
       $emit('updateCameraYaw', e.detail.yaw);
+      $emit('updateCameraHFov', e.detail.hFov, e.detail.yaw);
     if (viewer.props.orientation.xyz !== MapStore.cyclomediaOrientation.xyz) {
       const lngLat = proj4(projection2272, projection4326, [ viewer.props.orientation.xyz[0], viewer.props.orientation.xyz[1] ]);
       MapStore.setCyclomediaOrientation(lngLat, viewer.props.orientation.xyz);
       console.log('else if');
       $emit('updateCameraLngLat', lngLat);
+      // $emit('updateCameraHFov', e.detail.hFov);
       // sendOrientationToStore(viewer.props.orientation.xyz);
     }
     // } else if (viewer.getNavbarExpanded() !== this.navBarOpen) {
