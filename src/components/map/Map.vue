@@ -521,6 +521,7 @@ const toggleCyclomedia = async() => {
       }
     }
     map.getSource('cyclomediaCamera').setData(cameraGeojson);
+    $config.dorDrawnMapStyle.sources.cyclomediaCamera.data = cameraGeojson;
     let viewConeGeojson = {
       type: 'Feature',
       geometry: {
@@ -529,6 +530,7 @@ const toggleCyclomedia = async() => {
       }
     }
     map.getSource('cyclomediaViewcone').setData(viewConeGeojson);
+    $config.dorDrawnMapStyle.sources.cyclomediaViewcone.data = viewConeGeojson;
     MapStore.setCyclomediaOrientation(MapStore.cyclomediaOrientation.lngLat, null);
   }
 }
