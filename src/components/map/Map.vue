@@ -177,6 +177,15 @@ const handleRegmapOpacityChange = (opacity) => {
   );
 }
 
+const handleZoningOpacityChange = (opacity) => {
+  MapStore.zoningOpacity = opacity/100;
+  map.setPaintProperty(
+    'zoning',
+    'raster-opacity',
+    opacity/100,
+  );
+}
+
 const selectedLiBuildingNumber = computed(() => { return LiStore.selectedLiBuildingNumber; });
 
 watch(
@@ -524,25 +533,11 @@ const toggleCyclomedia = async() => {
   }
 }
 
-const togglePictometry = () => {
-  console.log('togglePictometry');
-  MapStore.pictometryOn = !MapStore.pictometryOn;
-}
-
-const handleZoningOpacityChange = (opacity) => {
-  MapStore.zoningOpacity = opacity/100;
-  map.setPaintProperty(
-    'zoning',
-    'raster-opacity',
-    opacity/100,
-  );
-}
-
 const updateCyclomediaCameraViewcone = (cycloHFov, cycloYaw) => {
   const halfAngle = cycloHFov / 2.0;
   let angle1 = cycloYaw - halfAngle;
   let angle2 = cycloYaw + halfAngle;
-  console.log('updateCyclomediaCameraViewcone, cycloHFov:', cycloHFov, 'halfAngle:', halfAngle, 'angle1:', angle1, 'cycloYaw:', cycloYaw, 'angle2:', angle2);
+  // console.log('updateCyclomediaCameraViewcone, cycloHFov:', cycloHFov, 'halfAngle:', halfAngle, 'angle1:', angle1, 'cycloYaw:', cycloYaw, 'angle2:', angle2);
   const watchedZoom = map.getZoom();
   let distance;
   if (watchedZoom < 9) {
@@ -594,6 +589,11 @@ const updateCyclomediaCameraViewcone = (cycloHFov, cycloYaw) => {
 
   map.getSource('cyclomediaViewcone').setData(data);
   $config.dorDrawnMapStyle.sources.cyclomediaViewcone.data = data;
+}
+
+const togglePictometry = () => {
+  console.log('togglePictometry');
+  MapStore.pictometryOn = !MapStore.pictometryOn;
 }
 
 </script>

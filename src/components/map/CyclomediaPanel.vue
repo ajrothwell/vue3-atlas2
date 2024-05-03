@@ -1,24 +1,15 @@
 <script setup>
-console.log('CyclomediaPanel.vue setup');
-import { ref, computed, onMounted, watch } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { useMapStore } from '@/stores/MapStore';
 const MapStore = useMapStore();
 import { useAddressStore } from '@/stores/AddressStore';
 const AddressStore = useAddressStore();
-// import CyclomediaRecordingsClient from '@/components/map/recordings-client.js';
-
-import { getCurrentInstance } from 'vue';
-
-// const app = getCurrentInstance();
 
 import proj4 from 'proj4';
-
 const projection4326 = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
 const projection2272 = "+proj=lcc +lat_1=40.96666666666667 +lat_2=39.93333333333333 +lat_0=39.33333333333334 +lon_0=-77.75 +x_0=600000 +y_0=0 +ellps=GRS80 +datum=NAD83 +to_meter=0.3048006096012192 +no_defs";
 
 const cyclomediaInitialized = ref(false);
-
-// console.log('app:', app, 'app.cyclomediaInitialized:', app.cyclomediaInitialized);
 
 const $emit = defineEmits(['updateCameraYaw', 'updateCameraLngLat', 'updateCameraHFov']);
 
@@ -57,11 +48,6 @@ const setNewLocation = async (coords) => {
 
   viewer.on('VIEW_CHANGE', function(e) {
     console.log('on VIEW_CHANGE fired, type:', e.type, 'detail:', e.detail, 'viewer:', viewer);
-    // if (e.detail.yaw !== MapStore.cyclomediaOrientation.yaw) {
-      // console.log('if');
-      // console.log('VIEW_CHANGE first if, widget.$store.state.cyclomedia.orientation.xyz:', widget.$store.state.cyclomedia.orientation.xyz);
-      // console.log('on VIEW_CHANGE fired with yaw change, viewer.props.orientation:', viewer.props.orientation);
-      // sendYawToStore(e.detail);
       MapStore.cyclomediaOrientation.yaw = e.detail.yaw;
       MapStore.cyclomediaOrientation.hFov = e.detail.hFov;
       $emit('updateCameraYaw', e.detail.yaw);
@@ -69,10 +55,7 @@ const setNewLocation = async (coords) => {
     if (viewer.props.orientation.xyz !== MapStore.cyclomediaOrientation.xyz) {
       const lngLat = proj4(projection2272, projection4326, [ viewer.props.orientation.xyz[0], viewer.props.orientation.xyz[1] ]);
       MapStore.setCyclomediaOrientation(lngLat, viewer.props.orientation.xyz);
-      console.log('else if');
       $emit('updateCameraLngLat', lngLat);
-      // $emit('updateCameraHFov', e.detail.hFov);
-      // sendOrientationToStore(viewer.props.orientation.xyz);
     }
     // } else if (viewer.getNavbarExpanded() !== this.navBarOpen) {
     //   // console.log('VIEW_CHANGE second if');
@@ -102,12 +85,6 @@ const setNewLocation = async (coords) => {
   //   // }
   });
 }
-const sendOrientationToStore = (xyz) => {
-  const xy = [ xyz[0], xyz[1] ];
-  // const lnglat = xyz;
-  const lnglat = proj4(projection2272, projection4326, xy);
-  MapStore.setCyclomediaOrientation(lnglat, xyz);
-}
 
 watch(
   () => MapStore.clickedCyclomediaRecordingCoords,
@@ -121,7 +98,6 @@ watch(
 
 onMounted( async() => {
 
-  console.log('CyclomediaPanel.vue onMounted');
   if (!cyclomediaInitialized.value) {
     await StreetSmartApi.init({
       targetElement: cycloviewer,
@@ -135,15 +111,15 @@ onMounted( async() => {
         database: 'CMDatabase',
       },
     })
-
     cyclomediaInitialized.value = true;
   }
 
-  // const coords2272 = proj4(projection4326, projection2272, [ -75.163471, 39.953338 ]);
-  if (AddressStore.addressData.features.length > 0) {
+  if (AddressStore.addressData.features) {
+    console.log('AddressStore.addressData:', AddressStore.addressData)
     const coords = AddressStore.addressData.features[0].geometry.coordinates;
     setNewLocation(coords);
   } else {
+    console.log('no address data, setting default coords');
     setNewLocation([ -75.163471, 39.953338 ]);
   }
 
@@ -166,7 +142,6 @@ onMounted( async() => {
 .cyclomedia-panel {
   height: 100%;
   width: 100%;
-  /* display: none; */
 }
 
 .panoramaViewerWindow {
