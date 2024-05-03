@@ -7,6 +7,7 @@ export const useMapStore = defineStore("MapStore", {
     return {
       map: {},
       currentMapStyle: 'pwdDrawnMapStyle',
+      currentAddressCoords: [],
       // currentTopicMapStyle: {},
       bufferForAddress: {},
       currentMarkersForTopic: [],
@@ -19,15 +20,16 @@ export const useMapStore = defineStore("MapStore", {
       cyclomediaOn: false,
       cyclomediaInitialized: false,
       cyclomediaRecordingsOn: false,
-      // cyclomediaYaw: null,
-      // cyclomediaHFov: null,
-      // cyclomediaXyz: null,
-      cyclomediaOrientation: {
-        yaw: null,
-        hFov: null,
-        xyz: null,
-        lngLat: null,
-      },
+      cyclomediaCameraYaw: null,
+      cyclomediaCameraHFov: null,
+      cyclomediaCameraXyz: null,
+      cyclomediaCameraLngLat: null,
+      // cyclomediaOrientation: {
+      //   yaw: null,
+      //   hFov: null,
+      //   xyz: null,
+      //   lngLat: null,
+      // },
       clickedCyclomediaRecordingCoords: null,
       pictometryOn: false,
       selectedRegmap: null,
@@ -36,18 +38,20 @@ export const useMapStore = defineStore("MapStore", {
     };
   },
   actions: {
-    setCyclomediaYaw(yaw) {
-      this.cyclomediaOrientation.yaw = yaw;
+    setCyclomediaCameraYaw(yaw) {
+      // this.cyclomediaOrientation.yaw = yaw;
+      this.cyclomediaCameraYaw = yaw;
     },
-    setCyclomediaOrientation(lngLat, xyz) {
-      console.log('setCyclomediaOrientation is running, xyz:', xyz);
-      // this.cyclomediaYaw = yaw;
-      // this.cyclomediaHFov = hFov;
-      // this.cyclomediaXyz = xyz;
+    setCyclomediaCameraLngLat(lngLat, xyz) {
+      console.log('setcyclomediaCameraLngLat is running, xyz:', xyz);
+      // this.cyclomediaCameraYaw = yaw;
+      // this.cyclomediaCameraHFov = hFov;
+      this.cyclomediaCameraXyz = xyz;
+      this.cyclomediaCameraLngLat = lngLat;
       // this.cyclomediaOrientation.yaw = yaw;
       // this.cyclomediaOrientation.hFov = hFov;
-      this.cyclomediaOrientation.lngLat = lngLat;
-      this.cyclomediaOrientation.xyz = xyz;
+      // this.cyclomediaOrientation.lngLat = lngLat;
+      // this.cyclomediaOrientation.xyz = xyz;
     },
     setMap(map) {
       this.map = map;

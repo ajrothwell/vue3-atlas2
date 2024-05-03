@@ -13,6 +13,15 @@ const cyclomediaInitialized = ref(false);
 
 const $emit = defineEmits(['updateCameraYaw', 'updateCameraLngLat', 'updateCameraHFov']);
 
+watch(
+  () => MapStore.currentAddressCoords,
+  newLngLat => {
+    console.log('CyclomediaPanel.vue watch cyclomediaLngLat, newLngLat:', newLngLat);
+      // const coords = proj4(projection2272, projection4326, newCyclomediaOrientation.xyz);
+      setNewLocation(newLngLat);
+  }
+)
+
 const setNewLocation = async (coords) => {
   console.log('CyclomediaPanel.vue setNewLocation, coords:', coords);
   console.log(coords);
@@ -48,13 +57,13 @@ const setNewLocation = async (coords) => {
 
   viewer.on('VIEW_CHANGE', function(e) {
     console.log('on VIEW_CHANGE fired, type:', e.type, 'detail:', e.detail, 'viewer:', viewer);
-      MapStore.cyclomediaOrientation.yaw = e.detail.yaw;
-      MapStore.cyclomediaOrientation.hFov = e.detail.hFov;
+      MapStore.cyclomediaCameraYaw = e.detail.yaw;
+      MapStore.cyclomediaCameraHFov = e.detail.hFov;
       $emit('updateCameraYaw', e.detail.yaw);
       $emit('updateCameraHFov', e.detail.hFov, e.detail.yaw);
-    if (viewer.props.orientation.xyz !== MapStore.cyclomediaOrientation.xyz) {
+    if (viewer.props.orientation.xyz !== MapStore.cyclomediaCameraXyz) {
       const lngLat = proj4(projection2272, projection4326, [ viewer.props.orientation.xyz[0], viewer.props.orientation.xyz[1] ]);
-      MapStore.setCyclomediaOrientation(lngLat, viewer.props.orientation.xyz);
+      MapStore.setCyclomediaCameraLngLat(lngLat, viewer.props.orientation.xyz);
       $emit('updateCameraLngLat', lngLat);
     }
     // } else if (viewer.getNavbarExpanded() !== this.navBarOpen) {
@@ -64,7 +73,7 @@ const setNewLocation = async (coords) => {
   });
 
   viewer.on('VIEW_LOAD_END', function(e) {
-    console.log('on VIEW_LOAD_END fired, type:', e.type, 'e:', e, 'viewer.props.orientation:', viewer.props.orientation, 'MapStore.cyclomediaOrientation.xyz:', MapStore.cyclomediaOrientation.xyz);
+    console.log('on VIEW_LOAD_END fired, type:', e.type, 'e:', e, 'viewer.props.orientation:', viewer.props.orientation, 'MapStore.cyclomediaOrientation.xyz:', MapStore.cyclomediaXyz);
     
   //   if (e.detail.yaw !== MapStore.cyclomediaOrientation.yaw) {
   //     console.log('if');
