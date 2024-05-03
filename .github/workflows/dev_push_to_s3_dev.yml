@@ -1,12 +1,12 @@
 # This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
-name: dev Push to S3 dev2 bucket
+name: dev Push to S3 dev bucket
 
 on:
   push:
     branches:
-      - main_x
+      - main
 
 jobs:
   build:
@@ -38,7 +38,7 @@ jobs:
     - name: Deploy to Dev s3, Set index headers, and Invalidate Cloudfront
       env:
         AWS_DEFAULT_REGION: 'us-east-1'
-        AWS_S3_BUCKET: atlas-dev2.phila.gov
+        AWS_S3_BUCKET: atlas-dev.phila.gov
         AWS_CLOUDFRONT_DISTRIBUTION: E3DWSPDEMV5HQI
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
