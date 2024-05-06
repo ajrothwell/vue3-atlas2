@@ -103,11 +103,31 @@ onMounted(async () => {
     LiStore.selectedLiBuildingNumber = e.features[0].properties.id;
   });
 
+  map.on('mouseenter', 'liBuildingFootprints', (e) => {
+    if (e.features.length > 0) {
+      map.getCanvas().style.cursor = 'pointer'
+    }
+  });
+
+  map.on('mouseleave', 'liBuildingFootprints', () => {
+    map.getCanvas().style.cursor = ''
+  });
+
   // if a cyclomedia recording circle is clicked, set its coordinates in the MapStore
   map.on('click', 'cyclomediaRecordings', (e) => {
     // console.log('cyclomediaRecordings click, e:', e, 'e.features[0]:', e.features[0]);
     e.clickOnLayer = true;
     MapStore.clickedCyclomediaRecordingCoords = [ e.lngLat.lng, e.lngLat.lat ];
+  });
+
+  map.on('mouseenter', 'cyclomediaRecordings', (e) => {
+    if (e.features.length > 0) {
+      map.getCanvas().style.cursor = 'pointer'
+    }
+  });
+
+  map.on('mouseleave', 'cyclomediaRecordings', () => {
+    map.getCanvas().style.cursor = ''
   });
 
   // if a nearby circle marker is clicked, set its id in the MainStore as the hoveredStateId
@@ -370,12 +390,12 @@ watch(
     if (newHoveredStateId) {
       const feature = map.getStyle().sources.nearby.data.features.filter(feature => feature.properties.id === newHoveredStateId)[0];
       const index = map.getStyle().sources.nearby.data.features.indexOf(feature);
-      console.log('index:', index, 'map.getStyle().sources.nearby.data.features:', map.getStyle().sources.nearby.data.features.filter(feature => feature.properties.id === newHoveredStateId)[0]);
+      // console.log('index:', index, 'map.getStyle().sources.nearby.data.features:', map.getStyle().sources.nearby.data.features.filter(feature => feature.properties.id === newHoveredStateId)[0]);
       map.getStyle().sources.nearby.data.features.splice(index, 1);
       map.getStyle().sources.nearby.data.features.push(feature);
       map.getSource('nearby').setData(map.getStyle().sources.nearby.data);
       // console.log('map.getStyle().sources:', map.getStyle().sources.filter(source => source.id === 'nearby')[0]);
-      console.log('there is a new hoveredStateId, setting paint property');
+      // console.log('there is a new hoveredStateId, setting paint property');
       map.setPaintProperty(
         'nearby', 
         'circle-color', 

@@ -1,7 +1,6 @@
 <script setup>
 import $config from '@/config';
 
-console.log('Nearby.vue setup');
 import { ref, computed, watch, onMounted } from 'vue';
 
 import { useNearbyActivityStore } from '@/stores/NearbyActivityStore';
@@ -13,7 +12,7 @@ const MapStore = useMapStore();
 const map = MapStore.map;
 
 import useTransforms from '@/composables/useTransforms';
-const { currency, date } = useTransforms();
+const { date } = useTransforms();
 
 import { useRouter, useRoute } from 'vue-router';
 const route = useRoute();
@@ -34,7 +33,6 @@ const dataTypes = {
 
 const dataDropdownOpen = ref(false);
 const toggleDataDropdown = () => dataDropdownOpen.value = !dataDropdownOpen.value;
-// const dataType = ref('nearby311');
 const currentNearbyDataType = computed(() => {
   return MainStore.currentNearbyDataType;
 });
@@ -53,7 +51,7 @@ watch(() => route.params.data, async (newDataType) => {
 const setDataType = async (newDataType) => {
   // dataType.value = newDataType;
   if (NearbyActivityStore[newDataType] === null) {
-    console.log('fetching new data')
+    // console.log('fetching new data')
     await NearbyActivityStore.fetchData(newDataType);
   }
   setTimeInterval(timeIntervals[newDataType].values[0]);
@@ -163,7 +161,7 @@ watch (() => nearby311Geojson.value, (newGeojson) => {
       'type': 'FeatureCollection',
       'features': newGeojson,
     }
-    console.log('geojson:', geojson, 'map.getSource(nearby):', map.getSource('nearby'));
+    // console.log('geojson:', geojson, 'map.getSource(nearby):', map.getSource('nearby'));
     map.getSource('nearby').setData(geojson);
   }
 })
@@ -210,7 +208,7 @@ const nearbyCrimeIncidentsGeojson = computed(() => {
 watch (() => nearbyCrimeIncidentsGeojson.value, async (newGeojson) => {
   console.log('nearbyCrimeIncidents watch, newGeojson:', newGeojson);
   if (newGeojson.length > 0) {
-    console.log('$config:', $config, 'map.getStyle().sources:', map.getStyle().sources, 'map.getStyle().layers:', map.getStyle().layers);
+    // console.log('$config:', $config, 'map.getStyle().sources:', map.getStyle().sources, 'map.getStyle().layers:', map.getStyle().layers);
     let geojson = {
       'type': 'FeatureCollection',
       'features': newGeojson,
@@ -223,7 +221,7 @@ watch (() => nearbyCrimeIncidentsGeojson.value, async (newGeojson) => {
 const nearbyZoningAppeals = computed(() => {
   if (NearbyActivityStore.nearbyZoningAppeals) {
     let data = [ ...NearbyActivityStore.nearbyZoningAppeals.data.rows]
-    console.log(new Date(data[0].scheduleddate));
+    // console.log(new Date(data[0].scheduleddate));
       
     if (timeInterval.value < 0) {
       data = data.filter(item => {
@@ -287,7 +285,7 @@ const isElementInViewport = (el) => {
 }
 
 watch(() => hoveredStateId.value, (newHoveredStateId) => {
-  console.log('hoveredStateId watch, newHoveredStateId:', newHoveredStateId);
+  // console.log('hoveredStateId watch, newHoveredStateId:', newHoveredStateId);
   if (newHoveredStateId) {
     const el = document.getElementById(newHoveredStateId);
     const visible = isElementInViewport(el);
@@ -304,12 +302,11 @@ watch(() => hoveredStateId.value, (newHoveredStateId) => {
 // nearbyImminentlyDangerous computed
 
 const handleRowMouseover = (e) => {
-  console.log('handleRowMouseover, e.target.parentElement.id:', e.target.parentElement.id);
+  // console.log('handleRowMouseover, e.target.parentElement.id:', e.target.parentElement.id);
   MainStore.hoveredStateId = parseInt(e.target.parentElement.id);
-  // document.getElementById
 }
 const handleRowMouseleave = (e) => {
-  console.log('handleRowMouseleave, e.target.id:', e.target.id);
+  // console.log('handleRowMouseleave, e.target.id:', e.target.id);
   MainStore.hoveredStateId = '';
 }
 
