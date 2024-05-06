@@ -70,7 +70,7 @@ const selectedRegmap = computed(() => {
       v-for="parcel in ParcelsStore.dor.features"
       :key="parcel.properties.OBJECTID"
       @click="MainStore.selectedParcelId = parcel.properties.OBJECTID"
-      class="column is-2 add-borders has-text-centered"
+      class="column is-3 add-borders has-text-centered"
       :class="{ 'is-selected': parcel.properties.OBJECTID === selectedParcelId }"
     >
       {{ parcel.properties.MAPREG }}
