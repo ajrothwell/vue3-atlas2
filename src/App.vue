@@ -1,5 +1,7 @@
 <script setup>
 
+import isMobileDevice from './util/is-mobile-device';
+
 // STORES
 import { useMainStore } from '@/stores/MainStore.js'
 const MainStore = useMainStore();
@@ -29,6 +31,7 @@ import MapPanel from '@/components/MapPanel.vue';
 const inputAddress = ref('');
 
 onMounted(async () => {
+  MainStore.isMobileDevice = isMobileDevice();
   await router.isReady()
   console.log('App onMounted, route.params.topic:', route.params.topic, 'route.params.address:', route.params.address);
   if (route.name === 'not-found') {

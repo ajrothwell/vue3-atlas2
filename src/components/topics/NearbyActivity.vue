@@ -285,11 +285,12 @@ const isElementInViewport = (el) => {
 }
 
 watch(() => hoveredStateId.value, (newHoveredStateId) => {
-  // console.log('hoveredStateId watch, newHoveredStateId:', newHoveredStateId);
+  console.log('hoveredStateId watch, newHoveredStateId:', newHoveredStateId);
   if (newHoveredStateId) {
     const el = document.getElementById(newHoveredStateId);
     const visible = isElementInViewport(el);
-    if (!visible) {
+    if (!visible && !MainStore.isMobileDevice) {
+      console.log('scrolling into view');
       el.scrollIntoView({ block: 'center' });
     }
   }

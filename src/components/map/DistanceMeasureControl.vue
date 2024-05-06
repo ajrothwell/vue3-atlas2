@@ -622,8 +622,18 @@ tr:nth-child(even) {
 }
 
 .mapbox-gl-draw_ctrl-draw-btn {
+  padding-bottom: 10px !important;
+  background-size: 55% !important;
   background-repeat: no-repeat !important;
   background-position: center !important;
+  background-color: white !important;
+  border-radius: 5px !important;
+  border: 2px solid rgb(167, 166, 166) !important;
+  position: absolute;
+  height: 36px !important;
+  width: 36px !important;
+  right: 10px;
+  bottom: 10px;
 }
 
 </style>

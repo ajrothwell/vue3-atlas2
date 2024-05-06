@@ -683,15 +683,6 @@ const togglePictometry = () => {
   height: 100%;
 }
 
-.mapbox-gl-draw_ctrl-draw-btn {
-  background-color: white !important;
-  border-radius: 5px !important;
-  border: 2px solid rgb(167, 166, 166) !important;
-  position: absolute;
-  right: 20px;
-  bottom: 20px;
-}
-
 @media screen and (max-width: 760px){
 
   .map-class {

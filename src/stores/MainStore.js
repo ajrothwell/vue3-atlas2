@@ -4,6 +4,7 @@ export const useMainStore = defineStore("MainStore", {
   state: () => {
     return {
       publicPath: null,
+      isMobileDevice: null,
       lastSearchMethod: 'address',
       currentAddress: '',
       currentTopic: 'Property',
