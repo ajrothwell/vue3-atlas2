@@ -14,7 +14,6 @@ import { useMainStore } from '@/stores/MainStore';
 const MainStore = useMainStore();
 import { useMapStore } from '@/stores/MapStore';
 const MapStore = useMapStore();
-const map = MapStore.map;
 
 let selectedParcelId = computed(() => { return MainStore.selectedParcelId });
 const selectedParcel = computed(() => {

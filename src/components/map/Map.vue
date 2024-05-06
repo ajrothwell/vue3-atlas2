@@ -1,17 +1,15 @@
 <script setup>
 
-import PictometryPanel from '@/components/map/PictometryPanel.vue';
-import CyclomediaPanel from '@/components/map/CyclomediaPanel.vue';
-import CyclomediaRecordingsClient from '@/components/map/recordings-client.js';
-
 import $config from '@/config';
 console.log('Map.vue $config:', $config);
+
+import { ref, onMounted, watch, computed } from 'vue';
+
 // PACKAGE IMPORTS
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
-
 import destination from '@turf/destination';
 
 // STORES
@@ -31,8 +29,7 @@ import { useRouter, useRoute } from 'vue-router';
 const route = useRoute();
 const router = useRouter();
 
-import { ref, onMounted, watch, computed } from 'vue';
-
+// COMPONENTS
 import AddressSearchControl from '@/components/map/AddressSearchControl.vue';
 import DistanceMeasureControl from '@/components/map/DistanceMeasureControl.vue';
 import ImageryToggleControl from '@/components/map/ImageryToggleControl.vue';
@@ -40,23 +37,145 @@ import ImageryDropdownControl from '@/components/map/ImageryDropdownControl.vue'
 import CyclomediaControl from '@/components/map/CyclomediaControl.vue';
 import PictometryControl from '@/components/map/PictometryControl.vue';
 import OpacitySlider from '@/components/map/OpacitySlider.vue';
+import PictometryPanel from '@/components/map/PictometryPanel.vue';
+import CyclomediaPanel from '@/components/map/CyclomediaPanel.vue';
+import CyclomediaRecordingsClient from '@/components/map/recordings-client.js';
 
 let map;
 
+// keep images sources as computed props so that the publicPath can used, for pushing the app to different environments
+const markerSrc = computed(() => {
+  return MainStore.publicPath + 'images/marker_blue.png';
+})
+const cameraSrc = computed(() => {
+  return MainStore.publicPath + 'images/camera.png';
+})
+
+onMounted(async () => {
+  // console.log('Map.vue onMounted route.params.topic:', route.params.topic, 'route.params.address:', route.params.address);
+  let currentTopicMapStyle = route.params.topic ? $config.topicStyles[route.params.topic] : 'pwdDrawnMapStyle';
+  let zoom = route.params.address ? 17 : 12;
+
+  map = new maplibregl.Map({
+    container: 'map',
+    style: $config[currentTopicMapStyle],
+    center: [-75.163471, 39.953338],
+    zoom: zoom,
+    minZoom: 6,
+    maxZoom: 22,
+    attributionControl: false,
+  });
+
+  const markerImage = await map.loadImage(markerSrc.value)
+  map.addImage('marker-blue', markerImage.data);
+  const cameraImage = await map.loadImage(cameraSrc.value)
+  map.addImage('camera-icon', cameraImage.data);
+
+  map.addControl(new maplibregl.NavigationControl(), 'bottom-left');
+  map.addControl(new maplibregl.GeolocateControl(), 'bottom-left');
+
+  map.on('moveend', (e) => {
+    // console.log('map moveend event, e:', e, 'map.getZoom()', map.getZoom(), 'map.getStyle().layers:', map.getStyle().layers, 'map.getStyle().sources:', map.getStyle().sources);
+    if (MapStore.cyclomediaOn) {
+      map.getZoom() > 16.5 ? MapStore.cyclomediaRecordingsOn = true : MapStore.cyclomediaRecordingsOn = false;
+      if (MapStore.cyclomediaRecordingsOn) {
+        updateCyclomediaRecordings();
+      } else {
+        let geojson = {
+          type: 'FeatureCollection',
+          features: []
+        }
+        map.getSource('cyclomediaRecordings').setData(geojson);
+        $config.dorDrawnMapStyle.sources.cyclomediaRecordings.data.features = [];
+      }
+    }
+    if (MapStore.cyclomediaOn) {
+      updateCyclomediaCameraViewcone(MapStore.cyclomediaCameraHFov, MapStore.cyclomediaCameraYaw);
+    }
+
+  });
+
+  map.on('click', 'liBuildingFootprints', (e) => {
+    // console.log('liBuildingFootprints click, e:', e);
+    e.clickOnLayer = true;
+    LiStore.selectedLiBuildingNumber = e.features[0].properties.id;
+  });
+
+  map.on('click', 'cyclomediaRecordings', (e) => {
+    // console.log('cyclomediaRecordings click, e:', e, 'e.features[0]:', e.features[0]);
+    MapStore.clickedCyclomediaRecordingCoords = [ e.lngLat.lng, e.lngLat.lat ];
+    e.clickOnLayer = true;
+  });
+
+  map.on('click', (e, data) => {
+    if (e.clickOnLayer) {
+      return;
+    }
+    // console.log('e:', e, 'data:', data, 'drawInfo.mode:', drawInfo.mode, draw.getMode());
+    // let drawMode = drawInfo.mode;
+    let drawLayers = map.queryRenderedFeatures(e.point).filter(feature => [ 'mapbox-gl-draw-cold', 'mapbox-gl-draw-hot' ].includes(feature.source));
+    // console.log('Map.vue handleMapClick, e:', e, 'drawLayers:', drawLayers, 'drawMode:', drawMode, 'e:', e, 'map.getStyle():', map.getStyle(), 'MapStore.drawStart:', MapStore.drawStart);
+    if (!drawLayers.length && draw.getMode() !== 'draw_polygon') {
+      router.push({ name: 'search', query: { lng: e.lngLat.lng, lat: e.lngLat.lat }})
+    }
+    if (draw.getMode() === 'draw_polygon') {
+      distanceMeasureControlRef.value.getDrawDistances(e);
+    }
+  });
+
+  map.on('mouseenter', 'nearby', (e) => {
+    if (e.features.length > 0) {
+      console.log('map.getSource(nearby):', map.getSource('nearby'), 'map.getStyle().sources:', map.getStyle().sources);
+      MainStore.hoveredStateId = e.features[0].properties.id;
+    }
+  });
+
+  map.on('mouseleave', 'nearby', () => {
+    if (hoveredStateId) {
+      MainStore.hoveredStateId = null;
+    }
+  });
+
+  MapboxDraw.constants.classes.CONTROL_BASE  = 'maplibregl-ctrl';
+  MapboxDraw.constants.classes.CONTROL_PREFIX = 'maplibregl-ctrl-';
+  MapboxDraw.constants.classes.CONTROL_GROUP = 'maplibregl-ctrl-group';
+
+  const draw = new MapboxDraw({
+    displayControlsDefault: false,
+    controls: {
+      polygon: true,
+    }
+  });
+
+  MapStore.draw = draw;
+  map.addControl(draw, 'bottom-right');
+
+  map.on('draw.create', drawCreate);
+  map.on('draw.selectionchange', drawSelectionChange);
+  map.on('draw.finish', drawFinish);
+  map.on('draw.modechange', drawModeChange);
+
+  MapStore.setMap(map);
+});
+
+// watch address for moving map center and setting zoom
+watch(
+  () => AddressStore.addressData,
+  async newAddress => {
+    // console.log('MapStore route.params.address watch, newAddress:', newAddress);
+    const newCoords = newAddress.features[0].geometry.coordinates;
+    if (MainStore.lastSearchMethod === 'address') {
+      map.setCenter(newCoords);
+      map.setZoom(17);
+    }
+    MapStore.currentAddressCoords = newCoords;
+  }
+)
+
+// watch address pwd coordinates for moving address marker
 const pwdCoordinates = computed(() => {
   if (AddressStore.addressData.features) {
     return AddressStore.addressData.features[0].geometry.coordinates;
-  } else {
-    return [];
-  }
-});
-
-const selectedParcelId = computed(() => { return MainStore.selectedParcelId; });
-
-const dorCoordinates = computed(() => {
-  if (selectedParcelId.value && ParcelsStore.dor.features) {
-    // console.log('selectedParcelId.value:', selectedParcelId.value, 'ParcelsStore.dor.features.filter(parcel => parcel.id === selectedParcelId.value)[0]:', ParcelsStore.dor.features.filter(parcel => parcel.id === selectedParcelId.value)[0]);
-    return ParcelsStore.dor.features.filter(parcel => parcel.id === selectedParcelId.value)[0].geometry.coordinates[0];
   } else {
     return [];
   }
@@ -70,6 +189,17 @@ watch(
   map.getSource('addressMarker').setData(address);
 });
 
+const selectedParcelId = computed(() => { return MainStore.selectedParcelId; });
+const dorCoordinates = computed(() => {
+  if (selectedParcelId.value && ParcelsStore.dor.features) {
+    // console.log('selectedParcelId.value:', selectedParcelId.value, 'ParcelsStore.dor.features.filter(parcel => parcel.id === selectedParcelId.value)[0]:', ParcelsStore.dor.features.filter(parcel => parcel.id === selectedParcelId.value)[0]);
+    return ParcelsStore.dor.features.filter(parcel => parcel.id === selectedParcelId.value)[0].geometry.coordinates[0];
+  } else {
+    return [];
+  }
+});
+
+// watch dor parcel coordinates for moving dor parcel
 watch(
   () => dorCoordinates.value,
   newCoords => {
@@ -78,6 +208,7 @@ watch(
   map.getSource('dorParcel').setData(newParcel);
 });
 
+// watch topic for changing map style
 watch(
   () => route.params.topic,
   async newTopic => {
@@ -100,30 +231,42 @@ watch(
   }
 )
 
-watch(
-  () => AddressStore.addressData,
-  async newAddress => {
-    // console.log('MapStore route.params.address watch, newAddress:', newAddress);
-    const newCoords = newAddress.features[0].geometry.coordinates;
-    if (MainStore.lastSearchMethod === 'address') {
-      map.setCenter(newCoords);
-      map.setZoom(17);
-    }
-    MapStore.currentAddressCoords = newCoords;
-    // const marker = new maplibregl.Marker()
-    //   .setLngLat(newCoords)
-    //   .addTo(map);
+// allow the imagery to be toggled on and off, and set to different images
+const imagerySelected = computed(() => {
+  return MapStore.imagerySelected;
+})
+
+const toggleImagery = () => {
+  // console.log('toggleImagery, map.getStyle:', map.getStyle());
+  const style = map.getStyle();
+  if (!MapStore.imageryOn) {
+    MapStore.imageryOn = true;
+    map.addLayer($config.mapLayers[imagerySelected.value], 'cyclomediaRecordings')
+    map.addLayer($config.mapLayers.imageryLabels, 'cyclomediaRecordings')
+  } else {
+    console.log('map.getStyle().layers:', map.getStyle().layers);
+    MapStore.imageryOn = false;
+    map.removeLayer(imagerySelected.value);
+    map.removeLayer('imageryLabels');
   }
-)
+}
 
+const setImagery = async (newImagery) => {
+  const oldLayer = imagerySelected.value;
+  // console.log('setImagery, newImagery:', newImagery, 'oldLayer:', oldLayer, 'imagerySelected.value:', imagerySelected.value);
+  MapStore.imagerySelected = newImagery;
+  await map.addLayer($config.mapLayers[imagerySelected.value], 'cyclomediaRecordings')
+  map.removeLayer(oldLayer);
+}
+
+// for Deeds topic, watch selectedRegmap for adding and changing regmap layer
 const selectedRegmap = computed(() => { return MapStore.selectedRegmap; });
-
 watch(
   () => selectedRegmap.value,
   (newRegmap, oldRegmap) => {
     console.log('addRegmapLayer, newRegmap:', newRegmap, 'oldRegmap:', oldRegmap);
     if (newRegmap == null) {
-      console.log('remove old regmap');
+      // console.log('remove old regmap');
       if (map.getLayer('regmap')) {
         map.removeLayer('regmap');
         map.removeSource('regmap');
@@ -178,6 +321,7 @@ const handleRegmapOpacityChange = (opacity) => {
   );
 }
 
+// for zoning topic, change opacity of zoning layer
 const handleZoningOpacityChange = (opacity) => {
   MapStore.zoningOpacity = opacity/100;
   map.setPaintProperty(
@@ -187,8 +331,8 @@ const handleZoningOpacityChange = (opacity) => {
   );
 }
 
+// for L&I topic, watch selected building for changing building footprint color
 const selectedLiBuildingNumber = computed(() => { return LiStore.selectedLiBuildingNumber; });
-
 watch(
   () => selectedLiBuildingNumber.value,
   newSelectedLiBuildingNumber => {
@@ -206,8 +350,8 @@ watch(
   }
 )
 
+// for Nearby topic, watch the id of the circle marker that is hovered on to change the color of the circle
 const hoveredStateId = computed(() => { return MainStore.hoveredStateId; })
-
 watch(
   () => hoveredStateId.value,
   newHoveredStateId => {
@@ -255,6 +399,10 @@ watch(
   }
 )
 
+
+// the distance measure control is added in the template with a ref, so that functions within the component can be called from this file
+const distanceMeasureControlRef = ref(null)
+
 const drawInfo = ref({
   mode: null,
   selection: null,
@@ -262,127 +410,6 @@ const drawInfo = ref({
   labelLayers: [],
   currentArea: null,
 })
-
-const distanceMeasureControlRef = ref(null)
-
-const markerSrc = computed(() => {
-  return MainStore.publicPath + 'images/marker_blue.png';
-})
-const cameraSrc = computed(() => {
-  return MainStore.publicPath + 'images/camera.png';
-})
-
-onMounted(async () => {
-  // console.log('Map.vue onMounted route.params.topic:', route.params.topic, 'route.params.address:', route.params.address);
-  let currentTopicMapStyle;
-  route.params.topic ? currentTopicMapStyle = $config.topicStyles[route.params.topic] : currentTopicMapStyle = 'pwdDrawnMapStyle';
-
-  let zoom;
-  route.params.address ? zoom = 17 : zoom = 12;
-
-  map = new maplibregl.Map({
-    container: 'map',
-    style: $config[currentTopicMapStyle],
-    center: [-75.163471, 39.953338],
-    zoom: zoom,
-    minZoom: 6,
-    maxZoom: 22,
-    attributionControl: false,
-  });
-
-  map.addControl(new maplibregl.NavigationControl(), 'bottom-left');
-  map.addControl(new maplibregl.GeolocateControl(), 'bottom-left');
-
-  map.on('moveend', (e) => {
-    // console.log('map moveend event, e:', e, 'map.getZoom()', map.getZoom(), 'map.getStyle().layers:', map.getStyle().layers, 'map.getStyle().sources:', map.getStyle().sources);
-
-    if (MapStore.cyclomediaOn) {
-      map.getZoom() > 16.5 ? MapStore.cyclomediaRecordingsOn = true : MapStore.cyclomediaRecordingsOn = false;
-      if (MapStore.cyclomediaRecordingsOn) {
-        updateCyclomediaRecordings();
-      } else {
-        let geojson = {
-          type: 'FeatureCollection',
-          features: []
-        }
-        map.getSource('cyclomediaRecordings').setData(geojson);
-        $config.dorDrawnMapStyle.sources.cyclomediaRecordings.data.features = [];
-      }
-    }
-    if (MapStore.cyclomediaOn) {
-      updateCyclomediaCameraViewcone(MapStore.cyclomediaCameraHFov, MapStore.cyclomediaCameraYaw);
-    }
-
-  });
-
-  const markerImage = await map.loadImage(markerSrc.value)
-  map.addImage('marker-blue', markerImage.data);
-  const cameraImage = await map.loadImage(cameraSrc.value)
-  map.addImage('camera-icon', cameraImage.data);
-
-  map.on('click', 'liBuildingFootprints', (e) => {
-    // console.log('liBuildingFootprints click, e:', e);
-    e.clickOnLayer = true;
-    LiStore.selectedLiBuildingNumber = e.features[0].properties.id;
-  });
-
-  map.on('click', 'cyclomediaRecordings', (e) => {
-    // console.log('cyclomediaRecordings click, e:', e, 'e.features[0]:', e.features[0]);
-    MapStore.clickedCyclomediaRecordingCoords = [ e.lngLat.lng, e.lngLat.lat ];
-    e.clickOnLayer = true;
-  });
-
-  map.on('click', (e, data) => {
-    if (e.clickOnLayer) {
-      return;
-    }
-    // console.log('e:', e, 'data:', data, 'drawInfo.mode:', drawInfo.mode, draw.getMode());
-    let drawMode = drawInfo.mode;
-    let drawLayers = MapStore.map.queryRenderedFeatures(e.point).filter(feature => [ 'mapbox-gl-draw-cold', 'mapbox-gl-draw-hot' ].includes(feature.source));
-    // console.log('Map.vue handleMapClick, e:', e, 'drawLayers:', drawLayers, 'drawMode:', drawMode, 'e:', e, 'MapStore.map.getStyle():', MapStore.map.getStyle(), 'MapStore.drawStart:', MapStore.drawStart);
-
-    if (!drawLayers.length && draw.getMode() !== 'draw_polygon') {
-      router.push({ name: 'search', query: { lng: e.lngLat.lng, lat: e.lngLat.lat }})
-    }
-    if (draw.getMode() === 'draw_polygon') {
-      distanceMeasureControlRef.value.getDrawDistances(e);
-    }
-  });
-
-  map.on('mouseenter', 'nearby', (e) => {
-    if (e.features.length > 0) {
-      console.log('map.getSource(nearby):', map.getSource('nearby'), 'map.getStyle().sources:', map.getStyle().sources);
-      MainStore.hoveredStateId = e.features[0].properties.id;
-    }
-  });
-
-  map.on('mouseleave', 'nearby', () => {
-    if (hoveredStateId) {
-      MainStore.hoveredStateId = null;
-    }
-  });
-
-  MapboxDraw.constants.classes.CONTROL_BASE  = 'maplibregl-ctrl';
-  MapboxDraw.constants.classes.CONTROL_PREFIX = 'maplibregl-ctrl-';
-  MapboxDraw.constants.classes.CONTROL_GROUP = 'maplibregl-ctrl-group';
-
-  const draw = new MapboxDraw({
-    displayControlsDefault: false,
-    controls: {
-      polygon: true,
-    }
-  });
-
-  MapStore.draw = draw;
-  map.addControl(draw, 'bottom-right');
-
-  map.on('draw.create', drawCreate);
-  map.on('draw.selectionchange', drawSelectionChange);
-  map.on('draw.finish', drawFinish);
-  map.on('draw.modechange', drawModeChange);
-
-  MapStore.setMap(map);
-});
 
 const drawCreate = (e) => {
   console.log('drawCreate is running, e', e);
@@ -402,94 +429,7 @@ const drawModeChange = (e) => {
   distanceMeasureControlRef.value.handleDrawModeChange(e);
 }
 
-const imagerySelected = computed(() => {
-  return MapStore.imagerySelected;
-})
-
-const toggleImagery = () => {
-  // console.log('toggleImagery, map.getStyle:', map.getStyle());
-  const style = map.getStyle();
-  if (!MapStore.imageryOn) {
-    MapStore.imageryOn = true;
-    map.addLayer($config.mapLayers[imagerySelected.value], 'cyclomediaRecordings')
-    map.addLayer($config.mapLayers.imageryLabels, 'cyclomediaRecordings')
-  } else {
-    console.log('map.getStyle().layers:', map.getStyle().layers);
-    MapStore.imageryOn = false;
-    map.removeLayer(imagerySelected.value);
-    map.removeLayer('imageryLabels');
-  }
-}
-
-const setImagery = async (newImagery) => {
-  const oldLayer = imagerySelected.value;
-  // console.log('setImagery, newImagery:', newImagery, 'oldLayer:', oldLayer, 'imagerySelected.value:', imagerySelected.value);
-  MapStore.imagerySelected = newImagery;
-  await map.addLayer($config.mapLayers[imagerySelected.value], 'cyclomediaRecordings')
-  map.removeLayer(oldLayer);
-}
-
-let cyclomediaRecordingsClient = new CyclomediaRecordingsClient(
-  'https://atlasapi.cyclomedia.com/api/recording/wfs',
-  import.meta.env.VITE_CYCLOMEDIA_USERNAME,
-  import.meta.env.VITE_CYCLOMEDIA_PASSWORD,
-  4326,
-);
-
-const updateCyclomediaRecordings = async () =>{
-  // console.log('updateCyclomediaRecordings is running');
-  const bounds = map.getBounds();
-  cyclomediaRecordingsClient.getRecordings(
-    bounds,
-    recordings => {
-      let geojson = {
-        type: 'FeatureCollection',
-        features: []
-      }
-      let features = [];
-      for (let item of recordings) {
-        features.push({
-          type: 'Feature',
-          geometry: {
-            type: 'Point',
-            coordinates: [item.lng, item.lat]
-          },
-          properties: {
-            id: item.imageId,
-            type: 'cyclomediaRecording',
-          }
-        })
-      }
-      geojson.features = features;
-      // console.log("map.getSource('cyclomediaRecordings'):", 'map.getStyle().layers:', map.getStyle().layers);
-      map.getSource('cyclomediaRecordings').setData(geojson);
-      // I don't know why this works - maybe because the mergeDeep is still running
-      $config.dorDrawnMapStyle.sources.cyclomediaRecordings.data.features = features;
-    },
-  );
-}
-
-const updateCyclomediaCameraAngle = (newOrientation) => {
-  // console.log('updateCyclomediaCameraAngle is running, newOrientation:', newOrientation);
-  if (!newOrientation) {
-    newOrientation = MapStore.cyclomediaCameraYaw;
-  }
-  const layer = map.getLayer('cyclomediaCamera');
-  map.setLayoutProperty('cyclomediaCamera', 'icon-rotate', newOrientation);
-}
-
-const updateCyclomediaCameraLngLat = (lngLat) => {
-  console.log('updateCyclomediaCameraLngLat is running, lngLat:', lngLat);
-  const zoom = map.getZoom();
-  if (!MapStore.cyclomediaOn) {
-    return;
-  } else {
-    const theData = {'type': 'Feature','geometry': {'type': 'Point','coordinates': lngLat }};
-    map.getSource('cyclomediaCamera').setData(theData);
-    $config.dorDrawnMapStyle.sources.cyclomediaCamera.data = theData;
-  }
-}
-
+// toggle cyclomedia on and off
 const toggleCyclomedia = async() => {
   console.log('toggleCyclomedia, map.getStyle().sources:', map.getStyle().sources, 'map.getStyle().layers:', map.getStyle().layers);
   MapStore.cyclomediaOn = !MapStore.cyclomediaOn;
@@ -534,6 +474,69 @@ const toggleCyclomedia = async() => {
     $config.dorDrawnMapStyle.sources.cyclomediaViewcone.data = viewConeGeojson;
     MapStore.setCyclomediaCameraLngLat(MapStore.cyclomediaCameraLngLat, null);
   }
+}
+
+// an object class called CyclomediaRecordingsClient is used for adding the cyclomedia recordings circles to the map 
+let cyclomediaRecordingsClient = new CyclomediaRecordingsClient(
+  'https://atlasapi.cyclomedia.com/api/recording/wfs',
+  import.meta.env.VITE_CYCLOMEDIA_USERNAME,
+  import.meta.env.VITE_CYCLOMEDIA_PASSWORD,
+  4326,
+);
+
+const updateCyclomediaRecordings = async () =>{
+  // console.log('updateCyclomediaRecordings is running');
+  const bounds = map.getBounds();
+  cyclomediaRecordingsClient.getRecordings(
+    bounds,
+    recordings => {
+      let geojson = {
+        type: 'FeatureCollection',
+        features: []
+      }
+      let features = [];
+      for (let item of recordings) {
+        features.push({
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: [item.lng, item.lat]
+          },
+          properties: {
+            id: item.imageId,
+            type: 'cyclomediaRecording',
+          }
+        })
+      }
+      geojson.features = features;
+      // console.log("map.getSource('cyclomediaRecordings'):", 'map.getStyle().layers:', map.getStyle().layers);
+      map.getSource('cyclomediaRecordings').setData(geojson);
+      // I don't know why this works - maybe because the mergeDeep is still running
+      $config.dorDrawnMapStyle.sources.cyclomediaRecordings.data.features = features;
+    },
+  );
+}
+
+// everything for adding, moving, and orienting the cyclomedia camera icon and viewcone
+const updateCyclomediaCameraLngLat = (lngLat) => {
+  console.log('updateCyclomediaCameraLngLat is running, lngLat:', lngLat);
+  const zoom = map.getZoom();
+  if (!MapStore.cyclomediaOn) {
+    return;
+  } else {
+    const theData = {'type': 'Feature','geometry': {'type': 'Point','coordinates': lngLat }};
+    map.getSource('cyclomediaCamera').setData(theData);
+    $config.dorDrawnMapStyle.sources.cyclomediaCamera.data = theData;
+  }
+}
+
+const updateCyclomediaCameraAngle = (newOrientation) => {
+  // console.log('updateCyclomediaCameraAngle is running, newOrientation:', newOrientation);
+  if (!newOrientation) {
+    newOrientation = MapStore.cyclomediaCameraYaw;
+  }
+  const layer = map.getLayer('cyclomediaCamera');
+  map.setLayoutProperty('cyclomediaCamera', 'icon-rotate', newOrientation);
 }
 
 const updateCyclomediaCameraViewcone = (cycloHFov, cycloYaw) => {
@@ -596,6 +599,7 @@ const updateCyclomediaCameraViewcone = (cycloHFov, cycloYaw) => {
   $config.dorDrawnMapStyle.sources.cyclomediaViewcone.data = data;
 }
 
+// pictometry
 const togglePictometry = () => {
   console.log('togglePictometry');
   MapStore.pictometryOn = !MapStore.pictometryOn;
@@ -610,9 +614,10 @@ const togglePictometry = () => {
     <ImageryDropdownControl v-if="MapStore.imageryOn" @setImagery="setImagery"></ImageryDropdownControl>
     <CyclomediaControl @toggleCyclomedia="toggleCyclomedia"></CyclomediaControl>
     <PictometryControl @togglePictometry="togglePictometry"></PictometryControl>
-    <DistanceMeasureControl ref="distanceMeasureControlRef"></DistanceMeasureControl>
     <OpacitySlider v-if="selectedRegmap" :initialOpacity="MapStore.regmapOpacity"@opacityChange="handleRegmapOpacityChange"></OpacitySlider>
     <OpacitySlider v-if="MainStore.currentTopic == 'Zoning'" :initialOpacity="MapStore.zoningOpacity"@opacityChange="handleZoningOpacityChange"></OpacitySlider>
+    <!-- the distance measure control uses a ref, so that functions within the component can be called from this file -->
+    <DistanceMeasureControl ref="distanceMeasureControlRef"></DistanceMeasureControl>
   </div>
   <KeepAlive>
     <CyclomediaPanel
