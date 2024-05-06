@@ -130,7 +130,7 @@ onMounted(async () => {
     map.getCanvas().style.cursor = ''
   });
 
-  // if a nearby circle marker is clicked, set its id in the MainStore as the hoveredStateId
+  // if a nearby circle marker is clicked or hovered on, set its id in the MainStore as the hoveredStateId
   map.on('click', 'nearby', (e) => {
     // console.log('nearby click, e:', e);
     e.clickOnLayer = true;
@@ -189,7 +189,7 @@ onMounted(async () => {
   MapStore.setMap(map);
 });
 
-// watch address for moving map center and setting zoom
+// watch AddressStore.addressData for moving map center and setting zoom
 watch(
   () => AddressStore.addressData,
   async newAddress => {
@@ -220,6 +220,7 @@ watch(
   map.getSource('addressMarker').setData(address);
 });
 
+// watch dor parcel coordinates for moving dor parcel
 const selectedParcelId = computed(() => { return MainStore.selectedParcelId; });
 const dorCoordinates = computed(() => {
   if (selectedParcelId.value && ParcelsStore.dor.features) {
@@ -230,7 +231,6 @@ const dorCoordinates = computed(() => {
   }
 });
 
-// watch dor parcel coordinates for moving dor parcel
 watch(
   () => dorCoordinates.value,
   newCoords => {
@@ -635,7 +635,7 @@ const updateCyclomediaCameraViewcone = (cycloHFov, cycloYaw) => {
   $config.dorDrawnMapStyle.sources.cyclomediaViewcone.data = data;
 }
 
-// pictometry
+// toggle pictometry on and off
 const togglePictometry = () => {
   console.log('togglePictometry');
   MapStore.pictometryOn = !MapStore.pictometryOn;
