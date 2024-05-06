@@ -33,4 +33,12 @@ const mapPanelClass = computed(() => {
   height: 45vh;
 }
 
+@media screen and (max-width: 760px){
+
+  .map-panel {
+    height: 300px;
+  }
+
+}
+
 </style>

@@ -8,9 +8,13 @@ import { ref, onMounted, watch, computed } from 'vue';
 // PACKAGE IMPORTS
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import MapboxDraw from '@mapbox/mapbox-gl-draw'
-import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
+// this was recommended by a comment in https://github.com/mapbox/mapbox-gl-js/issues/9114
+// the official mapbox-gl-draw was blocking map clicks
+import '@/assets/mapbox-gl-draw.min.js'
+import '@/assets/maplibre-gl-draw.css';
 import destination from '@turf/destination';
+
+// console.log('MapboxDraw():', MapboxDraw());
 
 // STORES
 import { useMapStore } from '@/stores/MapStore.js';
@@ -157,6 +161,7 @@ onMounted(async () => {
     if (e.clickOnLayer) {
       return;
     }
+    // router.push({ name: 'search', query: { lng: e.lngLat.lng, lat: e.lngLat.lat }})
     let drawLayers = map.queryRenderedFeatures(e.point).filter(feature => [ 'mapbox-gl-draw-cold', 'mapbox-gl-draw-hot' ].includes(feature.source));
     // console.log('Map.vue handleMapClick, e:', e, 'drawLayers:', drawLayers, 'drawMode:', drawMode, 'e:', e, 'map.getStyle():', map.getStyle(), 'MapStore.drawStart:', MapStore.drawStart);
     if (!drawLayers.length && draw.getMode() !== 'draw_polygon') {
@@ -167,10 +172,7 @@ onMounted(async () => {
     }
   });
 
-  MapboxDraw.constants.classes.CONTROL_BASE  = 'maplibregl-ctrl';
-  MapboxDraw.constants.classes.CONTROL_PREFIX = 'maplibregl-ctrl-';
-  MapboxDraw.constants.classes.CONTROL_GROUP = 'maplibregl-ctrl-group';
-
+  // mapbox-gl-draw is initialized
   const draw = new MapboxDraw({
     displayControlsDefault: false,
     controls: {
@@ -186,6 +188,7 @@ onMounted(async () => {
   map.on('draw.finish', drawFinish);
   map.on('draw.modechange', drawModeChange);
 
+  // map is added as Mapstore.map
   MapStore.setMap(map);
 });
 
@@ -670,7 +673,7 @@ const togglePictometry = () => {
   </KeepAlive>
 </template>
 
-<style scoped>
+<style>
 
 #map {
   position: relative;
@@ -679,4 +682,22 @@ const togglePictometry = () => {
 .map-class {
   height: 100%;
 }
+
+.mapbox-gl-draw_ctrl-draw-btn {
+  background-color: white !important;
+  border-radius: 5px !important;
+  border: 2px solid rgb(167, 166, 166) !important;
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+}
+
+@media screen and (max-width: 760px){
+
+  .map-class {
+    height: 300px;
+  }
+
+}
+
 </style>

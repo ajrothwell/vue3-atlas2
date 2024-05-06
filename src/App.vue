@@ -70,5 +70,17 @@ onMounted(async () => {
 
 <style scoped>
 
+.columns {
+  display: flex;
+  /* flex-wrap: wrap;
+  justify-content: space-between; */
+}
+
+@media screen and (max-width: 760px){
+
+.columns {
+   flex-direction: column-reverse;  
+ }
+}
 
 </style>
