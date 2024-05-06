@@ -43,7 +43,7 @@ import CyclomediaRecordingsClient from '@/components/map/recordings-client.js';
 
 let map;
 
-// keep images sources as computed props so that the publicPath can used, for pushing the app to different environments
+// keep image sources as computed props so that the publicPath can used, for pushing the app to different environments
 const markerSrc = computed(() => {
   return MainStore.publicPath + 'images/marker_blue.png';
 })
@@ -53,6 +53,8 @@ const cameraSrc = computed(() => {
 
 onMounted(async () => {
   // console.log('Map.vue onMounted route.params.topic:', route.params.topic, 'route.params.address:', route.params.address);
+  
+  // create the maplibre map
   let currentTopicMapStyle = route.params.topic ? $config.topicStyles[route.params.topic] : 'pwdDrawnMapStyle';
   let zoom = route.params.address ? 17 : 12;
 
@@ -66,14 +68,17 @@ onMounted(async () => {
     attributionControl: false,
   });
 
+  // add the address marker and camera icon sources
   const markerImage = await map.loadImage(markerSrc.value)
   map.addImage('marker-blue', markerImage.data);
   const cameraImage = await map.loadImage(cameraSrc.value)
   map.addImage('camera-icon', cameraImage.data);
 
+  // add the unchanged maplibre controls
   map.addControl(new maplibregl.NavigationControl(), 'bottom-left');
   map.addControl(new maplibregl.GeolocateControl(), 'bottom-left');
 
+  // whenever the map moves, check whether the cyclomedia recording circles are on and update them if so
   map.on('moveend', (e) => {
     // console.log('map moveend event, e:', e, 'map.getZoom()', map.getZoom(), 'map.getStyle().layers:', map.getStyle().layers, 'map.getStyle().sources:', map.getStyle().sources);
     if (MapStore.cyclomediaOn) {
@@ -81,10 +86,7 @@ onMounted(async () => {
       if (MapStore.cyclomediaRecordingsOn) {
         updateCyclomediaRecordings();
       } else {
-        let geojson = {
-          type: 'FeatureCollection',
-          features: []
-        }
+        let geojson = { type: 'FeatureCollection', features: [] };
         map.getSource('cyclomediaRecordings').setData(geojson);
         $config.dorDrawnMapStyle.sources.cyclomediaRecordings.data.features = [];
       }
@@ -92,27 +94,49 @@ onMounted(async () => {
     if (MapStore.cyclomediaOn) {
       updateCyclomediaCameraViewcone(MapStore.cyclomediaCameraHFov, MapStore.cyclomediaCameraYaw);
     }
-
   });
 
+  // if the L&I topic is selected, and a building footrprint is clicked, set the selected building number in the LiStore
   map.on('click', 'liBuildingFootprints', (e) => {
     // console.log('liBuildingFootprints click, e:', e);
     e.clickOnLayer = true;
     LiStore.selectedLiBuildingNumber = e.features[0].properties.id;
   });
 
+  // if a cyclomedia recording circle is clicked, set its coordinates in the MapStore
   map.on('click', 'cyclomediaRecordings', (e) => {
     // console.log('cyclomediaRecordings click, e:', e, 'e.features[0]:', e.features[0]);
-    MapStore.clickedCyclomediaRecordingCoords = [ e.lngLat.lng, e.lngLat.lat ];
     e.clickOnLayer = true;
+    MapStore.clickedCyclomediaRecordingCoords = [ e.lngLat.lng, e.lngLat.lat ];
   });
 
+  // if a nearby circle marker is clicked, set its id in the MainStore as the hoveredStateId
+  map.on('click', 'nearby', (e) => {
+    // console.log('nearby click, e:', e);
+    e.clickOnLayer = true;
+    MainStore.hoveredStateId = e.features[0].properties.id;
+  });
+
+  map.on('mouseenter', 'nearby', (e) => {
+    if (e.features.length > 0) {
+      // console.log('map.getSource(nearby):', map.getSource('nearby'), 'map.getStyle().sources:', map.getStyle().sources);
+      map.getCanvas().style.cursor = 'pointer'
+      MainStore.hoveredStateId = e.features[0].properties.id;
+    }
+  });
+
+  map.on('mouseleave', 'nearby', () => {
+    if (hoveredStateId) {
+      map.getCanvas().style.cursor = ''
+      MainStore.hoveredStateId = null;
+    }
+  });
+
+  // if the map is clicked (not on the layers above), if in draw mode, a polygon is drawn, otherwise, the lngLat is pushed to the app route
   map.on('click', (e, data) => {
     if (e.clickOnLayer) {
       return;
     }
-    // console.log('e:', e, 'data:', data, 'drawInfo.mode:', drawInfo.mode, draw.getMode());
-    // let drawMode = drawInfo.mode;
     let drawLayers = map.queryRenderedFeatures(e.point).filter(feature => [ 'mapbox-gl-draw-cold', 'mapbox-gl-draw-hot' ].includes(feature.source));
     // console.log('Map.vue handleMapClick, e:', e, 'drawLayers:', drawLayers, 'drawMode:', drawMode, 'e:', e, 'map.getStyle():', map.getStyle(), 'MapStore.drawStart:', MapStore.drawStart);
     if (!drawLayers.length && draw.getMode() !== 'draw_polygon') {
@@ -120,19 +144,6 @@ onMounted(async () => {
     }
     if (draw.getMode() === 'draw_polygon') {
       distanceMeasureControlRef.value.getDrawDistances(e);
-    }
-  });
-
-  map.on('mouseenter', 'nearby', (e) => {
-    if (e.features.length > 0) {
-      console.log('map.getSource(nearby):', map.getSource('nearby'), 'map.getStyle().sources:', map.getStyle().sources);
-      MainStore.hoveredStateId = e.features[0].properties.id;
-    }
-  });
-
-  map.on('mouseleave', 'nearby', () => {
-    if (hoveredStateId) {
-      MainStore.hoveredStateId = null;
     }
   });
 
@@ -425,6 +436,11 @@ const drawFinish = () => {
 }
 const drawModeChange = (e) => {
   console.log('drawModeChange is running, e', e);
+  if (e.mode === 'draw_polygon') {
+    map.getCanvas().style.cursor = 'crosshair';
+  } else {
+    map.getCanvas().style.cursor = ''
+  }
   drawInfo.mode = e.mode;
   distanceMeasureControlRef.value.handleDrawModeChange(e);
 }
@@ -484,7 +500,7 @@ let cyclomediaRecordingsClient = new CyclomediaRecordingsClient(
   4326,
 );
 
-const updateCyclomediaRecordings = async () =>{
+const updateCyclomediaRecordings = async () => {
   // console.log('updateCyclomediaRecordings is running');
   const bounds = map.getBounds();
   cyclomediaRecordingsClient.getRecordings(
