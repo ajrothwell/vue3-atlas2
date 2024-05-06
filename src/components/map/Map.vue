@@ -261,6 +261,16 @@ watch(
       if (MapStore.cyclomediaOn) {
         updateCyclomediaCameraAngle();
       }
+    } else {
+      map.setStyle($config.pwdDrawnMapStyle);
+      const addressMarker = map.getSource('addressMarker');
+      const dorParcel = map.getSource('dorParcel');
+      if (addressMarker && dorParcel) {
+        // console.log('1 map.layers:', map.getStyle().layers, map.getStyle().sources);
+        addressMarker.setData({'type': 'Feature','geometry': {'type': 'Point','coordinates': pwdCoordinates.value }});
+        dorParcel.setData({'type': 'Feature','geometry': {'type': 'Polygon','coordinates': [ dorCoordinates.value ]}});
+        // console.log('2 map.layers:', map.getStyle().layers, map.getStyle().sources);
+      }
     }
   }
 )

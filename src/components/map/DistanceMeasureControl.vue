@@ -622,7 +622,6 @@ tr:nth-child(even) {
 }
 
 .mapbox-gl-draw_ctrl-draw-btn {
-  padding-bottom: 10px !important;
   background-size: 55% !important;
   background-repeat: no-repeat !important;
   background-position: center !important;
