@@ -9,11 +9,15 @@ export const useLiStore = defineStore('LiStore', {
   state: () => {
     return {
       selectedLiBuildingNumber: null,
-      liInspections: {},
-      liPermits: {},
       liBuildingFootprints: {},
       liBuildingCertSummary: {},
       liBuildingCerts: {},
+      liPermits: {},
+      liAisZoningDocs: {},
+      liEclipseZoningDocs: {},
+      liInspections: {},
+      liViolations: {},
+      liBusinessLicenses: {},
     };
   },
   // each of these functions was originally a single data-source file in atlas
@@ -93,25 +97,7 @@ export const useLiStore = defineStore('LiStore', {
       }
       const url = baseUrl += `SELECT * FROM building_certs WHERE bin IN ('${bin}')`;
       const response = await fetch(url);
-      this.liBuildingCerts = await response.json()
-    },
-    async fillLiInspections() {
-      const AddressStore = useAddressStore();
-      const feature = AddressStore.addressData.features[0];
-      let baseUrl = 'https://phl.carto.com/api/v2/sql?q=';
-      const eclipse_location_id = feature.properties.eclipse_location_id.replace(/\|/g, "', '");
-      const streetaddress = feature.properties.street_address;
-      const opaQuery = feature.properties.opa_account_num ? ` AND opa_account_num IN ('${ feature.properties.opa_account_num}')` : ``;
-      const pwd_parcel_id = feature.properties.pwd_parcel_id;
-      const addressId = feature.properties.li_address_key.replace(/\|/g, "', '");
-
-      const url = baseUrl += `SELECT * FROM case_investigations WHERE (address = '${ streetaddress }' or addressobjectid IN ('${ addressId }')) \
-          AND systemofrecord IN ('HANSEN') ${ opaQuery } UNION SELECT * FROM case_investigations WHERE \
-          addressobjectid IN ('${ eclipse_location_id }') OR parcel_id_num IN ( '${ pwd_parcel_id }' ) \
-          AND systemofrecord IN ('ECLIPSE') ${ opaQuery }`;
-
-      const response = await fetch(url);
-      this.liInspections = await response.json()
+      this.liBuildingCerts = await response.json();
     },
 
     async fillLiPermits() {
@@ -131,7 +117,109 @@ export const useLiStore = defineStore('LiStore', {
       ORDER BY permittype`;
 
       const response = await fetch(url);
-      this.liPermits = await response.json()
+      this.liPermits = await response.json();
+    },
+
+    async fillLiAisZoningDocs() {
+      const AddressStore = useAddressStore();
+      const feature = AddressStore.addressData.features[0];
+      let baseUrl = 'https://phl.carto.com/api/v2/sql?q=';
+      const url = baseUrl += `select * from ais_zoning_documents where doc_id = ANY('{ ${feature.properties.zoning_document_ids} }'::text[])`;
+      const response = await fetch(url);
+      this.liAisZoningDocs = await response.json()
+    },
+    async fillLiEclipseZoningDocs() {
+      const AddressStore = useAddressStore();
+      const feature = AddressStore.addressData.features[0];
+      let baseUrl = 'https://phl.carto.com/api/v2/sql?q=';
+      let query = null;
+      if (feature.properties.eclipse_location_id === null || feature.properties.eclipse_location_id === '') {
+        query = 'select * from li_zoning_docs where address_objectid in (' + null + ')';
+      } else {
+        const eclipseLocId = feature.properties.eclipse_location_id.split('|');
+        let str = "'";
+        let i;
+        for (i = 0; i < eclipseLocId.length; i++) {
+          str += eclipseLocId[i];
+          str += "', '";
+        }
+        str = str.slice(0, str.length - 3);
+        query = `select * from li_zoning_docs where address_objectid in (${ str })`;
+      }
+      const url = baseUrl += query;
+      const response = await fetch(url);
+      this.liEclipseZoningDocs = await response.json();
+    },
+
+    async fillLiInspections() {
+      const AddressStore = useAddressStore();
+      const feature = AddressStore.addressData.features[0];
+      let baseUrl = 'https://phl.carto.com/api/v2/sql?q=';
+      const eclipse_location_id = feature.properties.eclipse_location_id.replace(/\|/g, "', '");
+      const streetaddress = feature.properties.street_address;
+      const opaQuery = feature.properties.opa_account_num ? ` AND opa_account_num IN ('${ feature.properties.opa_account_num}')` : ``;
+      const pwd_parcel_id = feature.properties.pwd_parcel_id;
+      const addressId = feature.properties.li_address_key.replace(/\|/g, "', '");
+
+      const url = baseUrl += `SELECT * FROM case_investigations WHERE (address = '${ streetaddress }' or addressobjectid IN ('${ addressId }')) \
+          AND systemofrecord IN ('HANSEN') ${ opaQuery } UNION SELECT * FROM case_investigations WHERE \
+          addressobjectid IN ('${ eclipse_location_id }') OR parcel_id_num IN ( '${ pwd_parcel_id }' ) \
+          AND systemofrecord IN ('ECLIPSE') ${ opaQuery }`;
+
+      const response = await fetch(url);
+      this.liInspections = await response.json();
+    },
+
+    async fillLiViolations() {
+      const AddressStore = useAddressStore();
+      const feature = AddressStore.addressData.features[0];
+      let baseUrl = 'https://phl.carto.com/api/v2/sql?q=';
+      const eclipse_location_id = feature.properties.eclipse_location_id.replace(/\|/g, "', '");
+      const streetaddress = feature.properties.street_address;
+      const opaQuery = feature.properties.opa_account_num ? ` AND opa_account_num IN ('${ feature.properties.opa_account_num}')` : ``;
+      const pwd_parcel_id = feature.properties.pwd_parcel_id;
+      const addressId = feature.properties.li_address_key.replace(/\|/g, "', '");
+
+      const url = baseUrl += `SELECT * FROM VIOLATIONS WHERE ( address = '${ streetaddress }' \
+        OR addressobjectid IN ('${ addressId }') \
+        OR parcel_id_num IN ( '${ pwd_parcel_id }' ) ) \
+        ${ opaQuery } \
+        AND systemofrecord IN ('HANSEN') \
+        UNION SELECT * FROM VIOLATIONS WHERE ( addressobjectid IN ('${ eclipse_location_id }') \
+        OR parcel_id_num IN ( '${ pwd_parcel_id }' ) ) \
+        ${ opaQuery } \
+        AND systemofrecord IN ('ECLIPSE') \
+        ORDER BY casenumber DESC`;
+
+      const response = await fetch(url);
+      this.liViolations = await response.json();
+    },
+
+    async fillLiBusinessLicenses() {
+      const AddressStore = useAddressStore();
+      const feature = AddressStore.addressData.features[0];
+      let baseUrl = 'https://phl.carto.com/api/v2/sql?q=';
+      const eclipse_location_id = feature.properties.eclipse_location_id.replace(/\|/g, "', '");
+      const streetaddress = feature.properties.street_address;
+      const opaQuery = feature.properties.opa_account_num ? ` AND opa_account_num IN ('${ feature.properties.opa_account_num}')` : ``;
+      const pwd_parcel_id = feature.properties.pwd_parcel_id;
+
+      let query;
+      if (eclipse_location_id) {
+        query = `SELECT * FROM BUSINESS_LICENSES WHERE ( addressobjectid IN ('`+ eclipse_location_id +`') \
+        OR address = '${streetaddress}' \
+        OR parcel_id_num IN ( '${ pwd_parcel_id }' ) ) \
+        ${opaQuery } \
+        ORDER BY licensetype`;
+      } else {
+        query = `SELECT * FROM BUSINESS_LICENSES WHERE ( address = '${streetaddress}' \
+        OR parcel_id_num IN ( '${ pwd_parcel_id }' ) ) \
+        ${opaQuery } \
+        ORDER BY licensetype`;
+      }
+      const url = baseUrl += query;
+      const response = await fetch(url);
+      this.liBusinessLicenses = await response.json();
     }
   },
   // keeping formatting getters here in the store only works if the data is not looped

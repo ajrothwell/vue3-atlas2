@@ -9,6 +9,7 @@ import { useParcelsStore } from '@/stores/ParcelsStore.js'
 import { useOpaStore } from '@/stores/OpaStore.js'
 import { useLiStore } from '@/stores/LiStore.js'
 import { useDorStore } from '@/stores/DorStore.js'
+import { useZoningStore } from '@/stores/ZoningStore.js'
 import { useNearbyActivityStore } from '@/stores/NearbyActivityStore.js'
 import { useMapStore } from '@/stores/MapStore.js'
 import { useMainStore } from '@/stores/MainStore.js'
@@ -96,13 +97,26 @@ const topicDataFetch = async (topic) => {
     await LiStore.fillLiBuildingCertSummary();
     await LiStore.fillLiBuildingCerts();
     await LiStore.fillLiInspections();
+    await LiStore.fillLiAisZoningDocs();
+    await LiStore.fillLiEclipseZoningDocs();
     await LiStore.fillLiPermits();
+    await LiStore.fillLiViolations();
+    await LiStore.fillLiBusinessLicenses();
   }
 
   if (topic === 'Deeds') {
     const DorStore = useDorStore();
     await DorStore.fillDorDocuments();
     await DorStore.fillRegmaps();
+  }
+
+  if (topic === 'Zoning') {
+    const ZoningStore = useZoningStore();
+    await ZoningStore.fillZoningBase();
+    await ZoningStore.fillZoningOverlays();
+    await ZoningStore.fillPendingBills();
+    await ZoningStore.fillZoningAppeals();
+    await ZoningStore.fillRcos();
   }
 
   if (topic === 'Nearby Activity') {

@@ -3,6 +3,8 @@ console.log('LI.vue setup');
 import { computed, onMounted, onBeforeMount } from 'vue';
 
 // import the AddressStore and LiStore
+import { useMainStore } from '@/stores/MainStore';
+const MainStore = useMainStore();
 import { useAddressStore } from '@/stores/AddressStore';
 const AddressStore = useAddressStore();
 import { useLiStore } from '@/stores/LiStore';
@@ -22,17 +24,102 @@ const selectedBuildingCerts = computed(() => LiStore.liBuildingCerts.rows.filter
 const permitsCompareFn = (a, b) => new Date(b.permitissuedate) - new Date(a.permitissuedate);
 const permits = computed(() => LiStore.liPermits.rows.sort(permitsCompareFn).slice(0, 5));
 
+const getLinkPermit = (item) => {
+  let address = item.address;
+  if (item.unit_num && item.unit_num != null) {
+    address += ' Unit ' + item.unit_num;
+  }
+  return "<a target='_blank' href='https://li.phila.gov/Property-History/search/Permit-Detail?address="+encodeURIComponent(address)+"&Id="+item.permitnumber+"'>"+item.permitnumber+" <i class='fa fa-external-link-alt'></i></a>";
+};
+
+// ZONING DOCS
+const liZoningDocsCompareFn = (a, b) => new Date(b.scan_date || a.issue_date) - new Date(a.scan_date || a.issue_date);
+const liAisZoningDocs = computed(() => LiStore.liAisZoningDocs.rows);
+const liEclipseZoningDocs = computed(() => LiStore.liEclipseZoningDocs.rows);
+console.log('liAisZoningDocs.value:', liAisZoningDocs.value, 'liEclipseZoningDocs.value:', liEclipseZoningDocs.value);
+const liAllZoningDocs = liAisZoningDocs.value.concat(liEclipseZoningDocs.value).sort(liZoningDocsCompareFn);
+console.log('allDocs:', liAllZoningDocs);
+
+const getZoningDocDate = (item) => {
+  if (item.issue_date) {
+    return date(item.issue_date);
+  } else if (item.scan_date) {
+    return date(item.scan_date);
+  } else {
+    return 'N/A';
+  }
+};
+
+const getZoningDocLink = (item) => {
+  let appId;
+  if (item.app_id) {
+    appId = item.app_id;
+    if (appId.length < 3) {
+      appId = '0' + appId;
+    }
+  }
+  let docId, url;
+  if (item.doc_id) {
+    docId = item.doc_id;
+    url = '//s3.amazonaws.com/lni-zoning-pdfs/';
+  } else if (item.permit_number ) {
+    docId = item.permit_number ;
+    url = 'http://s3.amazonaws.com/eclipse-docs-pdfs/zoning/';
+  }
+  return '<a target="_blank" href="' //s3.amazonaws.com/lni-zoning-pdfs/'
+          + url
+          + docId
+          + '.pdf">'
+          + docId
+          + ' <i class="fa fa-external-link-alt"></i></a>'
+          + '</a>';
+};
+
+const getZoningDocPages = (item) => {
+  if (item.num_pages) {
+    return item.num_pages;
+  } else if (item.pages_scanned) {
+    return item.page_scanned;
+  } else {
+    return 'N/A';
+  }
+};
+
 // INSPECTIONS
 const inspectionsCompareFn = (a, b) => new Date(b.investigationcompleted) - new Date(a.investigationcompleted);
 const inspections = computed(() => LiStore.liInspections.rows.sort(inspectionsCompareFn).slice(0, 5));
 
-// individual data manipulations for INSPECTIONS
-const linkInvestigationNumber = (item) => {
-  let address = AddressStore.addressData.features[0].properties.street_address;
+const getLinkInvestigationNumber = (item) => {
+  let address = item.address;
   if (item.unit_num && item.unit_num != null) {
     address += ' Unit ' + item.unit_num;
   }
   return "<a target='_blank' href='https://li.phila.gov/Property-History/search/Violation-Detail?address="+encodeURIComponent(address)+"&Id="+item.casenumber+"'>"+item.casenumber+" <i class='fa fa-external-link-alt'></i></a>";
+};
+
+// VIOLATIONS
+const violationsCompareFn = (a, b) => new Date(b.casecreateddate) - new Date(a.casecreateddate);
+const violations = computed(() => LiStore.liViolations.rows.sort(violationsCompareFn).slice(0, 5));
+
+const getLinkViolationNumber = (item) => {
+  let address = item.address;
+  // let address = AddressStore.addressData.features[0].properties.street_address;
+  if (item.unit_num && item.unit_num != null) {
+    address += ' Unit ' + item.unit_num;
+  }
+  return "<a target='_blank' href='https://li.phila.gov/Property-History/search/Violation-Detail?address="+encodeURIComponent(address)+"&Id="+item.casenumber+"'>"+item.casenumber+" <i class='fa fa-external-link-alt'></i></a>";
+};
+
+// BUSINESS LICENSES
+const businessLicensesCompareFn = (a, b) => new Date(b.initialissuedate) - new Date(a.initialissuedate);
+const businessLicenses = computed(() => LiStore.liBusinessLicenses.rows.sort(businessLicensesCompareFn).slice(0, 5));
+
+const getLinkLicenseNumber = (item) => {
+  let address = item.address;
+  if (item.unit_num && item.unit_num != null) {
+    address += ' Unit ' + item.unit_num;
+  }
+  return "<a target='_blank' href='https://li.phila.gov/Property-History/search/Business-License-Detail?address="+encodeURIComponent(address)+"&Id="+item.licensenum+"'>"+item.licensenum+" <i class='fa fa-external-link-alt'></i></a>";
 };
 
 onBeforeMount( async() => {
@@ -122,8 +209,8 @@ const handleBinClick = (bin) => {
     </div>
 
     <!-- Building Certs Table -->
-    <h5 class="subtitle is-5">Building Certifications</h5>
-    <table class="table is-fullwidth is-striped">
+    <h5 class="subtitle is-5 table-title">Building Certifications</h5>
+    <table class="table is-fullwidth is-striped link-at-bottom">
       <thead>
         <tr>
           <th>InspectionType</th>
@@ -141,10 +228,16 @@ const handleBinClick = (bin) => {
         </tr>
       </tbody>
     </table>
+    <div class="table-link">
+      <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See all {{ LiStore.liBuildingCerts.rows.length || '' }} building certifications for this property at L&I Property History<i class="fa fa-external-link-alt"></i></a>
+    </div>
 
     <!-- Li Permits Table -->
-    <h5 class="subtitle is-5">Permits</h5>
-    <table class="table is-fullwidth is-striped">
+    <h5 class="subtitle is-5 table-title">Permits</h5>
+    <table
+      :class="LiStore.liPermits.rows.length > 5 ? 'link-at-bottom' : ''"
+      class="table is-fullwidth is-striped"
+    >
       <thead>
         <tr>
           <th>Date</th>
@@ -156,16 +249,45 @@ const handleBinClick = (bin) => {
       <tbody>
         <tr v-for="item in permits">
           <td>{{ date(item.permitissuedate) }}</td>
-          <td>{{ item.permitnumber }}</td>
+          <td v-html="getLinkPermit(item)"></td>
           <td>{{ item.permitdescription }}</td>
           <td>{{ item.status }}</td>
         </tr>
       </tbody>
     </table>
+    <div v-if="LiStore.liPermits.rows.length > 5" class="table-link">
+      <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See {{ LiStore.liPermits.rows.length-5 }} older permits at L&I Property History<i class="fa fa-external-link-alt"></i></a>
+    </div>
+
+    <!-- liAisZoningDocs and liEclipseZoningDocs Table-->
+    <h5 class="subtitle is-5 table-title">Zoning Permit Documents</h5>
+    <h6 class="subtitle is-6">Formerly "Zoning Archive"</h6>
+    <table class="table is-fullwidth is-striped">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Permit Number</th>
+          <th># Pages</th>
+          <th>ID</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="item in liAllZoningDocs">
+          <td>{{ getZoningDocDate(item) }}</td>
+          <td>{{ item.permit_number }}</td>
+          <td>{{ getZoningDocPages(item) }}</td>
+          <td v-html="getZoningDocLink(item)"></td>
+        </tr>
+      </tbody>
+    </table>
 
     <!-- Li Inspections Table -->
-    <h5 class="subtitle is-5">Inspections</h5>
-    <table class="table is-fullwidth is-striped">
+    <h5 class="subtitle is-5 table-title">Inspections</h5>
+    <table 
+      :class="LiStore.liInspections.rows.length > 5 ? 'link-at-bottom' : ''"
+      class="table is-fullwidth is-striped"
+    >
+
       <thead>
         <tr>
           <th>Date</th>
@@ -177,12 +299,72 @@ const handleBinClick = (bin) => {
       <tbody>
         <tr v-for="item in inspections">
           <td>{{ date(item.investigationcompleted) }}</td>
-          <td v-html="linkInvestigationNumber(item)"></td>
+          <td v-html="getLinkInvestigationNumber(item)"></td>
           <td>{{ item.investigationtype }}</td>
           <td>{{ item.investigationstatus }}</td>
         </tr>
       </tbody>
     </table>
+    <div v-if="LiStore.liInspections.rows.length > 5" class="table-link">
+      <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See {{ LiStore.liInspections.rows.length }} older inspections at L&I Property History<i class="fa fa-external-link-alt"></i></a>
+    </div>
+
+    <!-- Li Violations Table -->
+    <h5 class="subtitle is-5 table-title">Violations</h5>
+    <table
+      :class="LiStore.liInspections.rows.length > 5 ? 'link-at-bottom' : ''"
+      class="table is-fullwidth is-striped"
+    >
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>ID</th>
+          <th>Description</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="item in violations">
+          <td>{{ date(item.casecreateddate) }}</td>
+          <td v-html="getLinkViolationNumber(item)"></td>
+          <td>{{ item.violationcodetitle }}</td>
+          <td>{{ item.violationstatus }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div v-if="LiStore.liInspections.rows.length > 5" class="table-link">
+      <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See {{ LiStore.liViolations.rows.length-5 }} older violations at L&I Property History<i class="fa fa-external-link-alt"></i></a>
+    </div>
+
+    <!-- Li Business Licenses Table -->
+    <h5 class="subtitle is-5 table-title">Business Licenses</h5>
+    <table
+      :class="LiStore.liBusinessLicenses.rows.length > 5 ? 'link-at-bottom' : ''"
+      class="table is-fullwidth is-striped link-at-bottom"
+    >
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>License Number</th>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="item in businessLicenses">
+          <td>{{ date(item.initialissuedate) }}</td>
+          <td v-html="getLinkLicenseNumber(item)"></td>
+          <td>{{ item.business_name }}</td>
+          <td>{{ item.licensetype }}</td>
+          <td>{{ item.licensestatus }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div v-if="LiStore.liBusinessLicenses.rows.length > 5" class="table-link">
+      <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See {{ LiStore.liBusinessLicenses.rows.length-5 }} older business licenses at L&I Property History<i class="fa fa-external-link-alt"></i></a>
+    </div>
+
   </section>
 </template>
 

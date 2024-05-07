@@ -1,6 +1,6 @@
 <script setup>
-import $config from '@/config';
-import { ref, computed, onMounted, onBeforeMount } from 'vue';
+// import $config from '@/config';
+import { computed, onBeforeMount } from 'vue';
 // import { storeToRefs } from 'pinia';
 
 // import the AddressStore and DorParcels
@@ -14,6 +14,7 @@ import { useMainStore } from '@/stores/MainStore';
 const MainStore = useMainStore();
 import { useMapStore } from '@/stores/MapStore';
 const MapStore = useMapStore();
+import CollectionSummary from '@/components/CollectionSummary.vue';
 
 let selectedParcelId = computed(() => { return MainStore.selectedParcelId });
 const selectedParcel = computed(() => {
@@ -39,10 +40,6 @@ onBeforeMount(() => {
   }
 });
 
-// onMounted(() => {
-//   console.log('Deeds.vue onMounted, map.getStyle().sources:', map.getStyle().sources, 'map.getStyle.layers:', map.getStyle().layers);
-// });
-
 const statusKey = {
   1: 'Active',
   2: 'Inactive',
@@ -65,6 +62,11 @@ const selectedRegmap = computed(() => {
 
 <template>
   <div class="box">Deed information and document transactions for this address. The map faithfully reflects property boundaries as described in recorded deeds including multiple types of easements. The property boundaries displayed on the map are for reference only and should not be used in place of the recorded deeds or land surveys. Source: Department of Records</div>
+  <collection-summary
+    :value="'STATUS'"
+    :descriptor="'parcel'"
+  >
+  </collection-summary>
   <div class="columns is-multiline">
     <div
       v-for="parcel in ParcelsStore.dor.features"
