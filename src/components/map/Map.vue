@@ -399,7 +399,7 @@ const hoveredStateId = computed(() => { return MainStore.hoveredStateId; })
 watch(
   () => hoveredStateId.value,
   newHoveredStateId => {
-    console.log('Map.vue hoveredStateId watch, newHoveredStateId:', newHoveredStateId, 'map.getStyle().sources.nearby.data.features:', map.getStyle().sources.nearby.data.features);
+    // console.log('Map.vue hoveredStateId watch, newHoveredStateId:', newHoveredStateId, 'map.getStyle().sources.nearby.data.features:', map.getStyle().sources.nearby.data.features);
     if (newHoveredStateId) {
       const feature = map.getStyle().sources.nearby.data.features.filter(feature => feature.properties.id === newHoveredStateId)[0];
       const index = map.getStyle().sources.nearby.data.features.indexOf(feature);
