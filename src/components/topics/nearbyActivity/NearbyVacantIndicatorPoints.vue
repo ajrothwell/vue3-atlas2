@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, computed, watch, onMounted } from 'vue';
+import { ref, reactive, computed, watch, onMounted, onBeforeUnmount } from 'vue';
 
 import { useNearbyActivityStore } from '@/stores/NearbyActivityStore';
 const NearbyActivityStore = useNearbyActivityStore();
@@ -87,6 +87,11 @@ onMounted(() => {
     map.getSource('nearby').setData(geojson);
   }
 });
+
+onBeforeUnmount(() => {
+  console.log('Nearby311.vue onBeforeUnmount');
+  map.getSource('nearby').setData({ 'type': 'FeatureCollection', 'features': [ {'type': 'Feature', geometry: { 'type': 'Point', 'coordinates': [0,0]}}] });
+})
 
 </script>
 

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, computed, watch, onMounted } from 'vue';
+import { ref, reactive, computed, watch, onMounted, onBeforeUnmount } from 'vue';
 
 import { useNearbyActivityStore } from '@/stores/NearbyActivityStore';
 const NearbyActivityStore = useNearbyActivityStore();
@@ -98,6 +98,11 @@ onMounted(() => {
   }
 });
 
+onBeforeUnmount(() => {
+  console.log('Nearby311.vue onBeforeUnmount');
+  map.getSource('nearby').setData({ 'type': 'FeatureCollection', 'features': [ {'type': 'Feature', geometry: { 'type': 'Point', 'coordinates': [0,0]}}] });
+})
+
 </script>
 
 <template>
@@ -110,7 +115,7 @@ onMounted(() => {
     @setSortby="setSortby"
   ></SortbyDropdown>
   <div class="mt-5">
-    <h5 class="subtitle is-5">Demolition Permits</h5>
+    <h5 class="subtitle is-5">Imminently Dangerous</h5>
     <div v-if="loadingData">Loading...</div>
     <table class="table is-fullwidth is-striped">
       <thead>

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, computed, watch, onMounted } from 'vue';
+import { ref, reactive, computed, watch, onMounted, onBeforeUnmount } from 'vue';
 
 import { useNearbyActivityStore } from '@/stores/NearbyActivityStore';
 const NearbyActivityStore = useNearbyActivityStore();
@@ -71,7 +71,7 @@ const nearbyZoningAppealsGeojson = computed(() => {
     features.push({
       type: 'Feature',
       geometry: { type: 'Point', coordinates: [item.lng, item.lat] },
-      properties: { id: item.objectid, type: 'nearbyZoningAppeals' }
+      properties: { id: item.parcel_id_num, type: 'nearbyZoningAppeals' }
     })
   }
   return features;
@@ -109,6 +109,11 @@ onMounted(() => {
   }
 });
 
+onBeforeUnmount(() => {
+  console.log('Nearby311.vue onBeforeUnmount');
+  map.getSource('nearby').setData({ 'type': 'FeatureCollection', 'features': [ {'type': 'Feature', geometry: { 'type': 'Point', 'coordinates': [0,0]}}] });
+})
+
 </script>
 
 <template>
@@ -135,15 +140,15 @@ onMounted(() => {
       <tbody>
         <tr
           v-for="item in nearbyZoningAppeals"
-          :key=item.objectid
-          :id="item.objectid"
+          :key=item.parcel_id_num
+          :id="item.parcel_id_num"
           @mouseover="handleRowMouseover"
           @mouseleave="handleRowMouseleave"
-          :class="hoveredStateId == item.objectid ? 'active-hover' : 'inactive'"
+          :class="hoveredStateId == item.parcel_id_num ? 'active-hover' : 'inactive'"
         >
           <td>{{ item.scheduleddate }}</td>
           <td>{{ item.address }}</td>
-          <td>{{ item.appeal_grounds }}</td>
+          <td>{{ item.appealgrounds }}</td>
           <td>{{ (item.distance * 3.28084).toFixed(0) }} ft</td>
         </tr>
       </tbody>
