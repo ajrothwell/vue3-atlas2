@@ -1,8 +1,6 @@
 import { defineStore } from 'pinia';
 import { useMainStore } from '@/stores/MainStore.js'
 
-
-
 export const useAddressStore = defineStore("AddressStore", {
   state: () => {
     return {
@@ -42,7 +40,6 @@ export const useAddressStore = defineStore("AddressStore", {
       }
     },
   },
-
   getters: {
     getOpaOwners: (state) => state.addressData.features[0].properties.opa_owners.join(', '),
   },

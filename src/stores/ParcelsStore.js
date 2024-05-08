@@ -2,6 +2,8 @@
 import { defineStore } from 'pinia';
 import { useAddressStore } from '@/stores/AddressStore.js'
 import axios from 'axios';
+import useParcels from '@/composables/useParcels';
+const { processParcels } = useParcels();
 
 export const useParcelsStore = defineStore('ParcelsStore', {
   state: () => {
@@ -113,7 +115,9 @@ export const useParcelsStore = defineStore('ParcelsStore', {
       const response = await axios(`https://services.arcgis.com/fLeGjb7u4uXqeF9q/ArcGIS/rest/services/${ESRILayer}/FeatureServer/0/query`, { params });
       console.log('response', response);
       if (response.data.features.length > 0) {
-        this[parcelLayer] = await response.data;
+        let data = await response.data;
+        let processedData = await processParcels(data);
+        this[parcelLayer] = processedData;
       }
     },
 

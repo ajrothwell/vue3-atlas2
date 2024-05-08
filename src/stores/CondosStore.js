@@ -11,29 +11,38 @@ export const useCondosStore = defineStore('CondosStore', {
   actions: {
     async fillCondoData(address) {
       // console.log('fillCondoData is runnning, address', address);
-      const AddressStore = useAddressStore();
-      const AddressLoaded = AddressStore.addressData.features
-      if (!AddressLoaded) { return }
-      const AddressData = AddressLoaded[0];
-      let params = {
-        include_units: true,
-        opa_only: true,
-        page: 1,
-      };
-      const response = await axios(`//api.phila.gov/ais/v1/search/${address}`, { params });
-      if (response.data.features.length > 0) {
-        let dataFeatures = [];
-        // console.log('in condo-list, data:', data, 'state:', state);
-        for (let feature of response.data.features) {
-          // console.log('low frac:', feature.properties.address_low_frac);
-          if (feature.properties.address_low_frac !== AddressData.properties.address_low_frac || feature.properties.street_address === AddressData.properties.street_address) {
-            // return;
-            response.data.total_size = response.data.total_size - 1;
-          } else {
-            dataFeatures.push(feature);
+      try {
+        const AddressStore = useAddressStore();
+        const AddressLoaded = AddressStore.addressData.features
+        if (!AddressLoaded) { return }
+        const AddressData = AddressLoaded[0];
+        let params = {
+          include_units: true,
+          opa_only: true,
+          page: 1,
+        };
+        const response = await axios(`//api.phila.gov/ais/v1/search/${address}`, { params });
+        if (response.ok) {
+          console.log('Condos - await resolved and HTTP status is successful')
+          if (response.data.features.length > 0) {
+            let dataFeatures = [];
+            // console.log('in condo-list, data:', data, 'state:', state);
+            for (let feature of response.data.features) {
+              // console.log('low frac:', feature.properties.address_low_frac);
+              if (feature.properties.address_low_frac !== AddressData.properties.address_low_frac || feature.properties.street_address === AddressData.properties.street_address) {
+                // return;
+                response.data.total_size = response.data.total_size - 1;
+              } else {
+                dataFeatures.push(feature);
+              }
+            }
+            this.condosData = dataFeatures;
           }
+        } else {
+          console.log('Condos - await resolved but no data features')
         }
-        this.condosData = dataFeatures;
+      } catch {
+        console.error('Condos - await never resolved, failed to fetch condo data')
       }
     },
   }
