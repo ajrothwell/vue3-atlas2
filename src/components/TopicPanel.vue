@@ -93,7 +93,9 @@ const dataSourcesLoadedArray = computed(() => MainStore.dataSourcesLoadedArray);
         </topic>
 
         <topic :topic-name="'Nearby Activity'" :loading="!dataSourcesLoadedArray.includes('Nearby Activity')">
-          <NearbyActivity v-if="dataSourcesLoadedArray.includes('Nearby Activity')"/>
+          <KeepAlive>
+            <NearbyActivity v-if="dataSourcesLoadedArray.includes('Nearby Activity')"/>
+          </KeepAlive>
         </topic>
       </div>
 

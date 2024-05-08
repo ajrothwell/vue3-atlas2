@@ -1,7 +1,7 @@
 <script setup>
 import $config from '@/config';
 
-import { ref, computed, watch, onMounted } from 'vue';
+import { ref, reactive, computed, watch, onMounted } from 'vue';
 
 import { useNearbyActivityStore } from '@/stores/NearbyActivityStore';
 const NearbyActivityStore = useNearbyActivityStore();
@@ -42,19 +42,52 @@ const setDataTypeInRouter = (newDataType) => {
 }
 
 watch(() => route.params.data, async (newDataType) => {
+  console.log('watch route.params.data, newDataType:', newDataType, 'currentNearbyDataType.value:', currentNearbyDataType.value);
   if (newDataType) {
-    MainStore.setCurrentNearbyDataType(newDataType);
+    // MainStore.setCurrentNearbyDataType(newDataType);
+    // if (NearbyActivityStore[newDataType] === null) {
+    //   // console.log('fetching new data')
+    //   await NearbyActivityStore.fetchData(newDataType);
+    // }
     await setDataType(newDataType);
   }
 })
 
 const setDataType = async (newDataType) => {
-  // dataType.value = newDataType;
+  console.log('setDataType, newDataType:', newDataType);
+  MainStore.currentNearbyDataType = newDataType;
+
   if (NearbyActivityStore[newDataType] === null) {
     // console.log('fetching new data')
     await NearbyActivityStore.fetchData(newDataType);
   }
-  setTimeInterval(timeIntervals[newDataType].values[0]);
+  let geojson;
+  if (newDataType === 'nearby311') {
+    console.log('newDataType is nearby311, nearby311Geojson.value:', nearby311Geojson.value);
+    if (nearby311Geojson.value.length > 0) {
+      console.log('newDataType is nearby311, $config:', $config, 'map.getStyle().sources:', map.getStyle().sources, 'map.getStyle().layers:', map.getStyle().layers);
+      let geojson = { 'type': 'FeatureCollection', 'features': nearby311Geojson.value }
+      map.getSource('nearby').setData(geojson);
+    }
+  } else if (newDataType === 'nearbyCrimeIncidents') {
+    console.log('newDataType is nearbyCrimeIncidents');
+    if (nearbyCrimeIncidentsGeojson.value.length > 0) {
+      console.log('newDataType is nearbyCrimeIncidents, $config:', $config, 'map.getStyle().sources:', map.getStyle().sources, 'map.getStyle().layers:', map.getStyle().layers);
+      let geojson = { 'type': 'FeatureCollection', 'features': nearbyCrimeIncidentsGeojson.value }
+      map.getSource('nearby').setData(geojson);
+    }
+  } else if (newDataType === 'nearbyZoningAppeals') {
+    if (nearbyZoningAppealsGeojson.value.length > 0) {
+      let geojson = { 'type': 'FeatureCollection', 'features': nearbyZoningAppealsGeojson.value };
+      await map.getSource('nearby').setData(geojson);
+    }
+  } else if (newDataType === 'nearbyVacantIndicatorPoints') {
+    if (nearbyVacantIndicatorPointsGeojson.value.length > 0) {
+      let geojson = { 'type': 'FeatureCollection', 'features': nearbyVacantIndicatorPointsGeojson.value };
+      await map.getSource('nearby').setData(geojson);
+    }
+  }
+  setTimeInterval(currentNearbyDataType, timeIntervals[newDataType].values[0]);
 }
 
 const sortbyDropdownOpen = ref(false);
@@ -68,33 +101,31 @@ const timeDropdownOpen = ref(false);
 const toggleTimeDropdown = () => timeDropdownOpen.value = !timeDropdownOpen.value;
 const timeInterval = ref(null);
 onMounted( () => {
-  timeInterval.value = timeIntervals[currentNearbyDataType.value].values[0];
+  console.log('NearbyActivity.vue onMounted is running, route.params.data:', route.params.data);
+
+  // timeInterval.value = timeIntervals[currentNearbyDataType.value].values[0];
+  setDataType(route.params.data);
 })
-// const timeInterval = computed({
-//   get() {
-//     return timeIntervals[currentNearbyDataType.value].values[0];
-//   },
-//   set(newTimeInterval) {
-//     timeInterval.value = newTimeInterval;
-//   }
-// });
 const timeIntervalLabel = computed(() => timeIntervals[currentNearbyDataType.value].labels[timeIntervals[currentNearbyDataType.value].values.indexOf(timeInterval.value)]);
-const setTimeInterval = (newTimeInterval) => {
-  timeInterval.value = newTimeInterval;
+const setTimeInterval = (dataType, newTimeInterval) => {
+  timeIntervals[dataType].selected = newTimeInterval;
 }
 
-const timeIntervals = {
+const timeIntervals = reactive({
   nearby311: {
     labels: ['the last 30 days', 'the last 90 days', '1 year'],
     values: [30, 90, 365],
+    selected: 30,
   },
   nearbyCrimeIncidents: {
     labels: ['the last 30 days', 'the last 90 days'],
     values: [30, 90],
+    selected: 30,
   },
   nearbyZoningAppeals: {
     labels: ['any time', 'the last 90 days', 'the next 90 days'],
     values: [0, -90, 90],
+    selected: 0,
   },
   nearbyVacantIndicatorPoints: {
     labels: [],
@@ -103,27 +134,30 @@ const timeIntervals = {
   nearbyConstructionPermits: {
     labels: ['the last 30 days', 'the last 90 days', '1 year'],
     values: [30, 90, 365],
+    selected: 30,
   },
   nearbyDemolitionPermits: {
     labels: ['the last 30 days', 'the last 90 days', '1 year'],
     values: [30, 90, 365],
+    selected: 30,
   },
   nearbyImminentlyDangerous: {
     labels: ['the last 30 days', 'the last 90 days', '1 year'],
     values: [30, 90, 365],
+    selected: 30,
   },
-}
+});
 
-// nearby311 computed
+// 311
 const nearby311 = computed(() => {
-  if (NearbyActivityStore.nearby311) {
+  if (NearbyActivityStore.nearby311.data) {
     let data = [ ...NearbyActivityStore.nearby311.data.rows]
       .filter(item => {
       let itemDate = new Date(item.requested_datetime);
       let now = new Date();
       let timeDiff = now - itemDate;
       let daysDiff = timeDiff / (1000 * 60 * 60 * 24);
-      return daysDiff <= timeInterval.value;
+      return daysDiff <= timeIntervals.nearby311.selected;
     })
     if (sortby.value === 'distance') {
       data.sort((a, b) => a.distance - b.distance)
@@ -133,40 +167,30 @@ const nearby311 = computed(() => {
     return data;
   }
 });
-
 const nearby311Geojson = computed(() => {
   let features = [];
   if (!nearby311.value) return features;
   for (let item of nearby311.value) {
     features.push({
       type: 'Feature',
-      geometry: {
-        type: 'Point',
-        coordinates: [item.lng, item.lat]
-      },
-      properties: {
-        id: item.service_request_id,
-        type: 'nearby311',
-      }
+      geometry: { type: 'Point', coordinates: [item.lng, item.lat] },
+      properties: { id: item.service_request_id, type: 'nearby311' }
     })
   }
   return features;
 })
+// watch (() => nearby311Geojson.value, async (newGeojson) => {
+//   if (newGeojson.length > 0) {
+//     console.log('watch nearby311Geojson, $config:', $config, 'map.getStyle().sources:', map.getStyle().sources, 'map.getStyle().layers:', map.getStyle().layers);
+//     let geojson = { 'type': 'FeatureCollection', 'features': newGeojson };
+//     map.getSource('nearby').setData(geojson);
+//   } else {
+//     let geojson = { 'type': 'FeatureCollection', 'features': [ {'type': 'Feature', geometry: { 'type': 'Point', 'coordinates': [0,0]}}] };
+//     await map.getSource('nearby').setData(geojson);
+//   }
+// })
 
-watch (() => nearby311Geojson.value, (newGeojson) => {
-  console.log('nearby311Geojson watch, newGeojson:', newGeojson);
-  if (newGeojson.length > 0) {
-    console.log('$config:', $config, 'map.getStyle().sources:', map.getStyle().sources, 'map.getStyle().layers:', map.getStyle().layers);
-    let geojson = {
-      'type': 'FeatureCollection',
-      'features': newGeojson,
-    }
-    // console.log('geojson:', geojson, 'map.getSource(nearby):', map.getSource('nearby'));
-    map.getSource('nearby').setData(geojson);
-  }
-})
-
-// nearbyCrimeIncidents computed
+// nearbyCrimeIncidents
 const nearbyCrimeIncidents = computed(() => {
   if (NearbyActivityStore.nearbyCrimeIncidents) {
     let data = [ ...NearbyActivityStore.nearbyCrimeIncidents.data.rows]
@@ -175,7 +199,7 @@ const nearbyCrimeIncidents = computed(() => {
       let now = new Date();
       let timeDiff = now - itemDate;
       let daysDiff = timeDiff / (1000 * 60 * 60 * 24);
-      return daysDiff <= timeInterval.value;
+      return daysDiff <= timeIntervals.nearbyCrimeIncidents.selected;
     })
     if (sortby.value === 'distance') {
       data.sort((a, b) => a.distance - b.distance)
@@ -185,51 +209,38 @@ const nearbyCrimeIncidents = computed(() => {
     return data;
   }
 });
-
 const nearbyCrimeIncidentsGeojson = computed(() => {
   let features = [];
   if (!nearbyCrimeIncidents.value) return features;
   for (let item of nearbyCrimeIncidents.value) {
     features.push({
       type: 'Feature',
-      geometry: {
-        type: 'Point',
-        coordinates: [item.lng, item.lat]
-      },
-      properties: {
-        id: item.objectid,
-        type: 'nearbyCrimeIncidents',
-      }
+      geometry: { type: 'Point', coordinates: [item.lng, item.lat] },
+      properties: { id: item.objectid, type: 'nearbyCrimeIncidents' }
     })
   }
   return features;
 })
+// watch (() => nearbyCrimeIncidentsGeojson.value, async (newGeojson) => {
+//   console.log('nearbyCrimeIncidents watch, newGeojson:', newGeojson);
+//   if (newGeojson.length > 0) {
+//     let geojson = { 'type': 'FeatureCollection', 'features': newGeojson };
+//     await map.getSource('nearby').setData(geojson);
+//   }
+// })
 
-watch (() => nearbyCrimeIncidentsGeojson.value, async (newGeojson) => {
-  console.log('nearbyCrimeIncidents watch, newGeojson:', newGeojson);
-  if (newGeojson.length > 0) {
-    // console.log('$config:', $config, 'map.getStyle().sources:', map.getStyle().sources, 'map.getStyle().layers:', map.getStyle().layers);
-    let geojson = {
-      'type': 'FeatureCollection',
-      'features': newGeojson,
-    }
-    await map.getSource('nearby').setData(geojson);
-  }
-})
-
-// nearbyZoningAppeals computed
+// nearbyZoningAppeals
 const nearbyZoningAppeals = computed(() => {
   if (NearbyActivityStore.nearbyZoningAppeals) {
     let data = [ ...NearbyActivityStore.nearbyZoningAppeals.data.rows]
     // console.log(new Date(data[0].scheduleddate));
-      
     if (timeInterval.value < 0) {
       data = data.filter(item => {
         let itemDate = new Date(item.scheduleddate);
         let now = new Date();
         let timeDiff = now - itemDate;
         let daysDiff = timeDiff / (1000 * 60 * 60 * 24);
-        return daysDiff >= timeInterval.value;
+        return daysDiff >= timeIntervals.nearbyZoningAppeals.selected;
       })
     } else if (timeInterval.value > 0) {
       data = data.filter(item => {
@@ -237,7 +248,7 @@ const nearbyZoningAppeals = computed(() => {
         let now = new Date();
         let timeDiff = now - itemDate;
         let daysDiff = timeDiff / (1000 * 60 * 60 * 24);
-        return daysDiff <= timeInterval.value;
+        return daysDiff <= timeIntervals.nearbyZoningAppeals.selected;
       })
     }
     if (sortby.value === 'distance') {
@@ -248,6 +259,28 @@ const nearbyZoningAppeals = computed(() => {
     return data;
   }
 });
+const nearbyZoningAppealsGeojson = computed(() => {
+  let features = [];
+  if (!nearbyZoningAppeals.value) return features;
+  for (let item of nearbyZoningAppeals.value) {
+    features.push({
+      type: 'Feature',
+      geometry: { type: 'Point', coordinates: [item.lng, item.lat] },
+      properties: { id: item.objectid, type: 'nearbyZoningAppeals' }
+    })
+  }
+  return features;
+})
+// watch (() => nearbyZoningAppealsGeojson.value, async (newGeojson) => {
+//   console.log('nearbyZoningAppealsWatch watch, newGeojson:', newGeojson);
+//   if (newGeojson.length > 0) {
+//     let geojson = { 'type': 'FeatureCollection', 'features': newGeojson };
+//     await map.getSource('nearby').setData(geojson);
+//   } else {
+//     let geojson = { 'type': 'FeatureCollection', 'features': [ {'type': 'Feature', geometry: { 'type': 'Point', 'coordinates': [0,0]}}] };
+//     await map.getSource('nearby').setData(geojson);
+//   }
+// })
 
 // nearbyVacantIndicatorPoints computed
 const nearbyVacantIndicatorPoints = computed(() => {
@@ -261,6 +294,26 @@ const nearbyVacantIndicatorPoints = computed(() => {
     return data;
   }
 });
+const nearbyVacantIndicatorPointsGeojson = computed(() => {
+  let features = [];
+  if (!nearbyVacantIndicatorPoints.value) return features;
+  for (let item of nearbyVacantIndicatorPoints.value) {
+    console.log('item:', item);
+    features.push({
+      type: 'Feature',
+      geometry: { type: 'Point', coordinates: item.geometry.coordinates },
+      properties: { id: item.id, type: 'nearbyVacantIndicatorPoints' }
+    })
+  }
+  return features;
+})
+// watch (() => nearbyVacantIndicatorPointsGeojson.value, async (newGeojson) => {
+//   console.log('nearbyVacantIndicatorPoints watch, newGeojson:', newGeojson);
+//   if (newGeojson.length > 0) {
+//     let geojson = { 'type': 'FeatureCollection', 'features': newGeojson };
+//     await map.getSource('nearby').setData(geojson);
+//   }
+// })
 
 const hoveredStateId = computed(() => { return MainStore.hoveredStateId; });
 
@@ -365,7 +418,7 @@ const handleRowMouseleave = (e) => {
           <a
             v-for="(item, index) of timeIntervals[currentNearbyDataType].values"
             class="dropdown-item"
-            @click="setTimeInterval(item)"
+            @click="setTimeInterval(currentNearbyDataType, item)"
           >
             {{ timeIntervals[currentNearbyDataType].labels[index] }}
           </a>
@@ -505,11 +558,11 @@ const handleRowMouseleave = (e) => {
         <tbody>
           <tr
             v-for="item in nearbyVacantIndicatorPoints"
-            :key="item.OBJECTID"
-            :id="item.OBJECTID"
+            :key="item.id"
+            :id="item.id"
             @mouseover="handleRowMouseover"
             @mouseleave="handleRowMouseleave"
-            :class="hoveredStateId == item.OBJECTID ? 'active' : 'inactive'"
+            :class="hoveredStateId == item.id ? 'active' : 'inactive'"
           >
             <td>{{ item.properties.ADDRESS }}</td>
             <td>{{ item.properties.VACANT_FLAG }}</td>

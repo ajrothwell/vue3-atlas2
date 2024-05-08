@@ -133,6 +133,8 @@ export const useNearbyActivityStore = defineStore('NearbyActivityStore', {
         await this.fillNearbyZoningAppeals();
       } else if (dataType === 'nearbyVacantIndicatorPoints') {
         await this.fillNearbyVacantIndicatorPoints();
+      } else if (dataType === 'nearbyConstructionPermits') {
+        await this.fillNearbyConstructionPermits();
       }
     },
     async fillNearby311() {
@@ -250,6 +252,25 @@ export const useNearbyActivityStore = defineStore('NearbyActivityStore', {
       });
 
       this.nearbyVacantIndicatorPoints = features;
+      this.setLoadingData(false);
+    },
+
+    async fillNearbyConstructionPermits() {
+      const AddressStore = useAddressStore();
+      this.setLoadingData(true);
+      const feature = AddressStore.addressData.features[0];
+      let dataSource = {
+        url: 'https://phl.carto.com/api/v2/sql?',
+        options: {
+          table: 'permits',
+          dateMinNum: 1,
+          dateMinType: 'year',
+          dateField: 'permitissuedate',
+        },
+      };
+      let params = fetchNearby(feature, dataSource);
+      const response = await axios.get(dataSource.url, { params })
+      this.nearbyConstructionPermits = response;
       this.setLoadingData(false);
     },
   },
