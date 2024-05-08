@@ -71,7 +71,7 @@ const nearbyZoningAppealsGeojson = computed(() => {
     features.push({
       type: 'Feature',
       geometry: { type: 'Point', coordinates: [item.lng, item.lat] },
-      properties: { id: item.parcel_id_num, type: 'nearbyZoningAppeals' }
+      properties: { id: item.objectid, type: 'nearbyZoningAppeals' }
     })
   }
   return features;
@@ -111,7 +111,9 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   console.log('Nearby311.vue onBeforeUnmount');
-  map.getSource('nearby').setData({ 'type': 'FeatureCollection', 'features': [ {'type': 'Feature', geometry: { 'type': 'Point', 'coordinates': [0,0]}}] });
+  if (map.getSource('nearby')) {
+    map.getSource('nearby').setData({ 'type': 'FeatureCollection', 'features': [ {'type': 'Feature', geometry: { 'type': 'Point', 'coordinates': [0,0]}}] });
+  }
 })
 
 </script>
@@ -140,11 +142,11 @@ onBeforeUnmount(() => {
       <tbody>
         <tr
           v-for="item in nearbyZoningAppeals"
-          :key=item.parcel_id_num
-          :id="item.parcel_id_num"
+          :key=item.objectid
+          :id="item.objectid"
           @mouseover="handleRowMouseover"
           @mouseleave="handleRowMouseleave"
-          :class="hoveredStateId == item.parcel_id_num ? 'active-hover' : 'inactive'"
+          :class="hoveredStateId == item.objectid ? 'active-hover' : 'inactive'"
         >
           <td>{{ item.scheduleddate }}</td>
           <td>{{ item.address }}</td>

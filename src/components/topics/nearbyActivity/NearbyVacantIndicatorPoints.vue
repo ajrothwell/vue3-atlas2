@@ -10,9 +10,6 @@ const MapStore = useMapStore();
 const map = MapStore.map;
 
 import SortbyDropdown from '@/components/topics/nearbyActivity/SortbyDropdown.vue';
-import IntervalDropdown from '@/components/topics/nearbyActivity/IntervalDropdown.vue';
-import useTransforms from '@/composables/useTransforms';
-// const { date, timeReverseFn, timeFn } = useTransforms();
 import useScrolling from '@/composables/useScrolling';
 const { isElementInViewport, handleRowMouseover, handleRowMouseleave } = useScrolling();
 
@@ -23,16 +20,6 @@ const setSortby = (e) => {
   console.log('setSortby', e);
   sortby.value = e;
 }
-// const timeIntervals = reactive(
-//   {
-//     labels: [],
-//     values: [],
-//   }
-// )
-// const setTimeInterval = (e) => {
-//   console.log('setTimeInterval', e);
-//   timeIntervals.selected = e;
-// }
 
 const nearbyVacantIndicatorPoints = computed(() => {
   if (NearbyActivityStore.nearbyVacantIndicatorPoints) {
@@ -90,17 +77,15 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   console.log('Nearby311.vue onBeforeUnmount');
-  map.getSource('nearby').setData({ 'type': 'FeatureCollection', 'features': [ {'type': 'Feature', geometry: { 'type': 'Point', 'coordinates': [0,0]}}] });
+  if (map.getSource('nearby')) {
+    map.getSource('nearby').setData({ 'type': 'FeatureCollection', 'features': [ {'type': 'Feature', geometry: { 'type': 'Point', 'coordinates': [0,0]}}] });
+  }
 })
 
 </script>
 
 <template>
   
-  <!-- <IntervalDropdown
-    :timeIntervals="timeIntervals"
-    @setTimeInterval="setTimeInterval"
-  ></IntervalDropdown> -->
   <SortbyDropdown
     @setSortby="setSortby"
   ></SortbyDropdown>

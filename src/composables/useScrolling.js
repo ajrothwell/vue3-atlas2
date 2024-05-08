@@ -4,11 +4,17 @@ export default function useScrolling() {
 
   const handleRowMouseover = (e) => {
     const MainStore = useMainStore();
-    if (typeof e.target.parentElement.id === 'number') {
-      MainStore.hoveredStateId = parseInt(e.target.parentElement.id);
-    } else {
-      MainStore.hoveredStateId = e.target.parentElement.id;
+    let hoveredStateId = parseInt(e.target.parentElement.id);
+    if (isNaN(hoveredStateId)) {
+      hoveredStateId = e.target.parentElement.id;
     }
+    MainStore.hoveredStateId = hoveredStateId;
+    // if (typeof e.target.parentElement.id === 'number') {
+      // console.log('if, hovered state id', e.target.parentElement.id, 'typeof e.target.parentElement.id:', typeof e.target.parentElement.id);
+      // MainStore.hoveredStateId = parseInt(e.target.parentElement.id);
+    // } else {
+    //   console.log('else, hovered state id', e.target.parentElement.id, 'typeof e.target.parentElement.id:', typeof e.target.parentElement.id);
+    // }
   }
   const handleRowMouseleave = (e) => {
     const MainStore = useMainStore();

@@ -100,7 +100,9 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   console.log('Nearby311.vue onBeforeUnmount');
-  map.getSource('nearby').setData({ 'type': 'FeatureCollection', 'features': [ {'type': 'Feature', geometry: { 'type': 'Point', 'coordinates': [0,0]}}] });
+  if (map.getSource('nearby')) {
+    map.getSource('nearby').setData({ 'type': 'FeatureCollection', 'features': [ {'type': 'Feature', geometry: { 'type': 'Point', 'coordinates': [0,0]}}] });
+  }
 })
 
 </script>
