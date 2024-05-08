@@ -39,12 +39,18 @@ export default function useTransforms() {
     return valueStd;
   }
 
+  const timeReverseFn = (a, b, fieldName) => new Date(b[fieldName]) - new Date(a[fieldName]);
+  const timeFn  = (a, b, fieldName) => new Date(a[fieldName]) - new Date(b[fieldName]);
+  
   return {
     bold,
     currency,
     date,
     rcoPrimaryContact,
+    timeReverseFn,
+    timeFn,
   };
+
 
 
   // booleanToYesNo: {

@@ -702,6 +702,10 @@ const nearbyDrawnMapStyle = mergeDeep(imageryInfo,{
           '#FF0000',
           'nearbyCrimeIncidents',
           '#0096FF',
+          'nearbyZoningAppeals',
+          '#009900',
+          'nearbyVacantIndicatorPoints',
+          '#9400c6',
           /* other */ '#000000'
         ],
         'circle-stroke-width': 1,

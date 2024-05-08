@@ -6,14 +6,14 @@ const MainStore = useMainStore();
 import { useCondosStore } from '@/stores/CondosStore.js'
 const CondosStore = useCondosStore();
 
-import Topic from '../components/Topic.vue';
+import Topic from '@/components/Topic.vue';
 import Property from '@/components/topics/Property.vue';
 import Condos from '@/components/topics/Condos.vue';
 import Deeds from '@/components/topics/Deeds.vue';
 import LI from '@/components/topics/LI.vue';
 import Zoning from '@/components/topics/Zoning.vue';
 import Voting from '@/components/topics/Voting.vue';
-import NearbyActivity from '@/components/topics/NearbyActivity.vue';
+import NearbyActivity from '@/components/topics/nearbyActivity/NearbyActivity.vue';
 
 import { useRoute } from 'vue-router';
 const route = useRoute();
@@ -93,7 +93,9 @@ const dataSourcesLoadedArray = computed(() => MainStore.dataSourcesLoadedArray);
         </topic>
 
         <topic :topic-name="'Nearby Activity'" :loading="!dataSourcesLoadedArray.includes('Nearby Activity')">
-          <NearbyActivity v-if="dataSourcesLoadedArray.includes('Nearby Activity')"/>
+          <KeepAlive>
+            <NearbyActivity v-if="dataSourcesLoadedArray.includes('Nearby Activity')"/>
+          </KeepAlive>
         </topic>
       </div>
 

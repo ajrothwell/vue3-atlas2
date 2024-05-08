@@ -8,6 +8,7 @@ export const useMainStore = defineStore("MainStore", {
       lastSearchMethod: 'address',
       currentAddress: '',
       currentTopic: 'Property',
+      // currentNearbyDataType: null,
       currentNearbyDataType: 'nearby311',
       dataSourcesLoadedArray: [],
       hoveredStateId: null,
