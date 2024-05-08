@@ -14,6 +14,9 @@ import Nearby311 from '@/components/topics/nearbyActivity/Nearby311.vue';
 import NearbyCrimeIncidents from './NearbyCrimeIncidents.vue';
 import NearbyZoningAppeals from './NearbyZoningAppeals.vue';
 import NearbyVacantIndicatorPoints from './NearbyVacantIndicatorPoints.vue';
+import NearbyConstructionPermits from './NearbyConstructionPermits.vue';
+import NearbyDemolitionPermits from './NearbyDemolitionPermits.vue';
+import NearbyImminentlyDangerous from './NearbyImminentlyDangerous.vue';
 
 const dataTypes = {
   nearby311: '311 Requests',
@@ -53,25 +56,6 @@ onMounted( () => {
   console.log('NearbyActivity.vue onMounted is running, route.params.data:', route.params.data);
   setDataType(route.params.data);
 })
-
-
-// const timeIntervals = reactive({
-//   nearbyConstructionPermits: {
-//     labels: ['the last 30 days', 'the last 90 days', '1 year'],
-//     values: [30, 90, 365],
-//     selected: 30,
-//   },
-//   nearbyDemolitionPermits: {
-//     labels: ['the last 30 days', 'the last 90 days', '1 year'],
-//     values: [30, 90, 365],
-//     selected: 30,
-//   },
-//   nearbyImminentlyDangerous: {
-//     labels: ['the last 30 days', 'the last 90 days', '1 year'],
-//     values: [30, 90, 365],
-//     selected: 30,
-//   },
-// });
 
 </script>
 
@@ -113,8 +97,10 @@ onMounted( () => {
     <NearbyCrimeIncidents v-if="currentNearbyDataType == 'nearbyCrimeIncidents'"></NearbyCrimeIncidents>
     <NearbyZoningAppeals v-if="currentNearbyDataType == 'nearbyZoningAppeals'"></NearbyZoningAppeals>
     <NearbyVacantIndicatorPoints v-if="currentNearbyDataType == 'nearbyVacantIndicatorPoints'"></NearbyVacantIndicatorPoints>
+    <NearbyConstructionPermits v-if="currentNearbyDataType == 'nearbyConstructionPermits'"></NearbyConstructionPermits>
+    <NearbyDemolitionPermits v-if="currentNearbyDataType == 'nearbyDemolitionPermits'"></NearbyDemolitionPermits>
+    <NearbyImminentlyDangerous v-if="currentNearbyDataType == 'nearbyImminentlyDangerous'"></NearbyImminentlyDangerous>
     
-
   </section>
 </template>
 

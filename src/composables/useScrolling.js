@@ -4,7 +4,11 @@ export default function useScrolling() {
 
   const handleRowMouseover = (e) => {
     const MainStore = useMainStore();
-    MainStore.hoveredStateId = parseInt(e.target.parentElement.id);
+    if (typeof e.target.parentElement.id === 'number') {
+      MainStore.hoveredStateId = parseInt(e.target.parentElement.id);
+    } else {
+      MainStore.hoveredStateId = e.target.parentElement.id;
+    }
   }
   const handleRowMouseleave = (e) => {
     const MainStore = useMainStore();

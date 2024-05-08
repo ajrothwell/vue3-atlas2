@@ -48,6 +48,7 @@ const fetchNearby = (feature, dataSource) => {
   const successFn = options.success;
   const distances = options.distances || 250;
   // console.log('fetchNearby distances:', distances);
+  const extraWhere = options.where || null;
 
   const groupby = options.groupby || null;
 
@@ -97,6 +98,10 @@ const fetchNearby = (feature, dataSource) => {
     params['q'] = params['q'] + " and " + dateField + " > '" + format(subFn(new Date(), dateMinNum), 'yyyy-MM-dd') + "'";
   }
 
+  if (extraWhere) {
+    params['q'] = params['q'] + " and " + extraWhere;
+  }
+
   if (groupby) {
     params['q'] = params['q'] + " group by " + groupby + ", the_geom";
   }
@@ -135,6 +140,10 @@ export const useNearbyActivityStore = defineStore('NearbyActivityStore', {
         await this.fillNearbyVacantIndicatorPoints();
       } else if (dataType === 'nearbyConstructionPermits') {
         await this.fillNearbyConstructionPermits();
+      } else if (dataType === 'nearbyDemolitionPermits') {
+        await this.fillNearbyDemolitionPermits();
+      } else if (dataType === 'nearbyImminentlyDangerous') {
+        await this.fillNearbyImminentlyDangerous();
       }
     },
     async fillNearby311() {
@@ -263,6 +272,7 @@ export const useNearbyActivityStore = defineStore('NearbyActivityStore', {
         url: 'https://phl.carto.com/api/v2/sql?',
         options: {
           table: 'permits',
+          where: "typeofwork like '%NEW CONSTRUCTION%'",
           dateMinNum: 1,
           dateMinType: 'year',
           dateField: 'permitissuedate',
@@ -271,6 +281,47 @@ export const useNearbyActivityStore = defineStore('NearbyActivityStore', {
       let params = fetchNearby(feature, dataSource);
       const response = await axios.get(dataSource.url, { params })
       this.nearbyConstructionPermits = response;
+      this.setLoadingData(false);
+    },
+
+    async fillNearbyDemolitionPermits() {
+      const AddressStore = useAddressStore();
+      this.setLoadingData(true);
+      const feature = AddressStore.addressData.features[0];
+      let dataSource = {
+        url: 'https://phl.carto.com/api/v2/sql?',
+        options: {
+          table: 'permits',
+          where: "permitdescription like '%DEMOLITION PERMIT%'",
+          dateMinNum: 1,
+          dateMinType: 'year',
+          dateField: 'permitissuedate',
+        },
+      };
+      let params = fetchNearby(feature, dataSource);
+      const response = await axios.get(dataSource.url, { params })
+      this.nearbyDemolitionPermits = response;
+      this.setLoadingData(false);
+    },
+
+    async fillNearbyImminentlyDangerous() {
+      const AddressStore = useAddressStore();
+      this.setLoadingData(true);
+      const feature = AddressStore.addressData.features[0];
+      let dataSource = {
+        url: 'https://phl.carto.com/api/v2/sql?',
+        options: {
+          table: 'violations',
+          where: "caseprioritydesc like '%IMMINENTLY DANGEROUS%'",
+          dateMinNum: 1,
+          dateMinType: 'year',
+          dateField: 'casecreateddate',
+          groupby: 'casenumber, casecreateddate, caseprioritydesc, casestatus, address',
+        },
+      };
+      let params = fetchNearby(feature, dataSource);
+      const response = await axios.get(dataSource.url, { params })
+      this.nearbyImminentlyDangerous = response;
       this.setLoadingData(false);
     },
   },

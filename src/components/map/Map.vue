@@ -426,6 +426,12 @@ watch(
         '#009900',
         'nearbyVacantIndicatorPoints',
         '#9400c6',
+        'nearbyConstructionPermits',
+        '#FF0000',
+        'nearbyDemolitionPermits',
+        '#FFA500',
+        'nearbyImminentlyDangerous',
+        '#009900',
         /* other */ '#000000'
         ]
       ]
@@ -444,6 +450,12 @@ watch(
         '#009900',
         'nearbyVacantIndicatorPoints',
         '#9400c6',
+        'nearbyConstructionPermits',
+        '#FF0000',
+        'nearbyDemolitionPermits',
+        '#FFA500',
+        'nearbyImminentlyDangerous',
+        '#009900',
         /* other */ '#000000'
         ]
       );
