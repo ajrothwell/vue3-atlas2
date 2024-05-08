@@ -6,9 +6,6 @@ const NearbyActivityStore = useNearbyActivityStore();
 import { useMainStore } from '@/stores/MainStore';
 const MainStore = useMainStore();
 
-// import useTransforms from '@/composables/useTransforms';
-// const { date } = useTransforms();
-
 import { useRouter, useRoute } from 'vue-router';
 const route = useRoute();
 const router = useRouter();
@@ -16,6 +13,7 @@ const router = useRouter();
 import Nearby311 from '@/components/topics/nearbyActivity/Nearby311.vue';
 import NearbyCrimeIncidents from './NearbyCrimeIncidents.vue';
 import NearbyZoningAppeals from './NearbyZoningAppeals.vue';
+import NearbyVacantIndicatorPoints from './NearbyVacantIndicatorPoints.vue';
 
 const dataTypes = {
   nearby311: '311 Requests',
@@ -56,32 +54,8 @@ onMounted( () => {
   setDataType(route.params.data);
 })
 
-// const timeIntervalLabel = computed(() => timeIntervals[currentNearbyDataType.value].labels[timeIntervals[currentNearbyDataType.value].values.indexOf(timeInterval.value)]);
-// const setTimeInterval = (dataType, newTimeInterval) => {
-//   console.log('setTimeInterval, dataType.value:', dataType.value, 'newTimeInterval:', newTimeInterval);
-//   timeIntervals[dataType.value].selected = newTimeInterval;
-// }
 
 // const timeIntervals = reactive({
-//   nearby311: {
-//     labels: ['the last 30 days', 'the last 90 days', '1 year'],
-//     values: [30, 90, 365],
-//     selected: 30,
-//   },
-//   nearbyCrimeIncidents: {
-//     labels: ['the last 30 days', 'the last 90 days'],
-//     values: [30, 90],
-//     selected: 30,
-//   },
-//   nearbyZoningAppeals: {
-//     labels: ['any time', 'the last 90 days', 'the next 90 days'],
-//     values: [0, -90, 90],
-//     selected: 0,
-//   },
-//   nearbyVacantIndicatorPoints: {
-//     labels: [],
-//     values: [],
-//   },
 //   nearbyConstructionPermits: {
 //     labels: ['the last 30 days', 'the last 90 days', '1 year'],
 //     values: [30, 90, 365],
@@ -98,39 +72,6 @@ onMounted( () => {
 //     selected: 30,
 //   },
 // });
-
-// nearbyVacantIndicatorPoints computed
-const nearbyVacantIndicatorPoints = computed(() => {
-  if (NearbyActivityStore.nearbyVacantIndicatorPoints) {
-    let data = [ ...NearbyActivityStore.nearbyVacantIndicatorPoints]
-    if (sortby.value === 'distance') {
-      data.sort((a, b) => a._distance - b._distance)
-    } else if (sortby.value === 'type') {
-      data.sort((a, b) => a.distance - b.distance)
-    }
-    return data;
-  }
-});
-const nearbyVacantIndicatorPointsGeojson = computed(() => {
-  let features = [];
-  if (!nearbyVacantIndicatorPoints.value) return features;
-  for (let item of nearbyVacantIndicatorPoints.value) {
-    console.log('item:', item);
-    features.push({
-      type: 'Feature',
-      geometry: { type: 'Point', coordinates: item.geometry.coordinates },
-      properties: { id: item.id, type: 'nearbyVacantIndicatorPoints' }
-    })
-  }
-  return features;
-})
-// watch (() => nearbyVacantIndicatorPointsGeojson.value, async (newGeojson) => {
-//   console.log('nearbyVacantIndicatorPoints watch, newGeojson:', newGeojson);
-//   if (newGeojson.length > 0) {
-//     let geojson = { 'type': 'FeatureCollection', 'features': newGeojson };
-//     await map.getSource('nearby').setData(geojson);
-//   }
-// })
 
 </script>
 
@@ -171,35 +112,9 @@ const nearbyVacantIndicatorPointsGeojson = computed(() => {
     <Nearby311 v-if="currentNearbyDataType == 'nearby311'"></Nearby311>
     <NearbyCrimeIncidents v-if="currentNearbyDataType == 'nearbyCrimeIncidents'"></NearbyCrimeIncidents>
     <NearbyZoningAppeals v-if="currentNearbyDataType == 'nearbyZoningAppeals'"></NearbyZoningAppeals>
+    <NearbyVacantIndicatorPoints v-if="currentNearbyDataType == 'nearbyVacantIndicatorPoints'"></NearbyVacantIndicatorPoints>
+    
 
-    <!-- nearbyVacantIndicatorPoints -->
-    <!-- <div class='mt-5' v-if="currentNearbyDataType == 'nearbyVacantIndicatorPoints'">
-      <h5 class="subtitle is-5">Likely Vacant Properties</h5>
-      <div v-if="loadingData">Loading...</div>
-      <table class="table is-fullwidth is-striped">
-        <thead>
-          <tr>
-            <th>Address</th>
-            <th>Property Type</th>
-            <th>Distance</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="item in nearbyVacantIndicatorPoints"
-            :key="item.id"
-            :id="item.id"
-            @mouseover="handleRowMouseover"
-            @mouseleave="handleRowMouseleave"
-            :class="hoveredStateId == item.id ? 'active' : 'inactive'"
-          >
-            <td>{{ item.properties.ADDRESS }}</td>
-            <td>{{ item.properties.VACANT_FLAG }}</td>
-            <td>{{ (item._distance * 3.28084).toFixed(0) }} ft</td>
-          </tr>
-        </tbody>
-      </table>
-    </div> -->
   </section>
 </template>
 
