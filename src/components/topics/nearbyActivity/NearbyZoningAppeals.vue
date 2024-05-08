@@ -25,9 +25,9 @@ const setSortby = (e) => {
 }
 const timeIntervals = reactive(
   {
-    labels: ['the last 30 days', 'the last 90 days'],
-    values: [30, 90],
-    selected: 30,
+    labels: ['any time', 'the last 90 days', 'the next 90 days'],
+    values: [0, -90, 90],
+    selected: 0,
   }
 )
 const setTimeInterval = (e) => {
@@ -35,16 +35,27 @@ const setTimeInterval = (e) => {
   timeIntervals.selected = e;
 }
 
-const nearbyCrimeIncidents = computed(() => {
-  if (NearbyActivityStore.nearbyCrimeIncidents) {
-    let data = [ ...NearbyActivityStore.nearbyCrimeIncidents.data.rows]
-      .filter(item => {
-      let itemDate = new Date(item.dispatch_date);
-      let now = new Date();
-      let timeDiff = now - itemDate;
-      let daysDiff = timeDiff / (1000 * 60 * 60 * 24);
-      return daysDiff <= timeIntervals.selected;
-    })
+const nearbyZoningAppeals = computed(() => {
+  if (NearbyActivityStore.nearbyZoningAppeals) {
+    let data = [ ...NearbyActivityStore.nearbyZoningAppeals.data.rows]
+    // console.log(new Date(data[0].scheduleddate));
+    if (timeIntervals.selected < 0) {
+      data = data.filter(item => {
+        let itemDate = new Date(item.scheduleddate);
+        let now = new Date();
+        let timeDiff = now - itemDate;
+        let daysDiff = timeDiff / (1000 * 60 * 60 * 24);
+        return daysDiff >= timeIntervals.selected;
+      })
+    } else if (timeIntervals.selected > 0) {
+      data = data.filter(item => {
+        let itemDate = new Date(item.scheduleddate);
+        let now = new Date();
+        let timeDiff = now - itemDate;
+        let daysDiff = timeDiff / (1000 * 60 * 60 * 24);
+        return daysDiff <= timeIntervals.selected;
+      })
+    }
     if (sortby.value === 'distance') {
       data.sort((a, b) => a.distance - b.distance)
     } else if (sortby.value === 'time') {
@@ -53,22 +64,25 @@ const nearbyCrimeIncidents = computed(() => {
     return data;
   }
 });
-const nearbyCrimeIncidentsGeojson = computed(() => {
+const nearbyZoningAppealsGeojson = computed(() => {
   let features = [];
-  if (!nearbyCrimeIncidents.value) return features;
-  for (let item of nearbyCrimeIncidents.value) {
+  if (!nearbyZoningAppeals.value) return features;
+  for (let item of nearbyZoningAppeals.value) {
     features.push({
       type: 'Feature',
       geometry: { type: 'Point', coordinates: [item.lng, item.lat] },
-      properties: { id: item.objectid, type: 'nearbyCrimeIncidents' }
+      properties: { id: item.objectid, type: 'nearbyZoningAppeals' }
     })
   }
   return features;
 })
-watch (() => nearbyCrimeIncidentsGeojson.value, async (newGeojson) => {
-  console.log('nearbyCrimeIncidents watch, newGeojson:', newGeojson);
+watch (() => nearbyZoningAppealsGeojson.value, async (newGeojson) => {
+  console.log('nearbyZoningAppealsWatch watch, newGeojson:', newGeojson);
   if (newGeojson.length > 0) {
     let geojson = { 'type': 'FeatureCollection', 'features': newGeojson };
+    await map.getSource('nearby').setData(geojson);
+  } else {
+    let geojson = { 'type': 'FeatureCollection', 'features': [ {'type': 'Feature', geometry: { 'type': 'Point', 'coordinates': [0,0]}}] };
     await map.getSource('nearby').setData(geojson);
   }
 })
@@ -88,9 +102,9 @@ watch(() => hoveredStateId.value, (newHoveredStateId) => {
 });
 
 onMounted(() => {
-  console.log('NearbyCrimeIncidents.vue onMounted, nearbyCrimeIncidentsGeojson.value:', nearbyCrimeIncidentsGeojson.value);
-  if (nearbyCrimeIncidentsGeojson.value.length > 0) {
-    let geojson = { 'type': 'FeatureCollection', 'features': nearbyCrimeIncidentsGeojson.value }
+  console.log('NearbyZoningAppeals.vue onMounted, nearbyZoningAppealsGeojson.value:', nearbyZoningAppealsGeojson.value);
+  if (nearbyZoningAppealsGeojson.value.length > 0) {
+    let geojson = { 'type': 'FeatureCollection', 'features': nearbyZoningAppealsGeojson.value }
     map.getSource('nearby').setData(geojson);
   }
 });
@@ -107,7 +121,7 @@ onMounted(() => {
     @setSortby="setSortby"
   ></SortbyDropdown>
   <div class='mt-5'>
-    <h5 class="subtitle is-5">Crime Incidents</h5>
+    <h5 class="subtitle is-5">Zoning Appeals</h5>
     <div v-if="loadingData">Loading...</div>
     <table class="table is-fullwidth is-striped">
       <thead>
@@ -120,16 +134,16 @@ onMounted(() => {
       </thead>
       <tbody>
         <tr
-          v-for="item in nearbyCrimeIncidents"
+          v-for="item in nearbyZoningAppeals"
           :key=item.objectid
           :id="item.objectid"
           @mouseover="handleRowMouseover"
           @mouseleave="handleRowMouseleave"
           :class="hoveredStateId == item.objectid ? 'active-hover' : 'inactive'"
         >
-          <td>{{ item.dispatch_date }}</td>
-          <td>{{ item.location_block }}</td>
-          <td>{{ item.text_general_code }}</td>
+          <td>{{ item.scheduleddate }}</td>
+          <td>{{ item.address }}</td>
+          <td>{{ item.appeal_grounds }}</td>
           <td>{{ (item.distance * 3.28084).toFixed(0) }} ft</td>
         </tr>
       </tbody>

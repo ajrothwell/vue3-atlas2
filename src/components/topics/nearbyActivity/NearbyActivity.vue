@@ -1,18 +1,13 @@
 <script setup>
-// import $config from '@/config';
-
 import { ref, reactive, computed, watch, onMounted } from 'vue';
 
 import { useNearbyActivityStore } from '@/stores/NearbyActivityStore';
 const NearbyActivityStore = useNearbyActivityStore();
 import { useMainStore } from '@/stores/MainStore';
 const MainStore = useMainStore();
-// import { useMapStore } from '@/stores/MapStore';
-// const MapStore = useMapStore();
-// const map = MapStore.map;
 
-import useTransforms from '@/composables/useTransforms';
-const { date } = useTransforms();
+// import useTransforms from '@/composables/useTransforms';
+// const { date } = useTransforms();
 
 import { useRouter, useRoute } from 'vue-router';
 const route = useRoute();
@@ -20,9 +15,7 @@ const router = useRouter();
 
 import Nearby311 from '@/components/topics/nearbyActivity/Nearby311.vue';
 import NearbyCrimeIncidents from './NearbyCrimeIncidents.vue';
-
-const timeReverseFn = (a, b, fieldName) => new Date(b[fieldName]) - new Date(a[fieldName]);
-const timeFn  = (a, b, fieldName) => new Date(a[fieldName]) - new Date(b[fieldName]);
+import NearbyZoningAppeals from './NearbyZoningAppeals.vue';
 
 const dataTypes = {
   nearby311: '311 Requests',
@@ -106,59 +99,6 @@ onMounted( () => {
 //   },
 // });
 
-// nearbyZoningAppeals
-const nearbyZoningAppeals = computed(() => {
-  if (NearbyActivityStore.nearbyZoningAppeals) {
-    let data = [ ...NearbyActivityStore.nearbyZoningAppeals.data.rows]
-    // console.log(new Date(data[0].scheduleddate));
-    if (timeInterval.value < 0) {
-      data = data.filter(item => {
-        let itemDate = new Date(item.scheduleddate);
-        let now = new Date();
-        let timeDiff = now - itemDate;
-        let daysDiff = timeDiff / (1000 * 60 * 60 * 24);
-        return daysDiff >= timeIntervals.nearbyZoningAppeals.selected;
-      })
-    } else if (timeInterval.value > 0) {
-      data = data.filter(item => {
-        let itemDate = new Date(item.scheduleddate);
-        let now = new Date();
-        let timeDiff = now - itemDate;
-        let daysDiff = timeDiff / (1000 * 60 * 60 * 24);
-        return daysDiff <= timeIntervals.nearbyZoningAppeals.selected;
-      })
-    }
-    if (sortby.value === 'distance') {
-      data.sort((a, b) => a.distance - b.distance)
-    } else if (sortby.value === 'time') {
-      data.sort((a, b) => timeReverseFn(a, b, 'dispatch_date'))
-    }
-    return data;
-  }
-});
-const nearbyZoningAppealsGeojson = computed(() => {
-  let features = [];
-  if (!nearbyZoningAppeals.value) return features;
-  for (let item of nearbyZoningAppeals.value) {
-    features.push({
-      type: 'Feature',
-      geometry: { type: 'Point', coordinates: [item.lng, item.lat] },
-      properties: { id: item.objectid, type: 'nearbyZoningAppeals' }
-    })
-  }
-  return features;
-})
-// watch (() => nearbyZoningAppealsGeojson.value, async (newGeojson) => {
-//   console.log('nearbyZoningAppealsWatch watch, newGeojson:', newGeojson);
-//   if (newGeojson.length > 0) {
-//     let geojson = { 'type': 'FeatureCollection', 'features': newGeojson };
-//     await map.getSource('nearby').setData(geojson);
-//   } else {
-//     let geojson = { 'type': 'FeatureCollection', 'features': [ {'type': 'Feature', geometry: { 'type': 'Point', 'coordinates': [0,0]}}] };
-//     await map.getSource('nearby').setData(geojson);
-//   }
-// })
-
 // nearbyVacantIndicatorPoints computed
 const nearbyVacantIndicatorPoints = computed(() => {
   if (NearbyActivityStore.nearbyVacantIndicatorPoints) {
@@ -230,39 +170,7 @@ const nearbyVacantIndicatorPointsGeojson = computed(() => {
 
     <Nearby311 v-if="currentNearbyDataType == 'nearby311'"></Nearby311>
     <NearbyCrimeIncidents v-if="currentNearbyDataType == 'nearbyCrimeIncidents'"></NearbyCrimeIncidents>
-
-    
-
-    <!-- nearbyZoningAppeals -->
-    <!-- <div class='mt-5' v-if="currentNearbyDataType == 'nearbyZoningAppeals'">
-      <h5 class="subtitle is-5">Zoning Appeals</h5>
-      <div v-if="loadingData">Loading...</div>
-      <table class="table is-fullwidth is-striped">
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Location</th>
-            <th>Description</th>
-            <th>Distance</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="item in nearbyZoningAppeals"
-            :key=item.objectid
-            :id="item.objectid"
-            @mouseover="handleRowMouseover"
-            @mouseleave="handleRowMouseleave"
-            :class="hoveredStateId == item.objectid ? 'active' : 'inactive'"
-          >
-            <td>{{ item.scheduleddate }}</td>
-            <td>{{ item.address }}</td>
-            <td>{{ item.appeal_grounds }}</td>
-            <td>{{ (item.distance * 3.28084).toFixed(0) }} ft</td>
-          </tr>
-        </tbody>
-      </table>
-    </div> -->
+    <NearbyZoningAppeals v-if="currentNearbyDataType == 'nearbyZoningAppeals'"></NearbyZoningAppeals>
 
     <!-- nearbyVacantIndicatorPoints -->
     <!-- <div class='mt-5' v-if="currentNearbyDataType == 'nearbyVacantIndicatorPoints'">

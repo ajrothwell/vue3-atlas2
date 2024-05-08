@@ -1,5 +1,4 @@
 <script setup>
-import $config from '@/config';
 import { ref, reactive, computed, watch, onMounted } from 'vue';
 
 import { useNearbyActivityStore } from '@/stores/NearbyActivityStore';
