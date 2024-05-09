@@ -72,10 +72,11 @@ const dataFetch = async(to, from) => {
 
   // GET PARCELS AND DATA FOR TOPIC
   const ParcelsStore = useParcelsStore();
-  if (!ParcelsStore.pwd.features) {
-    await ParcelsStore.fillPwdParcelData();
-  }
-  if (!ParcelsStore.dor.features) {
+  // if (!ParcelsStore.pwd.features) {
+  await ParcelsStore.fillPwdParcelData();
+  // }
+  // if (MainStore.lastSearchMethod === 'address' || !ParcelsStore.dor.features) {
+  if (MainStore.lastSearchMethod === 'address') {
     await ParcelsStore.fillDorParcelData();
   } 
   const CondosStore = useCondosStore();

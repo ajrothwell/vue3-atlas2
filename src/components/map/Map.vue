@@ -227,7 +227,7 @@ watch(
 const selectedParcelId = computed(() => { return MainStore.selectedParcelId; });
 const dorCoordinates = computed(() => {
   if (selectedParcelId.value && ParcelsStore.dor.features) {
-    // console.log('selectedParcelId.value:', selectedParcelId.value, 'ParcelsStore.dor.features.filter(parcel => parcel.id === selectedParcelId.value)[0]:', ParcelsStore.dor.features.filter(parcel => parcel.id === selectedParcelId.value)[0]);
+    console.log('not watch, selectedParcelId.value:', selectedParcelId.value, 'ParcelsStore.dor.features.filter(parcel => parcel.id === selectedParcelId.value)[0]:', ParcelsStore.dor.features.filter(parcel => parcel.id === selectedParcelId.value)[0]);
     return ParcelsStore.dor.features.filter(parcel => parcel.id === selectedParcelId.value)[0].geometry.coordinates[0];
   } else {
     return [];
@@ -237,7 +237,7 @@ const dorCoordinates = computed(() => {
 watch(
   () => dorCoordinates.value,
   newCoords => {
-  // console.log('Map dorCoordinates watch, newCoords:', newCoords);
+  console.log('Map dorCoordinates watch, newCoords:', newCoords);
   const newParcel = {'type': 'Feature','geometry': {'type': 'Polygon','coordinates': [ newCoords ]}};
   map.getSource('dorParcel').setData(newParcel);
 });

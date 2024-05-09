@@ -24,7 +24,8 @@ export default function useParcels() {
 
     // at this point there is definitely a feature or features - put it in state
     // this.setParcelsInState(parcelLayer, multipleAllowed, feature, featuresSorted, mapregStuff);
-    return feature;
+    let featuresSortedComplete = { features: featuresSorted };
+    return featuresSortedComplete;
   }
 
   const sortDorParcelFeatures = (features) => {
