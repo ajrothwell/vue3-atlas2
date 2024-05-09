@@ -75,7 +75,7 @@ onBeforeMount(() => {
 
   <div class="columns mt-3" v-if="selectedParcel">
     <div class="columns is-multiline column is-8 is-offset-2 has-text-centered badge">
-      <div class="column is-12 mb-1 badge-title">Base District</div>
+      <div class="column is-12 mb-1 badge-title"><b>Base District</b></div>
       <div class="column is-3 is-flex is-align-items-center code"><b>{{ ZoningStore.zoningBase[selectedParcelId].rows[0].long_code }}</b></div>
       <div class="column is-9 description">{{ $config.ZONING_CODE_MAP[ZoningStore.zoningBase[selectedParcelId].rows[0].long_code] }}</div>
     </div>
@@ -167,11 +167,9 @@ onBeforeMount(() => {
 
 <style scoped>
 
-.badge {
-  /* width: 400px; */
-}
-
 .badge-title {
+  padding-top: 0.25rem !important;
+  height: 2rem;
   color: white;
   background-color: #58c04d;
 }

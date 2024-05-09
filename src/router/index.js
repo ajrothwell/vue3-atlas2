@@ -10,6 +10,7 @@ import { useOpaStore } from '@/stores/OpaStore.js'
 import { useLiStore } from '@/stores/LiStore.js'
 import { useDorStore } from '@/stores/DorStore.js'
 import { useZoningStore } from '@/stores/ZoningStore.js'
+import { useVotingStore } from '@/stores/VotingStore.js'
 import { useNearbyActivityStore } from '@/stores/NearbyActivityStore.js'
 import { useMapStore } from '@/stores/MapStore.js'
 import { useMainStore } from '@/stores/MainStore.js'
@@ -124,6 +125,14 @@ const topicDataFetch = async (topic) => {
     await ZoningStore.fillPendingBills();
     await ZoningStore.fillZoningAppeals();
     await ZoningStore.fillRcos();
+  }
+
+  if (topic === 'Voting') {
+    const VotingStore = useVotingStore();
+    await VotingStore.fillDivisions();
+    await VotingStore.fillPollingPlaces();
+    await VotingStore.fillElectedOfficials();
+    await VotingStore.fillNextElection();
   }
 
   if (topic === 'Nearby Activity') {

@@ -39,6 +39,22 @@ export default function useTransforms() {
     return valueStd;
   }
 
+  const nth = (n) => {
+    console.log('nth transform, n:', n, 'n%100>>3^1&&n%10:', n%100>>3^1&&n%10);
+    return n + ([ 'th', 'st','nd','rd' ][n%100>>3^1&&n%10]||'th');
+  }
+  const phoneNumber = (value) => {
+    var s2 = (""+value).replace(/\D/g, '');
+    var m = s2.match(/^(\d{3})(\d{3})(\d{4})$/);
+    return (!m) ? null : "(" + m[1] + ") " + m[2] + "-" + m[3];
+  }
+  const titleCase = (str) => {
+    str = str.toLowerCase().split(' ').map(function(word) {
+      return (word.charAt(0).toUpperCase() + word.slice(1));
+    });
+    return str.join(' ');
+  }
+
   const timeReverseFn = (a, b, fieldName) => new Date(b[fieldName]) - new Date(a[fieldName]);
   const timeFn  = (a, b, fieldName) => new Date(a[fieldName]) - new Date(b[fieldName]);
   
@@ -47,11 +63,12 @@ export default function useTransforms() {
     currency,
     date,
     rcoPrimaryContact,
+    nth,
+    phoneNumber,
+    titleCase,
     timeReverseFn,
     timeFn,
   };
-
-
 
   // booleanToYesNo: {
   //   transform: function(value) {
@@ -145,14 +162,7 @@ export default function useTransforms() {
   //     return value && value + ' sq ft';
   //   },
   // },
-  // titleCase: {
-  //   transform: function(str) {
-  //     str = str.toLowerCase().split(' ').map(function(word) {
-  //       return (word.charAt(0).toUpperCase() + word.slice(1));
-  //     });
-  //     return str.join(' ');
-  //   },
-  // },
+  // 
   // urlFormatter: {
   //   transform: function(txt) {
   //     var uselessWordsArray =
