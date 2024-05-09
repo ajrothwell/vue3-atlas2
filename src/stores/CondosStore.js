@@ -23,7 +23,7 @@ export const useCondosStore = defineStore('CondosStore', {
         };
         const response = await axios(`//api.phila.gov/ais/v1/search/${address}`, { params });
         console.log('condos response:', response);
-        if (response.statusText === 'OK') {
+        if (response.status === 200) {
           console.log('Condos - await resolved and HTTP status is successful')
           if (response.data.features.length > 0) {
             let dataFeatures = [];
