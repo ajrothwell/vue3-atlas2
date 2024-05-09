@@ -32,7 +32,7 @@ const timeIntervalLabel = computed(() => props.timeIntervals.labels[props.timeIn
     <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
       <span>From</span>
       <span class="icon is-small">
-        <i class="fas fa-angle-down" aria-hidden="true"></i>
+        <font-awesome-icon icon="fa-solid fa-angle-down" aria-hidden="true"></font-awesome-icon>
       </span>
     </button>
   </div>

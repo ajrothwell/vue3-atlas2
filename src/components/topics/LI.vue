@@ -71,7 +71,7 @@ const getZoningDocLink = (item) => {
           + docId
           + '.pdf">'
           + docId
-          + ' <i class="fa fa-external-link-alt"></i></a>'
+          + ' <font-awesome-icon icon="fa-solid fa-external-link-alt"></font-awesome-icon></a>'
           + '</a>';
 };
 
@@ -229,7 +229,7 @@ const handleBinClick = (bin) => {
       </tbody>
     </table>
     <div class="table-link">
-      <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See all {{ LiStore.liBuildingCerts.rows.length || '' }} building certifications for this property at L&I Property History<i class="fa fa-external-link-alt"></i></a>
+      <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See all {{ LiStore.liBuildingCerts.rows.length || '' }} building certifications for this property at L&I Property History <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
     </div>
 
     <!-- Li Permits Table -->
@@ -256,7 +256,7 @@ const handleBinClick = (bin) => {
       </tbody>
     </table>
     <div v-if="LiStore.liPermits.rows.length > 5" class="table-link">
-      <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See {{ LiStore.liPermits.rows.length-5 }} older permits at L&I Property History<i class="fa fa-external-link-alt"></i></a>
+      <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See {{ LiStore.liPermits.rows.length-5 }} older permits at L&I Property History <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
     </div>
 
     <!-- liAisZoningDocs and liEclipseZoningDocs Table-->
@@ -306,7 +306,7 @@ const handleBinClick = (bin) => {
       </tbody>
     </table>
     <div v-if="LiStore.liInspections.rows.length > 5" class="table-link">
-      <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See {{ LiStore.liInspections.rows.length }} older inspections at L&I Property History<i class="fa fa-external-link-alt"></i></a>
+      <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See {{ LiStore.liInspections.rows.length }} older inspections at L&I Property History <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
     </div>
 
     <!-- Li Violations Table -->
@@ -333,7 +333,7 @@ const handleBinClick = (bin) => {
       </tbody>
     </table>
     <div v-if="LiStore.liInspections.rows.length > 5" class="table-link">
-      <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See {{ LiStore.liViolations.rows.length-5 }} older violations at L&I Property History<i class="fa fa-external-link-alt"></i></a>
+      <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See {{ LiStore.liViolations.rows.length-5 }} older violations at L&I Property History <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
     </div>
 
     <!-- Li Business Licenses Table -->
@@ -362,7 +362,7 @@ const handleBinClick = (bin) => {
       </tbody>
     </table>
     <div v-if="LiStore.liBusinessLicenses.rows.length > 5" class="table-link">
-      <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See {{ LiStore.liBusinessLicenses.rows.length-5 }} older business licenses at L&I Property History<i class="fa fa-external-link-alt"></i></a>
+      <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See {{ LiStore.liBusinessLicenses.rows.length-5 }} older business licenses at L&I Property History <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
     </div>
 
   </section>

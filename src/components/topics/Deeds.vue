@@ -1,5 +1,6 @@
 <script setup>
-// import $config from '@/config';
+
+import { parseISO, format } from 'date-fns';
 import { computed, onBeforeMount } from 'vue';
 // import { storeToRefs } from 'pinia';
 
@@ -57,6 +58,10 @@ const addRegmapLayer = (regmap) => {
 const selectedRegmap = computed(() => {
   return MapStore.selectedRegmap;
 });
+
+const getHref = (DOCUMENT_ID) => {
+  return `http://epay.phila-records.com/phillyepay/web/integration/document/InstrumentID=${DOCUMENT_ID}&Guest=true`;
+}
 
 </script>
 
@@ -134,7 +139,7 @@ const selectedRegmap = computed(() => {
       </thead>
       <tbody>
         <tr v-for="item in selectedDocs">
-          <td>{{ item.attributes.DOCUMENT_ID }}</td>
+          <td><a target='_blank' :href="getHref(item.attributes.DOCUMENT_ID)">{{item.attributes.DOCUMENT_ID}}<font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a></td>
           <td>{{ item.attributes.DISPLAY_DATE }}</td>
           <td>{{ item.attributes.DOCUMENT_TYPE }}</td>
           <td>{{ item.attributes.GRANTORS }}</td>

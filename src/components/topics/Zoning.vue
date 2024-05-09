@@ -161,6 +161,9 @@ onBeforeMount(() => {
       </tr>
     </tbody>
   </table>
+  <div class="table-link">
+    <a target="_blank" href="//www.phila.gov/documents/registered-community-organization-rco-materials/">See a list of all RCOs in the city [PDF] <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
+  </div>
 
 
 </template>
