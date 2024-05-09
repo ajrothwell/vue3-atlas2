@@ -483,12 +483,22 @@ const dorDrawnMapStyle = mergeDeep(imageryInfo,{
       },
     },
     {
+      id: 'dorParcelLine',
+      type: 'line',
+      source: 'dorParcel',
+      layout: {},
+      paint: {
+        'line-color': 'blue',
+        'line-width': 2
+      }
+    },
+    {
       id: 'dorParcel',
       type: 'fill',
       source: 'dorParcel',
       layout: {},
       paint: {
-        'fill-color': '#088',
+        'fill-color': 'blue',
         'fill-opacity': 0.4
       }
     }
@@ -606,12 +616,22 @@ const zoningDrawnMapStyle = mergeDeep(imageryInfo,{
       },
     },
     {
+      id: 'dorParcelLine',
+      type: 'line',
+      source: 'dorParcel',
+      layout: {},
+      paint: {
+        'line-color': 'blue',
+        'line-width': 2
+      }
+    },
+    {
       id: 'dorParcel',
       type: 'fill',
       source: 'dorParcel',
       layout: {},
       paint: {
-        'fill-color': '#088',
+        'fill-color': 'blue',
         'fill-opacity': 0.4
       }
     }
@@ -806,13 +826,23 @@ const $config = {
       source: 'addressMarker',
       type: 'circle',
     },
+    dorParcelLine: {
+      id: 'dorParcelLine',
+      type: 'line',
+      source: 'dorParcel',
+      layout: {},
+      paint: {
+        'line-color': 'blue',
+        'line-width': 2
+      }
+    },
     dorParcel: {
       id: 'dorParcel',
       type: 'fill',
       source: 'dorParcel',
       layout: {},
       paint: {
-        'fill-color': '#088',
+        'fill-color': 'blue',
         'fill-opacity': 0.4
       }
     },
