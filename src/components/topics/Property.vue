@@ -54,6 +54,10 @@ const CondosStore = useCondosStore();
     <div v-else-if="!OpaStore.opaData.rows.length">
       <p>There is no property assessment record for this address.</p>
     </div>
+    <div>
+      <a target='_blank' :href="`https://property.phila.gov/?p=${AddressStore.addressData.features[0].properties.opa_account_num}`">See more at Property Search<i class='fa fa-external-link-alt'></i></a>
+    </div>
+
   </section>
 </template>
 

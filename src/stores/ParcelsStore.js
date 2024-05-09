@@ -1,7 +1,10 @@
 
 import { defineStore } from 'pinia';
 import { useAddressStore } from '@/stores/AddressStore.js'
+import { useMainStore } from '@/stores/MainStore.js'
 import axios from 'axios';
+import useParcels from '@/composables/useParcels';
+const { processParcels } = useParcels();
 
 export const useParcelsStore = defineStore('ParcelsStore', {
   state: () => {
@@ -83,12 +86,10 @@ export const useParcelsStore = defineStore('ParcelsStore', {
         if (response.status === 200) {
           console.log('response', response);
           const originalJson = await response.data;
-          const features1 = originalJson.features.filter(f => f.properties.STATUS === 1);
-          const features2 = originalJson.features.filter(f => f.properties.STATUS === 2);
-          const features3 = originalJson.features.filter(f => f.properties.STATUS === 3);
-          originalJson.features = features1.concat(features2).concat(features3);
-          // console.log('originalJson', originalJson);
-          this.dor = originalJson;
+          const processedData = await processParcels(originalJson);
+          const MainStore = useMainStore();
+          MainStore.selectedParcelId = processedData.features[0].properties.OBJECTID;
+          this.dor = processedData;
         } else {
           console.error('Failed to fetch dor parcel data 1')
         }
@@ -113,7 +114,17 @@ export const useParcelsStore = defineStore('ParcelsStore', {
       const response = await axios(`https://services.arcgis.com/fLeGjb7u4uXqeF9q/ArcGIS/rest/services/${ESRILayer}/FeatureServer/0/query`, { params });
       console.log('response', response);
       if (response.data.features.length > 0) {
-        this[parcelLayer] = await response.data;
+        let data = await response.data;
+        let processedData;
+        if (parcelLayer === 'dor') {
+          processedData = await processParcels(data);
+        } else {
+          processedData = data;
+        }
+        console.log('processedData:', processedData);
+        const MainStore = useMainStore();
+        MainStore.selectedParcelId = processedData.features[0].properties.OBJECTID;
+        this[parcelLayer] = processedData;
       }
     },
 

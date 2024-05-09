@@ -21,8 +21,8 @@ const selectedParcel = computed(() => {
   return ParcelsStore.dor.features.filter(feature => feature.id === selectedParcelId.value)[0];
 });
 const selectedDocs = computed(() => {
-  if (selectedParcelId.value) {
-    console.log('selected.value:', selectedParcelId.value);
+  if (selectedParcelId.value && DorStore.dorDocuments[selectedParcelId.value]) {
+    console.log('selectedParcelId.value:', selectedParcelId.value);
     return DorStore.dorDocuments[selectedParcelId.value].data.features;
   } else {
     return null;
@@ -109,14 +109,14 @@ const selectedRegmap = computed(() => {
       <div class="column is-4">Is Condo</div>
       <div class="column is-8">{{ !selectedParcel.properties.CONDOFLAG ? 'No' : 'Yes' }}</div>
     </div>
-    <!--<div class="columns">
+    <div class="columns">
       <div class="column is-4">Perimeter</div>
-      <div class="column is-8">{{ OpaStore.getSaleDate }}</div>
+      <div class="column is-8">{{ selectedParcel.properties.TURF_PERIMETER.toFixed(0) }} ft</div>
     </div>
     <div class="columns">
       <div class="column is-4">Area</div>
-      <div class="column is-8">{{ OpaStore.getSalePrice }}</div>
-    </div> -->
+      <div class="column is-8">{{ selectedParcel.properties.TURF_AREA.toFixed(0) }} sq ft</div>
+    </div>
   </div>
 
   <!-- DOR Docs Table -->
@@ -181,6 +181,11 @@ const selectedRegmap = computed(() => {
   color: orange;
   border-color: orange;
   cursor: pointer;
+}
+
+.table .is-full-width {
+  left: 0 !important;
+  right: 0 !important;
 }
 
 </style>

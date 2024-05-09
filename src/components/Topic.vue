@@ -81,6 +81,8 @@ const handleTopicClick = () => {
   border: 1px solid #929292;
   font-size: 1em;
   padding: 1em;
+  left: 0 !important;
+  right: 0 !important;
 }
 
 </style>

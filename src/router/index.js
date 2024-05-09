@@ -16,6 +16,8 @@ import { useMainStore } from '@/stores/MainStore.js'
 
 import useRouting from '@/composables/useRouting';
 const { routeApp } = useRouting();
+// import useParcels from '@/composables/useParcels';
+// const { processParcels } = useParcels();
 
 const getAddressAndPutInStore = async(address) => {
   console.log('getAddressAndPutInStore is running, address:', address);
@@ -70,8 +72,13 @@ const dataFetch = async(to, from) => {
 
   // GET PARCELS AND DATA FOR TOPIC
   const ParcelsStore = useParcelsStore();
+  // if (!ParcelsStore.pwd.features) {
   await ParcelsStore.fillPwdParcelData();
-  await ParcelsStore.fillDorParcelData(); 
+  // }
+  // if (MainStore.lastSearchMethod === 'address' || !ParcelsStore.dor.features) {
+  if (MainStore.lastSearchMethod === 'address' || $config.parcelLayerForTopic[topic] === 'pwd') {
+    await ParcelsStore.fillDorParcelData();
+  } 
   const CondosStore = useCondosStore();
   await CondosStore.fillCondoData(address);  
   if (to.params.topic == "Condominiums" && !CondosStore.condosData.length) {

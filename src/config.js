@@ -758,7 +758,7 @@ const nearbyDrawnMapStyle = mergeDeep(imageryInfo,{
 const $config = {
   topicStyles: {
     Property: 'pwdDrawnMapStyle',
-    Condos: 'pwdDrawnMapStyle',
+    Condominiums: 'pwdDrawnMapStyle',
     Deeds: 'dorDrawnMapStyle',
     'Licenses & Inspections': 'liDrawnMapStyle',
     Zoning: 'zoningDrawnMapStyle',
@@ -768,7 +768,7 @@ const $config = {
   parcelLayerForTopic: {
     undefined: 'pwd',
     Property: 'pwd',
-    Condos: 'pwd',
+    Condominiums: 'pwd',
     Deeds: 'dor',
     'Licenses & Inspections': 'pwd',
     Zoning: 'dor',
