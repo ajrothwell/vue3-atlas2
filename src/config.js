@@ -228,9 +228,9 @@ const pwdDrawnMapStyle = mergeDeep(imageryInfo,{
       type: 'circle',
       paint: {
         'circle-radius': 6,
-        'circle-color': '#80A5E6',
+        'circle-color': '#5b94c6',
         'circle-stroke-width': 1,
-        'circle-stroke-color': 'black',
+        'circle-stroke-color': '#a1a1a1',
         'circle-opacity': 0.5,
       }
     },
@@ -336,9 +336,9 @@ const liDrawnMapStyle = mergeDeep(imageryInfo,{
       type: 'circle',
       paint: {
         'circle-radius': 6,
-        'circle-color': '#80A5E6',
+        'circle-color': '#5b94c6',
         'circle-stroke-width': 1,
-        'circle-stroke-color': 'black',
+        'circle-stroke-color': '#a1a1a1',
         'circle-opacity': 0.5,
       }
     },
@@ -452,9 +452,9 @@ const dorDrawnMapStyle = mergeDeep(imageryInfo,{
       type: 'circle',
       paint: {
         'circle-radius': 6,
-        'circle-color': '#80A5E6',
+        'circle-color': '#5b94c6',
         'circle-stroke-width': 1,
-        'circle-stroke-color': 'black',
+        'circle-stroke-color': '#a1a1a1',
         'circle-opacity': 0.5,
       }
     },
@@ -577,9 +577,9 @@ const zoningDrawnMapStyle = mergeDeep(imageryInfo,{
       type: 'circle',
       paint: {
         'circle-radius': 6,
-        'circle-color': '#80A5E6',
+        'circle-color': '#5b94c6',
         'circle-stroke-width': 1,
-        'circle-stroke-color': 'black',
+        'circle-stroke-color': '#a1a1a1',
         'circle-opacity': 0.5,
       }
     },
@@ -703,9 +703,9 @@ const nearbyDrawnMapStyle = mergeDeep(imageryInfo,{
       type: 'circle',
       paint: {
         'circle-radius': 6,
-        'circle-color': '#80A5E6',
+        'circle-color': '#5b94c6',
         'circle-stroke-width': 1,
-        'circle-stroke-color': 'black',
+        'circle-stroke-color': '#a1a1a1',
         'circle-opacity': 0.5,
       }
     },

@@ -29,7 +29,7 @@ const imgSrc = computed(() => {
   height: 36px;
   width: 36px;
   position: absolute;
-  top: 94px;
+  top: 52px;
   right: 10px;
   z-index: 1000;
   background-color: white;
