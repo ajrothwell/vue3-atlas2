@@ -1,15 +1,5 @@
 import mergeDeep from './util/merge-deep.js';
 
-const parcelLayerForTopic = {
-  'Property': 'pwd',
-  'Condos': 'pwd',
-  'Deeds': 'dor',
-  'Licenses & Inspections': 'pwd',
-  'Zoning': 'dor',
-  'Voting': 'pwd',
-  'Nearby Activity': 'pwd',
-}
-
 const imageryInfo = {
   sources: {
     imageryLabels: {
@@ -768,7 +758,7 @@ const nearbyDrawnMapStyle = mergeDeep(imageryInfo,{
 const $config = {
   topicStyles: {
     Property: 'pwdDrawnMapStyle',
-    Condos: 'pwdDrawnMapStyle',
+    Condominiums: 'pwdDrawnMapStyle',
     Deeds: 'dorDrawnMapStyle',
     'Licenses & Inspections': 'liDrawnMapStyle',
     Zoning: 'zoningDrawnMapStyle',
@@ -778,7 +768,7 @@ const $config = {
   parcelLayerForTopic: {
     undefined: 'pwd',
     Property: 'pwd',
-    Condos: 'pwd',
+    Condominiums: 'pwd',
     Deeds: 'dor',
     'Licenses & Inspections': 'pwd',
     Zoning: 'dor',
@@ -971,7 +961,6 @@ const ZONING_CODE_MAP = {
   'SP-CIV': 'SP-CIV, Civic, Educational, and Medical (Special Purpose) District',
 };
 
-$config['parcelLayerForTopic'] = parcelLayerForTopic;
 $config['pwdDrawnMapStyle'] = pwdDrawnMapStyle;
 $config['dorDrawnMapStyle'] = dorDrawnMapStyle;
 $config['liDrawnMapStyle'] = liDrawnMapStyle;

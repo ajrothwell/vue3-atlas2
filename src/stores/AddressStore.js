@@ -16,7 +16,7 @@ export const useAddressStore = defineStore("AddressStore", {
         // const addressDataLoadedFlag = false;
         // on a new address search, clear all of the loaded data sources
         // const dataSourcesLoadedArray.value = [];
-        const response = await fetch(`https://api.phila.gov/ais/v1/search/${address}?include_units=false`)
+        const response = await fetch(`https://api.phila.gov/ais/v1/search/${encodeURIComponent(address)}?include_units=false`)
         if (response.ok) {
           console.log('Address - await resolved and HTTP status is successful')
           this.addressData = await response.json()
