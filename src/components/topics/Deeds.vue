@@ -4,6 +4,9 @@ import { parseISO, format } from 'date-fns';
 import { computed, onBeforeMount } from 'vue';
 // import { storeToRefs } from 'pinia';
 
+import useTransforms from '@/composables/useTransforms';
+const { integer, prettyNumber } = useTransforms();
+
 // import the AddressStore and DorParcels
 import { useAddressStore } from '@/stores/AddressStore';
 const AddressStore = useAddressStore();
@@ -100,11 +103,11 @@ const getHref = (DOCUMENT_ID) => {
     </div>
     <div class="columns">
       <div class="column is-4">Origination Date</div>
-      <div class="column is-8">{{ selectedParcel.properties.ORIG_DATE }}</div>
+      <div class="column is-8">{{ format(selectedParcel.properties.ORIG_DATE, 'MM/dd/yyyy') }}</div>
     </div>
     <div class="columns">
       <div class="column is-4">Inactive Date</div>
-      <div class="column is-8">{{ selectedParcel.properties.INACTDATE || 'None' }}</div>
+      <div class="column is-8">{{ format(selectedParcel.properties.INACTDATE, 'MM/dd/yyyy') || 'None' }}</div>
     </div>
     <div class="columns">
       <div class="column is-4">Has Air Rights</div>
@@ -116,11 +119,11 @@ const getHref = (DOCUMENT_ID) => {
     </div>
     <div class="columns">
       <div class="column is-4">Perimeter</div>
-      <div class="column is-8">{{ selectedParcel.properties.TURF_PERIMETER.toFixed(0) }} ft</div>
+      <div class="column is-8">{{ prettyNumber(integer(selectedParcel.properties.TURF_PERIMETER)) }} ft</div>
     </div>
     <div class="columns">
       <div class="column is-4">Area</div>
-      <div class="column is-8">{{ selectedParcel.properties.TURF_AREA.toFixed(0) }} sq ft</div>
+      <div class="column is-8">{{ prettyNumber(integer(selectedParcel.properties.TURF_AREA)) }} sq ft</div>
     </div>
   </div>
 

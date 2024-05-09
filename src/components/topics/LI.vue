@@ -14,7 +14,7 @@ const MapStore = useMapStore();
 const map = MapStore.map;
 
 import useTransforms from '@/composables/useTransforms';
-const { currency, date } = useTransforms();
+const { currency, date, integer, prettyNumber } = useTransforms();
 
 // BUILDING CERTIFICATIONS
 const buildingCertsCompareFn = (a, b) => new Date(b.expirationdate) - new Date(a.expirationdate);
@@ -200,11 +200,11 @@ const handleBinClick = (bin) => {
       </div>
       <div class="columns">
         <div class="column is-4">Building Height (approx)</div>
-        <div class="column is-8">{{ selectedLiBuilding.attributes.APPROX_HEIGHT || 'N/A' }} ft</div>
+        <div class="column is-8">{{ selectedLiBuilding.attributes.APPROX_HGT || 'N/A' }} ft</div>
       </div>
       <div class="columns">
         <div class="column is-4">Building Footprint (approx)</div>
-        <div class="column is-8">{{ (selectedLiBuilding.attributes.Shape__Area * 6.3225).toFixed(0) || 'N/A' }} sq ft</div>
+        <div class="column is-8">{{ prettyNumber(integer(selectedLiBuilding.attributes.Shape__Area * 6.3225)) || 'N/A' }} sq ft</div>
       </div>
     </div>
 

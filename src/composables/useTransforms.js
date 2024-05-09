@@ -55,6 +55,14 @@ export default function useTransforms() {
     return str.join(' ');
   }
 
+  const prettyNumber = (value) => {
+    return !isNaN(value) && value.toLocaleString();
+  }
+
+  const integer = (value) => {
+    return !isNaN(value) && parseInt(value);
+  }
+
   const timeReverseFn = (a, b, fieldName) => new Date(b[fieldName]) - new Date(a[fieldName]);
   const timeFn  = (a, b, fieldName) => new Date(a[fieldName]) - new Date(b[fieldName]);
   
@@ -66,6 +74,8 @@ export default function useTransforms() {
     nth,
     phoneNumber,
     titleCase,
+    prettyNumber,
+    integer,
     timeReverseFn,
     timeFn,
   };
@@ -128,11 +138,6 @@ export default function useTransforms() {
   //     return nearest;
   //   },
   // },
-  // integer: {
-  //   transform: function (value) {
-  //     return !isNaN(value) && parseInt(value);
-  //   },
-  // },
   // nowrap: {
   //   transform: function (value) {
   //     return '<span style="white-space: nowrap;">' + value + '</span>';
@@ -151,12 +156,6 @@ export default function useTransforms() {
   //     return (!m) ? null : "(" + m[1] + ") " + m[2] + "-" + m[3];
   //   },
   // },
-  // prettyNumber: {
-  //   transform: function (value) {
-  //     return !isNaN(value) && value.toLocaleString();
-  //   },
-  // },
-  
   // squareFeet: {
   //   transform: function (value) {
   //     return value && value + ' sq ft';
