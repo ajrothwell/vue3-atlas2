@@ -8,6 +8,7 @@ const MainStore = useMainStore();
 
 const props = defineProps({
   topicName: String,
+  topicIcon: String,
   loading: Boolean
 });
 
@@ -42,13 +43,14 @@ const handleTopicClick = () => {
   <section>
 
     <div
-      class="topic"
+      class="topic is-vcentered"
       @click="handleTopicClick"
     >
-      <span class="topic-name has-text-left">
-        {{ topicName }}
-      </span>
-      <span class="topic-loading has-text-right" v-if="open && loading">Loading...</span>
+      <div class="topic-name">
+        <div class="icon-holder"><font-awesome-icon :icon="props.topicIcon"/></div>
+        <div class="name-holder">{{ topicName }}</div>
+        <div class="mr-2 is-pulled-right" v-if="open && loading"><font-awesome-icon icon="fa-solid fa-spinner"/></div>
+      </div>
     </div>
     <div
       v-if="open"
@@ -64,16 +66,51 @@ const handleTopicClick = () => {
 
 <style scoped>
 
+.topic-loading {
+  
+}
+
+.icon-holder {
+  display: inline-block;
+  margin-left: .25em;
+  margin-right: .5em;
+  width: 1em;
+}
+
+.name-holder {
+  display: inline-block;
+}
+
+.is-vcentered {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center; /* used this for multiple child */
+  align-items: center; /* if an only child */
+}
+
 .topic {
-  height: 3.5em;
+  font-size: .75em;
+  /* height: 3.5em; */
+  height: 60px;
   background-color: #f0f0f0;
+  color: #0f4d90;
   border: 1px solid #ccc;
+  border-radius: 4px;
   margin-top: .25em;
   padding: .25em;
+  cursor: pointer;
+}
+
+.topic:hover {
+  background-color: #fff;
+  color: #000
 }
 
 .topic-name {
+  width: 100%;
   font-size: 2em;
+  /* display: flex; */
+  /* flex-direction: row; */
 }
 
 .inside-topic {

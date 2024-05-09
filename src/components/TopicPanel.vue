@@ -68,7 +68,7 @@ const dataSourcesLoadedArray = computed(() => MainStore.dataSourcesLoadedArray);
       </div>
 
       <div class="topics pr-4">      
-        <topic :topic-name="'Property'" :loading="!dataSourcesLoadedArray.includes('Property')">
+        <topic :topic-name="'Property'" :topic-icon="'fa-solid fa-home'" :loading="!dataSourcesLoadedArray.includes('Property')">
           <Property v-if="dataSourcesLoadedArray.includes('Property')"></Property>
         </topic>
 
@@ -76,23 +76,23 @@ const dataSourcesLoadedArray = computed(() => MainStore.dataSourcesLoadedArray);
           <Condos v-if="dataSourcesLoadedArray.includes('Condominiums')"></Condos>
         </topic>
 
-        <topic :topic-name="'Deeds'" :loading="!dataSourcesLoadedArray.includes('Deeds')">
+        <topic :topic-name="'Deeds'" :topic-icon="'fa-solid fa-book'" :loading="!dataSourcesLoadedArray.includes('Deeds')">
           <Deeds v-if="dataSourcesLoadedArray.includes('Deeds')"/>
         </topic>
 
-        <topic :topic-name="'Licenses & Inspections'" :loading="!dataSourcesLoadedArray.includes('Licenses & Inspections')">
+        <topic :topic-name="'Licenses & Inspections'" :topic-icon="'fa-solid fa-wrench'" :loading="!dataSourcesLoadedArray.includes('Licenses & Inspections')">
           <LI v-if="dataSourcesLoadedArray.includes('Licenses & Inspections')"/>
         </topic>
 
-        <topic :topic-name="'Zoning'" :loading="!dataSourcesLoadedArray.includes('Zoning')">
+        <topic :topic-name="'Zoning'" :topic-icon="'fa-solid fa-university'" :loading="!dataSourcesLoadedArray.includes('Zoning')">
           <Zoning v-if="dataSourcesLoadedArray.includes('Zoning')"/>
         </topic>
 
-        <topic :topic-name="'Voting'" :loading="!dataSourcesLoadedArray.includes('Voting')">
+        <topic :topic-name="'Voting'" :topic-icon="'fa-solid fa-gavel'" :loading="!dataSourcesLoadedArray.includes('Voting')">
           <Voting v-if="dataSourcesLoadedArray.includes('Voting')"/>
         </topic>
 
-        <topic :topic-name="'Nearby Activity'" :loading="!dataSourcesLoadedArray.includes('Nearby Activity')">
+        <topic :topic-name="'Nearby Activity'" :topic-icon="'fa-solid fa-map-marker-alt'" :loading="!dataSourcesLoadedArray.includes('Nearby Activity')">
           <KeepAlive>
             <NearbyActivity v-if="dataSourcesLoadedArray.includes('Nearby Activity')"/>
           </KeepAlive>
