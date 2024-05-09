@@ -20,6 +20,7 @@ import { faUniversity } from '@fortawesome/free-solid-svg-icons';
 import { faGavel } from '@fortawesome/free-solid-svg-icons';
 import { faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { faBuilding } from '@fortawesome/free-solid-svg-icons';
 library.add(
   faMagnifyingGlass,
   faHome,
@@ -29,6 +30,7 @@ library.add(
   faGavel,
   faMapMarkerAlt,
   faSpinner,
+  faBuilding,
 );
 
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';

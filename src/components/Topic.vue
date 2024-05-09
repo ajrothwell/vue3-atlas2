@@ -66,10 +66,6 @@ const handleTopicClick = () => {
 
 <style scoped>
 
-.topic-loading {
-  
-}
-
 .icon-holder {
   display: inline-block;
   margin-left: .25em;
@@ -90,7 +86,6 @@ const handleTopicClick = () => {
 
 .topic {
   font-size: .75em;
-  /* height: 3.5em; */
   height: 60px;
   background-color: #f0f0f0;
   color: #0f4d90;
@@ -109,13 +104,12 @@ const handleTopicClick = () => {
 .topic-name {
   width: 100%;
   font-size: 2em;
-  /* display: flex; */
-  /* flex-direction: row; */
 }
 
 .inside-topic {
   background-color: #ffffff;
   border: 1px solid #929292;
+  border-radius: 4px;
   font-size: 1em;
   padding: 1em;
   left: 0 !important;
