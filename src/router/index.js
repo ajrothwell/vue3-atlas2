@@ -76,7 +76,7 @@ const dataFetch = async(to, from) => {
   await ParcelsStore.fillPwdParcelData();
   // }
   // if (MainStore.lastSearchMethod === 'address' || !ParcelsStore.dor.features) {
-  if (MainStore.lastSearchMethod === 'address') {
+  if (MainStore.lastSearchMethod === 'address' || $config.parcelLayerForTopic[topic] === 'pwd') {
     await ParcelsStore.fillDorParcelData();
   } 
   const CondosStore = useCondosStore();
