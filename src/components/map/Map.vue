@@ -229,7 +229,7 @@ watch(
   () => pwdCoordinates.value,
   newCoords => {
   // console.log('Map pwdCoordinates watch, newCoords:', newCoords, 'MapStore.addressMarker:', MapStore.addressMarker);
-  const address = {'type': 'Feature','geometry': {'type': 'Point','coordinates': newCoords}};
+  const address = point(newCoords);
   map.getSource('addressMarker').setData(address);
 });
 
@@ -250,7 +250,7 @@ watch(
   () => dorCoordinates.value,
   newCoords => {
   console.log('Map dorCoordinates watch, newCoords:', newCoords);
-  const newParcel = {'type': 'Feature','geometry': {'type': 'Polygon','coordinates': [ newCoords ]}};
+  const newParcel = polygon([ newCoords ]);
   map.getSource('dorParcel').setData(newParcel);
 });
 
@@ -265,8 +265,8 @@ watch(
       const dorParcel = map.getSource('dorParcel');
       if (addressMarker && dorParcel) {
         // console.log('1 map.layers:', map.getStyle().layers, map.getStyle().sources);
-        addressMarker.setData({'type': 'Feature','geometry': {'type': 'Point','coordinates': pwdCoordinates.value }});
-        dorParcel.setData({'type': 'Feature','geometry': {'type': 'Polygon','coordinates': [ dorCoordinates.value ]}});
+        addressMarker.setData(point(pwdCoordinates.value));
+        dorParcel.setData(polygon([ dorCoordinates.value ]));
         // console.log('2 map.layers:', map.getStyle().layers, map.getStyle().sources);
       }
       MapStore.selectedRegmap = null;
@@ -280,7 +280,7 @@ watch(
       if (addressMarker && dorParcel) {
         // console.log('1 map.layers:', map.getStyle().layers, map.getStyle().sources);
         addressMarker.setData(point(pwdCoordinates.value));
-        dorParcel.setData({'type': 'Feature','geometry': {'type': 'Polygon','coordinates': [ dorCoordinates.value ]}});
+        dorParcel.setData(polygon([ dorCoordinates.value ]));
         // console.log('2 map.layers:', map.getStyle().layers, map.getStyle().sources);
       }
     }
@@ -434,7 +434,6 @@ watchEffect(() => {
     map.fitBounds(bounds);
   }
 });
-
 
 // for Nearby topic, watch the id of the circle marker that is hovered on to change the color of the circle
 const hoveredStateId = computed(() => { return MainStore.hoveredStateId; })
@@ -635,7 +634,7 @@ const updateCyclomediaCameraLngLat = (lngLat) => {
   if (!MapStore.cyclomediaOn) {
     return;
   } else {
-    const theData = {'type': 'Feature','geometry': {'type': 'Point','coordinates': lngLat }};
+    const theData = point(lngLat);
     map.getSource('cyclomediaCamera').setData(theData);
     $config.dorDrawnMapStyle.sources.cyclomediaCamera.data = theData;
   }
