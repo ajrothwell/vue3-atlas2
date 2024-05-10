@@ -86,16 +86,28 @@ export const useDorStore = defineStore("DorStore", {
     return {
       dorDocuments: {},
       regmaps: {},
+      dorCondos: {},
     };
   },
 
   actions: {
+    async fillDorCondos() {
+      console.log('fillRegmaps is running');
+      const ParcelsStore = useParcelsStore();
+      const parcels = ParcelsStore.dor.features;
+      let baseUrl = 'https://phl.carto.com/api/v2/sql?q=';
+      parcels.forEach(async(feature) => {
+        console.log('feature:', feature);
+        const url = baseUrl += `select * from condominium where mapref = '${ feature.properties.MAPREG }' and status in (1,3)`;
+        const response = await fetch(url);
+        this.dorCondos[feature.properties.OBJECTID] = await response.json();
+      });
+    },
     async fillRegmaps() {
       console.log('fillRegmaps is running');
       const ParcelsStore = useParcelsStore();
       const parcels = ParcelsStore.dor.features;
-      var xVals = [],
-        yVals = [];
+      var xVals = [], yVals = [];
 
       // loop over parcels
       parcels.forEach(function (parcel) {

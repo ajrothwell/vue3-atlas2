@@ -33,6 +33,14 @@ const selectedDocs = computed(() => {
   }
 });
 
+const selectedCondos = computed(() => {
+  if (selectedParcelId.value && DorStore.dorCondos[selectedParcelId.value]) {
+    return DorStore.dorCondos[selectedParcelId.value].rows;
+  } else {
+    return null;
+  }
+});
+
 const regmaps = computed(() => {
   return DorStore.regmaps.data.features;
 });
@@ -125,6 +133,35 @@ const getHref = (DOCUMENT_ID) => {
       <div class="column is-4">Area</div>
       <div class="column is-8">{{ prettyNumber(integer(selectedParcel.properties.TURF_AREA)) }} sq ft</div>
     </div>
+  </div>
+
+  <!-- Deeded Condominiums -->
+  <div class="mt-6">
+    <h5 class="subtitle is-5">Deeded Condominiums</h5>
+    <table class="table is-fullwidth is-striped">
+      <thead>
+        <tr>
+          <th>Condo Parcel</th>
+          <th>Condo Name</th>
+          <th>Unit #</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="item in selectedCondos" :key="item.cartodb_id">
+          <td>{{ item.recmap }}-{{ item.parcel }}</td>
+          <td>{{ item.condo_name }}</td>
+          <td>Unit #{{ item.condounit }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="box">You can access a view-only, watermarked unofficial copy of the deeds below at
+     no cost by clicking on the deeds below. In order to view and print non-watermarked 
+     copies of the deeds below, you must purchase a subscription to 
+     <a target="_blank" href="https://epay.phila-records.com/phillyepay/web/">PhilaDox</a>.
+     Please note that the following list shows documents recorded from December 1999 forward,
+     and may not be a complete history of title for the parcel.
   </div>
 
   <!-- DOR Docs Table -->

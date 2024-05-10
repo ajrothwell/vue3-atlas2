@@ -116,6 +116,7 @@ const topicDataFetch = async (topic) => {
     const DorStore = useDorStore();
     await DorStore.fillDorDocuments();
     await DorStore.fillRegmaps();
+    await DorStore.fillDorCondos();
   }
 
   if (topic === 'Zoning') {
