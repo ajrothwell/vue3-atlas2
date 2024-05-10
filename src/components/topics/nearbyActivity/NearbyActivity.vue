@@ -6,6 +6,9 @@ const NearbyActivityStore = useNearbyActivityStore();
 import { useMainStore } from '@/stores/MainStore';
 const MainStore = useMainStore();
 
+import useScrolling from '@/composables/useScrolling';
+const { isElementInViewport } = useScrolling();
+
 import { useRouter, useRoute } from 'vue-router';
 const route = useRoute();
 const router = useRouter();
@@ -52,6 +55,18 @@ const setDataType = async (newDataType) => {
   }
 }
 
+const hoveredStateId = computed(() => { return MainStore.hoveredStateId; });
+
+watch(() => hoveredStateId.value, (newHoveredStateId) => {
+  if (newHoveredStateId) {
+    const el = document.getElementById(newHoveredStateId);
+    const visible = isElementInViewport(el);
+    if (!visible && !MainStore.isMobileDevice) {
+      el.scrollIntoView({ block: 'center' });
+    }
+  }
+});
+
 onMounted( () => {
   console.log('NearbyActivity.vue onMounted is running, route.params.data:', route.params.data);
   setDataType(route.params.data);
@@ -92,7 +107,7 @@ onMounted( () => {
     </div>
     <span>{{ dataTypes[currentNearbyDataType] }}</span>
     <br>
-
+    
     <Nearby311 v-if="currentNearbyDataType == 'nearby311'"></Nearby311>
     <NearbyCrimeIncidents v-if="currentNearbyDataType == 'nearbyCrimeIncidents'"></NearbyCrimeIncidents>
     <NearbyZoningAppeals v-if="currentNearbyDataType == 'nearbyZoningAppeals'"></NearbyZoningAppeals>

@@ -1,12 +1,10 @@
 <script setup>
 console.log('LI.vue setup');
 import { computed, onMounted, onBeforeMount } from 'vue';
+import { polygon, featureCollection } from '@turf/helpers';
 
-// import the AddressStore and LiStore
 import { useMainStore } from '@/stores/MainStore';
 const MainStore = useMainStore();
-import { useAddressStore } from '@/stores/AddressStore';
-const AddressStore = useAddressStore();
 import { useLiStore } from '@/stores/LiStore';
 const LiStore = useLiStore();
 import { useMapStore } from '@/stores/MapStore';
@@ -14,7 +12,7 @@ const MapStore = useMapStore();
 const map = MapStore.map;
 
 import useTransforms from '@/composables/useTransforms';
-const { currency, date, integer, prettyNumber } = useTransforms();
+const { date, integer, prettyNumber } = useTransforms();
 
 // BUILDING CERTIFICATIONS
 const buildingCertsCompareFn = (a, b) => new Date(b.expirationdate) - new Date(a.expirationdate);
@@ -103,7 +101,6 @@ const violations = computed(() => LiStore.liViolations.rows.sort(violationsCompa
 
 const getLinkViolationNumber = (item) => {
   let address = item.address;
-  // let address = AddressStore.addressData.features[0].properties.street_address;
   if (item.unit_num && item.unit_num != null) {
     address += ' Unit ' + item.unit_num;
   }
@@ -130,23 +127,10 @@ onMounted( async () => {
   let features = [];
   if (!LiStore.liBuildingFootprints.features) return features;
   for (let item of LiStore.liBuildingFootprints.features) {
-    features.push({
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [item.geometry.rings[0]]
-      },
-      properties: {
-        id: item.attributes.BIN,
-        type: 'liBuildingFootprints',
-      }
-    })
+    features.push(polygon([item.geometry.rings[0]], { id: item.attributes.BIN, type: 'liBuildingFootprints' }));
   }
-  let geojson = {
-    'type': 'FeatureCollection',
-    'features': features,
-  }
-  console.log('geojson:', geojson, 'map.getSource("liBuildingFootprints"):', map.getSource('liBuildingFootprints'), 'map.getLayer("liBuildingFootprints"):', map.getLayer('liBuildingFootprints'));
+  let geojson = featureCollection(features);
+  // console.log('geojson:', geojson, 'map.getSource("liBuildingFootprints"):', map.getSource('liBuildingFootprints'), 'map.getLayer("liBuildingFootprints"):', map.getLayer('liBuildingFootprints'));
   await map.getSource('liBuildingFootprints').setData(geojson);
 });
 

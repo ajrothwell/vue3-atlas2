@@ -1,5 +1,6 @@
 <script setup>
 import { ref, reactive, computed, watch, onMounted, onBeforeUnmount } from 'vue';
+import { point, featureCollection } from '@turf/helpers';
 
 import { useNearbyActivityStore } from '@/stores/NearbyActivityStore';
 const NearbyActivityStore = useNearbyActivityStore();
@@ -12,17 +13,14 @@ const map = MapStore.map;
 import SortbyDropdown from '@/components/topics/nearbyActivity/SortbyDropdown.vue';
 import IntervalDropdown from '@/components/topics/nearbyActivity/IntervalDropdown.vue';
 import useTransforms from '@/composables/useTransforms';
-const { date, timeReverseFn, timeFn } = useTransforms();
+const { date, timeReverseFn } = useTransforms();
 import useScrolling from '@/composables/useScrolling';
-const { isElementInViewport, handleRowMouseover, handleRowMouseleave } = useScrolling();
+const { handleRowMouseover, handleRowMouseleave } = useScrolling();
 
 const loadingData = computed(() => NearbyActivityStore.loadingData );
 
 const sortby = ref('distance');
-const setSortby = (e) => {
-  console.log('setSortby', e);
-  sortby.value = e;
-}
+const setSortby = (e) => sortby.value = e;
 const timeIntervals = reactive(
   {
     labels: ['the last 30 days', 'the last 90 days', '1 year'],
@@ -30,18 +28,13 @@ const timeIntervals = reactive(
     selected: 30,
   }
 )
-const setTimeInterval = (e) => {
-  console.log('setTimeInterval', e);
-  timeIntervals.selected = e;
-}
+const setTimeInterval = (e) => timeIntervals.selected = e;
 
 const nearby311 = computed(() => {
   if (NearbyActivityStore.nearby311.data) {
     let data = [ ...NearbyActivityStore.nearby311.data.rows]
       .filter(item => {
-      let itemDate = new Date(item.requested_datetime);
-      let now = new Date();
-      let timeDiff = now - itemDate;
+      let timeDiff = new Date() - new Date(item.requested_datetime);
       let daysDiff = timeDiff / (1000 * 60 * 60 * 24);
       return daysDiff <= timeIntervals.selected;
     })
@@ -54,56 +47,16 @@ const nearby311 = computed(() => {
   }
 });
 const nearby311Geojson = computed(() => {
-  let features = [];
-  if (!nearby311.value) return features;
-  for (let item of nearby311.value) {
-    features.push({
-      type: 'Feature',
-      geometry: { type: 'Point', coordinates: [item.lng, item.lat] },
-      properties: { id: item.service_request_id, type: 'nearby311' }
-    })
-  }
-  return features;
+  if (!nearby311.value) return [point([0,0])];
+  return nearby311.value.map(item => point([item.lng, item.lat], { id: item.objectid, type: 'nearby311' }));
 })
-watch (() => nearby311Geojson.value, async (newGeojson) => {
-  if (newGeojson.length > 0) {
-    // console.log('watch nearby311Geojson, $config:', $config, 'map.getStyle().sources:', map.getStyle().sources, 'map.getStyle().layers:', map.getStyle().layers);
-    let geojson = { 'type': 'FeatureCollection', 'features': newGeojson };
-    map.getSource('nearby').setData(geojson);
-  } else {
-    let geojson = { 'type': 'FeatureCollection', 'features': [ {'type': 'Feature', geometry: { 'type': 'Point', 'coordinates': [0,0]}}] };
-    await map.getSource('nearby').setData(geojson);
-  }
-})
+watch (() => nearby311Geojson.value, (newGeojson) => { map.getSource('nearby').setData(featureCollection(newGeojson)) });
 
 const hoveredStateId = computed(() => { return MainStore.hoveredStateId; });
 
-watch(() => hoveredStateId.value, (newHoveredStateId) => {
-  // console.log('hoveredStateId watch, newHoveredStateId:', newHoveredStateId);
-  if (newHoveredStateId) {
-    const el = document.getElementById(newHoveredStateId);
-    const visible = isElementInViewport(el);
-    if (!visible && !MainStore.isMobileDevice) {
-      console.log('scrolling into view');
-      el.scrollIntoView({ block: 'center' });
-    }
-  }
-});
+onMounted(() => { if (nearby311Geojson.value.length > 0) { map.getSource('nearby').setData(featureCollection(nearby311Geojson.value)) }});
+onBeforeUnmount(() => { if (map.getSource('nearby')) { map.getSource('nearby').setData(featureCollection([point([0,0])])) }});
 
-onMounted(() => {
-  console.log('Nearby311.vue onMounted, nearby311Geojson.value:', nearby311Geojson.value);
-  if (nearby311Geojson.value.length > 0) {
-    let geojson = { 'type': 'FeatureCollection', 'features': nearby311Geojson.value }
-    map.getSource('nearby').setData(geojson);
-  }
-});
-
-onBeforeUnmount(() => {
-  console.log('Nearby311.vue onBeforeUnmount');
-  if (map.getSource('nearby')) {
-    map.getSource('nearby').setData({ 'type': 'FeatureCollection', 'features': [ {'type': 'Feature', geometry: { 'type': 'Point', 'coordinates': [0,0]}}] });
-  }
-})
 
 </script>
 

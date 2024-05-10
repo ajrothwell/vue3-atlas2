@@ -1,5 +1,6 @@
 <script setup>
-import { ref, reactive, computed, watch, onMounted, onBeforeUnmount } from 'vue';
+import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue';
+import { point, featureCollection } from '@turf/helpers';
 
 import { useNearbyActivityStore } from '@/stores/NearbyActivityStore';
 const NearbyActivityStore = useNearbyActivityStore();
@@ -11,15 +12,12 @@ const map = MapStore.map;
 
 import SortbyDropdown from '@/components/topics/nearbyActivity/SortbyDropdown.vue';
 import useScrolling from '@/composables/useScrolling';
-const { isElementInViewport, handleRowMouseover, handleRowMouseleave } = useScrolling();
+const { handleRowMouseover, handleRowMouseleave } = useScrolling();
 
 const loadingData = computed(() => NearbyActivityStore.loadingData );
 
 const sortby = ref('distance');
-const setSortby = (e) => {
-  console.log('setSortby', e);
-  sortby.value = e;
-}
+const setSortby = (e) => sortby.value = e;
 
 const nearbyVacantIndicatorPoints = computed(() => {
   if (NearbyActivityStore.nearbyVacantIndicatorPoints) {
@@ -33,54 +31,15 @@ const nearbyVacantIndicatorPoints = computed(() => {
   }
 });
 const nearbyVacantIndicatorPointsGeojson = computed(() => {
-  let features = [];
-  if (!nearbyVacantIndicatorPoints.value) return features;
-  for (let item of nearbyVacantIndicatorPoints.value) {
-    console.log('item:', item);
-    features.push({
-      type: 'Feature',
-      geometry: { type: 'Point', coordinates: item.geometry.coordinates },
-      properties: { id: item.id, type: 'nearbyVacantIndicatorPoints' }
-    })
-  }
-  return features;
+  if (!nearbyVacantIndicatorPoints.value) return [point([0,0])];
+  return nearbyVacantIndicatorPoints.value.map(item => point(item.geometry.coordinates, { id: item.id, type: 'nearbyVacantIndicatorPoints' }));
 })
-watch (() => nearbyVacantIndicatorPointsGeojson.value, async (newGeojson) => {
-  // console.log('nearbyVacantIndicatorPoints watch, newGeojson:', newGeojson);
-  if (newGeojson.length > 0) {
-    let geojson = { 'type': 'FeatureCollection', 'features': newGeojson };
-    await map.getSource('nearby').setData(geojson);
-  }
-})
+watch (() => nearbyVacantIndicatorPointsGeojson.value, (newGeojson) => { map.getSource('nearby').setData(featureCollection(newGeojson)) });
 
 const hoveredStateId = computed(() => { return MainStore.hoveredStateId; });
 
-watch(() => hoveredStateId.value, (newHoveredStateId) => {
-  // console.log('hoveredStateId watch, newHoveredStateId:', newHoveredStateId);
-  if (newHoveredStateId) {
-    const el = document.getElementById(newHoveredStateId);
-    const visible = isElementInViewport(el);
-    if (!visible && !MainStore.isMobileDevice) {
-      console.log('scrolling into view');
-      el.scrollIntoView({ block: 'center' });
-    }
-  }
-});
-
-onMounted(() => {
-  console.log('NearbyVacantIndicatorPoints.vue onMounted, nearbyVacantIndicatorPointsGeojson.value:', nearbyVacantIndicatorPointsGeojson.value);
-  if (nearbyVacantIndicatorPointsGeojson.value.length > 0) {
-    let geojson = { 'type': 'FeatureCollection', 'features': nearbyVacantIndicatorPointsGeojson.value }
-    map.getSource('nearby').setData(geojson);
-  }
-});
-
-onBeforeUnmount(() => {
-  console.log('Nearby311.vue onBeforeUnmount');
-  if (map.getSource('nearby')) {
-    map.getSource('nearby').setData({ 'type': 'FeatureCollection', 'features': [ {'type': 'Feature', geometry: { 'type': 'Point', 'coordinates': [0,0]}}] });
-  }
-})
+onMounted(() => { if (nearbyVacantIndicatorPointsGeojson.value.length > 0) { map.getSource('nearby').setData(featureCollection(nearbyVacantIndicatorPointsGeojson.value)) }});
+onBeforeUnmount(() => { if (map.getSource('nearby')) { map.getSource('nearby').setData(featureCollection([point([0,0])])) }});
 
 </script>
 

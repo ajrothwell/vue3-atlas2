@@ -1,5 +1,6 @@
 <script setup>
 import { ref, reactive, computed, watch, onMounted, onBeforeUnmount } from 'vue';
+import { point, featureCollection } from '@turf/helpers';
 
 import { useNearbyActivityStore } from '@/stores/NearbyActivityStore';
 const NearbyActivityStore = useNearbyActivityStore();
@@ -12,17 +13,14 @@ const map = MapStore.map;
 import SortbyDropdown from '@/components/topics/nearbyActivity/SortbyDropdown.vue';
 import IntervalDropdown from '@/components/topics/nearbyActivity/IntervalDropdown.vue';
 import useTransforms from '@/composables/useTransforms';
-const { date, timeReverseFn, timeFn } = useTransforms();
+const { date, timeReverseFn } = useTransforms();
 import useScrolling from '@/composables/useScrolling';
-const { isElementInViewport, handleRowMouseover, handleRowMouseleave } = useScrolling();
+const { handleRowMouseover, handleRowMouseleave } = useScrolling();
 
 const loadingData = computed(() => NearbyActivityStore.loadingData );
 
 const sortby = ref('distance');
-const setSortby = (e) => {
-  console.log('setSortby', e);
-  sortby.value = e;
-}
+const setSortby = (e) => sortby.value = e;
 const timeIntervals = reactive(
   {
     labels: ['the last 30 days', 'the last 90 days', '1 year'],
@@ -30,10 +28,7 @@ const timeIntervals = reactive(
     selected: 30,
   }
 )
-const setTimeInterval = (e) => {
-  console.log('setTimeInterval', e);
-  timeIntervals.selected = e;
-}
+const setTimeInterval = (e) => timeIntervals.selected = e;
 
 const nearbyConstructionPermits = computed(() => {
   if (NearbyActivityStore.nearbyConstructionPermits) {
@@ -54,56 +49,15 @@ const nearbyConstructionPermits = computed(() => {
   }
 });
 const nearbyConstructionPermitsGeojson = computed(() => {
-  let features = [];
-  if (!nearbyConstructionPermits.value) return features;
-  for (let item of nearbyConstructionPermits.value) {
-    features.push({
-      type: 'Feature',
-      geometry: { type: 'Point', coordinates: [item.lng, item.lat] },
-      properties: { id: item.objectid, type: 'nearbyConstructionPermits' }
-    })
-  }
-  return features;
+  if (!nearbyConstructionPermits.value) return [point([0,0])];
+  return nearbyConstructionPermits.value.map(item => point([item.lng, item.lat], { id: item.objectid, type: 'nearbyConstructionPermits' }));
 })
-watch (() => nearbyConstructionPermitsGeojson.value, async (newGeojson) => {
-  if (newGeojson.length > 0) {
-    console.log('watch nearbyConstructionPermitsGeojson, map.getStyle().sources:', map.getStyle().sources, 'map.getStyle().layers:', map.getStyle().layers);
-    let geojson = { 'type': 'FeatureCollection', 'features': newGeojson };
-    map.getSource('nearby').setData(geojson);
-  } else {
-    let geojson = { 'type': 'FeatureCollection', 'features': [ {'type': 'Feature', geometry: { 'type': 'Point', 'coordinates': [0,0]}}] };
-    await map.getSource('nearby').setData(geojson);
-  }
-})
+watch (() => nearbyConstructionPermitsGeojson.value, (newGeojson) => { map.getSource('nearby').setData(featureCollection(newGeojson)) });
 
 const hoveredStateId = computed(() => { return MainStore.hoveredStateId; });
 
-watch(() => hoveredStateId.value, (newHoveredStateId) => {
-  console.log('hoveredStateId watch, newHoveredStateId:', newHoveredStateId);
-  if (newHoveredStateId) {
-    const el = document.getElementById(newHoveredStateId);
-    const visible = isElementInViewport(el);
-    if (!visible && !MainStore.isMobileDevice) {
-      console.log('scrolling into view');
-      el.scrollIntoView({ block: 'center' });
-    }
-  }
-});
-
-onMounted(() => {
-  console.log('NearbyConstructionPermits.vue onMounted, nearbyConstructionPermitsGeojson.value:', nearbyConstructionPermitsGeojson.value);
-  if (nearbyConstructionPermitsGeojson.value.length > 0) {
-    let geojson = { 'type': 'FeatureCollection', 'features': nearbyConstructionPermitsGeojson.value }
-    map.getSource('nearby').setData(geojson);
-  }
-});
-
-onBeforeUnmount(() => {
-  console.log('Nearby311.vue onBeforeUnmount');
-  if (map.getSource('nearby')) {
-    map.getSource('nearby').setData({ 'type': 'FeatureCollection', 'features': [ {'type': 'Feature', geometry: { 'type': 'Point', 'coordinates': [0,0]}}] });
-  }
-})
+onMounted(() => { if (nearbyConstructionPermitsGeojson.value.length > 0) { map.getSource('nearby').setData(featureCollection(nearbyConstructionPermitsGeojson.value)) }});
+onBeforeUnmount(() => { if (map.getSource('nearby')) { map.getSource('nearby').setData(featureCollection([point([0,0])])) }});
 
 </script>
 

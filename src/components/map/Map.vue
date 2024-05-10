@@ -13,7 +13,6 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import '@/assets/mapbox-gl-draw.min.js'
 import '@/assets/maplibre-gl-draw.css';
 import destination from '@turf/destination';
-// import { point, polygon, multiPolygon, convertArea, featureCollection } from '@turf/helpers';
 import { point, polygon, featureCollection } from '@turf/helpers';
 import bbox from '@turf/bbox';
 import buffer from '@turf/buffer';
@@ -428,7 +427,6 @@ watchEffect(() => {
     const newPollingPlace = point(pollingPlaceCoordinates.value);
     map.getSource('buildingColumnsMarker').setData(newPollingPlace);
     $config.votingDrawnMapStyle.sources.buildingColumnsMarker.data = newPollingPlace;
-    console.log('$config.votingDrawnMapStyle:', $config.votingDrawnMapStyle);
     const theFeatureCollection = featureCollection([newDivision, newPollingPlace]);
     const bounds = bbox(buffer(theFeatureCollection, 400, {units: 'feet'}));
     map.fitBounds(bounds);
