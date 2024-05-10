@@ -16,7 +16,7 @@ const url = 'https://api.eagleview.com/auth-service/v1/token';
 const options = {
   method: 'POST',
   headers: {
-    'Authorization': basicAuth,
+    // 'Authorization': basicAuth,
     'Accept': 'application/json',
     'content-type': 'application/x-www-form-urlencoded'
   },
@@ -38,10 +38,10 @@ onMounted( async() => {
   //   'Accept': 'application/json',
   //   'Content-Type': 'application/x-www-form-urlencoded',
   // }
-  const response = await axios(options);
+  // const response = await axios(options);
   // // const response = await axios.post('https://api.eagleview.com/auth-service/v1/token HTTP/1.1', params, headers);
   // console.log('response:', response);
-  // const map = new window.ev.EmbeddedExplorer().mount('pictometry', { apiKey:'D33AB30CEC52FC1B2EB1F4BED47C47A1' });
+  const map = new window.ev.EmbeddedExplorer().mount('pictometry');
   // const map = new window.ev.EmbeddedExplorer().mount('pictometry', { authToken: response.data.access_token });
 })
 </script>
