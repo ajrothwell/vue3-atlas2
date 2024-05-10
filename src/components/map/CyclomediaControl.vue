@@ -8,8 +8,6 @@ defineEmits(['toggleCyclomedia']);
 
 const imgSrc = computed(() => {
   return MainStore.publicPath + 'images/cyclomedia.png';
-  // return import.meta.env.VITE_PUBLICPATH + 'images/cyclomedia.png';
-  // return 'images/cyclomedia.png';
 });
 
 </script>
@@ -41,7 +39,6 @@ const imgSrc = computed(() => {
 .img-src {
   max-width: 100%;
   padding-left: 4px;
-  /* border-radius: 5px; */
 }
 
 </style>

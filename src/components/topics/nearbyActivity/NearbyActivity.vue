@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, computed, watch, onMounted } from 'vue';
+import { ref, computed, watch, onMounted } from 'vue';
 
 import { useNearbyActivityStore } from '@/stores/NearbyActivityStore';
 const NearbyActivityStore = useNearbyActivityStore();
@@ -40,15 +40,15 @@ const setDataTypeInRouter = (newDataType) => {
   router.push({ name: 'address-topic-and-data', params: { address: MainStore.currentAddress, topic: route.params.topic, data: newDataType } });
 }
 
-watch(() => route.params.data, async (newDataType) => {
-  console.log('watch route.params.data, newDataType:', newDataType, 'currentNearbyDataType.value:', currentNearbyDataType.value);
+watch(() => route.params.data, (newDataType) => {
+  // console.log('watch route.params.data, newDataType:', newDataType, 'currentNearbyDataType.value:', currentNearbyDataType.value);
   if (newDataType) {
-    await setDataType(newDataType);
+    setDataType(newDataType);
   }
 })
 
 const setDataType = async (newDataType) => {
-  console.log('setDataType, newDataType:', newDataType);
+  // console.log('setDataType, newDataType:', newDataType);
   MainStore.currentNearbyDataType = newDataType;
   if (NearbyActivityStore[newDataType] === null) {
     await NearbyActivityStore.fetchData(newDataType);
@@ -68,7 +68,7 @@ watch(() => hoveredStateId.value, (newHoveredStateId) => {
 });
 
 onMounted( () => {
-  console.log('NearbyActivity.vue onMounted is running, route.params.data:', route.params.data);
+  // console.log('NearbyActivity.vue onMounted is running, route.params.data:', route.params.data);
   setDataType(route.params.data);
 })
 

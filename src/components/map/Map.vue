@@ -16,7 +16,6 @@ import destination from '@turf/destination';
 import { point, polygon, featureCollection } from '@turf/helpers';
 import bbox from '@turf/bbox';
 import buffer from '@turf/buffer';
-console.log('buffer:', buffer);
 
 // STORES
 import { useMapStore } from '@/stores/MapStore.js';
@@ -104,6 +103,9 @@ onMounted(async () => {
         $config.dorDrawnMapStyle.sources.cyclomediaRecordings.data.features = [];
       }
     }
+  });
+
+  map.on('zoomend', (e) => {
     if (MapStore.cyclomediaOn) {
       updateCyclomediaCameraViewcone(MapStore.cyclomediaCameraHFov, MapStore.cyclomediaCameraYaw);
     }
@@ -562,22 +564,10 @@ const toggleCyclomedia = async() => {
     map.getSource('cyclomediaRecordings').setData(recordingsGeojson);
     $config.dorDrawnMapStyle.sources.cyclomediaRecordings.data.features = [];
 
-    let cameraGeojson = {
-      type: 'Feature',
-      geometry: {
-        type: 'Point',
-        coordinates: [],
-      }
-    }
+    let cameraGeojson = point([0,0]);
     map.getSource('cyclomediaCamera').setData(cameraGeojson);
     $config.dorDrawnMapStyle.sources.cyclomediaCamera.data = cameraGeojson;
-    let viewConeGeojson = {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [],
-      }
-    }
+    let viewConeGeojson = polygon([[[0,0], [0,0], [0,0], [0,0]]]);
     map.getSource('cyclomediaViewcone').setData(viewConeGeojson);
     $config.dorDrawnMapStyle.sources.cyclomediaViewcone.data = viewConeGeojson;
     MapStore.setCyclomediaCameraLngLat(MapStore.cyclomediaCameraLngLat, null);

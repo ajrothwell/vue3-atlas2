@@ -17,10 +17,21 @@ watch(
   () => MapStore.currentAddressCoords,
   newLngLat => {
     console.log('CyclomediaPanel.vue watch cyclomediaLngLat, newLngLat:', newLngLat);
-      // const coords = proj4(projection2272, projection4326, newCyclomediaOrientation.xyz);
       setNewLocation(newLngLat);
   }
 )
+
+watch(
+  () => MapStore.cyclomediaOn,
+  newCyclomediaOn => {
+    console.log('CyclomediaPanel.vue watch cyclomediaOn, newCyclomediaOn:', newCyclomediaOn);
+    if (newCyclomediaOn) {
+      setNewLocation(MapStore.currentAddressCoords);
+    }
+  }
+)
+
+
 
 const setNewLocation = async (coords) => {
   console.log('CyclomediaPanel.vue setNewLocation, coords:', coords);
@@ -57,14 +68,16 @@ const setNewLocation = async (coords) => {
 
   viewer.on('VIEW_CHANGE', function(e) {
     console.log('on VIEW_CHANGE fired, type:', e.type, 'detail:', e.detail, 'viewer.props.orientation.xyz:', viewer.props.orientation.xyz, 'MapStore.cyclomediaCameraXyz:', MapStore.cyclomediaCameraXyz);
-    MapStore.cyclomediaCameraYaw = e.detail.yaw;
-    MapStore.cyclomediaCameraHFov = e.detail.hFov;
-    $emit('updateCameraYaw', e.detail.yaw);
-    $emit('updateCameraHFov', e.detail.hFov, e.detail.yaw);
-    if (viewer.props.orientation.xyz !== MapStore.cyclomediaCameraXyz) {
-      const lngLat = proj4(projection2272, projection4326, [ viewer.props.orientation.xyz[0], viewer.props.orientation.xyz[1] ]);
-      MapStore.setCyclomediaCameraLngLat(lngLat, viewer.props.orientation.xyz);
-      $emit('updateCameraLngLat', lngLat);
+    if (MapStore.cyclomediaOn) {
+      MapStore.cyclomediaCameraYaw = e.detail.yaw;
+      MapStore.cyclomediaCameraHFov = e.detail.hFov;
+      $emit('updateCameraYaw', e.detail.yaw);
+      $emit('updateCameraHFov', e.detail.hFov, e.detail.yaw);
+      if (viewer.props.orientation.xyz !== MapStore.cyclomediaCameraXyz) {
+        const lngLat = proj4(projection2272, projection4326, [ viewer.props.orientation.xyz[0], viewer.props.orientation.xyz[1] ]);
+        MapStore.setCyclomediaCameraLngLat(lngLat, viewer.props.orientation.xyz);
+        $emit('updateCameraLngLat', lngLat);
+      }
     }
     // } else if (viewer.getNavbarExpanded() !== this.navBarOpen) {
     //   // console.log('VIEW_CHANGE second if');
@@ -73,11 +86,17 @@ const setNewLocation = async (coords) => {
   });
 
   viewer.on('VIEW_LOAD_END', function(e) {
-    console.log('on VIEW_LOAD_END fired, type:', e.type, 'e:', e, 'viewer.props.orientation.xyz[0]:', viewer.props.orientation.xyz[0], 'MapStore.cyclomediaCameraXyz[0]:', MapStore.cyclomediaCameraXyz[0]);
+    console.log('on VIEW_LOAD_END fired, type:', e.type, 'e:', e, 'viewer.props.orientation:', viewer.props.orientation);
+    const orientation = viewer.getOrientation();
+    console.log('orientation:', orientation);
     if (viewer.props.orientation.xyz !== MapStore.cyclomediaCameraXyz) {
       const lngLat = proj4(projection2272, projection4326, [ viewer.props.orientation.xyz[0], viewer.props.orientation.xyz[1] ]);
       MapStore.setCyclomediaCameraLngLat(lngLat, viewer.props.orientation.xyz);
       $emit('updateCameraLngLat', lngLat);
+      const orientation = viewer.getOrientation();
+      console.log('orientation:', orientation);
+      $emit('updateCameraYaw', orientation.yaw);
+      $emit('updateCameraHFov', orientation.hFov, orientation.yaw);
     }
  
     
