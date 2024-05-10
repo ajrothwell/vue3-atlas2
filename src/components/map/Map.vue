@@ -3,7 +3,7 @@
 import $config from '@/config';
 console.log('Map.vue $config:', $config);
 
-import { ref, onMounted, watch, computed } from 'vue';
+import { ref, onMounted, watch, watchEffect, computed } from 'vue';
 
 // PACKAGE IMPORTS
 import maplibregl from 'maplibre-gl';
@@ -13,8 +13,11 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import '@/assets/mapbox-gl-draw.min.js'
 import '@/assets/maplibre-gl-draw.css';
 import destination from '@turf/destination';
-
-// console.log('MapboxDraw():', MapboxDraw());
+// import { point, polygon, multiPolygon, convertArea, featureCollection } from '@turf/helpers';
+import { point, polygon, featureCollection } from '@turf/helpers';
+import bbox from '@turf/bbox';
+import buffer from '@turf/buffer';
+console.log('buffer:', buffer);
 
 // STORES
 import { useMapStore } from '@/stores/MapStore.js';
@@ -27,6 +30,8 @@ import { useParcelsStore } from '@/stores/ParcelsStore.js'
 const ParcelsStore = useParcelsStore();
 import { useLiStore } from '@/stores/LiStore.js'
 const LiStore = useLiStore();
+import { useVotingStore } from '@/stores/VotingStore.js'
+const VotingStore = useVotingStore();
 
 // ROUTER
 import { useRouter, useRoute } from 'vue-router';
@@ -50,6 +55,9 @@ let map;
 // keep image sources as computed props so that the publicPath can used, for pushing the app to different environments
 const markerSrc = computed(() => {
   return MainStore.publicPath + 'images/marker_blue.png';
+})
+const buildingColumnsSrc = computed(() => {
+  return MainStore.publicPath + 'images/building-columns-solid.png';
 })
 const cameraSrc = computed(() => {
   return MainStore.publicPath + 'images/camera.png';
@@ -75,6 +83,8 @@ onMounted(async () => {
   // add the address marker and camera icon sources
   const markerImage = await map.loadImage(markerSrc.value)
   map.addImage('marker-blue', markerImage.data);
+  const buildingColumnsImage = await map.loadImage(buildingColumnsSrc.value)
+  map.addImage('building-columns-solid', buildingColumnsImage.data);
   const cameraImage = await map.loadImage(cameraSrc.value)
   map.addImage('camera-icon', cameraImage.data);
 
@@ -269,7 +279,8 @@ watch(
       const dorParcel = map.getSource('dorParcel');
       if (addressMarker && dorParcel) {
         // console.log('1 map.layers:', map.getStyle().layers, map.getStyle().sources);
-        addressMarker.setData({'type': 'Feature','geometry': {'type': 'Point','coordinates': pwdCoordinates.value }});
+        // addressMarker.setData({'type': 'Feature','geometry': {'type': 'Point','coordinates': pwdCoordinates.value }});
+        addressMarker.setData(point(pwdCoordinates.value));
         dorParcel.setData({'type': 'Feature','geometry': {'type': 'Polygon','coordinates': [ dorCoordinates.value ]}});
         // console.log('2 map.layers:', map.getStyle().layers, map.getStyle().sources);
       }
@@ -395,6 +406,33 @@ watch(
     )
   }
 )
+
+const votingDivision = computed(() => { 
+  if (VotingStore.divisions.features) {
+    return VotingStore.divisions.features[0].geometry.coordinates[0];
+  } else {
+    return [[0,0], [0,1], [1,1], [1,0], [0,0]];
+  }
+});
+const pollingPlaceCoordinates = computed(() => {
+  if (VotingStore.pollingPlaces.rows) {
+    return [ VotingStore.pollingPlaces.rows[0].lng, VotingStore.pollingPlaces.rows[0].lat] ;
+  } else {
+    return [];
+  }
+});
+watchEffect(() => {
+  if (VotingStore.divisions.features && VotingStore.pollingPlaces.rows) {
+    const newDivision = polygon([votingDivision.value]);
+    map.getSource('votingDivision').setData(newDivision);
+    const newPollingPlace = point(pollingPlaceCoordinates.value);
+    map.getSource('buildingColumnsMarker').setData(newPollingPlace);
+    const theFeatureCollection = featureCollection([newDivision, newPollingPlace]);
+    const bounds = bbox(buffer(theFeatureCollection, 400, {units: 'feet'}));
+    map.fitBounds(bounds);
+  }
+});
+
 
 // for Nearby topic, watch the id of the circle marker that is hovered on to change the color of the circle
 const hoveredStateId = computed(() => { return MainStore.hoveredStateId; })

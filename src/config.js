@@ -638,6 +638,160 @@ const zoningDrawnMapStyle = mergeDeep(imageryInfo,{
   ],
 });
 
+const votingDrawnMapStyle = mergeDeep(imageryInfo,{
+  version: 8,
+  name: 'votingDrawnMap',
+  sources: {
+    pwd: {
+      tiles: [
+        'https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityBasemap/MapServer/tile/{z}/{y}/{x}',
+      ],
+      type: 'raster',
+      tileSize: 256,
+    },
+    pwdLabels: {
+      tiles: [
+        'https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityBasemap_Labels/MapServer/tile/{z}/{y}/{x}',
+      ],
+      type: 'raster',
+      tileSize: 256,
+    },
+    votingDivision: {
+      type: 'geojson',
+      data: {
+        type: 'Feature',
+        geometry: {
+          type: 'Polygon',
+          coordinates: [[[]]],
+        }
+      }
+    },
+    buildingColumnsMarker: {
+      type: 'geojson',
+      data: {
+        type: 'Feature',
+        geometry: {
+          type: 'Point',
+          coordinates: [],
+        }
+      }
+    },
+    addressMarker: {
+      type: 'geojson',
+      data: {
+        type: 'Feature',
+        geometry: {
+          type: 'Point',
+          coordinates: [],
+        }
+      }
+    },
+    dorParcel: {
+      type: 'geojson',
+      data: {
+        type: 'Feature',
+        geometry: {
+          type: 'Polygon',
+          coordinates: [[[]]],
+        }
+      }
+    },
+  },
+  layers: [
+    {
+      id: 'pwd',
+      source: 'pwd',
+      type: 'raster',
+    },
+    {
+      id: 'pwdLabels',
+      source: 'pwdLabels',
+      type: 'raster',
+    },
+    {
+      id: 'votingDivision',
+      type: 'fill',
+      source: 'votingDivision',
+      layout: {},
+      paint: {
+        'fill-color': '#9e9ac8',
+        'fill-opacity': 0.4,
+        'fill-outline-color': '#9e9ac8',
+      }
+    },
+    {
+      id: 'votingDivisionLine',
+      type: 'line',
+      source: 'votingDivision',
+      layout: {},
+      paint: {
+        'line-color': '#9e9ac8',
+        'line-width': 2
+      }
+    },
+    {
+      id: 'buildingColumnsMarker',
+      source: 'buildingColumnsMarker',
+      type: 'symbol',
+      layout: {
+        'icon-image': 'building-columns-solid',
+        'icon-anchor' : 'bottom',
+        'icon-size': .05,
+        "icon-allow-overlap" : true,
+        "text-allow-overlap": true,
+      },
+    },
+    {
+      id: 'cyclomediaRecordings',
+      source: 'cyclomediaRecordings',
+      type: 'circle',
+      paint: {
+        'circle-radius': 6,
+        'circle-color': '#5b94c6',
+        'circle-stroke-width': 1,
+        'circle-stroke-color': '#a1a1a1',
+        'circle-opacity': 0.5,
+      }
+    },
+    {
+      id: 'cyclomediaCamera',
+      source: 'cyclomediaCamera',
+      type: 'symbol',
+      layout: {
+        'icon-image': 'camera-icon',
+        'icon-anchor' : 'center',
+        'icon-size': 0.09,
+        'icon-rotate': 0,
+        'icon-rotation-alignment': 'map',
+        "icon-allow-overlap" : true,
+        "text-allow-overlap": true,
+      },
+    },
+    {
+      'id': 'cyclomediaViewcone',
+      'type': 'fill',
+      'source': 'cyclomediaViewcone',
+      'layout': {},
+      'paint': {
+        'fill-color': 'rgb(0,102,255)',
+        'fill-opacity': 0.2,
+      },
+    },
+    {
+      id: 'addressMarker',
+      source: 'addressMarker',
+      type: 'symbol',
+      layout: {
+        'icon-image': 'marker-blue',
+        'icon-anchor' : 'bottom',
+        'icon-size': .05,
+        "icon-allow-overlap" : true,
+        "text-allow-overlap": true,
+      },
+    },
+  ],
+});
+
 const nearbyDrawnMapStyle = mergeDeep(imageryInfo,{
   version: 8,
   name: 'pwdDrawnMap',
@@ -782,7 +936,7 @@ const $config = {
     Deeds: 'dorDrawnMapStyle',
     'Licenses & Inspections': 'liDrawnMapStyle',
     Zoning: 'zoningDrawnMapStyle',
-    Voting: 'pwdDrawnMapStyle',
+    Voting: 'votingDrawnMapStyle',
     'Nearby Activity': 'nearbyDrawnMapStyle',
   },
   parcelLayerForTopic: {
@@ -995,6 +1149,7 @@ $config['pwdDrawnMapStyle'] = pwdDrawnMapStyle;
 $config['dorDrawnMapStyle'] = dorDrawnMapStyle;
 $config['liDrawnMapStyle'] = liDrawnMapStyle;
 $config['zoningDrawnMapStyle'] = zoningDrawnMapStyle;
+$config['votingDrawnMapStyle'] = votingDrawnMapStyle;
 $config['nearbyDrawnMapStyle'] = nearbyDrawnMapStyle;
 $config['ZONING_CODE_MAP'] = ZONING_CODE_MAP;
 
