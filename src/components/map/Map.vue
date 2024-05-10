@@ -279,7 +279,6 @@ watch(
       const dorParcel = map.getSource('dorParcel');
       if (addressMarker && dorParcel) {
         // console.log('1 map.layers:', map.getStyle().layers, map.getStyle().sources);
-        // addressMarker.setData({'type': 'Feature','geometry': {'type': 'Point','coordinates': pwdCoordinates.value }});
         addressMarker.setData(point(pwdCoordinates.value));
         dorParcel.setData({'type': 'Feature','geometry': {'type': 'Polygon','coordinates': [ dorCoordinates.value ]}});
         // console.log('2 map.layers:', map.getStyle().layers, map.getStyle().sources);
@@ -425,8 +424,11 @@ watchEffect(() => {
   if (VotingStore.divisions.features && VotingStore.pollingPlaces.rows) {
     const newDivision = polygon([votingDivision.value]);
     map.getSource('votingDivision').setData(newDivision);
+    $config.votingDrawnMapStyle.sources.votingDivision.data = newDivision;
     const newPollingPlace = point(pollingPlaceCoordinates.value);
     map.getSource('buildingColumnsMarker').setData(newPollingPlace);
+    $config.votingDrawnMapStyle.sources.buildingColumnsMarker.data = newPollingPlace;
+    console.log('$config.votingDrawnMapStyle:', $config.votingDrawnMapStyle);
     const theFeatureCollection = featureCollection([newDivision, newPollingPlace]);
     const bounds = bbox(buffer(theFeatureCollection, 400, {units: 'feet'}));
     map.fitBounds(bounds);
