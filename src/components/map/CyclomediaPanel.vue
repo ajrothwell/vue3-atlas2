@@ -31,7 +31,7 @@ watch(
   }
 )
 
-
+const navBarExpanded = ref(false);
 
 const setNewLocation = async (coords) => {
   console.log('CyclomediaPanel.vue setNewLocation, coords:', coords);
@@ -46,10 +46,7 @@ const setNewLocation = async (coords) => {
     },
   })
   let viewer = response[0];
-  console.log('viewer:', viewer);
-  const expanded = viewer.getNavbarExpanded();
-  // console.log('expanded:', expanded);
-  // viewer.toggleNavbarExpanded(widget.navBarOpen);
+  viewer.toggleNavbarExpanded(navBarExpanded.value);
   viewer.toggleButtonEnabled('panorama.elevation', false);
   viewer.toggleButtonEnabled('panorama.reportBlurring', false);
 
@@ -79,10 +76,6 @@ const setNewLocation = async (coords) => {
         $emit('updateCameraLngLat', lngLat);
       }
     }
-    // } else if (viewer.getNavbarExpanded() !== this.navBarOpen) {
-    //   // console.log('VIEW_CHANGE second if');
-    //   // widget.$store.commit('setCyclomediaNavBarOpen', viewer.getNavbarExpanded());
-    // }
   });
 
   viewer.on('VIEW_LOAD_END', function(e) {
@@ -98,12 +91,6 @@ const setNewLocation = async (coords) => {
       $emit('updateCameraYaw', orientation.yaw);
       $emit('updateCameraHFov', orientation.hFov, orientation.yaw);
     }
- 
-    
-  //   // } else if (viewer.getNavbarExpanded() !== this.navBarOpen) {
-  //     // console.log('VIEW_LOAD_END second if');
-  //     // widget.$store.commit('setCyclomediaNavBarOpen', viewer.getNavbarExpanded());
-  //   // }
   });
 }
 
@@ -118,7 +105,6 @@ watch(
 )
 
 onMounted( async() => {
-
   if (!cyclomediaInitialized.value) {
     await StreetSmartApi.init({
       targetElement: cycloviewer,
@@ -134,16 +120,11 @@ onMounted( async() => {
     })
     cyclomediaInitialized.value = true;
   }
-
   if (AddressStore.addressData.features) {
-    console.log('AddressStore.addressData:', AddressStore.addressData)
-    const coords = AddressStore.addressData.features[0].geometry.coordinates;
-    setNewLocation(coords);
+    setNewLocation(AddressStore.addressData.features[0].geometry.coordinates);
   } else {
-    console.log('no address data, setting default coords');
     setNewLocation([ -75.163471, 39.953338 ]);
   }
-
 })
 
 </script>

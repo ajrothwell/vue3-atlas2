@@ -24,12 +24,6 @@ export const useMapStore = defineStore("MapStore", {
       cyclomediaCameraHFov: null,
       cyclomediaCameraXyz: null,
       cyclomediaCameraLngLat: null,
-      // cyclomediaOrientation: {
-      //   yaw: null,
-      //   hFov: null,
-      //   xyz: null,
-      //   lngLat: null,
-      // },
       clickedCyclomediaRecordingCoords: null,
       pictometryOn: false,
       selectedRegmap: null,
@@ -39,19 +33,11 @@ export const useMapStore = defineStore("MapStore", {
   },
   actions: {
     setCyclomediaCameraYaw(yaw) {
-      // this.cyclomediaOrientation.yaw = yaw;
       this.cyclomediaCameraYaw = yaw;
     },
     setCyclomediaCameraLngLat(lngLat, xyz) {
-      console.log('setcyclomediaCameraLngLat is running, xyz:', xyz);
-      // this.cyclomediaCameraYaw = yaw;
-      // this.cyclomediaCameraHFov = hFov;
       this.cyclomediaCameraXyz = xyz;
       this.cyclomediaCameraLngLat = lngLat;
-      // this.cyclomediaOrientation.yaw = yaw;
-      // this.cyclomediaOrientation.hFov = hFov;
-      // this.cyclomediaOrientation.lngLat = lngLat;
-      // this.cyclomediaOrientation.xyz = xyz;
     },
     setMap(map) {
       this.map = map;
