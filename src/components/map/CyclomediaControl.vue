@@ -1,6 +1,8 @@
 <script setup>
 import { useMainStore } from '@/stores/MainStore.js'
 const MainStore = useMainStore();
+import { useMapStore } from '@/stores/MapStore.js'
+const MapStore = useMapStore();
 
 import { computed } from 'vue';
 
@@ -13,7 +15,7 @@ const imgSrc = computed(() => {
 </script>
 
 <template>
-  <div class="cyclomedia-toggle">
+  <div class="cyclomedia-toggle" :class="MapStore.cyclomediaOn ? 'active' : 'inactive'">
     <button type="button" @click="$emit('toggleCyclomedia')">
       <img class='img-src' :src="imgSrc" />
     </button>
@@ -21,6 +23,10 @@ const imgSrc = computed(() => {
 </template>
 
 <style scoped>
+
+.active {
+  background-color: rgb(243, 198, 19) !important;
+}
 
 .cyclomedia-toggle {
   height: 36px;
