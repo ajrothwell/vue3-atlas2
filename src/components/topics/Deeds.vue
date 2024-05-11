@@ -73,6 +73,14 @@ const getHref = (DOCUMENT_ID) => {
   return `http://epay.phila-records.com/phillyepay/web/integration/document/InstrumentID=${DOCUMENT_ID}&Guest=true`;
 }
 
+const deededCondosExist = computed(() => {
+  let flag = false;
+  if (DorStore.dorCondos[selectedParcelId.value] && DorStore.dorCondos[selectedParcelId.value].rows && DorStore.dorCondos[selectedParcelId.value].rows.length > 0) {
+    flag = true;
+  }
+  return flag;
+});
+
 </script>
 
 <template>
@@ -135,7 +143,7 @@ const getHref = (DOCUMENT_ID) => {
   </div>
 
   <!-- Deeded Condominiums -->
-  <div class="mt-6">
+  <div v-if="deededCondosExist" class="mt-6">
     <h5 class="subtitle is-5">Deeded Condominiums</h5>
     <table class="table is-fullwidth is-striped">
       <thead>

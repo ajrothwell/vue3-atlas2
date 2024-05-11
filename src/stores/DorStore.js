@@ -92,6 +92,7 @@ export const useDorStore = defineStore("DorStore", {
 
   actions: {
     async fillDorCondos() {
+      this.dorCondos = {};
       console.log('fillRegmaps is running');
       const ParcelsStore = useParcelsStore();
       const parcels = ParcelsStore.dor.features;
