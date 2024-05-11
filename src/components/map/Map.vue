@@ -176,6 +176,7 @@ onMounted(async () => {
     let drawLayers = map.queryRenderedFeatures(e.point).filter(feature => [ 'mapbox-gl-draw-cold', 'mapbox-gl-draw-hot' ].includes(feature.source));
     // console.log('Map.vue handleMapClick, e:', e, 'drawLayers:', drawLayers, 'drawMode:', drawMode, 'e:', e, 'map.getStyle():', map.getStyle(), 'MapStore.drawStart:', MapStore.drawStart);
     if (!drawLayers.length && draw.getMode() !== 'draw_polygon') {
+      MainStore.lastClickCoords = [e.lngLat.lng, e.lngLat.lat];
       router.push({ name: 'search', query: { lng: e.lngLat.lng, lat: e.lngLat.lat }})
     }
     if (draw.getMode() === 'draw_polygon') {
@@ -251,7 +252,12 @@ watch(
   () => dorCoordinates.value,
   newCoords => {
   console.log('Map dorCoordinates watch, newCoords:', newCoords);
-  const newParcel = polygon([ newCoords ]);
+  let newParcel;
+  if (newCoords.length > 1) {
+    newParcel = polygon([ newCoords ]);
+  } else {
+    newParcel = polygon(newCoords);
+  }
   map.getSource('dorParcel').setData(newParcel);
 });
 
@@ -267,7 +273,11 @@ watch(
       if (addressMarker && dorParcel) {
         // console.log('1 map.layers:', map.getStyle().layers, map.getStyle().sources);
         addressMarker.setData(point(pwdCoordinates.value));
-        dorParcel.setData(polygon([ dorCoordinates.value ]));
+        if (dorCoordinates.value.length > 1) {
+          dorParcel.setData(polygon([ dorCoordinates.value ]));
+        } else {
+          dorParcel.setData(polygon(dorCoordinates.value));
+        }
         // console.log('2 map.layers:', map.getStyle().layers, map.getStyle().sources);
       }
       MapStore.selectedRegmap = null;
@@ -281,7 +291,11 @@ watch(
       if (addressMarker && dorParcel) {
         // console.log('1 map.layers:', map.getStyle().layers, map.getStyle().sources);
         addressMarker.setData(point(pwdCoordinates.value));
-        dorParcel.setData(polygon([ dorCoordinates.value ]));
+        if (dorCoordinates.value.length > 1) {
+          dorParcel.setData(polygon([ dorCoordinates.value ]));
+        } else {
+          dorParcel.setData(polygon(dorCoordinates.value));
+        }
         // console.log('2 map.layers:', map.getStyle().layers, map.getStyle().sources);
       }
     }

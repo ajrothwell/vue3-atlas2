@@ -54,8 +54,10 @@ const getParcelAndPutInStore = async(lng, lat) => {
 }
 
 const dataFetch = async(to, from) => {
+  console.log('dataFetch is starting');
   const MainStore = useMainStore();
   const AddressStore = useAddressStore();
+  const ParcelsStore = useParcelsStore();
   const dataSourcesLoadedArray = MainStore.dataSourcesLoadedArray;
   if (to.name === 'not-found') {
     return;
@@ -66,13 +68,22 @@ const dataFetch = async(to, from) => {
   if (to.params.topic) { topic = to.params.topic }
 
   if (address !== AddressStore.addressData.normalized) {
-    await getAddressAndPutInStore(address);
+    console.log('address:', address, 'typeof address:', typeof address);
+    // if (!address.length || address == '' || address == null) {
+      if (ParcelsStore.dor.features) {
+        console.log('ParcelsStore.dor.features[0].properties.BASEREG:', ParcelsStore.dor.features[0].properties.BASEREG);
+        await ParcelsStore.fillParcelDataByLngLat(MainStore.lastClickCoords.lng, MainStore.lastClickCoords.lat, 'pwd')
+        await getAddressAndPutInStore(ParcelsStore.pwd.features[0].properties.PARCELID);
+      } else {
+      await getAddressAndPutInStore(address);
+    }
   } else if (dataSourcesLoadedArray.includes(topic)) {
     return;
   }
 
+  console.log('dataFetch is still going after address');
   // GET PARCELS AND DATA FOR TOPIC
-  const ParcelsStore = useParcelsStore();
+  // const ParcelsStore = useParcelsStore();
   // if (!ParcelsStore.pwd.features) {
   await ParcelsStore.fillPwdParcelData();
   // }
