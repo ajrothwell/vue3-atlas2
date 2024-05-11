@@ -1,11 +1,10 @@
 <script setup>
 
-import { parseISO, format } from 'date-fns';
 import { computed, onBeforeMount } from 'vue';
 // import { storeToRefs } from 'pinia';
 
 import useTransforms from '@/composables/useTransforms';
-const { integer, prettyNumber } = useTransforms();
+const { date, integer, prettyNumber } = useTransforms();
 
 // import the AddressStore and DorParcels
 import { useAddressStore } from '@/stores/AddressStore';
@@ -111,11 +110,11 @@ const getHref = (DOCUMENT_ID) => {
     </div>
     <div class="columns">
       <div class="column is-4">Origination Date</div>
-      <div class="column is-8">{{ format(selectedParcel.properties.ORIG_DATE, 'MM/dd/yyyy') }}</div>
+      <div class="column is-8">{{ date(selectedParcel.properties.ORIG_DATE) }}</div>
     </div>
     <div class="columns">
       <div class="column is-4">Inactive Date</div>
-      <div class="column is-8">{{ format(selectedParcel.properties.INACTDATE, 'MM/dd/yyyy') || 'None' }}</div>
+      <div class="column is-8">{{ date(selectedParcel.properties.INACTDATE) || 'None' }}</div>
     </div>
     <div class="columns">
       <div class="column is-4">Has Air Rights</div>

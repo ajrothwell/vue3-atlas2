@@ -12,6 +12,7 @@ export default function useTransforms() {
   const currency = (value) => accounting.formatMoney(value);
 
   const date = (value) => {
+    if (!value) return;
     let valueTransformed;
     // console.log('date transform running, value:', value, 'typeof value:', typeof value);
     if (typeof value === 'string') {
