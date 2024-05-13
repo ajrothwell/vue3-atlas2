@@ -6,11 +6,13 @@ export const useCondosStore = defineStore('CondosStore', {
   state: () => {
     return {
       condosData: {},
+      dataPageFilled: null,
+      lastPageUsed: 1,
     };
   },
   actions: {
-    async fillCondoData(address) {
-      // console.log('fillCondoData is runnning, address', address);
+    async fillCondoData(address, page = 1) {
+      console.log('fillCondoData is runnning, address', address);
       try {
         const AddressStore = useAddressStore();
         const AddressLoaded = AddressStore.addressData.features
@@ -19,12 +21,13 @@ export const useCondosStore = defineStore('CondosStore', {
         let params = {
           include_units: true,
           opa_only: true,
-          page: 1,
+          page: page,
         };
         const response = await axios(`//api.phila.gov/ais/v1/search/${address}`, { params });
         // console.log('condos response:', response);
         if (response.status === 200) {
           console.log('Condos - await resolved and HTTP status is successful')
+          this.dataPageFilled = page;
           if (response.data.features.length > 0) {
             let newData = {
               page_count: response.data.page_count,
