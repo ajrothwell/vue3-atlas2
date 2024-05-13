@@ -26,7 +26,11 @@ export const useCondosStore = defineStore('CondosStore', {
         if (response.status === 200) {
           console.log('Condos - await resolved and HTTP status is successful')
           if (response.data.features.length > 0) {
-            let dataFeatures = [];
+            let newData = {
+              page_count: response.data.page_count,
+              total_size: response.data.total_size,
+              features: [],
+            }
             // console.log('in condo-list, data:', data, 'state:', state);
             for (let feature of response.data.features) {
               // console.log('low frac:', feature.properties.address_low_frac);
@@ -34,10 +38,11 @@ export const useCondosStore = defineStore('CondosStore', {
                 // return;
                 response.data.total_size = response.data.total_size - 1;
               } else {
-                dataFeatures.push(feature);
+                newData.features.push(feature);
               }
             }
-            this.condosData = dataFeatures;
+            this.condosData = newData;
+            // this.condosData = dataFeatures;
           }
         } else {
           console.log('Condos - await resolved but no data features')

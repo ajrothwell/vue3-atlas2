@@ -90,7 +90,7 @@ const dataFetch = async(to, from) => {
   } 
   const CondosStore = useCondosStore();
   await CondosStore.fillCondoData(address);  
-  if (to.params.topic == "Condominiums" && !CondosStore.condosData.length) {
+  if (to.params.topic == "Condominiums" && !CondosStore.condosData.features.length) {
     MainStore.currentTopic = "Property";
     router.push({ name: 'address-and-topic', params: { address: to.params.address, topic: 'Property' } });
     return

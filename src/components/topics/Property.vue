@@ -47,8 +47,8 @@ const CondosStore = useCondosStore();
       </div>
     </div>
 
-    <div v-if="!OpaStore.opaData.rows.length && CondosStore.condosData.length">
-      <h5 class="title is-5">There are {{ CondosStore.condosData.length }} condominium units at this address.</h5>
+    <div v-if="!OpaStore.opaData.rows.length && CondosStore.condosData.features.length">
+      <h5 class="title is-5">There are {{ CondosStore.condosData.total_size }} condominium units at this address.</h5>
       <p>You can use the Condominiums tab below to see information for an individual unit.</p>
     </div>
     <div v-else-if="!OpaStore.opaData.rows.length">

@@ -72,7 +72,7 @@ const dataSourcesLoadedArray = computed(() => MainStore.dataSourcesLoadedArray);
           <Property v-if="dataSourcesLoadedArray.includes('Property')"></Property>
         </topic>
 
-        <topic v-show="CondosStore.condosData.length > 0":topic-name="'Condominiums'" :topic-icon="'fa-solid fa-building'" :loading="!dataSourcesLoadedArray.includes('Condominiums')">
+        <topic v-show="CondosStore.condosData.features.length > 0":topic-name="'Condominiums'" :topic-icon="'fa-solid fa-building'" :loading="!dataSourcesLoadedArray.includes('Condominiums')">
           <Condos v-if="dataSourcesLoadedArray.includes('Condominiums')"></Condos>
         </topic>
 
