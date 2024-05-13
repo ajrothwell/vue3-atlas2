@@ -13,7 +13,7 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import '@/assets/mapbox-gl-draw.min.js'
 import '@/assets/maplibre-gl-draw.css';
 import destination from '@turf/destination';
-import { point, polygon, featureCollection } from '@turf/helpers';
+import { point, polygon, multiPolygon, featureCollection } from '@turf/helpers';
 import bbox from '@turf/bbox';
 import buffer from '@turf/buffer';
 
@@ -176,6 +176,7 @@ onMounted(async () => {
     let drawLayers = map.queryRenderedFeatures(e.point).filter(feature => [ 'mapbox-gl-draw-cold', 'mapbox-gl-draw-hot' ].includes(feature.source));
     // console.log('Map.vue handleMapClick, e:', e, 'drawLayers:', drawLayers, 'drawMode:', drawMode, 'e:', e, 'map.getStyle():', map.getStyle(), 'MapStore.drawStart:', MapStore.drawStart);
     if (!drawLayers.length && draw.getMode() !== 'draw_polygon') {
+      MainStore.lastClickCoords = [e.lngLat.lng, e.lngLat.lat];
       router.push({ name: 'search', query: { lng: e.lngLat.lng, lat: e.lngLat.lat }})
     }
     if (draw.getMode() === 'draw_polygon') {
@@ -238,10 +239,16 @@ watch(
 const selectedParcelId = computed(() => { return MainStore.selectedParcelId; });
 const dorCoordinates = computed(() => {
   console.log('computed dorCoordinates, selectedParcelId.value:', selectedParcelId.value, 'ParcelsStore.dor', ParcelsStore.dor);
-  if (selectedParcelId.value && ParcelsStore.dor.features.filter(parcel => parcel.id === selectedParcelId.value)[0]) {
+  if (selectedParcelId.value && ParcelsStore.dor.features && ParcelsStore.dor.features.filter(parcel => parcel.id === selectedParcelId.value)[0]) {
+    const parcel = ParcelsStore.dor.features.filter(parcel => parcel.id === selectedParcelId.value)[0];
   // if (selectedParcelId.value) {
     console.log('computed, not watch, selectedParcelId.value:', selectedParcelId.value, 'ParcelsStore.dor.features.filter(parcel => parcel.id === selectedParcelId.value)[0]:', ParcelsStore.dor.features.filter(parcel => parcel.id === selectedParcelId.value)[0]);
-    return ParcelsStore.dor.features.filter(parcel => parcel.id === selectedParcelId.value)[0].geometry.coordinates[0];
+    if (parcel.geometry.type === 'Polygon') {
+      return parcel.geometry.coordinates[0];
+    } else if (parcel.geometry.type === 'MultiPolygon') {
+      return parcel.geometry.coordinates;
+    }
+    // return ParcelsStore.dor.features.filter(parcel => parcel.id === selectedParcelId.value)[0].geometry.coordinates[0];
   } else {
     return [[0,0], [0,1], [1,1], [1,0], [0,0]];
   }
@@ -251,8 +258,14 @@ watch(
   () => dorCoordinates.value,
   newCoords => {
   console.log('Map dorCoordinates watch, newCoords:', newCoords);
-  const newParcel = polygon([ newCoords ]);
-  map.getSource('dorParcel').setData(newParcel);
+  let newParcel;
+  if (newCoords.length > 3) {
+    newParcel = polygon([ newCoords ]);
+    map.getSource('dorParcel').setData(newParcel);
+  } else {
+    newParcel = multiPolygon(newCoords);
+    map.getSource('dorParcel').setData(newParcel);
+  }
 });
 
 // watch topic for changing map style
@@ -264,11 +277,21 @@ watch(
       map.setStyle($config[$config.topicStyles[newTopic]]);
       const addressMarker = map.getSource('addressMarker');
       const dorParcel = map.getSource('dorParcel');
-      if (addressMarker && dorParcel) {
+      if (addressMarker && dorParcel && pwdCoordinates.value.length) {
+        console.log('pwdCoordinates.value:', pwdCoordinates.value);
         // console.log('1 map.layers:', map.getStyle().layers, map.getStyle().sources);
         addressMarker.setData(point(pwdCoordinates.value));
-        dorParcel.setData(polygon([ dorCoordinates.value ]));
-        // console.log('2 map.layers:', map.getStyle().layers, map.getStyle().sources);
+        if ($config.parcelLayerForTopic[newTopic] == 'dor') {
+          let newParcel;
+          if (dorCoordinates.value.length > 3) {
+            newParcel = polygon([ dorCoordinates.value ]);
+            map.getSource('dorParcel').setData(newParcel);
+          } else {
+            newParcel = multiPolygon(dorCoordinates.value);
+            map.getSource('dorParcel').setData(newParcel);
+          }
+        }
+        console.log('2 map.layers:', map.getStyle().layers, map.getStyle().sources);
       }
       MapStore.selectedRegmap = null;
       if (MapStore.cyclomediaOn) {
@@ -281,8 +304,18 @@ watch(
       if (addressMarker && dorParcel) {
         // console.log('1 map.layers:', map.getStyle().layers, map.getStyle().sources);
         addressMarker.setData(point(pwdCoordinates.value));
-        dorParcel.setData(polygon([ dorCoordinates.value ]));
-        // console.log('2 map.layers:', map.getStyle().layers, map.getStyle().sources);
+        console.log('dorCoordinates.value:', dorCoordinates.value);
+        let newParcel;
+        if ($config.parcelLayerForTopic[newTopic] == 'dor') {
+          if (dorCoordinates.value.length > 3) {
+            newParcel = polygon([ dorCoordinates.value ]);
+            map.getSource('dorParcel').setData(newParcel);
+          } else {
+            newParcel = multiPolygon(dorCoordinates.value);
+            map.getSource('dorParcel').setData(newParcel);
+          }
+        }
+        console.log('2 map.layers:', map.getStyle().layers, map.getStyle().sources);
       }
     }
   }

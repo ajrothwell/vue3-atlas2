@@ -6,6 +6,7 @@ export const useMainStore = defineStore("MainStore", {
       publicPath: null,
       isMobileDevice: null,
       lastSearchMethod: 'address',
+      lastClickCoords: [0,0],
       currentAddress: '',
       currentTopic: 'Property',
       // currentNearbyDataType: null,

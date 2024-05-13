@@ -81,6 +81,15 @@ const deededCondosExist = computed(() => {
   return flag;
 });
 
+const getAddress = (address) => {
+  console.log('address:', address, address.length);
+  if (address && address.length > 2) {
+    return address;
+  } else {
+    return 'Parcel has no address';
+  }
+}
+
 </script>
 
 <template>
@@ -110,11 +119,11 @@ const deededCondosExist = computed(() => {
     </div>
     <div class="columns">
       <div class="column is-4">Parcel Address</div>
-      <div class="column is-8">{{ selectedParcel.properties.ADDR_SOURCE }}</div>
+      <div class="column is-8">{{ getAddress(selectedParcel.properties.ADDR_SOURCE) }}</div>
     </div>
     <div class="columns">
       <div class="column is-4">Status</div>
-      <div class="column is-8">{{ statusKey[selectedParcel.properties.STATUS] }}</div>
+      <div class="column is-8">{{ statusKey[selectedParcel.properties.STATUS] || 'none' }}</div>
     </div>
     <div class="columns">
       <div class="column is-4">Origination Date</div>
