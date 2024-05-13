@@ -219,6 +219,9 @@ router.afterEach(async (to, from) => {
   console.log('router afterEach to:', to, 'from:', from);
   if (to.name !== 'not-found' && to.name !== 'search') {
     await dataFetch(to, from);
+  } else if (to.name == 'not-found') {
+    const MainStore = useMainStore();
+    MainStore.currentTopic = "Property"
   }
 });
 

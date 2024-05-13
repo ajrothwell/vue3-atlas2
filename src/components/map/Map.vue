@@ -255,10 +255,10 @@ watch(
   let newParcel;
   if (newCoords.length > 1) {
     newParcel = polygon([ newCoords ]);
-  } else {
-    newParcel = polygon(newCoords);
-  }
-  map.getSource('dorParcel').setData(newParcel);
+    map.getSource('dorParcel').setData(newParcel);
+  } //else {
+  //   newParcel = polygon(newCoords);
+  // }
 });
 
 // watch topic for changing map style
@@ -275,9 +275,9 @@ watch(
         addressMarker.setData(point(pwdCoordinates.value));
         if (dorCoordinates.value.length > 1) {
           dorParcel.setData(polygon([ dorCoordinates.value ]));
-        } else {
-          dorParcel.setData(polygon(dorCoordinates.value));
-        }
+        } //else {
+        //   dorParcel.setData(polygon(dorCoordinates.value));
+        // }
         // console.log('2 map.layers:', map.getStyle().layers, map.getStyle().sources);
       }
       MapStore.selectedRegmap = null;
@@ -293,9 +293,9 @@ watch(
         addressMarker.setData(point(pwdCoordinates.value));
         if (dorCoordinates.value.length > 1) {
           dorParcel.setData(polygon([ dorCoordinates.value ]));
-        } else {
-          dorParcel.setData(polygon(dorCoordinates.value));
-        }
+        } //else {
+        //   dorParcel.setData(polygon(dorCoordinates.value));
+        // }
         // console.log('2 map.layers:', map.getStyle().layers, map.getStyle().sources);
       }
     }
