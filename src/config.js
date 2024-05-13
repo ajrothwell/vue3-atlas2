@@ -348,15 +348,25 @@ const liDrawnMapStyle = mergeDeep(imageryInfo,{
       source: 'liBuildingFootprints',
       layout: {},
       paint: {
-        // 'fill-color': '#C2B7FF',
-        'fill-color': [
-        'match',
-        ['get', 'type'],
-        'nearby311',
-        '#FF0000',
-        /* other */ '#C2B7FF'
-        ],
-        'fill-opacity': 0.5
+        'fill-color': '#C2B7FF',
+        'fill-opacity': 0.5,
+      },
+        // 'fill-color': [
+        // 'match',
+        // ['get', 'type'],
+        // 'nearby311',
+        // '#FF0000',
+        ///* other */ '#C2B7FF'
+        // ],
+    },
+    {
+      id: 'liBuildingFootprintsLine',
+      type: 'line',
+      source: 'liBuildingFootprints',
+      layout: {},
+      paint: {
+        'line-color': '#C2B7FF',
+        'line-width': 2,
       }
     },
     {
@@ -794,7 +804,7 @@ const votingDrawnMapStyle = mergeDeep(imageryInfo,{
 
 const nearbyDrawnMapStyle = mergeDeep(imageryInfo,{
   version: 8,
-  name: 'pwdDrawnMap',
+  name: 'nearbyDrawnMap',
   // "sprite": 'https://docs.mapbox.com/mapbox-gl-js/assets/custom_marker.png',
   // "glyphs": 'mapbox://fonts/mapbox/{fontstack}/{range}.pbf',
   sources: {
