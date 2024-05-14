@@ -75,8 +75,6 @@ onMounted(async () => {
 
 .columns {
   display: flex;
-  /* flex-wrap: wrap;
-  justify-content: space-between; */
 }
 
 @media screen and (max-width: 760px){
