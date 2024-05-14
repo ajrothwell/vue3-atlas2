@@ -22,6 +22,7 @@ export const useZoningStore = defineStore('ZoningStore', {
     async fillZoningBase() {
       const ParcelsStore = useParcelsStore();
       const features = ParcelsStore.dor.features;
+      if (!features) return;
       for (let feature of features) {
         let baseUrl = 'https://phl.carto.com/api/v2/sql?q=';
         const mapreg = feature.properties.MAPREG;
@@ -70,6 +71,7 @@ export const useZoningStore = defineStore('ZoningStore', {
     async fillZoningOverlays() {
       const ParcelsStore = useParcelsStore();
       const features = ParcelsStore.dor.features;
+      if (!features) return;
       for (let feature of features) {
         let baseUrl = 'https://phl.carto.com/api/v2/sql?q=';
         const mapreg = feature.properties.MAPREG;
@@ -113,6 +115,7 @@ export const useZoningStore = defineStore('ZoningStore', {
       // let selectedParcelId = MainStore.selectedParcelId;
       // const selectedParcel = ParcelsStore.dor.features.filter(feature => feature.id === selectedParcelId)[0];
       const features = ParcelsStore.dor.features;
+      if (!features) return;
       for (let feature of features) {
         let featureId = feature.properties.OBJECTID,
           target = this.zoningBase[featureId] || {},

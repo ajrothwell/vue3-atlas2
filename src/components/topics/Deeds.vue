@@ -21,7 +21,9 @@ import CollectionSummary from '@/components/CollectionSummary.vue';
 
 let selectedParcelId = computed(() => { return MainStore.selectedParcelId });
 const selectedParcel = computed(() => {
-  return ParcelsStore.dor.features.filter(feature => feature.id === selectedParcelId.value)[0];
+  if (ParcelsStore.dor.features && ParcelsStore.dor.features.length > 0) {
+    return ParcelsStore.dor.features.filter(feature => feature.id === selectedParcelId.value)[0];
+  }
 });
 const selectedDocs = computed(() => {
   if (selectedParcelId.value && DorStore.dorDocuments[selectedParcelId.value]) {
@@ -41,12 +43,15 @@ const selectedCondos = computed(() => {
 });
 
 const regmaps = computed(() => {
+  if (!DorStore.regmaps.data) {
+    return [];
+  }
   return DorStore.regmaps.data.features;
 });
 
 onBeforeMount(() => {
   console.log('Deeds.vue onBeforeMount');
-  if (ParcelsStore.dor.features.length > 0) {
+  if (ParcelsStore.dor.features && ParcelsStore.dor.features.length > 0) {
     MainStore.selectedParcelId = ParcelsStore.dor.features[0].properties.OBJECTID;
   }
 });

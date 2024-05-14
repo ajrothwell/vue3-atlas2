@@ -16,6 +16,7 @@ import { useMapStore } from '@/stores/MapStore.js'
 import { useMainStore } from '@/stores/MainStore.js'
 
 import useRouting from '@/composables/useRouting';
+import Condos from '@/components/topics/Condos.vue';
 const { routeApp } = useRouting();
 // import useParcels from '@/composables/useParcels';
 // const { processParcels } = useParcels();
@@ -24,6 +25,8 @@ const getAddressAndPutInStore = async(address) => {
   console.log('getAddressAndPutInStore is running, address:', address);
   const MainStore = useMainStore();
   MainStore.clearDataSourcesLoadedArray();
+  const CondosStore = useCondosStore();
+  CondosStore.lastPageUsed = 1;
   const AddressStore = useAddressStore();
   await AddressStore.fillAddressData(address);
   if (!AddressStore.addressData.features) {
@@ -49,13 +52,14 @@ const getParcelsAndPutInStore = async(lng, lat) => {
     return;
   }
   const addressField = parcelLayer === 'pwd' ? 'ADDRESS' : 'ADDR_SOURCE';
+  console.log('ParcelsStore[parcelLayer].features:', ParcelsStore[parcelLayer].features);
   currentAddress = ParcelsStore[parcelLayer].features[0].properties[addressField];
   console.log('getParcelAndPutInStore, currentAddress:', currentAddress, 'parcelLayer:', parcelLayer, 'addressField', addressField, 'ParcelsStore[parcelLayer].features[0].properties:', ParcelsStore[parcelLayer].features[0].properties, 'ParcelsStore[parcelLayer].features[0].properties[addressField]:', ParcelsStore[parcelLayer].features[0].properties[addressField]);
   MainStore.setCurrentAddress(currentAddress);
 }
 
 const dataFetch = async(to, from) => {
-  console.log('dataFetch is starting');
+  console.log('dataFetch is starting, to:', to.params.address, 'from:', from.params.address);
   const MainStore = useMainStore();
   const AddressStore = useAddressStore();
   const ParcelsStore = useParcelsStore();
@@ -68,16 +72,26 @@ const dataFetch = async(to, from) => {
   if (to.params.address) { address = to.params.address } else if (to.query.address) { address = to.query.address }
   if (to.params.topic) { topic = to.params.topic }
 
-  if (address !== AddressStore.addressData.normalized) {
+  console.log('address:', address, 'from.params.address:', from.params.address, 'AddressStore.addressData.normalized:', AddressStore.addressData.normalized);
+  let addressNeeded = false;
+  // if (AddressStore.addressData && AddressStore.addressData.features && AddressStore.Store.addressData.features[0] && address !== AddressStore.addressData.features[0].properties.street_address) {
+  //   addressNeeded = true;  
+  // } else if (address !== AddressStore.addressData.normalized) {
+  // if (address !== AddressStore.addressData.normalized) {
+  if (to.params.address !== from.params.address) {
+    addressNeeded = true;
+  }
+  if (addressNeeded && !address) {
+    // if (AddressStore.addressData && AddressStore.addressData.features && AddressStore.Store.addressData.features[0] && address !== AddressStore.addressData.features[0].properties.street_address) {
     console.log('address:', address, 'typeof address:', typeof address);
     // if (!address.length || address == '' || address == null) {
-      if (ParcelsStore.dor.features) {
-        console.log('ParcelsStore.dor.features[0].properties.BASEREG:', ParcelsStore.dor.features[0].properties.BASEREG);
-        await ParcelsStore.fillParcelDataByLngLat(MainStore.lastClickCoords.lng, MainStore.lastClickCoords.lat, 'pwd')
-        await getAddressAndPutInStore(ParcelsStore.pwd.features[0].properties.PARCELID);
-      } else {
-      await getAddressAndPutInStore(address);
+    if (ParcelsStore.dor.features) {
+      console.log('ParcelsStore.dor.features[0].properties.BASEREG:', ParcelsStore.dor.features[0].properties.BASEREG);
+      await ParcelsStore.fillParcelDataByLngLat(MainStore.lastClickCoords.lng, MainStore.lastClickCoords.lat, 'pwd')
+      await getAddressAndPutInStore(ParcelsStore.pwd.features[0].properties.PARCELID);
     }
+  } else if (addressNeeded) {
+    await getAddressAndPutInStore(address);
   } else if (dataSourcesLoadedArray.includes(topic)) {
     return;
   }
@@ -215,6 +229,10 @@ const router = createRouter({
 router.afterEach(async (to, from) => {
   console.log('router afterEach to:', to, 'from:', from);
   if (to.name !== 'not-found' && to.name !== 'search') {
+    // need to call off dataFetch if the route change is just a page change
+    // if (to.params.address === from.params.address) {
+    //   return;
+    // }
     await dataFetch(to, from);
   } else if (to.name == 'not-found') {
     const MainStore = useMainStore();
