@@ -210,13 +210,15 @@ const getAddress = (address) => {
     </table>
   </div>
 
+  <div class="box">Use the buttons below to view images of hard-copy deed maps, some of which have handwritten information that may be useful for historical deed research.</div>
+
   <!-- Registry Maps -->
   <div class="mt-6">
     <h5 class="subtitle is-5">Registry Maps</h5>
     <div class="columns is-multiline">
       <div
         v-for="regmap in regmaps"
-        class="column is-2 add-borders has-text-centered regmap-div"
+        class="column is-2 add-borders has-text-centered regmap-div mr-1 ml-1"
         :class="{ 'is-selected': regmap.properties.RECMAP === selectedRegmap }"
         @click="addRegmapLayer(regmap.properties.RECMAP)"
       >
