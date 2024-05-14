@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 import { defineStore } from 'pinia';
-import { useAddressStore } from '@/stores/AddressStore.js'
+import { useGeocodeStore } from '@/stores/GeocodeStore.js'
 
 
 export const useVotingStore = defineStore("VotingStore", {
@@ -17,8 +17,8 @@ export const useVotingStore = defineStore("VotingStore", {
   actions: {
     async fillDivisions() {
       console.log('fillDivisions is running');
-      const AddressStore = useAddressStore();
-      const feature = AddressStore.addressData.features[0];
+      const GeocodeStore = useGeocodeStore();
+      const feature = GeocodeStore.aisData.features[0];
       let url = '//services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/Political_Divisions/FeatureServer/0/query';
 
       let params = {
@@ -38,8 +38,8 @@ export const useVotingStore = defineStore("VotingStore", {
     },
     async fillPollingPlaces() {
       console.log('fillPollingPlaces is running');
-      const AddressStore = useAddressStore();
-      const feature = AddressStore.addressData.features[0];
+      const GeocodeStore = useGeocodeStore();
+      const feature = GeocodeStore.aisData.features[0];
       let baseUrl = 'https://phl.carto.com/api/v2/sql?q=';
       const url = baseUrl += `select ST_X(the_geom) as lng, ST_Y(the_geom) as lat, * from polling_places where precinct ='${feature.properties.election_precinct}'`;
       const response = await fetch(url);
@@ -47,8 +47,8 @@ export const useVotingStore = defineStore("VotingStore", {
     },
     async fillElectedOfficials() {
       console.log('fillElectedOfficials is running');
-      const AddressStore = useAddressStore();
-      const feature = AddressStore.addressData.features[0];
+      const GeocodeStore = useGeocodeStore();
+      const feature = GeocodeStore.aisData.features[0];
       let baseUrl = 'https://phl.carto.com/api/v2/sql?q=';
       const url = baseUrl += `WITH split AS (SELECT * FROM splits WHERE precinct = '${feature.properties.election_precinct}') \
       SELECT eo.*, s.ballot_file_id\

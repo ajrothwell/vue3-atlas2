@@ -1,6 +1,6 @@
 
 import { defineStore } from 'pinia';
-import { useAddressStore } from '@/stores/AddressStore.js'
+import { useGeocodeStore } from '@/stores/GeocodeStore.js'
 import { useMainStore } from '@/stores/MainStore.js'
 import axios from 'axios';
 import useParcels from '@/composables/useParcels';
@@ -15,14 +15,14 @@ export const useParcelsStore = defineStore('ParcelsStore', {
   },
   actions: {
     async fillPwdParcelData() {
-      const AddressStore = useAddressStore();
-      const AddressLoaded = AddressStore.addressData.features
+      const GeocodeStore = useGeocodeStore();
+      const AddressLoaded = GeocodeStore.aisData.features
       if (!AddressLoaded) { return }
-      const AddressData = AddressLoaded[0];
-      const pwdParcelNumber = AddressData.properties.pwd_parcel_id;
+      const aisData = AddressLoaded[0];
+      const pwdParcelNumber = aisData.properties.pwd_parcel_id;
       if (!pwdParcelNumber) {
         console.log('no pwd parcel in AIS')
-        await this.fillParcelDataByLngLat(AddressData.geometry.coordinates[0], AddressData.geometry.coordinates[1], 'pwd');
+        await this.fillParcelDataByLngLat(aisData.geometry.coordinates[0], aisData.geometry.coordinates[1], 'pwd');
         return;
       }
       try {
@@ -38,14 +38,14 @@ export const useParcelsStore = defineStore('ParcelsStore', {
     },
 
     async fillDorParcelData() {
-      const AddressStore = useAddressStore();
-      const AddressLoaded = AddressStore.addressData.features
+      const GeocodeStore = useGeocodeStore();
+      const AddressLoaded = GeocodeStore.aisData.features
       if (!AddressLoaded) { return }
-      const AddressData = AddressLoaded[0];
-      const dorParcelId = AddressData.properties.dor_parcel_id;
+      const aisData = AddressLoaded[0];
+      const dorParcelId = aisData.properties.dor_parcel_id;
       if (!dorParcelId) {
         console.log('no dor parcel in AIS')
-        await this.fillParcelDataByLngLat(AddressData.geometry.coordinates[0], AddressData.geometry.coordinates[1], 'dor');
+        await this.fillParcelDataByLngLat(aisData.geometry.coordinates[0], aisData.geometry.coordinates[1], 'dor');
         return;
       }
 

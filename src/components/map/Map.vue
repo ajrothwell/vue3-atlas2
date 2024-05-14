@@ -22,8 +22,8 @@ import { useMapStore } from '@/stores/MapStore.js';
 const MapStore = useMapStore();
 import { useMainStore } from '@/stores/MainStore.js'
 const MainStore = useMainStore();
-import { useAddressStore } from '@/stores/AddressStore.js'
-const AddressStore = useAddressStore();
+import { useGeocodeStore } from '@/stores/GeocodeStore.js'
+const GeocodeStore = useGeocodeStore();
 import { useParcelsStore } from '@/stores/ParcelsStore.js'
 const ParcelsStore = useParcelsStore();
 import { useLiStore } from '@/stores/LiStore.js'
@@ -204,9 +204,9 @@ onMounted(async () => {
   MapStore.setMap(map);
 });
 
-// watch AddressStore.addressData for moving map center and setting zoom
+// watch GeocodeStore.aisData for moving map center and setting zoom
 watch(
-  () => AddressStore.addressData,
+  () => GeocodeStore.aisData,
   async newAddress => {
     // console.log('MapStore route.params.address watch, newAddress:', newAddress);
     const newCoords = newAddress.features[0].geometry.coordinates;
@@ -220,8 +220,8 @@ watch(
 
 // watch address pwd coordinates for moving address marker
 const pwdCoordinates = computed(() => {
-  if (AddressStore.addressData.features) {
-    return AddressStore.addressData.features[0].geometry.coordinates;
+  if (GeocodeStore.aisData.features) {
+    return GeocodeStore.aisData.features[0].geometry.coordinates;
   } else {
     return [];
   }

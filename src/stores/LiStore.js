@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { useAddressStore } from '@/stores/AddressStore.js'
+import { useGeocodeStore } from '@/stores/GeocodeStore.js'
 
 import useTransforms from '@/composables/useTransforms';
 const { currency, date } = useTransforms();
@@ -24,8 +24,8 @@ export const useLiStore = defineStore('LiStore', {
   actions: {
     async fillLiBuildingFootprints() {
       console.log('fillLiBuildingFootprints is running');
-      const AddressStore = useAddressStore();
-      const feature = AddressStore.addressData.features[0].properties.bin.split('|');
+      const GeocodeStore = useGeocodeStore();
+      const feature = GeocodeStore.aisData.features[0].properties.bin.split('|');
       const baseUrl = 'https://services.arcgis.com/fLeGjb7u4uXqeF9q/ArcGIS/rest/services/LI_BUILDING_FOOTPRINTS/FeatureServer/0/query';
       let data;
       let where;
@@ -55,8 +55,8 @@ export const useLiStore = defineStore('LiStore', {
     },
     async fillLiBuildingCertSummary() {
       console.log('fillLiBuildingCertSummary is running');
-      const AddressStore = useAddressStore();
-      const feature = AddressStore.addressData.features[0].properties.bin.split('|');
+      const GeocodeStore = useGeocodeStore();
+      const feature = GeocodeStore.aisData.features[0].properties.bin.split('|');
       let baseUrl = 'https://phl.carto.com/api/v2/sql?q=';
       let bin = "";
       // console.log('li-building-cert-summary, feature:', feature);
@@ -79,8 +79,8 @@ export const useLiStore = defineStore('LiStore', {
     },
     async fillLiBuildingCerts() {
       console.log('fillLiBuildingCerts is running');
-      const AddressStore = useAddressStore();
-      const feature = AddressStore.addressData.features[0].properties.bin.split('|');
+      const GeocodeStore = useGeocodeStore();
+      const feature = GeocodeStore.aisData.features[0].properties.bin.split('|');
       let baseUrl = 'https://phl.carto.com/api/v2/sql?q=';
       let bin = "";
       if (feature.length) {
@@ -101,8 +101,8 @@ export const useLiStore = defineStore('LiStore', {
     },
 
     async fillLiPermits() {
-      const AddressStore = useAddressStore();
-      const feature = AddressStore.addressData.features[0];
+      const GeocodeStore = useGeocodeStore();
+      const feature = GeocodeStore.aisData.features[0];
       let baseUrl = 'https://phl.carto.com/api/v2/sql?q=';
       const eclipse_location_id = feature.properties.eclipse_location_id.replace(/\|/g, "', '");
       const streetaddress = feature.properties.street_address;
@@ -121,16 +121,16 @@ export const useLiStore = defineStore('LiStore', {
     },
 
     async fillLiAisZoningDocs() {
-      const AddressStore = useAddressStore();
-      const feature = AddressStore.addressData.features[0];
+      const GeocodeStore = useGeocodeStore();
+      const feature = GeocodeStore.aisData.features[0];
       let baseUrl = 'https://phl.carto.com/api/v2/sql?q=';
       const url = baseUrl += `select * from ais_zoning_documents where doc_id = ANY('{ ${feature.properties.zoning_document_ids} }'::text[])`;
       const response = await fetch(url);
       this.liAisZoningDocs = await response.json()
     },
     async fillLiEclipseZoningDocs() {
-      const AddressStore = useAddressStore();
-      const feature = AddressStore.addressData.features[0];
+      const GeocodeStore = useGeocodeStore();
+      const feature = GeocodeStore.aisData.features[0];
       let baseUrl = 'https://phl.carto.com/api/v2/sql?q=';
       let query = null;
       if (feature.properties.eclipse_location_id === null || feature.properties.eclipse_location_id === '') {
@@ -152,8 +152,8 @@ export const useLiStore = defineStore('LiStore', {
     },
 
     async fillLiInspections() {
-      const AddressStore = useAddressStore();
-      const feature = AddressStore.addressData.features[0];
+      const GeocodeStore = useGeocodeStore();
+      const feature = GeocodeStore.aisData.features[0];
       let baseUrl = 'https://phl.carto.com/api/v2/sql?q=';
       const eclipse_location_id = feature.properties.eclipse_location_id.replace(/\|/g, "', '");
       const streetaddress = feature.properties.street_address;
@@ -171,8 +171,8 @@ export const useLiStore = defineStore('LiStore', {
     },
 
     async fillLiViolations() {
-      const AddressStore = useAddressStore();
-      const feature = AddressStore.addressData.features[0];
+      const GeocodeStore = useGeocodeStore();
+      const feature = GeocodeStore.aisData.features[0];
       let baseUrl = 'https://phl.carto.com/api/v2/sql?q=';
       const eclipse_location_id = feature.properties.eclipse_location_id.replace(/\|/g, "', '");
       const streetaddress = feature.properties.street_address;
@@ -196,8 +196,8 @@ export const useLiStore = defineStore('LiStore', {
     },
 
     async fillLiBusinessLicenses() {
-      const AddressStore = useAddressStore();
-      const feature = AddressStore.addressData.features[0];
+      const GeocodeStore = useGeocodeStore();
+      const feature = GeocodeStore.aisData.features[0];
       let baseUrl = 'https://phl.carto.com/api/v2/sql?q=';
       const eclipse_location_id = feature.properties.eclipse_location_id.replace(/\|/g, "', '");
       const streetaddress = feature.properties.street_address;

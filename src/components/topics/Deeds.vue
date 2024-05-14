@@ -6,9 +6,9 @@ import { computed, onBeforeMount } from 'vue';
 import useTransforms from '@/composables/useTransforms';
 const { date, integer, prettyNumber } = useTransforms();
 
-// import the AddressStore and DorParcels
-import { useAddressStore } from '@/stores/AddressStore';
-const AddressStore = useAddressStore();
+// import the GeocodeStore and DorParcels
+import { useGeocodeStore } from '@/stores/GeocodeStore';
+const GeocodeStore = useGeocodeStore();
 import { useParcelsStore } from '@/stores/ParcelsStore';
 const ParcelsStore = useParcelsStore();
 import { useDorStore } from '@/stores/DorStore';

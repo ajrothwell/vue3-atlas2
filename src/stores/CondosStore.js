@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { useAddressStore } from '@/stores/AddressStore.js'
+import { useGeocodeStore } from '@/stores/GeocodeStore.js'
 import axios from 'axios';
 
 export const useCondosStore = defineStore('CondosStore', {
@@ -14,10 +14,10 @@ export const useCondosStore = defineStore('CondosStore', {
     async fillCondoData(address, page = 1) {
       console.log('fillCondoData is runnning, address', address);
       try {
-        const AddressStore = useAddressStore();
-        const AddressLoaded = AddressStore.addressData.features
+        const GeocodeStore = useGeocodeStore();
+        const AddressLoaded = GeocodeStore.aisData.features
         if (!AddressLoaded) { return }
-        const AddressData = AddressLoaded[0];
+        const aisData = AddressLoaded[0];
         let params = {
           include_units: true,
           opa_only: true,
@@ -37,7 +37,7 @@ export const useCondosStore = defineStore('CondosStore', {
             // console.log('in condo-list, data:', data, 'state:', state);
             for (let feature of response.data.features) {
               // console.log('low frac:', feature.properties.address_low_frac);
-              if (feature.properties.address_low_frac !== AddressData.properties.address_low_frac || feature.properties.street_address === AddressData.properties.street_address) {
+              if (feature.properties.address_low_frac !== aisData.properties.address_low_frac || feature.properties.street_address === aisData.properties.street_address) {
                 // return;
                 response.data.total_size = response.data.total_size - 1;
               } else {

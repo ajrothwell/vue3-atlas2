@@ -1,37 +1,37 @@
 import { defineStore } from 'pinia';
 import { useMainStore } from '@/stores/MainStore.js'
 
-export const useAddressStore = defineStore("AddressStore", {
+export const useGeocodeStore = defineStore("GeocodeStore", {
   state: () => {
     return {
-      addressData: {},
+      aisData: {},
     };
   },
 
   actions: {
-    async fillAddressData(address) {
+    async fillaisData(address) {
       // const MainStore = useMainStore();
       try {
-        console.log('Address - fillAddressData is running, address:', address)
-        // const addressDataLoadedFlag = false;
+        console.log('Address - fillaisData is running, address:', address)
+        // const aisDataLoadedFlag = false;
         // on a new address search, clear all of the loaded data sources
         // const dataSourcesLoadedArray.value = [];
         const response = await fetch(`https://api.phila.gov/ais/v1/search/${encodeURIComponent(address)}?include_units=false`)
         if (response.ok) {
           console.log('Address - await resolved and HTTP status is successful')
-          this.addressData = await response.json()
-          // if (!addressData.features) {
+          this.aisData = await response.json()
+          // if (!aisData.features) {
           //   router.push({ name: 'not-found' });
           //   return;
           // }
           // if there is a value, add the value for the street_address in the MainStore
-          // const currentAddress = addressData.features[0].properties.street_address;
+          // const currentAddress = aisData.features[0].properties.street_address;
           // MainStore.setCurrentAddress(currentAddress);
-          // set the addressDataLoadedFlag value to true
-          // addressDataLoadedFlag = true;
+          // set the aisDataLoadedFlag value to true
+          // aisDataLoadedFlag = true;
         } else {
           console.log('Address - await resolved but HTTP status was not successful')
-          this.addressData = {}
+          this.aisData = {}
           const MainStore = useMainStore();
           MainStore.currentAddress = "";
         }
@@ -41,7 +41,7 @@ export const useAddressStore = defineStore("AddressStore", {
     },
   },
   getters: {
-    getOpaOwners: (state) => state.addressData.features[0].properties.opa_owners.join(', '),
+    getOpaOwners: (state) => state.aisData.features[0].properties.opa_owners.join(', '),
   },
 
 });

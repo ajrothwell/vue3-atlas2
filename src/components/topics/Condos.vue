@@ -6,8 +6,8 @@ const route = useRoute();
 const router = useRouter();
 console.log('route:', route);
 
-import { useAddressStore } from '@/stores/AddressStore';
-const AddressStore = useAddressStore();
+import { useGeocodeStore } from '@/stores/GeocodeStore';
+const GeocodeStore = useGeocodeStore();
 import { useCondosStore } from '@/stores/CondosStore';
 const CondosStore = useCondosStore();
 
@@ -71,8 +71,8 @@ watch(
     condosLoading.value = true;
     console.log('watch currentDataPage, newPage:', newPage);
     // if (!dataPagesFilled.value.includes(newPage)) {
-    const address = AddressStore.addressData.features[0].properties.street_address;
-    // const address = AddressStore.addressData.normalized;
+    const address = GeocodeStore.aisData.features[0].properties.street_address;
+    // const address = GeocodeStore.aisData.normalized;
     await CondosStore.fillCondoData(address, newPage);
     condosLoading.value = false;
     // }

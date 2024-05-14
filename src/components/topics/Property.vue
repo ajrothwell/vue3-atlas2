@@ -1,9 +1,9 @@
 <script setup>
 console.log('Property.vue setup');
 
-// import the AddressStore and OpaStore
-import { useAddressStore } from '@/stores/AddressStore';
-const AddressStore = useAddressStore();
+// import the GeocodeStore and OpaStore
+import { useGeocodeStore } from '@/stores/GeocodeStore';
+const GeocodeStore = useGeocodeStore();
 import { useOpaStore } from '@/stores/OpaStore';
 const OpaStore = useOpaStore();
 import { useCondosStore } from '@/stores/CondosStore';
@@ -21,15 +21,15 @@ const CondosStore = useCondosStore();
     <div class="vert-table" v-if="OpaStore.opaData.rows.length">
       <div class="columns">
         <div class="column is-4">OPA Account #</div>
-        <div class="column is-8">{{ AddressStore.addressData.features[0].properties.opa_account_num }}</div>
+        <div class="column is-8">{{ GeocodeStore.aisData.features[0].properties.opa_account_num }}</div>
       </div>
       <div class="columns">
         <div class="column is-4">OPA Address</div>
-        <div class="column is-8">{{ AddressStore.addressData.features[0].properties.opa_address }}</div>
+        <div class="column is-8">{{ GeocodeStore.aisData.features[0].properties.opa_address }}</div>
       </div>
       <div class="columns">
         <div class="column is-4">Owners</div>
-        <div class="column is-8">{{ AddressStore.getOpaOwners }}</div>
+        <div class="column is-8">{{ GeocodeStore.getOpaOwners }}</div>
       </div>
       <div class="columns">
         <div class="column is-4">Assessed Value</div>
@@ -55,7 +55,7 @@ const CondosStore = useCondosStore();
       <p>There is no property assessment record for this address.</p>
     </div>
     <div>
-      <a target='_blank' :href="`https://property.phila.gov/?p=${AddressStore.addressData.features[0].properties.opa_account_num}`">See more at Property Search <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
+      <a target='_blank' :href="`https://property.phila.gov/?p=${GeocodeStore.aisData.features[0].properties.opa_account_num}`">See more at Property Search <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
     </div>
 
   </section>

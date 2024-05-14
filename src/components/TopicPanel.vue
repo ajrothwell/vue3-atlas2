@@ -2,8 +2,8 @@
 
 import { computed } from 'vue';
 import { useMainStore } from '@/stores/MainStore.js'
-const AddressStore = useAddressStore();
-import { useAddressStore } from '@/stores/AddressStore.js'
+const GeocodeStore = useGeocodeStore();
+import { useGeocodeStore } from '@/stores/GeocodeStore.js'
 const MainStore = useMainStore();
 import { useCondosStore } from '@/stores/CondosStore.js'
 const CondosStore = useCondosStore();
@@ -24,8 +24,8 @@ const address = computed(() => MainStore.currentAddress);
 const dataSourcesLoadedArray = computed(() => MainStore.dataSourcesLoadedArray);
 
 const zipCode = computed(() => {
-  if (AddressStore.addressData && AddressStore.addressData.features) {
-    return AddressStore.addressData.features[0].properties.zip_code + '-' + AddressStore.addressData.features[0].properties.zip_4;
+  if (GeocodeStore.aisData && GeocodeStore.aisData.features) {
+    return GeocodeStore.aisData.features[0].properties.zip_code + '-' + GeocodeStore.aisData.features[0].properties.zip_4;
   }
   return '';
 });
@@ -68,7 +68,7 @@ const zipCode = computed(() => {
     </div>
 
     <!-- IF AN ADDRESS IS LOADED, SHOW THE TOPICS  -->
-    <!-- <div v-if="route.params.address && addressDataLoadedFlag"> -->
+    <!-- <div v-if="route.params.address && aisDataLoadedFlag"> -->
     <div v-if="address">
       <div class="columns address-holder">
         <div>

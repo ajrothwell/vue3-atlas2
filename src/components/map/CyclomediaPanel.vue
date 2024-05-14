@@ -2,8 +2,8 @@
 import { ref, onMounted, watch } from 'vue';
 import { useMapStore } from '@/stores/MapStore';
 const MapStore = useMapStore();
-import { useAddressStore } from '@/stores/AddressStore';
-const AddressStore = useAddressStore();
+import { useGeocodeStore } from '@/stores/GeocodeStore';
+const GeocodeStore = useGeocodeStore();
 
 import proj4 from 'proj4';
 const projection4326 = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
@@ -120,8 +120,8 @@ onMounted( async() => {
     })
     cyclomediaInitialized.value = true;
   }
-  if (AddressStore.addressData.features) {
-    setNewLocation(AddressStore.addressData.features[0].geometry.coordinates);
+  if (GeocodeStore.aisData.features) {
+    setNewLocation(GeocodeStore.aisData.features[0].geometry.coordinates);
   } else {
     setNewLocation([ -75.163471, 39.953338 ]);
   }

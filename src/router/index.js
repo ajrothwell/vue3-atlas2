@@ -2,7 +2,7 @@ import { createRouter, createWebHistory, createWebHashHistory } from 'vue-router
 import App from '@/App.vue';
 import $config from '@/config';
 
-import { useAddressStore } from '@/stores/AddressStore.js'
+import { useGeocodeStore } from '@/stores/GeocodeStore.js'
 import { useCondosStore } from '@/stores/CondosStore.js'
 import { useParcelsStore } from '@/stores/ParcelsStore.js'
 import { useOpaStore } from '@/stores/OpaStore.js'
@@ -18,20 +18,20 @@ import useRouting from '@/composables/useRouting';
 // import Condos from '@/components/topics/Condos.vue';
 const { routeApp } = useRouting();
 
-const getAddressAndPutInStore = async(address) => {
-  console.log('getAddressAndPutInStore is running, address:', address);
+const getGeocodeAndPutInStore = async(address) => {
+  console.log('getGeocodeAndPutInStore is running, address:', address);
   const MainStore = useMainStore();
   MainStore.clearDataSourcesLoadedArray();
   const CondosStore = useCondosStore();
   CondosStore.lastPageUsed = 1;
-  const AddressStore = useAddressStore();
-  await AddressStore.fillAddressData(address);
-  if (!AddressStore.addressData.features) {
+  const GeocodeStore = useGeocodeStore();
+  await GeocodeStore.fillaisData(address);
+  if (!GeocodeStore.aisData.features) {
     router.push({ name: 'not-found' });
     return;
   }
   // if there is a value, add the value for the street_address in the MainStore
-  const currentAddress = AddressStore.addressData.features[0].properties.street_address;
+  const currentAddress = GeocodeStore.aisData.features[0].properties.street_address;
   MainStore.setCurrentAddress(currentAddress);
 }
 
@@ -58,7 +58,7 @@ const getParcelsAndPutInStore = async(lng, lat) => {
 const dataFetch = async(to, from) => {
   console.log('dataFetch is starting, to:', to.params.address, 'from:', from.params.address);
   const MainStore = useMainStore();
-  const AddressStore = useAddressStore();
+  const GeocodeStore = useGeocodeStore();
   const ParcelsStore = useParcelsStore();
   const dataSourcesLoadedArray = MainStore.dataSourcesLoadedArray;
   if (to.name === 'not-found') {
@@ -69,17 +69,17 @@ const dataFetch = async(to, from) => {
   if (to.params.address) { address = to.params.address } else if (to.query.address) { address = to.query.address }
   if (to.params.topic) { topic = to.params.topic }
 
-  console.log('address:', address, 'from.params.address:', from.params.address, 'AddressStore.addressData.normalized:', AddressStore.addressData.normalized);
-  let addressNeeded = to.params.address !== from.params.address;
-  if (addressNeeded && !address) {
+  console.log('address:', address, 'from.params.address:', from.params.address, 'GeocodeStore.aisData.normalized:', GeocodeStore.aisData.normalized);
+  let aisNeeded = to.params.address !== from.params.address;
+  if (aisNeeded && !address) {
     // console.log('address:', address, 'typeof address:', typeof address);
     if (ParcelsStore.dor.features) {
       // console.log('ParcelsStore.dor.features[0].properties.BASEREG:', ParcelsStore.dor.features[0].properties.BASEREG);
       await ParcelsStore.fillParcelDataByLngLat(MainStore.lastClickCoords.lng, MainStore.lastClickCoords.lat, 'pwd')
-      await getAddressAndPutInStore(ParcelsStore.pwd.features[0].properties.PARCELID);
+      await getGeocodeAndPutInStore(ParcelsStore.pwd.features[0].properties.PARCELID);
     }
-  } else if (addressNeeded) {
-    await getAddressAndPutInStore(address);
+  } else if (aisNeeded) {
+    await getGeocodeAndPutInStore(address);
   } else if (dataSourcesLoadedArray.includes(topic)) {
     return;
   }
@@ -151,8 +151,8 @@ const topicDataFetch = async (topic) => {
     const currentNearbyDataType = MainStore.currentNearbyDataType;
     const NearbyActivityStore = useNearbyActivityStore();
     await NearbyActivityStore.fetchData(currentNearbyDataType);
-    const AddressStore = useAddressStore();
-    const coordinates = AddressStore.addressData.features[0].geometry.coordinates;
+    const GeocodeStore = useGeocodeStore();
+    const coordinates = GeocodeStore.aisData.features[0].geometry.coordinates;
     const MapStore = useMapStore();
     await MapStore.fillBufferForAddress(coordinates[0], coordinates[1]);
   }
@@ -203,7 +203,7 @@ const router = createRouter({
         const MainStore = useMainStore();
         if (address) {
           MainStore.setLastSearchMethod('address');
-          await getAddressAndPutInStore(address);
+          await getGeocodeAndPutInStore(address);
         } else if (lat && lng) {
           MainStore.setLastSearchMethod('mapClick');
           await getParcelsAndPutInStore(lng, lat);

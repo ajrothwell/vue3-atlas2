@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { useAddressStore } from '@/stores/AddressStore.js'
+import { useGeocodeStore } from '@/stores/GeocodeStore.js'
 import { useMapStore } from '@/stores/MapStore.js'
 
 import axios from 'axios';
@@ -147,9 +147,9 @@ export const useNearbyActivityStore = defineStore('NearbyActivityStore', {
       }
     },
     async fillNearby311() {
-      const AddressStore = useAddressStore();
+      const GeocodeStore = useGeocodeStore();
       this.setLoadingData(true);
-      const feature = AddressStore.addressData.features[0];
+      const feature = GeocodeStore.aisData.features[0];
       let dataSource = {
         url: 'https://phl.carto.com/api/v2/sql?',
         options: {
@@ -165,9 +165,9 @@ export const useNearbyActivityStore = defineStore('NearbyActivityStore', {
       this.setLoadingData(false);
     },
     async fillNearbyCrimeIncidents() {
-      const AddressStore = useAddressStore();
+      const GeocodeStore = useGeocodeStore();
       this.setLoadingData(true);
-      const feature = AddressStore.addressData.features[0];
+      const feature = GeocodeStore.aisData.features[0];
       let dataSource = {
         url: 'https://phl.carto.com/api/v2/sql?',
         options: {
@@ -183,9 +183,9 @@ export const useNearbyActivityStore = defineStore('NearbyActivityStore', {
       this.setLoadingData(false);
     },
     async fillNearbyZoningAppeals() {
-      const AddressStore = useAddressStore();
+      const GeocodeStore = useGeocodeStore();
       this.setLoadingData(true);
-      const feature = AddressStore.addressData.features[0];
+      const feature = GeocodeStore.aisData.features[0];
       let dataSource = {
         url: 'https://phl.carto.com/api/v2/sql?',
         options: {
@@ -234,8 +234,8 @@ export const useNearbyActivityStore = defineStore('NearbyActivityStore', {
       const data = await response.data;
 
       let features = (data || {}).features;
-      const AddressStore = useAddressStore();
-      const feature = AddressStore.addressData.features[0];
+      const GeocodeStore = useGeocodeStore();
+      const feature = GeocodeStore.aisData.features[0];
       const from = point(feature.geometry.coordinates);
 
       features = features.map(feature => {
@@ -265,9 +265,9 @@ export const useNearbyActivityStore = defineStore('NearbyActivityStore', {
     },
 
     async fillNearbyConstructionPermits() {
-      const AddressStore = useAddressStore();
+      const GeocodeStore = useGeocodeStore();
       this.setLoadingData(true);
-      const feature = AddressStore.addressData.features[0];
+      const feature = GeocodeStore.aisData.features[0];
       let dataSource = {
         url: 'https://phl.carto.com/api/v2/sql?',
         options: {
@@ -285,9 +285,9 @@ export const useNearbyActivityStore = defineStore('NearbyActivityStore', {
     },
 
     async fillNearbyDemolitionPermits() {
-      const AddressStore = useAddressStore();
+      const GeocodeStore = useGeocodeStore();
       this.setLoadingData(true);
-      const feature = AddressStore.addressData.features[0];
+      const feature = GeocodeStore.aisData.features[0];
       let dataSource = {
         url: 'https://phl.carto.com/api/v2/sql?',
         options: {
@@ -305,9 +305,9 @@ export const useNearbyActivityStore = defineStore('NearbyActivityStore', {
     },
 
     async fillNearbyImminentlyDangerous() {
-      const AddressStore = useAddressStore();
+      const GeocodeStore = useGeocodeStore();
       this.setLoadingData(true);
-      const feature = AddressStore.addressData.features[0];
+      const feature = GeocodeStore.aisData.features[0];
       let dataSource = {
         url: 'https://phl.carto.com/api/v2/sql?',
         options: {

@@ -2,9 +2,9 @@
 import $config from '@/config';
 import { ref, computed, onMounted, onBeforeMount } from 'vue';
 
-  // import the AddressStore and DorParcels
-import { useAddressStore } from '@/stores/AddressStore';
-const AddressStore = useAddressStore();
+  // import the GeocodeStore and DorParcels
+import { useGeocodeStore } from '@/stores/GeocodeStore';
+const GeocodeStore = useGeocodeStore();
 import { useParcelsStore } from '@/stores/ParcelsStore';
 const ParcelsStore = useParcelsStore();
 import { useZoningStore } from '@/stores/ZoningStore';

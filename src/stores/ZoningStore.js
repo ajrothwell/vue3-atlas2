@@ -2,7 +2,7 @@ import axios from 'axios';
 
 import { defineStore } from 'pinia';
 import { useParcelsStore } from './ParcelsStore';
-import { useAddressStore } from '@/stores/AddressStore.js'
+import { useGeocodeStore } from '@/stores/GeocodeStore.js'
 import { useMainStore } from '@/stores/MainStore.js'
 
 import useTransforms from '@/composables/useTransforms';
@@ -153,8 +153,8 @@ export const useZoningStore = defineStore('ZoningStore', {
       }
     },
     async fillZoningAppeals() {
-      const AddressStore = useAddressStore();
-      const feature = AddressStore.addressData.features[0];
+      const GeocodeStore = useGeocodeStore();
+      const feature = GeocodeStore.aisData.features[0];
       let baseUrl = 'https://phl.carto.com/api/v2/sql?q=';
       const eclipse_location_id = feature.properties.eclipse_location_id.replace(/\|/g, "', '");
       const streetaddress = feature.properties.street_address;
@@ -180,8 +180,8 @@ export const useZoningStore = defineStore('ZoningStore', {
     },
 
     async fillRcos() {
-      const AddressStore = useAddressStore();
-      const feature = AddressStore.addressData.features[0];
+      const GeocodeStore = useGeocodeStore();
+      const feature = GeocodeStore.aisData.features[0];
       let url = '//services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/Zoning_RCO/FeatureServer/0/query';
 
       let params = {

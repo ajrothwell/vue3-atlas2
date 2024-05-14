@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { useParcelsStore } from './ParcelsStore';
-import { useAddressStore } from './AddressStore';
+import { useGeocodeStore } from './GeocodeStore';
 
 import bboxPolygon from '@turf/bbox-polygon';
 import axios from 'axios';
@@ -192,14 +192,14 @@ export const useDorStore = defineStore("DorStore", {
       console.log('fillDorDocuments is running');
       this.dorDocuments = {};
       const ParcelsStore = useParcelsStore();
-      const AddressStore = useAddressStore();
+      const GeocodeStore = useGeocodeStore();
       const url = `//services.arcgis.com/fLeGjb7u4uXqeF9q/ArcGIS/rest/services/RTT_SUMMARY/FeatureServer/0/query`;
       
       const where = function(feature) {
         console.log('where function is running, feature:', feature);
         // METHOD 1: via address
         var parcelBaseAddress = concatDorAddress(feature);
-        var geocode = AddressStore.addressData.features[0].properties;
+        var geocode = GeocodeStore.aisData.features[0].properties;
         var where;
       
         // REVIEW if the parcel has no address, we don't want to query
@@ -208,7 +208,7 @@ export const useDorStore = defineStore("DorStore", {
           where = "MATCHED_REGMAP = '" + ParcelsStore.dor.features[0].properties.BASEREG + "'";
         } else {
           // TODO make these all camel case
-          var props = AddressStore.addressData.features[0].properties,
+          var props = GeocodeStore.aisData.features[0].properties,
             address_low = props.address_low,
             address_floor = Math.floor(address_low / 100, 1) * 100,
             address_remainder = address_low - address_floor,
