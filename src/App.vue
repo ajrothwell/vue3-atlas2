@@ -47,7 +47,7 @@ onMounted(async () => {
 <template>
   <main>
     <!-- APP HEADER -->
-    <div class="container">
+    <div class="container mb-2">
       <h1 class="title is-1">Vue3 Atlas</h1>
     </div>
 
