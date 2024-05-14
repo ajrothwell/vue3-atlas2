@@ -120,7 +120,9 @@ const getLinkLicenseNumber = (item) => {
 };
 
 onBeforeMount( async() => {
-  LiStore.selectedLiBuildingNumber = LiStore.liBuildingFootprints.features[0].attributes.BIN;
+  if (LiStore.liBuildingFootprints.features.length) {
+    LiStore.selectedLiBuildingNumber = LiStore.liBuildingFootprints.features[0].attributes.BIN;
+  }
 })
 
 onMounted( async () => {
@@ -155,65 +157,67 @@ const handleBinClick = (bin) => {
 
     <h5 class="subtitle is-5">There are {{ LiStore.liBuildingFootprints.features.length }} buildings at this address</h5>
     <!-- Li Building Footprints Section -->
-    <div class="columns is-multiline">
-      <div
-        v-for="footprint in LiStore.liBuildingFootprints.features"
-        :key="footprint.attributes.BIN"
-        @click="handleBinClick(footprint.attributes.BIN)"
-        class="column is-2 add-borders has-text-centered"
-        :class="{ 'is-selected': footprint.attributes.BIN === selectedLiBuildingNumber }"
-      >
-        {{ footprint.attributes.BIN }}
+    <div v-if="selectedLiBuilding">
+      <div class="columns is-multiline">
+        <div
+          v-for="footprint in LiStore.liBuildingFootprints.features"
+          :key="footprint.attributes.BIN"
+          @click="handleBinClick(footprint.attributes.BIN)"
+          class="column is-2 add-borders has-text-centered"
+          :class="{ 'is-selected': footprint.attributes.BIN === selectedLiBuildingNumber }"
+        >
+          {{ footprint.attributes.BIN }}
+        </div>
       </div>
-    </div>
 
-    <!-- Li Building info-->
-    <!-- <h5 class="title is-5">Parcel Details</h5> -->
-    <div class="vert-table">
-      <div class="columns">
-        <div class="column is-4">Building ID</div>
-        <div class="column is-8">{{ selectedLiBuilding.attributes.BIN || 'N/A' }}</div>
+      <!-- Li Building info-->
+      <!-- <h5 class="title is-5">Parcel Details</h5> -->
+      <div class="vert-table">
+        <div class="columns">
+          <div class="column is-4">Building ID</div>
+          <div class="column is-8">{{ selectedLiBuilding.attributes.BIN || 'N/A' }}</div>
+        </div>
+        <div class="columns">
+          <div class="column is-4">Building Name</div>
+          <div class="column is-8">{{ selectedLiBuilding.attributes.BUILDING_NAME || 'N/A' }}</div>
+        </div>
+        <div class="columns">
+          <div class="column is-4">Parcel Address</div>
+          <div class="column is-8">{{ selectedLiBuilding.attributes.ADDRESS || 'N/A' }}</div>
+        </div>
+        <div class="columns">
+          <div class="column is-4">Building Height (approx)</div>
+          <div class="column is-8">{{ selectedLiBuilding.attributes.APPROX_HGT || 'N/A' }} ft</div>
+        </div>
+        <div class="columns">
+          <div class="column is-4">Building Footprint (approx)</div>
+          <div class="column is-8">{{ prettyNumber(integer(selectedLiBuilding.attributes.Shape__Area * 6.3225)) || 'N/A' }} sq ft</div>
+        </div>
       </div>
-      <div class="columns">
-        <div class="column is-4">Building Name</div>
-        <div class="column is-8">{{ selectedLiBuilding.attributes.BUILDING_NAME || 'N/A' }}</div>
-      </div>
-      <div class="columns">
-        <div class="column is-4">Parcel Address</div>
-        <div class="column is-8">{{ selectedLiBuilding.attributes.ADDRESS || 'N/A' }}</div>
-      </div>
-      <div class="columns">
-        <div class="column is-4">Building Height (approx)</div>
-        <div class="column is-8">{{ selectedLiBuilding.attributes.APPROX_HGT || 'N/A' }} ft</div>
-      </div>
-      <div class="columns">
-        <div class="column is-4">Building Footprint (approx)</div>
-        <div class="column is-8">{{ prettyNumber(integer(selectedLiBuilding.attributes.Shape__Area * 6.3225)) || 'N/A' }} sq ft</div>
-      </div>
-    </div>
 
-    <!-- Building Certs Table -->
-    <h5 class="subtitle is-5 table-title">Building Certifications</h5>
-    <table class="table is-fullwidth is-striped link-at-bottom">
-      <thead>
-        <tr>
-          <th>InspectionType</th>
-          <th>Date Inspected</th>
-          <th>Inspection Result</th>
-          <th>Expiration Date</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="item in selectedBuildingCerts">
-          <td>{{ item.buildingcerttype }}</td>
-          <td>{{ date(item.inspectiondate) }}</td>
-          <td>{{ item.inspectionresult }}</td>
-          <td>{{ date(item.expirationdate) }}</td>
-        </tr>
-      </tbody>
-    </table>
-    <div class="table-link">
-      <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See all {{ LiStore.liBuildingCerts.rows.length || '' }} building certifications for this property at L&I Property History <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
+      <!-- Building Certs Table -->
+      <h5 class="subtitle is-5 table-title">Building Certifications</h5>
+      <table class="table is-fullwidth is-striped link-at-bottom">
+        <thead>
+          <tr>
+            <th>InspectionType</th>
+            <th>Date Inspected</th>
+            <th>Inspection Result</th>
+            <th>Expiration Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="item in selectedBuildingCerts">
+            <td>{{ item.buildingcerttype }}</td>
+            <td>{{ date(item.inspectiondate) }}</td>
+            <td>{{ item.inspectionresult }}</td>
+            <td>{{ date(item.expirationdate) }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="table-link">
+        <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See all {{ LiStore.liBuildingCerts.rows.length || '' }} building certifications for this property at L&I Property History <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
+      </div>
     </div>
 
     <!-- Li Permits Table -->

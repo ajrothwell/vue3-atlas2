@@ -72,7 +72,7 @@ const dataFetch = async(to, from) => {
   if (to.params.address) { address = to.params.address } else if (to.query.address) { address = to.query.address }
   if (to.params.topic) { topic = to.params.topic }
 
-  console.log('address:', address, 'AddressStore.addressData.normalized:', AddressStore.addressData.normalized);
+  console.log('address:', address, 'from.params.address:', from.params.address, 'AddressStore.addressData.normalized:', AddressStore.addressData.normalized);
   let addressNeeded = false;
   // if (AddressStore.addressData && AddressStore.addressData.features && AddressStore.Store.addressData.features[0] && address !== AddressStore.addressData.features[0].properties.street_address) {
   //   addressNeeded = true;  
@@ -81,18 +81,17 @@ const dataFetch = async(to, from) => {
   if (to.params.address !== from.params.address) {
     addressNeeded = true;
   }
-  if (addressNeeded) {
+  if (addressNeeded && !address) {
     // if (AddressStore.addressData && AddressStore.addressData.features && AddressStore.Store.addressData.features[0] && address !== AddressStore.addressData.features[0].properties.street_address) {
-      console.log('address:', address, 'typeof address:', typeof address);
-      // if (!address.length || address == '' || address == null) {
-        if (ParcelsStore.dor.features) {
-          console.log('ParcelsStore.dor.features[0].properties.BASEREG:', ParcelsStore.dor.features[0].properties.BASEREG);
-          await ParcelsStore.fillParcelDataByLngLat(MainStore.lastClickCoords.lng, MainStore.lastClickCoords.lat, 'pwd')
-          await getAddressAndPutInStore(ParcelsStore.pwd.features[0].properties.PARCELID);
-        } else {
-        await getAddressAndPutInStore(address);
-      }
-    // }
+    console.log('address:', address, 'typeof address:', typeof address);
+    // if (!address.length || address == '' || address == null) {
+    if (ParcelsStore.dor.features) {
+      console.log('ParcelsStore.dor.features[0].properties.BASEREG:', ParcelsStore.dor.features[0].properties.BASEREG);
+      await ParcelsStore.fillParcelDataByLngLat(MainStore.lastClickCoords.lng, MainStore.lastClickCoords.lat, 'pwd')
+      await getAddressAndPutInStore(ParcelsStore.pwd.features[0].properties.PARCELID);
+    }
+  } else if (addressNeeded) {
+    await getAddressAndPutInStore(address);
   } else if (dataSourcesLoadedArray.includes(topic)) {
     return;
   }

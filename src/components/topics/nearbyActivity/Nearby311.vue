@@ -48,7 +48,7 @@ const nearby311 = computed(() => {
 });
 const nearby311Geojson = computed(() => {
   if (!nearby311.value) return [point([0,0])];
-  return nearby311.value.map(item => point([item.lng, item.lat], { id: item.objectid, type: 'nearby311' }));
+  return nearby311.value.map(item => point([item.lng, item.lat], { id: item.service_request_id, type: 'nearby311' }));
 })
 watch (() => nearby311Geojson.value, (newGeojson) => { map.getSource('nearby').setData(featureCollection(newGeojson)) });
 

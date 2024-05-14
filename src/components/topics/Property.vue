@@ -38,7 +38,7 @@ const CondosStore = useCondosStore();
       </div>
       <div class="columns">
         <div class="column is-4">Sale Date</div>
-        <div class="column is-8">{{ OpaStore.getSaleDate }}</div>
+        <div class="column is-8">{{ OpaStore.getSaleDate || 'none' }}</div>
         <!-- <div class="column is-8">{{ OpaStore.opaData.rows[0].sale_date }}</div> -->
       </div>
       <div class="columns">
