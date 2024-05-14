@@ -4,22 +4,59 @@ $primary-color: #0f4254;
 $dropdown-menu-min-width: 100px;
 
 
-html {
-  height: 100vh;
-  overflow: hidden;
-}
+// html, body {
+//   box-sizing: border-box;
+//   height: 100%;
+// }
 
-body {
-  height: 100vh;
-}
+// #app {
+//   height: 100%;
+//   -webkit-font-smoothing: antialiased;
+//   -moz-osx-font-smoothing: grayscale;
+//   display: flex;
+//   display: -ms-flexbox;
+//   flex-direction: column;
+// }
 
-#app {
-  height: 90vh;
-}
+// .locations-and-map-panels-holder {
+//   // flex-direction: row-reverse;
+//   // overflow-y: scroll;
+//   min-height: 0px;
+//   flex-grow: 1;
+//   margin-left: 0px !important;
+//   margin-right: 0px !important;
+//   margin-bottom: 0px !important;
+//   margin-top: 0px !important;
+// }
 
-.small-container {
-  // padding-left: 1em;
-}
+// .topic-panel-content {
+//   overflow-y: scroll;
+// }
+
+// .locations-panel-holder {
+//   min-height: 0px;
+//   padding: 0px !important;
+//   // overflow-y: scroll;
+//   position: relative;
+// }
+
+// .locations-panel {
+//   overflow-y: hidden;
+// }
+
+// .map-panel-holder {
+//   height: 100%;
+//   padding: 0px !important;
+// }
+
+// .invisible-scrollbar {
+//   -ms-overflow-style: none;
+//   scrollbar-width: none;
+// }
+
+// .invisible-scrollbar::-webkit-scrollbar {
+//   display: none;
+// }
 
 .vert-table {
   margin-bottom: 2rem;

@@ -740,7 +740,7 @@ const togglePictometry = () => {
 </script>
 
 <template>
-  <div id="map" class="map-class">
+  <div id="map" class="map map-class">
     <AddressSearchControl></AddressSearchControl>
     <ImageryToggleControl @toggleImagery="toggleImagery"></ImageryToggleControl>
     <ImageryDropdownControl v-if="MapStore.imageryOn" @setImagery="setImagery"></ImageryDropdownControl>
@@ -769,11 +769,13 @@ const togglePictometry = () => {
 <style>
 
 #map {
-  position: relative;
+  /* position: relative; */
+  /* padding-bottom: 40px; */
 }
 
 .map-class {
   height: 100%;
+  /* height: 80%; */
 }
 
 @media screen and (max-width: 760px){

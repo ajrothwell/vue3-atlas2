@@ -28,6 +28,11 @@ const imgSrc = computed(() => {
   background-color: rgb(243, 198, 19) !important;
 }
 
+button {
+  background-color: transparent;
+  border: none;
+}
+
 .cyclomedia-toggle {
   height: 36px;
   width: 36px;
@@ -43,8 +48,10 @@ const imgSrc = computed(() => {
 }
 
 .img-src {
-  max-width: 100%;
-  padding-left: 4px;
+  max-width: 300%;
+  width: 23px;
+  height: 29px;
+  margin-left: -1px;
 }
 
 </style>

@@ -29,6 +29,11 @@ const imgSrc = computed(() => {
   background-color: rgb(243, 198, 19) !important;
 }
 
+button {
+  background-color: transparent;
+  border: none;
+}
+
 .pictometry-toggle {
   height: 36px;
   width: 36px;
@@ -44,10 +49,10 @@ const imgSrc = computed(() => {
 }
 
 .img-src {
-  max-width: 100%;
-  padding-left: 3px;
-  padding-top: 2px;
-  /* border-radius: 5px; */
+  max-width: 300%;
+  width: 25px;
+  height: 29px;
+  margin-left: -2px;
 }
 
 </style>

@@ -33,11 +33,11 @@ const zipCode = computed(() => {
 </script>
 
 <template>
-  <section>
+  <!-- <section> -->
       
     <!-- FRONT PAGE CONTENT -->
-    <div class="columns" v-if="route.name == 'home'">
-      <div class="column is-12 topic-panel-content">
+    <div class="" v-if="route.name == 'home'">
+      <div class="topic-panel-content">
         <h3 class="subtitle is-3">Atlas is your front door to the City of Philadelphia.</h3>
         <p class="subtitle is-5">Here are some things you can do with Atlas:</p>
         <ul>
@@ -53,8 +53,8 @@ const zipCode = computed(() => {
     </div>
 
     <!-- ADDRESS NOT FOUND CONTENT -->
-    <div class="columns" v-if="route.name == 'not-found'">
-      <div class="column is-12 topic-panel-content">
+    <div class="" v-if="route.name == 'not-found'">
+      <div class="topic-panel-content">
         <p>We couldn't find that address. Are you sure everything was spelled correctly?</p>
         <p>Here are some examples of things you can search for:</p>
         <ul>
@@ -69,15 +69,15 @@ const zipCode = computed(() => {
 
     <!-- IF AN ADDRESS IS LOADED, SHOW THE TOPICS  -->
     <!-- <div v-if="route.params.address && aisDataLoadedFlag"> -->
-    <div v-if="address">
-      <div class="columns address-holder">
+    <!-- <div v-if="address"> -->
+      <div v-if="address" class="address-holder">
         <div>
           <h3 class="subtitle is-3"><font-awesome-icon :icon="['fas', 'map-marker-alt']" /><div class="address">{{ address }}</div></h3>
         </div>
         <div>PHILADELPHIA, PA {{ zipCode }}</div>
       </div>
 
-      <div class="topics topic-panel-content">      
+      <div v-if="address" class="topics topic-panel-content">      
         <topic :topic-name="'Property'" :topic-icon="'fa-solid fa-home'" :loading="!dataSourcesLoadedArray.includes('Property')">
           <Property v-if="dataSourcesLoadedArray.includes('Property')"></Property>
         </topic>
@@ -109,16 +109,24 @@ const zipCode = computed(() => {
         </topic>
       </div>
 
-    </div>
+    <!-- </div> -->
 
-  </section>
+  <!-- </section> -->
 
 </template>
 
-<style scoped>
+<style>
 
 .topics {
-  height: 77vh;
+  overflow-y: scroll;
+  height: 100%;
+  flex-grow: 1;
+  height: 250px;
+  padding-bottom: 50px;
+}
+
+
+.topics {
   overflow-y: scroll;
 }
 
@@ -151,6 +159,7 @@ const zipCode = computed(() => {
 .topic-panel-content {
   padding-left: 1.25em;
   padding-right: 1em;
+  flex-grow: 1;
 }
 
 

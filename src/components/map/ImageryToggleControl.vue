@@ -31,6 +31,11 @@ const imgSrc = computed(() => {
 
 <style scoped>
 
+button {
+  background-color: transparent;
+  border: none;
+}
+
 .imagery-toggle {
   height: 36px;
   width: 36px;
@@ -45,7 +50,11 @@ const imgSrc = computed(() => {
 }
 
 .img-src {
-  max-width: 100%; 
+  margin-left: -6px;
+  margin-top: -1px;
+  width: 34px;
+  height: 34px;
+  max-width: 300%; 
   /* border-radius: 5px; */
 }
 

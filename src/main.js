@@ -1,12 +1,23 @@
 import './assets/style.scss'
 
-import { createApp } from 'vue'
-import { createPinia } from 'pinia'
+import { createApp } from 'vue';
+import { createPinia } from 'pinia';
 
-import App from './App.vue'
-import router from './router'
+import App from './App.vue';
+import router from './router';
+
+import "@phila/phila-ui-core/dist/styles/scss/all.scss";
+import PhilaUICore from "@phila/phila-ui-core";
+import AppHeader from "@phila/phila-ui-app-header";
+import AppFooter from "@phila/phila-ui-app-footer";
+
 
 const app = createApp(App);
+
+app.component("AppHeader", AppHeader);
+app.component("AppFooter", AppFooter);
+app.use(PhilaUICore);
+import "bulma";
 
 // import $config from './config'
 // app.config.globalProperties.$config = config;
