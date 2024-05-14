@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory, createWebHashHistory } from 'vue-router';
 import App from '@/App.vue';
 import $config from '@/config';
-// const $config = config.$config;
 
 import { useAddressStore } from '@/stores/AddressStore.js'
 import { useCondosStore } from '@/stores/CondosStore.js'
@@ -16,10 +15,8 @@ import { useMapStore } from '@/stores/MapStore.js'
 import { useMainStore } from '@/stores/MainStore.js'
 
 import useRouting from '@/composables/useRouting';
-import Condos from '@/components/topics/Condos.vue';
+// import Condos from '@/components/topics/Condos.vue';
 const { routeApp } = useRouting();
-// import useParcels from '@/composables/useParcels';
-// const { processParcels } = useParcels();
 
 const getAddressAndPutInStore = async(address) => {
   console.log('getAddressAndPutInStore is running, address:', address);
@@ -73,20 +70,11 @@ const dataFetch = async(to, from) => {
   if (to.params.topic) { topic = to.params.topic }
 
   console.log('address:', address, 'from.params.address:', from.params.address, 'AddressStore.addressData.normalized:', AddressStore.addressData.normalized);
-  let addressNeeded = false;
-  // if (AddressStore.addressData && AddressStore.addressData.features && AddressStore.Store.addressData.features[0] && address !== AddressStore.addressData.features[0].properties.street_address) {
-  //   addressNeeded = true;  
-  // } else if (address !== AddressStore.addressData.normalized) {
-  // if (address !== AddressStore.addressData.normalized) {
-  if (to.params.address !== from.params.address) {
-    addressNeeded = true;
-  }
+  let addressNeeded = to.params.address !== from.params.address;
   if (addressNeeded && !address) {
-    // if (AddressStore.addressData && AddressStore.addressData.features && AddressStore.Store.addressData.features[0] && address !== AddressStore.addressData.features[0].properties.street_address) {
-    console.log('address:', address, 'typeof address:', typeof address);
-    // if (!address.length || address == '' || address == null) {
+    // console.log('address:', address, 'typeof address:', typeof address);
     if (ParcelsStore.dor.features) {
-      console.log('ParcelsStore.dor.features[0].properties.BASEREG:', ParcelsStore.dor.features[0].properties.BASEREG);
+      // console.log('ParcelsStore.dor.features[0].properties.BASEREG:', ParcelsStore.dor.features[0].properties.BASEREG);
       await ParcelsStore.fillParcelDataByLngLat(MainStore.lastClickCoords.lng, MainStore.lastClickCoords.lat, 'pwd')
       await getAddressAndPutInStore(ParcelsStore.pwd.features[0].properties.PARCELID);
     }
@@ -229,10 +217,6 @@ const router = createRouter({
 router.afterEach(async (to, from) => {
   console.log('router afterEach to:', to, 'from:', from);
   if (to.name !== 'not-found' && to.name !== 'search') {
-    // need to call off dataFetch if the route change is just a page change
-    // if (to.params.address === from.params.address) {
-    //   return;
-    // }
     await dataFetch(to, from);
   } else if (to.name == 'not-found') {
     const MainStore = useMainStore();
