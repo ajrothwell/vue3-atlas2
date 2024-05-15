@@ -9,7 +9,6 @@ html {
 }
 
 body {
-  /* min-height: 100vh; */
   height: auto;
   overflow-y: hidden !important;
 }
@@ -44,6 +43,7 @@ body {
   overflow-y: scroll;
   padding-left: 12px;
   padding-right: 12px;
+  overflow-x: hidden;
 }
 
 .map-panel-holder {
@@ -123,6 +123,7 @@ body {
     display: flex;
     flex-direction: column;
     overflow-y: hidden;
+    overflow-x: hidden;
     justify-content: space-evenly;
   }
 
@@ -144,6 +145,7 @@ body {
 
   .topic-panel-content {
     overflow-y: hidden;
+    overflow-x: hidden;
     padding-left: 12px;
     padding-right: 12px;
   }
