@@ -45,11 +45,12 @@ onMounted(async () => {
 </script>
 
 <template>
-  <!-- <header>Atlas</header> -->
   <app-header
     class="header"
     app-title="Atlas"
     app-link="https://phila.gov"
+    :is-fluid="true"
+    :is-sticky="false"
   ></app-header>
 
   <!-- MAIN CONTENT -->
@@ -68,8 +69,14 @@ onMounted(async () => {
   </main>
 
   <!-- FOOTER -->
-  <!-- <footer>Footer</footer> -->
-  <app-footer></app-footer>
+  <app-footer
+    :is-sticky="true"
+    :is-hidden-mobile="true"
+    :links="[{
+      text: 'City of Philadelphia',
+      url: 'https://www.phila.gov'
+    }]"
+  ></app-footer>
 </template>
 
 <style>
@@ -89,7 +96,7 @@ body, html {
 
 header {
   display: flex;
-  height: 68px;
+  /* height: 68px; */
   width: 100%;
   /* background-color: red; */
 }
@@ -100,8 +107,9 @@ header {
   display: flex;
   flex-direction: row;
   padding-top: 0px !important;
-  padding-bottom: 40px !important;
-  margin-bottom: 10px !important;
+  /* padding-bottom: 40px !important; */
+  /* margin-bottom: 10px !important; */
+  margin-top: 0px !important;
   /* padding-left: 0px !important;
   padding-right: 0px !important;
   margin: 0px !important; */
@@ -114,6 +122,7 @@ header {
   width: 50% !important;
   padding: 0;
   margin: 0;
+  height: calc(100vh - 238px);
   /* margin-bottom: 40px; */
   /* background-color: orange; */
 }
@@ -128,11 +137,22 @@ header {
 .topic-panel-content {
   flex-grow: 1;
   overflow-y: scroll;
-  height: 250px;
   padding-left: 12px;
   padding-right: 12px;
+  min-height: calc(100vh - 183px);
+  /* padding-bottom: 30px; */
+  /* margin-bottom: 40px; */
+  /* height: 250px; */
   /* background-color: pink; */
 }
+
+/* .topics {
+  overflow-y: scroll;
+  height: 100%;
+  flex-grow: 1;
+  height: 250px;
+  padding-bottom: 50px;
+} */
 
 .map-panel-holder {
   width: 50%;
@@ -143,13 +163,49 @@ header {
   /* background-color: green; */
 }
 
-footer {
-  display: flex;
-  width: 100%;
-  height: 46px;
+#app-footer {
+  /* height: 46px !important; */
+}
+
+footer .container {
+  /* display: flex;
+  width: 100%; */
+  /* height: 46px; */
   /* background-color: blue; */
 }
 
+.topic {
+  height: 2em;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  font-size: 2em;
+}
+
+.address-holder {
+  color: #0f4d90 !important;
+  background-color: #DAEDFe;
+  display: flex;
+  flex-direction: column;
+  padding-left: 2.25em;
+  padding-bottom: .5em;
+  padding-top: .5em;
+
+  h3 {
+    color: #0f4d90 !important;
+  }
+}
+
+.address {
+  display: inline-block;
+  padding-left: .25em;
+}
+
+/* .topic-panel-content {
+  padding-left: 1.25em;
+  padding-right: 1em;
+  flex-grow: 1;
+} */
+
 .invisible-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -159,49 +215,152 @@ footer {
   display: none;
 }
 
-/* main {
-  padding-top: 0px !important;
+.map-panel {
+  /* height: 85vh; */
+  height: calc(100vh - 103px);
 }
 
-.topic-panel-holder {
-  min-height: 0px;
-  padding: 0px !important;
-  overflow-y: scroll;
-  flex-grow: 1;
-  position: relative;
+.map-panel.cyclomedia-pictometry {
+  height: 45vh;
 }
 
-.map-panel-holder {
-  flex-grow: 1;
-  padding: 0px !important;
+#map {
+  /* position: relative; */
+  /* padding-bottom: 40px; */
 }
 
-.locations-and-map-panels-holder {
-  flex-direction: row-reverse;
-  flex-grow: 1;
-  overflow-y: scroll;
-  min-height: 0px;
-  margin-left: 0px !important;
-  margin-right: 0px !important;
-  margin-bottom: 0px !important;
-  margin-top: 0px !important;
+.map-class {
+  height: 100%;
+  /* height: 80%; */
 }
 
-.invisible-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
 
-.invisible-scrollbar::-webkit-scrollbar {
-  display: none;
-}
 
 
 @media screen and (max-width: 760px){
 
-.columns {
-   flex-direction: row-reverse;  
- }
-} */
+  body, html {
+    min-height: 100vh;
+    overflow-y: scroll;
+  }
+
+  #app {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+    justify-content: space-evenly;
+  }
+
+  header {
+    display: flex;
+    /* height: 68px; */
+    width: 100%;
+    /* background-color: red; */
+  }
+
+  .main {
+    height: 180%;
+    display: flex;
+    flex-direction: column-reverse;
+    padding-top: 0px !important;
+    padding-bottom: 40px !important;
+    margin-bottom: 10px !important;
+    margin-top: 0px !important;
+  }
+
+  .topics-holder {
+    display: flex;
+    flex-direction: column;
+    width: 100% !important;
+    padding: 0;
+    margin: 0;
+    /* margin-bottom: 40px; */
+    /* background-color: orange; */
+  }
+
+  .address-holder {
+    width: 100%;
+    padding-left: 12px;
+    padding-right: 12px;
+    /* background-color: yellow; */
+  }
+
+  .topic-panel-content {
+    flex-grow: 1;
+    overflow-y: hidden;
+    padding-left: 12px;
+    padding-right: 12px;
+    min-height: calc(100vh - 38px);
+    /* height: 250px; */
+    /* background-color: pink; */
+  }
+
+  /* .topics {
+    overflow-y: scroll;
+    height: 100%;
+    flex-grow: 1;
+    height: 250px;
+    padding-bottom: 50px;
+  } */
+
+  .map-panel-holder {
+    width: 100%;
+    flex-grow: 1;
+    margin-bottom: 0px;
+    /* margin-top: 68px; */
+    /* height: 200px; */
+    /* background-color: green; */
+  }
+
+  /* footer {
+    position: relative;
+    display: flex;
+    width: 100%;
+    height: 46px; */
+    /* background-color: blue;
+  } */
+
+  .topic {
+    height: 2em;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    font-size: 2em;
+  }
+
+  .address-holder {
+    color: #0f4d90 !important;
+    background-color: #DAEDFe;
+    display: flex;
+    flex-direction: column;
+    padding-left: 2.25em;
+    padding-bottom: .5em;
+    padding-top: .5em;
+
+    h3 {
+      color: #0f4d90 !important;
+    }
+  }
+
+  .address {
+    display: inline-block;
+    padding-left: .25em;
+  }
+
+  /* .topic-panel-content {
+    padding-left: 1.25em;
+    padding-right: 1em;
+    flex-grow: 1;
+  } */
+
+  .map-panel {
+    height: 300px;
+  }
+
+  .map-class {
+    height: 300px;
+  }
+
+}
 
 </style>

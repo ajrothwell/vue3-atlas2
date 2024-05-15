@@ -117,50 +117,7 @@ const zipCode = computed(() => {
 
 <style>
 
-.topics {
-  overflow-y: scroll;
-  height: 100%;
-  flex-grow: 1;
-  height: 250px;
-  padding-bottom: 50px;
-}
 
-
-.topics {
-  overflow-y: scroll;
-}
-
-.topic {
-  height: 2em;
-  background-color: #f0f0f0;
-  border: 1px solid #ccc;
-  font-size: 2em;
-}
-
-.address-holder {
-  color: #0f4d90 !important;
-  background-color: #DAEDFe;
-  display: flex;
-  flex-direction: column;
-  padding-left: 2.25em;
-  padding-bottom: .5em;
-  padding-top: .5em;
-
-  h3 {
-    color: #0f4d90 !important;
-  }
-}
-
-.address {
-  display: inline-block;
-  padding-left: .25em;
-}
-
-.topic-panel-content {
-  padding-left: 1.25em;
-  padding-right: 1em;
-  flex-grow: 1;
-}
 
 
 

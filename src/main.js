@@ -7,17 +7,18 @@ import App from './App.vue';
 import router from './router';
 
 import "@phila/phila-ui-core/dist/styles/scss/all.scss";
+import "bulma";
 import PhilaUICore from "@phila/phila-ui-core";
 import AppHeader from "@phila/phila-ui-app-header";
 import AppFooter from "@phila/phila-ui-app-footer";
-
+import NavLink from "@phila/phila-ui-nav-link";
 
 const app = createApp(App);
 
 app.component("AppHeader", AppHeader);
 app.component("AppFooter", AppFooter);
+app.component("NavLink", NavLink);
 app.use(PhilaUICore);
-import "bulma";
 
 // import $config from './config'
 // app.config.globalProperties.$config = config;

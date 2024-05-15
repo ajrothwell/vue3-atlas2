@@ -25,21 +25,4 @@ const mapPanelClass = computed(() => {
 
 <style>
 
-.map-panel {
-  /* height: 85vh; */
-  height: calc(100vh - 110px);
-}
-
-.map-panel.cyclomedia-pictometry {
-  height: 45vh;
-}
-
-@media screen and (max-width: 760px){
-
-  .map-panel {
-    height: 300px;
-  }
-
-}
-
 </style>

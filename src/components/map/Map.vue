@@ -768,22 +768,5 @@ const togglePictometry = () => {
 
 <style>
 
-#map {
-  /* position: relative; */
-  /* padding-bottom: 40px; */
-}
-
-.map-class {
-  height: 100%;
-  /* height: 80%; */
-}
-
-@media screen and (max-width: 760px){
-
-  .map-class {
-    height: 300px;
-  }
-
-}
 
 </style>
