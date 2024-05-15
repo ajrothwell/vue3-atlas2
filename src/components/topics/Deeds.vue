@@ -201,7 +201,7 @@ const getAddress = (address) => {
       <tbody>
         <tr v-for="item in selectedDocs">
           <td><a target='_blank' :href="getHref(item.attributes.DOCUMENT_ID)">{{item.attributes.DOCUMENT_ID}}<font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a></td>
-          <td>{{ item.attributes.DISPLAY_DATE }}</td>
+          <td>{{ date(item.attributes.DISPLAY_DATE) }}</td>
           <td>{{ item.attributes.DOCUMENT_TYPE }}</td>
           <td>{{ item.attributes.GRANTORS }}</td>
           <td>{{ item.attributes.GRANTEES }}</td>

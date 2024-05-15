@@ -42,12 +42,12 @@ const inputAddress = ref('');
 }
 
 .address-input {
-  z-index: 1000;
+  z-index: 2;
 }
 
 .button {
   width: 40px;
-  z-index: 1000;
+  z-index: 2;
 }
 
 </style>

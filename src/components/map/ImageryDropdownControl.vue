@@ -63,7 +63,7 @@ const emitValue = (value) => {
   position: absolute;
   top: 10px;
   right: 70px;
-  z-index: 1000;
+  z-index: 2;
 }
 
 .img-src {

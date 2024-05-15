@@ -1,5 +1,3 @@
-import './assets/style.scss'
-
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 
@@ -8,6 +6,7 @@ import router from './router';
 
 import "@phila/phila-ui-core/dist/styles/scss/all.scss";
 import "bulma";
+import './assets/style.scss'
 import PhilaUICore from "@phila/phila-ui-core";
 import AppHeader from "@phila/phila-ui-app-header";
 import AppFooter from "@phila/phila-ui-app-footer";

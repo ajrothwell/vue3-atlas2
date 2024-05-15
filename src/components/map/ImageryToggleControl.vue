@@ -42,7 +42,7 @@ button {
   position: absolute;
   top: 10px;
   right: 10px;
-  z-index: 1000;
+  z-index: 2;
   border-radius: 5px;
   border-style: solid;
   border-width: 2px;

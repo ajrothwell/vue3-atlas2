@@ -40,7 +40,7 @@ button {
   position: absolute;
   top: 52px;
   right: 10px;
-  z-index: 1000;
+  z-index: 2;
   background-color: white;
   border-radius: 5px;
   border-style: solid;
