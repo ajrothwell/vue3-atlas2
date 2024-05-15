@@ -82,13 +82,19 @@ onMounted(async () => {
 
 <style>
 
-body, html {
-  min-height: 100vh;
+html {
+  min-height: 100dvh;
+  overflow-y: hidden !important;
+}
+
+body {
+  /* min-height: 100vh; */
+  height: auto;
   overflow-y: hidden !important;
 }
 
 #app {
-  height: 100vh;
+  height: 100dvh;
   display: flex;
   flex-direction: column;
   overflow-y: hidden;
@@ -109,7 +115,7 @@ body, html {
   width: 50% !important;
   padding: 0;
   margin: 0;
-  height: calc(100vh - 138px);
+  height: calc(100vh - 110px);
 }
 
 .topic-panel-content {
@@ -117,7 +123,6 @@ body, html {
   overflow-y: scroll;
   padding-left: 12px;
   padding-right: 12px;
-  min-height: calc(100vh - 183px);
 }
 
 .map-panel-holder {
@@ -181,13 +186,19 @@ body, html {
 
 @media screen and (max-width: 768px){
 
-  body, html {
-    min-height: 100vh;
+  html {
+    min-height: 100dvh;
+    overflow-y: scroll;
+  }
+
+  body {
+    /* min-height: 100vh; */
+    height: auto;
     overflow-y: scroll;
   }
 
   #app {
-    height: 100vh;
+    height: 100dvh;
     display: flex;
     flex-direction: column;
     overflow-y: scroll;
@@ -195,32 +206,25 @@ body, html {
   }
 
   .main {
+    height: auto;
     display: flex;
     flex-direction: column-reverse;
-    padding-top: 140px !important;
-    padding-bottom: 40px !important;
-    margin-bottom: 10px !important;
-    margin-top: 290px !important;
+    overflow-y: scroll;
   }
 
   .topics-holder {
-    /* min-height: 400%; */
-    height: 400%;
     display: flex;
     flex-direction: column;
     width: 100% !important;
     padding: 0;
     margin: 0;
+    height: auto;
   }
 
   .topic-panel-content {
-    height: 400%;
-    /* flex-grow: 1; */
     overflow-y: hidden;
     padding-left: 12px;
     padding-right: 12px;
-    min-height: 400%;
-    /* min-height: calc(100vh - 38px); */
   }
 
   .map-panel-holder {
