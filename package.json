@@ -19,6 +19,7 @@
     "@phila/phila-ui-app-footer": "file:./phila-phila-ui-app-footer-0.0.1.tgz",
     "@phila/phila-ui-app-header": "file:./phila-phila-ui-app-header-0.0.1.tgz",
     "@phila/phila-ui-core": "file:./phila-phila-ui-core-0.0.1.tgz",
+    "@phila/phila-ui-nav-link": "file:./phila-phila-ui-nav-link-0.0.1.tgz",
     "@turf/area": "^6.5.0",
     "@turf/bbox": "^6.5.0",
     "@turf/bbox-polygon": "^6.5.0",
