@@ -204,6 +204,8 @@ body, html {
   }
 
   .topics-holder {
+    /* min-height: 400%; */
+    height: 400%;
     display: flex;
     flex-direction: column;
     width: 100% !important;
@@ -212,11 +214,13 @@ body, html {
   }
 
   .topic-panel-content {
-    flex-grow: 1;
+    height: 400%;
+    /* flex-grow: 1; */
     overflow-y: hidden;
     padding-left: 12px;
     padding-right: 12px;
-    min-height: calc(100vh - 38px);
+    min-height: 400%;
+    /* min-height: calc(100vh - 38px); */
   }
 
   .map-panel-holder {
