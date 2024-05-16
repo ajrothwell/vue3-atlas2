@@ -20,12 +20,15 @@ onMounted( async() => {
   const map = new window.ev.EmbeddedExplorer().mount('eagleview', { authToken: response.data.access_token });
   map.enableMeasurementPanel(false);
   map.enableSearchBar(false);
-  map.setView({ lonLat: {lat: 39.926305, lon: -75.162278}, zoom: 16, pitch: 0, rotation: 0 }, (value) => console.log('View has been set, value:', value));
+  map.setView({ lonLat: {lat: 39.953338, lon: -75.163471}, zoom: 16, pitch: 0, rotation: 0 }, (value) => {
+    console.log('View has been set, value:', value)
+  });
+  // map.setView({ lonLat: {lat: 39.926305, lon: -75.162278}, zoom: 16, pitch: 0, rotation: 0 }, (value) => console.log('View has been set, value:', value));
   map.on('onViewUpdate', (value) => {
     console.log('View has been updated, value:', value);
-    if (value.zoom < 17) {
-      map.setView({ zoom: 17, lonLat: value.lonLat, pitch: value.pitch, rotation: value.rotation });
-    }
+    // if (value.zoom < 18) {
+      // map.setView({ zoom: 18, lonLat: value.lonLat, pitch: value.pitch, rotation: value.rotation });
+    // }
   });
 });
 </script>
