@@ -2,54 +2,35 @@
 
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
-
-import { Base64 } from 'js-base64';
-import qs from 'qs';
 const clientId = import.meta.env.VITE_EAGLEVIEW_CLIENT_ID;
 const clientSecret = import.meta.env.VITE_EAGLEVIEW_CLIENT_SECRET;
-// const basicAuth = 'Basic ' + Base64.encode(clientId + ':' + clientSecret);
-const basicAuth = 'Basic ' + btoa(clientId + ':' + clientSecret);
-const data = { 'grant_type': 'client_credentials' };
-const data2 = qs.stringify(data);
-const url = 'https://api.eagleview.com/auth-service/v1/token';
-// const url = 'https://apicenter.eagleview.com/oauth2/v1/token';
 const options = {
   method: 'POST',
   headers: {
-    'Authorization': basicAuth,
+    'Authorization': 'Basic ' + btoa(clientId + ':' + clientSecret),
     'Accept': 'application/json',
     'content-type': 'application/x-www-form-urlencoded'
   },
-  data: qs.stringify(data),
-  url,
+  data: 'grant_type=client_credentials',
+  url: 'https://api.eagleview.com/auth-service/v1/token',
 };
 
-
-// const params = new URLSearchParams();
-// params.append('grant_type', 'client_credentials');
-console.log('clientId:', clientId, 'clientSecret:', clientSecret, 'basicAuth:', basicAuth, 'data2:', data2);
-
 onMounted( async() => {
-  const params = {
-    'grant_type': 'client_credentials',
-  }
-  const headers = {
-    'Authorization': basicAuth,
-    'Accept': 'application/json',
-    'Content-Type': 'application/x-www-form-urlencoded',
-  }
-  const response = await axios(options, data2);
-  // const response = await axios.post('https://api.eagleview.com/auth-service/v1/token HTTP/1.1', params, headers);
-  console.log('response:', response);
-  // const map = new window.ev.EmbeddedExplorer().mount('eagleview');
+  const response = await axios(options);
   const map = new window.ev.EmbeddedExplorer().mount('eagleview', { authToken: response.data.access_token });
-  map.enableMeasurementPanel(false, () => console.log('Measurement panel disabled'));
-  map.enableSearchBar(false, () => console.log('Search bar disabled'));
-})
+  map.enableMeasurementPanel(false);
+  map.enableSearchBar(false);
+  map.setView({ lonLat: {lat: 39.926305, lon: -75.162278}, zoom: 16, pitch: 0, rotation: 0 }, (value) => console.log('View has been set, value:', value));
+  map.on('onViewUpdate', (value) => {
+    console.log('View has been updated, value:', value);
+    if (value.zoom < 17) {
+      map.setView({ zoom: 17, lonLat: value.lonLat, pitch: value.pitch, rotation: value.rotation });
+    }
+  });
+});
 </script>
 
 <template>
-  <!-- <div id='eagleview' style="height: 200px; width: 400px;"></div> -->
   <div id='eagleview' class="eagleview-div"></div>
 </template>
 
