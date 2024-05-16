@@ -17,10 +17,11 @@ const options = {
 
 onMounted( async() => {
   const response = await axios(options);
+  localStorage.clear();
   const map = new window.ev.EmbeddedExplorer().mount('eagleview', { authToken: response.data.access_token });
   map.enableMeasurementPanel(false);
   map.enableSearchBar(false);
-  map.setView({ lonLat: {lat: 39.953338, lon: -75.163471}, zoom: 16, pitch: 0, rotation: 0 }, (value) => {
+  map.setView({ lonLat: {lat: 39.953338, lon: -75.163471}, zoom: 17, pitch: 0, rotation: 0 }, (value) => {
     console.log('View has been set, value:', value)
   });
   // map.setView({ lonLat: {lat: 39.926305, lon: -75.162278}, zoom: 16, pitch: 0, rotation: 0 }, (value) => console.log('View has been set, value:', value));
