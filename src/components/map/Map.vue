@@ -525,12 +525,7 @@ watch(
       map.setPaintProperty(
         'nearby',
         'circle-stroke-color',
-        ['match',
-        ['get', 'id'],
-        newHoveredStateId,
-        'black',
         'white',
-        ]
       )
       map.setPaintProperty(
         'nearby', 
