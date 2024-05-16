@@ -5,8 +5,8 @@ import axios from 'axios';
 
 import { Base64 } from 'js-base64';
 import qs from 'qs';
-const clientId = import.meta.env.VITE_PICTOMETRY_API_KEY;
-const clientSecret = import.meta.env.VITE_PICTOMETRY_SECRET_KEY;
+const clientId = import.meta.env.VITE_EAGLEVIEW_CLIENT_ID;
+const clientSecret = import.meta.env.VITE_EAGLEVIEW_CLIENT_SECRET;
 // const basicAuth = 'Basic ' + Base64.encode(clientId + ':' + clientSecret);
 const basicAuth = 'Basic ' + btoa(clientId + ':' + clientSecret);
 const data = { 'grant_type': 'client_credentials' };
@@ -41,21 +41,21 @@ onMounted( async() => {
   const response = await axios(options, data2);
   // const response = await axios.post('https://api.eagleview.com/auth-service/v1/token HTTP/1.1', params, headers);
   console.log('response:', response);
-  // const map = new window.ev.EmbeddedExplorer().mount('pictometry');
-  const map = new window.ev.EmbeddedExplorer().mount('pictometry', { authToken: response.data.access_token });
+  // const map = new window.ev.EmbeddedExplorer().mount('eagleview');
+  const map = new window.ev.EmbeddedExplorer().mount('eagleview', { authToken: response.data.access_token });
   map.enableMeasurementPanel(false, () => console.log('Measurement panel disabled'));
   map.enableSearchBar(false, () => console.log('Search bar disabled'));
 })
 </script>
 
 <template>
-  <!-- <div id='pictometry' style="height: 200px; width: 400px;"></div> -->
-  <div id='pictometry' class="pictometry-div"></div>
+  <!-- <div id='eagleview' style="height: 200px; width: 400px;"></div> -->
+  <div id='eagleview' class="eagleview-div"></div>
 </template>
 
 <style>
 
-.pictometry-div {
+.eagleview-div {
   position: relative;
   height: 100%;
   width: 100%;

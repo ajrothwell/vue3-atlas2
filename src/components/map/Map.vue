@@ -42,9 +42,9 @@ import DistanceMeasureControl from '@/components/map/DistanceMeasureControl.vue'
 import ImageryToggleControl from '@/components/map/ImageryToggleControl.vue';
 import ImageryDropdownControl from '@/components/map/ImageryDropdownControl.vue';
 import CyclomediaControl from '@/components/map/CyclomediaControl.vue';
-import PictometryControl from '@/components/map/PictometryControl.vue';
+import EagleviewControl from '@/components/map/EagleviewControl.vue';
 import OpacitySlider from '@/components/map/OpacitySlider.vue';
-import PictometryPanel from '@/components/map/PictometryPanel.vue';
+import EagleviewPanel from '@/components/map/EagleviewPanel.vue';
 import CyclomediaPanel from '@/components/map/CyclomediaPanel.vue';
 import CyclomediaRecordingsClient from '@/components/map/recordings-client.js';
 
@@ -751,10 +751,10 @@ const updateCyclomediaCameraViewcone = (cycloHFov, cycloYaw) => {
   $config.dorDrawnMapStyle.sources.cyclomediaViewcone.data = data;
 }
 
-// toggle pictometry on and off
-const togglePictometry = () => {
-  console.log('togglePictometry');
-  MapStore.pictometryOn = !MapStore.pictometryOn;
+// toggle eagleview on and off
+const toggleEagleview = () => {
+  console.log('toggleEagleview');
+  MapStore.eagleviewOn = !MapStore.eagleviewOn;
 }
 
 </script>
@@ -765,7 +765,7 @@ const togglePictometry = () => {
     <ImageryToggleControl @toggleImagery="toggleImagery"></ImageryToggleControl>
     <ImageryDropdownControl v-if="MapStore.imageryOn" @setImagery="setImagery"></ImageryDropdownControl>
     <CyclomediaControl @toggleCyclomedia="toggleCyclomedia"></CyclomediaControl>
-    <PictometryControl @togglePictometry="togglePictometry"></PictometryControl>
+    <EagleviewControl @toggleEagleview="toggleEagleview"></EagleviewControl>
     <OpacitySlider v-if="selectedRegmap" :initialOpacity="MapStore.regmapOpacity"@opacityChange="handleRegmapOpacityChange"></OpacitySlider>
     <OpacitySlider v-if="MainStore.currentTopic == 'Zoning'" :initialOpacity="MapStore.zoningOpacity"@opacityChange="handleZoningOpacityChange"></OpacitySlider>
     <!-- the distance measure control uses a ref, so that functions within the component can be called from this file -->
@@ -780,9 +780,9 @@ const togglePictometry = () => {
     ></CyclomediaPanel>
   </KeepAlive>
   <KeepAlive>
-    <PictometryPanel
-      v-if="MapStore.pictometryOn"
-    ></PictometryPanel>
+    <EagleviewPanel
+      v-if="MapStore.eagleviewOn"
+    ></EagleviewPanel>
   </KeepAlive>
 </template>
 

@@ -7,8 +7,8 @@ import Map from '@/components/map/Map.vue';
 import { computed } from 'vue';
 
 const mapPanelClass = computed(() => {
-  if (MapStore.cyclomediaOn || MapStore.pictometryOn) {
-    return 'map-panel cyclomedia-pictometry';
+  if (MapStore.cyclomediaOn || MapStore.eagleviewOn) {
+    return 'map-panel cyclomedia-eagleview';
   } else {
     return 'map-panel';
   }

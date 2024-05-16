@@ -5,19 +5,19 @@ const MainStore = useMainStore();
 import { useMapStore } from '@/stores/MapStore.js';
 const MapStore = useMapStore();
 
-defineEmits(['togglePictometry']);
+defineEmits(['toggleEagleview']);
 
 const imgSrc = computed(() => {
-  return MainStore.publicPath + 'images/pictometry.png';
-  // return import.meta.env.VITE_PUBLICPATH + 'images/pictometry.png';
-  // return 'images/pictometry.png';
+  return MainStore.publicPath + 'images/eagleview.png';
+  // return import.meta.env.VITE_PUBLICPATH + 'images/eagleview.png';
+  // return 'images/eagleview.png';
 });
 
 </script>
 
 <template>
-  <div class="pictometry-toggle" :class="MapStore.pictometryOn ? 'active' : 'inactive'">
-    <button type="button" @click="$emit('togglePictometry')">
+  <div class="eagleview-toggle" :class="MapStore.eagleviewOn ? 'active' : 'inactive'">
+    <button type="button" @click="$emit('toggleEagleview')">
       <img class='img-src' :src="imgSrc" />
     </button>
   </div>
@@ -34,7 +34,7 @@ button {
   border: none;
 }
 
-.pictometry-toggle {
+.eagleview-toggle {
   height: 36px;
   width: 36px;
   position: absolute;

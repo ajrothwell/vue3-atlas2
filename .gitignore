@@ -13,6 +13,7 @@ dist-ssr
 coverage
 *.local
 *.development
+package-lock.json
 
 /cypress/videos/
 /cypress/screenshots/
