@@ -4,7 +4,7 @@ import { computed, onBeforeMount } from 'vue';
 // import { storeToRefs } from 'pinia';
 
 import useTransforms from '@/composables/useTransforms';
-const { date, integer, prettyNumber } = useTransforms();
+const { date, integer, prettyNumber, timeReverseFn } = useTransforms();
 
 // import the GeocodeStore and DorParcels
 import { useGeocodeStore } from '@/stores/GeocodeStore';
@@ -27,8 +27,9 @@ const selectedParcel = computed(() => {
 });
 const selectedDocs = computed(() => {
   if (selectedParcelId.value && DorStore.dorDocuments[selectedParcelId.value]) {
-    console.log('selectedParcelId.value:', selectedParcelId.value);
-    return DorStore.dorDocuments[selectedParcelId.value].data.features;
+    // console.log('selectedParcelId.value:', selectedParcelId.value);
+    const data = DorStore.dorDocuments[selectedParcelId.value].data.features;
+    return data.sort((a, b) => new Date(b.attributes.DISPLAY_DATE) - new Date(a.attributes.DISPLAY_DATE));
   } else {
     return null;
   }
