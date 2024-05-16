@@ -20,7 +20,7 @@ const emitValue = (value) => {
 <template>
   <div
     :class="imageryDropdownOpen ? 'is-active' : ''"
-    class="imagery-dropdown dropdown"
+    class="dropdown imagery-dropdown"
     @click="toggleImageryDropdown"
   >
     <div class="dropdown-trigger">
@@ -60,7 +60,7 @@ const emitValue = (value) => {
 <style>
 
 .imagery-dropdown {
-  position: absolute;
+  position: absolute !important;
   top: 10px;
   right: 70px;
   z-index: 2;
