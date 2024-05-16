@@ -16,7 +16,7 @@ const url = 'https://api.eagleview.com/auth-service/v1/token';
 const options = {
   method: 'POST',
   headers: {
-    // 'Authorization': basicAuth,
+    'Authorization': basicAuth,
     'Accept': 'application/json',
     'content-type': 'application/x-www-form-urlencoded'
   },
@@ -30,22 +30,40 @@ const options = {
 console.log('clientId:', clientId, 'clientSecret:', clientSecret, 'basicAuth:', basicAuth, 'data2:', data2);
 
 onMounted( async() => {
-  // const params = {
-  //   'grant_type': 'client_credentials',
-  // }
-  // const headers = {
-  //   'Authorization': basicAuth,
-  //   'Accept': 'application/json',
-  //   'Content-Type': 'application/x-www-form-urlencoded',
-  // }
-  // const response = await axios(options);
-  // // const response = await axios.post('https://api.eagleview.com/auth-service/v1/token HTTP/1.1', params, headers);
-  // console.log('response:', response);
-  const map = new window.ev.EmbeddedExplorer().mount('pictometry');
-  // const map = new window.ev.EmbeddedExplorer().mount('pictometry', { authToken: response.data.access_token });
+  const params = {
+    'grant_type': 'client_credentials',
+  }
+  const headers = {
+    'Authorization': basicAuth,
+    'Accept': 'application/json',
+    'Content-Type': 'application/x-www-form-urlencoded',
+  }
+  const response = await axios(options, data2);
+  // const response = await axios.post('https://api.eagleview.com/auth-service/v1/token HTTP/1.1', params, headers);
+  console.log('response:', response);
+  // const map = new window.ev.EmbeddedExplorer().mount('pictometry');
+  const map = new window.ev.EmbeddedExplorer().mount('pictometry', { authToken: response.data.access_token });
+  map.enableMeasurementPanel(false, () => console.log('Measurement panel disabled'));
+  map.enableSearchBar(false, () => console.log('Search bar disabled'));
 })
 </script>
 
 <template>
-  <div id='pictometry' style="height: 100%; width: 25%;"></div>
+  <!-- <div id='pictometry' style="height: 200px; width: 400px;"></div> -->
+  <div id='pictometry' class="pictometry-div"></div>
 </template>
+
+<style>
+
+.pictometry-div {
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+
+.ev-embedded-explorer_container {
+  height: 100%;
+  width: 100%;
+}
+
+</style>

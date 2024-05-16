@@ -42,6 +42,19 @@ onMounted(async () => {
   }
 });
 
+const footerLinks = {
+  links: [
+    {
+      type: 'native',
+      href: 'https://phila.formstack.com/forms/atlas_feedback_form',
+      text: 'Feedback',
+      attrs: {
+        target: '_blank',
+      },
+    }
+  ]
+};
+
 </script>
 
 <template>
@@ -51,7 +64,9 @@ onMounted(async () => {
     app-link="https://phila.gov"
     :is-fluid="true"
     :is-sticky="true"
-  ></app-header>
+  >
+    <!-- <mobile-nav slot="dropdown-nav" :links="footerLinks.links"></mobile-nav> -->
+  </app-header>
 
   <!-- MAIN CONTENT -->
   <main class="main invisible-scrollbar">
@@ -73,10 +88,7 @@ onMounted(async () => {
     class="is-hidden-mobile"
     :is-sticky="true"
     :is-hidden-mobile="true"
-    :links="[{
-      text: 'City of Philadelphia',
-      url: 'https://www.phila.gov'
-    }]"
+    :links="footerLinks.links"
   ></app-footer>
 </template>
 

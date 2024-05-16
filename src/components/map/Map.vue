@@ -485,8 +485,18 @@ watch(
       // console.log('map.getStyle().sources:', map.getStyle().sources.filter(source => source.id === 'nearby')[0]);
       // console.log('there is a new hoveredStateId, setting paint property');
       map.setPaintProperty(
+        'nearby',
+        'circle-stroke-color',
+        ['match',
+        ['get', 'id'],
+        newHoveredStateId,
+        'black',
+        'white',
+        ]
+      )
+      map.setPaintProperty(
         'nearby', 
-        'circle-color', 
+        'circle-color',
         ['match',
         ['get', 'id'],
         newHoveredStateId,
@@ -512,6 +522,16 @@ watch(
       ]
       );
     } else {
+      map.setPaintProperty(
+        'nearby',
+        'circle-stroke-color',
+        ['match',
+        ['get', 'id'],
+        newHoveredStateId,
+        'black',
+        'white',
+        ]
+      )
       map.setPaintProperty(
         'nearby', 
         'circle-color', 

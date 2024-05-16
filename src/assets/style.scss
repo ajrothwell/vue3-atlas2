@@ -88,11 +88,11 @@ body {
 }
 
 .map-panel {
-  height: calc(100vh - 103px);
+  height: calc(100vh - 110px);
 }
 
 .map-panel.cyclomedia-pictometry {
-  height: 45vh;
+  height: 51.5%;
 }
 
 #map {
@@ -210,6 +210,7 @@ body {
   margin-bottom: 2rem;
 }
 
-.active-hover {
+.active-hover td {
   background-color: #FFFF00 !important;
+  background-color: rgb(243, 214, 97) !important;
 }

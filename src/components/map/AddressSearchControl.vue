@@ -11,6 +11,7 @@ const inputAddress = ref('');
 <template>
   <!-- <div class="columns"> -->
     <div class="holder">
+      
       <input
         class="input address-input"
         type="text"
@@ -38,7 +39,6 @@ const inputAddress = ref('');
   width: 70%;
   display: flex;
   flex-direction: row;
-  /* z-index: 1000; */
 }
 
 .address-input {
