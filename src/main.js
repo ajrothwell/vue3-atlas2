@@ -10,8 +10,8 @@ import './assets/style.scss'
 import PhilaUICore from "@phila/phila-ui-core";
 import AppHeader from "@phila/phila-ui-app-header";
 import AppFooter from "@phila/phila-ui-app-footer";
-import DropdownNav from "@phila/phila-ui-dropdown-nav";
-// import MobileNav from "@phila/phila-ui-mobile-nav";
+import Dropdown from "@phila/phila-ui-dropdown";
+import MobileNav from "@phila/phila-ui-mobile-nav";
 import NavLink from "@phila/phila-ui-nav-link";
 import Textbox from "@phila/phila-ui-textbox";
 
@@ -19,8 +19,8 @@ const app = createApp(App);
 
 app.component("AppHeader", AppHeader);
 app.component("AppFooter", AppFooter);
-app.component("DropdownNav", DropdownNav);
-// app.component("MobileNav", MobileNav);
+app.component("Dropdown", Dropdown);
+app.component("MobileNav", MobileNav);
 app.component("NavLink", NavLink);
 app.component("Textbox", Textbox);
 app.use(PhilaUICore);

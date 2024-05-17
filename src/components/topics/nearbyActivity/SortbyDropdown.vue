@@ -20,7 +20,8 @@ const setSortby = (newSortby) => {
     :class="sortbyDropdownOpen ? 'dropdown is-active' : 'dropdown'"
     @click="toggleSortbyDropdown"
   >
-    <div class="dropdown-trigger">
+    <dropdown>test</dropdown>
+    <!-- <div class="dropdown-trigger">
       <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
         <span>Sort by</span>
         <span class="icon is-small">
@@ -33,7 +34,7 @@ const setSortby = (newSortby) => {
         <a class="dropdown-item" @click="setSortby('distance')">distance</a>
         <a class="dropdown-item" @click="setSortby('time')">time</a>
       </div>
-    </div>
+    </div> -->
   </div>
   <span>{{ sortby }}</span>
   <br></br>
