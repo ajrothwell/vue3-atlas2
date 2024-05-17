@@ -55,6 +55,25 @@ const footerLinks = {
   ]
 };
 
+const links = [
+  {
+    type: 'native',
+    href: 'https://phila.formstack.com/forms/atlas_feedback_form',
+    text: 'Feedback',
+    attrs: {
+      target: '_blank',
+    },
+  },
+  {
+    type: 'native',
+    href: 'https://phila.formstack.com/forms/atlas_feedback_form',
+    text: 'Feedback',
+    attrs: {
+      target: '_blank',
+    },
+  },
+];
+
 </script>
 
 <template>
@@ -66,7 +85,16 @@ const footerLinks = {
     :is-fluid="true"
   >
     <template #mobile-nav>
-      <mobile-nav :links="footerLinks.links">
+      <mobile-nav :links="links">
+      <!-- <mobile-nav> -->
+        <!-- <ul>
+          <li>
+            <a href="/home">Home</a>
+          </li>
+          <li>
+            <a href="/about">About</a>
+          </li>
+        </ul> -->
       </mobile-nav>
     </template>
       
@@ -92,7 +120,7 @@ const footerLinks = {
     class="is-hidden-mobile"
     :is-sticky="true"
     :is-hidden-mobile="true"
-    :links="footerLinks.links"
+    :links="links"
   ></app-footer>
 </template>
 
