@@ -58,14 +58,18 @@ const footerLinks = {
 </script>
 
 <template>
+  <!-- class="header" -->
   <app-header
-    class="header"
     app-title="Atlas"
     app-link="https://phila.gov"
     :is-sticky="true"
+    :is-fluid="true"
   >
-  <!-- :is-fluid="true" -->
-    <mobile-nav slot="mobile-nav" :links="footerLinks.links"></mobile-nav>
+    <template #mobile-nav>
+      <mobile-nav :links="footerLinks.links">
+      </mobile-nav>
+    </template>
+      
   </app-header>
 
   <!-- MAIN CONTENT -->

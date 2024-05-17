@@ -14,6 +14,8 @@ coverage
 *.local
 *.development
 package-lock.json
+.env
+.npmrc
 
 /cypress/videos/
 /cypress/screenshots/
