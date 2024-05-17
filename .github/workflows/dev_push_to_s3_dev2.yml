@@ -23,6 +23,7 @@ jobs:
 
     - name: npm install, and build
       run: |
+        echo "${{ secrets.FA_AUTH_TOKEN }}"
         printf "@fortawesome:registry=https://npm.fontawesome.com/\n//npm.fontawesome.com/:_authToken=${FA_AUTH_TOKEN}" >> ~/.npmrc
         npm install
         npm run build-dev
