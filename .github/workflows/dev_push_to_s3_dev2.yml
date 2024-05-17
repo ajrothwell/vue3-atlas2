@@ -23,12 +23,12 @@ jobs:
 
     - name: npm install, and build
       run: |
-        echo "${{ secrets.FA_AUTH_TOKEN }}"
+        echo "FA_AUTH_TOKEN: $FA_AUTH_TOKEN"
         printf "@fortawesome:registry=https://npm.fontawesome.com/\n//npm.fontawesome.com/:_authToken=${FA_AUTH_TOKEN}" >> ~/.npmrc
         npm install
         npm run build-dev
       env:
-        FONTAWESOME_NPM_AUTH_TOKEN: ${{ secrets.FA_AUTH_TOKEN }}
+        FA_AUTH_TOKEN: ${{ secrets.FA_AUTH_TOKEN }}
         VITE_GATEKEEPER_KEY: ${{ secrets.VITE_GATEKEEPER_KEY }}
         VITE_CYCLOMEDIA_API_KEY: ${{ secrets.VITE_CYCLOMEDIA_API_KEY }}
         VITE_CYCLOMEDIA_PASSWORD: ${{ secrets.VITE_CYCLOMEDIA_PASSWORD }}
