@@ -140,19 +140,25 @@ const getNextPage = () => {
 <style>
 
 .pagination-link {
-  margin: 0px;
+  margin: 0px !important;
+  padding: 0px;
+  min-width: 16px !important;
 }
 
 .pagination-ellipsis {
-  margin: 0px;
+  margin: 0px !important;
+  min-width: 16px !important;
 }
 
 .pagination-previous {
-  margin: 0px;
+  margin: 0px !important;
+  min-width: 16px !important;
 }
 
 .pagination-next {
-  margin: 0px;
+  margin: 0px !important;
+  min-width: 16px !important;
+  justify-content: flex-end !important;
 }
 
 </style>
