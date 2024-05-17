@@ -136,3 +136,23 @@ const getNextPage = () => {
 
   </section>
 </template>
+
+<style>
+
+.pagination-link {
+  margin: 0px;
+}
+
+.pagination-ellipsis {
+  margin: 0px;
+}
+
+.pagination-previous {
+  margin: 0px;
+}
+
+.pagination-next {
+  margin: 0px;
+}
+
+</style>
