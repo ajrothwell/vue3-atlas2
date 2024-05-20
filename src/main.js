@@ -33,7 +33,7 @@ app.use(PhilaUICore);
 // app.config.globalProperties.$config = config;
 
 import { library } from '@fortawesome/fontawesome-svg-core';
-// import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { faHome } from '@fortawesome/free-solid-svg-icons';
 import { faBook } from '@fortawesome/free-solid-svg-icons';
 import { faWrench } from '@fortawesome/free-solid-svg-icons';
@@ -46,7 +46,7 @@ import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons';
 // import { faBars } from '@fortawesome/free-solid-svg-icons';
 library.add(
-  // faMagnifyingGlass,
+  faSearch,
   faHome,
   faBook,
   faWrench,

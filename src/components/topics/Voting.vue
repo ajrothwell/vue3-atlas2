@@ -6,6 +6,7 @@ import useTransforms from '@/composables/useTransforms';
 const { nth, phoneNumber, titleCase } = useTransforms();
 
 import { useVotingStore } from '@/stores/VotingStore';
+import { onMounted } from 'vue';
 const VotingStore = useVotingStore();
 
 const council = VotingStore.electedOfficials.rows.filter((item) => {
@@ -28,6 +29,12 @@ const getTerm = () => {
   return council[0].next_election - 4 + ' - ' + council[0].next_election;
 }
 
+onMounted(() => {
+  const topic = document.getElementById('Voting-topic');
+  console.log('topic:', topic);
+  topic.scrollIntoView();
+});
+
 </script>
 
 <template>
@@ -41,7 +48,7 @@ const getTerm = () => {
     <a target="_blank" :href="VotingStore.electedOfficials.rows[0].ballot_file_id">Preview ballot <font-awesome-icon icon="fa-solid fa-external-link-alt"></font-awesome-icon></a>
   </div>
 
-  <div class="box">The deadline to register for the next election is 15 days prior to the election. You can confirm your registration and learn about registering to vote at <a target="_blank" href="vote.phila.gov">vote.phila.gov</a>.</div>
+  <div id="Voting-description" class="box">The deadline to register for the next election is 15 days prior to the election. You can confirm your registration and learn about registering to vote at <a target="_blank" href="vote.phila.gov">vote.phila.gov</a>.</div>
 
   <h5 class="subtitle is-5 table-title">Polling Place</h5>
   <div class="vert-table">

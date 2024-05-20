@@ -7,14 +7,24 @@ const GeocodeStore = useGeocodeStore();
 import { useOpaStore } from '@/stores/OpaStore';
 const OpaStore = useOpaStore();
 import { useCondosStore } from '@/stores/CondosStore';
+import { onMounted } from 'vue';
 const CondosStore = useCondosStore();
+
+onMounted(() => {
+  const topic = document.getElementById('Property-topic');
+  const topicPanel = document.getElementById('topic-panel-content');
+  topic.scrollIntoView();
+  const main = document.getElementById('main');
+  const mainScrollTop = main.scrollTop;
+  main.scrollTo(0, mainScrollTop - 80);
+});
 
 
 </script>
 
 <template>
   <section>
-    <div class="box" v-if="OpaStore.opaData.rows.length">
+    <div id="Property-description" class="box" v-if="OpaStore.opaData.rows.length">
       Property assessment and sale information for this address. Source: Office of Property Assessments (OPA). OPA was formerly a part of the Bureau of Revision of Taxes (BRT) and some City records may still use that name.
     </div>
 

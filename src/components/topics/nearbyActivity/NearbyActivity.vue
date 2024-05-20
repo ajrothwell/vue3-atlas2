@@ -70,13 +70,16 @@ watch(() => hoveredStateId.value, (newHoveredStateId) => {
 onMounted( () => {
   // console.log('NearbyActivity.vue onMounted is running, route.params.data:', route.params.data);
   setDataType(route.params.data);
+  // const topic = document.getElementById('Nearby Activity-topic');
+  // console.log('topic:', topic);
+  // topic.scrollIntoView();
 })
 
 </script>
 
 <template>
   <section>
-    <div class="box">
+    <div id="Nearby Activity-description" class="box">
       See recent activity near your search address including 311 service requests, crimes, zoning appeals, and more. Hover over a record below to highlight it on the map.
     </div>
 

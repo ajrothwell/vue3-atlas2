@@ -1,6 +1,6 @@
 <script setup>
 
-import { computed, onBeforeMount } from 'vue';
+import { computed, onBeforeMount, onMounted } from 'vue';
 // import { storeToRefs } from 'pinia';
 
 import useTransforms from '@/composables/useTransforms';
@@ -96,10 +96,19 @@ const getAddress = (address) => {
   }
 }
 
+onMounted(() => {
+  const topic = document.getElementById('Deeds-topic');
+  console.log('topic:', topic);
+  topic.scrollIntoView();
+  const main = document.getElementById('main');
+  const mainScrollTop = main.scrollTop;
+  main.scrollTo(0, mainScrollTop - 80);
+});
+
 </script>
 
 <template>
-  <div class="box">Deed information and document transactions for this address. The map faithfully reflects property boundaries as described in recorded deeds including multiple types of easements. The property boundaries displayed on the map are for reference only and should not be used in place of the recorded deeds or land surveys. Source: Department of Records</div>
+  <div id="Deeds-description" class="box">Deed information and document transactions for this address. The map faithfully reflects property boundaries as described in recorded deeds including multiple types of easements. The property boundaries displayed on the map are for reference only and should not be used in place of the recorded deeds or land surveys. Source: Department of Records</div>
   <collection-summary
     :value="'STATUS'"
     :descriptor="'parcel'"
@@ -260,43 +269,8 @@ const getAddress = (address) => {
 @media 
 only screen and (max-width: 760px),
 (min-device-width: 768px) and (max-device-width: 1024px)  {
+	/*Label the data*/
 
-	/* Force table to not be like tables anymore */
-	table, thead, tbody, th, td, tr {
-		display: block; 
-	}
-	
-	/* Hide table headers (but not display: none;, for accessibility) */
-	thead tr { 
-		position: absolute;
-		top: -9999px;
-		left: -9999px;
-	}
-	
-	tr { border: 1px solid #ccc; }
-	
-	td { 
-		/* Behave  like a "row" */
-		border: none;
-		border-bottom: 1px solid #eee; 
-		position: relative;
-		padding-left: 70px !important; 
-	}
-	
-	td:before { 
-		/* Now like a table header */
-		position: absolute;
-		/* Top/left values mimic padding */
-		top: 10px;
-		left: 6px;
-		width: 45%; 
-		padding-right: 10px; 
-		white-space: nowrap;
-	}
-	
-	/*
-	Label the data
-	*/
 	td:nth-of-type(1):before { content: "ID"; }
 	td:nth-of-type(2):before { content: "Date"; }
 	td:nth-of-type(3):before { content: "Type"; }

@@ -40,7 +40,7 @@ const handleTopicClick = () => {
 </script>
 
 <template>
-  <section>
+  <section :id="topicName+'-topic'">
 
     <div
       class="topic is-vcentered"

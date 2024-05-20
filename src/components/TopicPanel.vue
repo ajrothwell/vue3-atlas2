@@ -1,6 +1,6 @@
 <script setup>
 
-import { computed } from 'vue';
+import { computed, onMounted } from 'vue';
 import { useMainStore } from '@/stores/MainStore.js'
 const GeocodeStore = useGeocodeStore();
 import { useGeocodeStore } from '@/stores/GeocodeStore.js'
@@ -30,6 +30,15 @@ const zipCode = computed(() => {
   return '';
 });
 
+// onMounted(() => {
+//   const scroller = document.getElementById("main");
+//   console.log('scroller:', scroller);
+  
+//   scroller.addEventListener("scroll", (event) => {
+//     console.log(`scrollTop: ${scroller.scrollTop}`);
+//   });
+// });
+
 </script>
 
 <template>
@@ -37,7 +46,7 @@ const zipCode = computed(() => {
       
     <!-- FRONT PAGE CONTENT -->
     <div class="" v-if="route.name == 'home'">
-      <div class="topic-panel-content">
+      <div id="topic-panel-content">
         <h3 class="subtitle is-3">Atlas is your front door to the City of Philadelphia.</h3>
         <p class="subtitle is-5">Here are some things you can do with Atlas:</p>
         <ul>
@@ -54,7 +63,7 @@ const zipCode = computed(() => {
 
     <!-- ADDRESS NOT FOUND CONTENT -->
     <div class="" v-if="route.name == 'not-found'">
-      <div class="topic-panel-content">
+      <div id="topic-panel-content">
         <p>We couldn't find that address. Are you sure everything was spelled correctly?</p>
         <p>Here are some examples of things you can search for:</p>
         <ul>
@@ -77,7 +86,7 @@ const zipCode = computed(() => {
         <div>PHILADELPHIA, PA {{ zipCode }}</div>
       </div>
 
-      <div v-if="address" class="topics topic-panel-content">      
+      <div v-if="address" id="topic-panel-content" class="topics">
         <topic :topic-name="'Property'" :topic-icon="'fa-solid fa-home'" :loading="!dataSourcesLoadedArray.includes('Property')">
           <Property v-if="dataSourcesLoadedArray.includes('Property')"></Property>
         </topic>

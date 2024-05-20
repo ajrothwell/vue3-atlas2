@@ -101,7 +101,7 @@ const links = [
   </app-header>
 
   <!-- MAIN CONTENT -->
-  <main class="main invisible-scrollbar">
+  <main id="main" class="main invisible-scrollbar">
 
     <!-- TOPIC PANEL ON LEFT -->
     <div class="topics-holder">

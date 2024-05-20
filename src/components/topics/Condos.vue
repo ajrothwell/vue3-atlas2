@@ -1,10 +1,9 @@
 <script setup>
-console.log('Condos.vue setup');
+// console.log('Condos.vue setup');
 import { ref, computed, watch, onMounted } from 'vue';
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 const route = useRoute();
 const router = useRouter();
-console.log('route:', route);
 
 import { useGeocodeStore } from '@/stores/GeocodeStore';
 const GeocodeStore = useGeocodeStore();
@@ -55,10 +54,6 @@ const condos = computed(() => {
   return CondosStore.condosData.features.slice(startingCondo.value, startingCondo.value + 10);
 });
 
-const dataPagesFilled = computed(() => {
-  return CondosStore.dataPagesFilled;
-});
-
 const currentDataPage = computed(() => {
   return Math.floor(currentPage.value/10.0001) + 1
 })
@@ -70,12 +65,9 @@ watch(
   async (newPage) => {
     condosLoading.value = true;
     console.log('watch currentDataPage, newPage:', newPage);
-    // if (!dataPagesFilled.value.includes(newPage)) {
     const address = GeocodeStore.aisData.features[0].properties.street_address;
-    // const address = GeocodeStore.aisData.normalized;
     await CondosStore.fillCondoData(address, newPage);
     condosLoading.value = false;
-    // }
   }
 )
 
@@ -99,7 +91,7 @@ const getNextPage = () => {
 
 <template>
   <section>
-    <div class="box">
+    <div id="Condominiums-description" class="box">
       Condominium units at your search address, as recorded for property assessment purposes. Click one of the addresses below to see information for that unit. Use the back button to return to this list. Source: Office of Property Assessment
     </div>
 
@@ -137,7 +129,7 @@ const getNextPage = () => {
   </section>
 </template>
 
-<style>
+<style scoped>
 
 .pagination-previous {
   font-weight: bold !important;
@@ -173,6 +165,18 @@ const getNextPage = () => {
     justify-content: flex-end !important;
     font-weight: bold !important;
   }
+
+  td {
+    padding-left: 115px !important;
+    /* min-height: 60px; */
+  }
+
+  td:before {
+    width: 110px !important; 
+  }
+	/* Label the data */
+  td:nth-of-type(1):before { content: "Address"; }
+  td:nth-of-type(2):before { content: "OPA Account #"; }
 
 }
 

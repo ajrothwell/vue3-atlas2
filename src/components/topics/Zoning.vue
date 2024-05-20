@@ -53,11 +53,16 @@ onBeforeMount(() => {
   }
 });
 
+onMounted(() => {
+  const topic = document.getElementById('Zoning-topic');
+  console.log('topic:', topic);
+  topic.scrollIntoView();
+});
 
 </script>
 
 <template>
-  <div class="box">Base district zoning maps, associated zoning overlays, and Registered Community Organizations applicable to your search address. If you notice a discrepancy, please contact <a href="mailto:planning@phila.gov">planning@phila.gov</a>. Source: Department of Planning and Development</div>
+  <div id="Zoning-description" class="box">Base district zoning maps, associated zoning overlays, and Registered Community Organizations applicable to your search address. If you notice a discrepancy, please contact <a href="mailto:planning@phila.gov">planning@phila.gov</a>. Source: Department of Planning and Development</div>
   <collection-summary
     :value="'STATUS'"
     :descriptor="'parcel'"

@@ -38,7 +38,7 @@ body {
   height: calc(100vh - 110px);
 }
 
-.topic-panel-content {
+#topic-panel-content {
   flex-grow: 1;
   overflow-y: scroll;
   padding-left: 12px;
@@ -143,7 +143,7 @@ body {
     height: auto;
   }
 
-  .topic-panel-content {
+  #topic-panel-content {
     overflow-y: hidden;
     overflow-x: hidden;
     padding-left: 12px;
@@ -189,6 +189,45 @@ body {
   .map-class {
     height: 300px;
   }
+
+//   @media 
+// only screen and (max-width: 760px),
+// (min-device-width: 768px) and (max-device-width: 1024px)  {
+
+	/* Force table to not be like tables anymore */
+	table, thead, tbody, th, td, tr {
+		display: block; 
+	}
+	
+	/* Hide table headers (but not display: none;, for accessibility) */
+	thead tr { 
+		position: absolute;
+		top: -9999px;
+		left: -9999px;
+	}
+	
+	tr { border: 1px solid #ccc; }
+	
+	td { 
+		/* Behave  like a "row" */
+		border: none;
+		border-bottom: 1px solid #eee; 
+		position: relative;
+		padding-left: 75px !important;
+    min-height: 45px;
+	}
+	
+	td:before { 
+		/* Now like a table header */
+		position: absolute;
+		/* Top/left values mimic padding */
+		top: 9px;
+		left: 6px;
+		width: 90px; 
+		padding-right: 10px; 
+		/* white-space: normal; */
+    word-wrap: break-word;
+	}
 
 }
 

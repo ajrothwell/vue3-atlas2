@@ -23,7 +23,7 @@ const inputAddress = ref('');
         class="button"
         @click="router.replace({ name: 'search', query: { address: inputAddress }})"
       >
-        <font-awesome-icon :icon="['fas', 'magnifying-glass']"/>
+        <font-awesome-icon :icon="['fas', 'search']"/>
       </button>
     </div>
   <!-- </div> -->

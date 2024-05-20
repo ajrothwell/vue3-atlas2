@@ -134,6 +134,13 @@ onMounted( async () => {
   let geojson = featureCollection(features);
   // console.log('geojson:', geojson, 'map.getSource("liBuildingFootprints"):', map.getSource('liBuildingFootprints'), 'map.getLayer("liBuildingFootprints"):', map.getLayer('liBuildingFootprints'));
   await map.getSource('liBuildingFootprints').setData(geojson);
+
+  const topic = document.getElementById('Licenses & Inspections-topic');
+  console.log('topic:', topic);
+  topic.scrollIntoView();
+  const main = document.getElementById('main');
+  const mainScrollTop = main.scrollTop;
+  main.scrollTo(0, mainScrollTop - 80);
 });
 
 const selectedLiBuildingNumber = computed(() => LiStore.selectedLiBuildingNumber);
@@ -151,7 +158,7 @@ const handleBinClick = (bin) => {
 
 <template>
   <section>
-    <div class="box">
+    <div id="Licenses & Inspections-description" class="box">
       Licenses, inspections, permits, property maintenance violations, and zoning permit documents at your search address. Source: Department of Licenses & Inspections
     </div>
 
@@ -197,7 +204,7 @@ const handleBinClick = (bin) => {
 
       <!-- Building Certs Table -->
       <h5 class="subtitle is-5 table-title">Building Certifications</h5>
-      <table class="table is-fullwidth is-striped link-at-bottom">
+      <table id="building-certs" class="table is-fullwidth is-striped link-at-bottom">
         <thead>
           <tr>
             <th>InspectionType</th>
@@ -223,6 +230,7 @@ const handleBinClick = (bin) => {
     <!-- Li Permits Table -->
     <h5 class="subtitle is-5 table-title">Permits</h5>
     <table
+      id="permits"
       :class="LiStore.liPermits.rows.length > 5 ? 'link-at-bottom' : ''"
       class="table is-fullwidth is-striped"
     >
@@ -250,7 +258,10 @@ const handleBinClick = (bin) => {
     <!-- liAisZoningDocs and liEclipseZoningDocs Table-->
     <h5 class="subtitle is-5 table-title">Zoning Permit Documents</h5>
     <h6 class="subtitle is-6">Formerly "Zoning Archive"</h6>
-    <table class="table is-fullwidth is-striped">
+    <table
+      id="zoning-permit-docs"
+      class="table is-fullwidth is-striped"
+    >
       <thead>
         <tr>
           <th>Date</th>
@@ -271,7 +282,8 @@ const handleBinClick = (bin) => {
 
     <!-- Li Inspections Table -->
     <h5 class="subtitle is-5 table-title">Inspections</h5>
-    <table 
+    <table
+      id="inspections"
       :class="LiStore.liInspections.rows.length > 5 ? 'link-at-bottom' : ''"
       class="table is-fullwidth is-striped"
     >
@@ -300,6 +312,7 @@ const handleBinClick = (bin) => {
     <!-- Li Violations Table -->
     <h5 class="subtitle is-5 table-title">Violations</h5>
     <table
+      id="violations"
       :class="LiStore.liInspections.rows.length > 5 ? 'link-at-bottom' : ''"
       class="table is-fullwidth is-striped"
     >
@@ -327,6 +340,7 @@ const handleBinClick = (bin) => {
     <!-- Li Business Licenses Table -->
     <h5 class="subtitle is-5 table-title">Business Licenses</h5>
     <table
+      id="business-licenses"
       :class="LiStore.liBusinessLicenses.rows.length > 5 ? 'link-at-bottom' : ''"
       class="table is-fullwidth is-striped link-at-bottom"
     >
@@ -356,7 +370,7 @@ const handleBinClick = (bin) => {
   </section>
 </template>
 
-<style>
+<style scoped>
 
 .add-borders {
   border: 1px solid #ccc;
@@ -366,5 +380,62 @@ const handleBinClick = (bin) => {
 .is-selected {
   background-color: #b8b8b8
 }
+
+
+@media 
+only screen and (max-width: 760px),
+(min-device-width: 768px) and (max-device-width: 1024px)  {
+
+  td {
+    padding-left: 85px !important;
+  }
+
+	/* Label the data */
+	#building-certs {
+    td {
+      min-height: 60px;
+    }
+
+    td:nth-of-type(1):before { content: "Inspection Type"; }
+    td:nth-of-type(2):before { content: "Date Inspected"; }
+    td:nth-of-type(3):before { content: "Inspection Result"; }
+    td:nth-of-type(4):before { content: "Expiration Date"; }
+  }
+
+  #permits, #inspections, #violations {
+    
+
+    td:nth-of-type(1):before { content: "Date"; }
+    td:nth-of-type(2):before { content: "ID"; }
+    td:nth-of-type(3):before { content: "Description"; }
+    td:nth-of-type(4):before { content: "Status"; }
+  }
+
+  #zoning-permit-docs {
+    td:nth-of-type(2) {
+      min-height: 60px;
+    }
+
+    td:nth-of-type(1):before { content: "Date"; }
+    td:nth-of-type(2):before { content: "Permit Number"; }
+    td:nth-of-type(3):before { content: "# Pages"; }
+    td:nth-of-type(4):before { content: "ID"; }
+  }
+
+  #business-licenses {
+    td:nth-of-type(2) {
+      min-height: 60px;
+    }
+
+    td:nth-of-type(1):before { content: "Date"; }
+    td:nth-of-type(2):before { content: "License Number"; }
+    td:nth-of-type(3):before { content: "Name"; }
+    td:nth-of-type(4):before { content: "Type"; }
+    td:nth-of-type(5):before { content: "Status"; }
+  }
+
+}
+
+
 
 </style>
