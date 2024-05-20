@@ -108,8 +108,8 @@ const handleTopicClick = () => {
 
 .inside-topic {
   background-color: #ffffff;
-  border: 1px solid #929292;
-  border-radius: 4px;
+  /* border: 1px solid #929292;
+  border-radius: 4px; */
   font-size: 1em;
   padding: 1em;
   left: 0 !important;

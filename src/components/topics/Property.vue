@@ -19,6 +19,33 @@ onMounted(() => {
   main.scrollTo(0, mainScrollTop - 80);
 });
 
+const vertTableData = [
+  {
+    label: 'OPA Account #',
+    value: GeocodeStore.aisData.features[0].properties.opa_account_num,
+  },
+  {
+    label: 'OPA Address',
+    value: GeocodeStore.aisData.features[0].properties.opa_address,
+  },
+  {
+    label: 'Owners',
+    value: GeocodeStore.getOpaOwners,
+  },
+  {
+    label: 'Assessed Value',
+    value: OpaStore.getMarketValue,
+  },
+  {
+    label: 'Sale Date',
+    value: OpaStore.getSaleDate || 'none',
+  },
+  {
+    label: 'Sale Price',
+    value: OpaStore.getSalePrice,
+  },
+];
+
 
 </script>
 
@@ -28,34 +55,17 @@ onMounted(() => {
       Property assessment and sale information for this address. Source: Office of Property Assessments (OPA). OPA was formerly a part of the Bureau of Revision of Taxes (BRT) and some City records may still use that name.
     </div>
 
-    <div class="vert-table" v-if="OpaStore.opaData.rows.length">
-      <div class="columns">
-        <div class="column is-4">OPA Account #</div>
-        <div class="column is-8">{{ GeocodeStore.aisData.features[0].properties.opa_account_num }}</div>
-      </div>
-      <div class="columns">
-        <div class="column is-4">OPA Address</div>
-        <div class="column is-8">{{ GeocodeStore.aisData.features[0].properties.opa_address }}</div>
-      </div>
-      <div class="columns">
-        <div class="column is-4">Owners</div>
-        <div class="column is-8">{{ GeocodeStore.getOpaOwners }}</div>
-      </div>
-      <div class="columns">
-        <div class="column is-4">Assessed Value</div>
-        <div class="column is-8">{{ OpaStore.getMarketValue }}</div>
-        <!-- <div class="column is-8">${{ OpaStore.opaData.rows[0].market_value }}</div> -->
-      </div>
-      <div class="columns">
-        <div class="column is-4">Sale Date</div>
-        <div class="column is-8">{{ OpaStore.getSaleDate || 'none' }}</div>
-        <!-- <div class="column is-8">{{ OpaStore.opaData.rows[0].sale_date }}</div> -->
-      </div>
-      <div class="columns">
-        <div class="column is-4">Sale Price</div>
-        <div class="column is-8">{{ OpaStore.getSalePrice }}</div>
-      </div>
-    </div>
+    <table id="opa">
+      <tbody>
+        <tr
+          v-for="(field, index) in vertTableData"
+          :key="index"
+        >
+          <th>{{ field.label }}</th>
+          <td>{{ field.value }}</td>
+        </tr>
+      </tbody>
+    </table>
 
     <div v-if="!OpaStore.opaData.rows.length && CondosStore.condosData.features.length">
       <h5 class="title is-5">There are {{ CondosStore.condosData.total_size }} condominium units at this address.</h5>
@@ -73,8 +83,27 @@ onMounted(() => {
 
 <style scoped>
 
-.vert-table {
-  margin: 1em;
+table {
+  border-collapse: separate;
+  border-spacing: 2px;
+  width: 100%;
+}
+
+th {
+  background-color: rgb(68, 68, 68);
+  color: white;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  width: 30%;
+}
+
+td {
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 6px;
+  padding-bottom: 6px;
 }
 
 </style>
