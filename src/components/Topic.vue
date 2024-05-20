@@ -96,7 +96,7 @@ const handleTopicClick = () => {
   cursor: pointer;
 }
 
-.topic:hover {
+.topic:hover .topic:active {
   background-color: #fff;
   color: #000
 }
