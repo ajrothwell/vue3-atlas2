@@ -40,6 +40,9 @@ onMounted(async () => {
   if (route.params.topic) {
     MainStore.currentTopic = route.params.topic;
   }
+
+  const main = document.getElementById('main');
+  main.scrollTop = -main.scrollHeight;
 });
 
 const footerLinks = {
