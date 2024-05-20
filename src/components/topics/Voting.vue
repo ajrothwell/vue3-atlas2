@@ -35,6 +35,42 @@ onMounted(() => {
   topic.scrollIntoView();
 });
 
+const pollingPlaceData = [
+  {
+    label: 'Location',
+    value: '<b>Ward ' + VotingStore.pollingPlaces.rows[0].ward + ', Division ' + VotingStore.pollingPlaces.rows[0].division + '</b><br>' +
+        titleCase(VotingStore.pollingPlaces.rows[0].placename) + '<br>' +
+        titleCase(VotingStore.pollingPlaces.rows[0].street_address)
+  },
+  {
+    label: 'Hours',
+    value: 'All polling places will be open on election day from 7 a.m. to 8 p.m.'
+  },
+  {
+    label: 'Accessibility',
+    value: ''
+  },
+  {
+    label: 'Parking',
+    value: ''
+  },
+];
+
+const electedRepsData = [
+  {
+    label: 'District Council Member',
+    value: getCouncilMember()
+  },
+  {
+    label: 'City Hall Office',
+    value: getOffice()
+  },
+  {
+    label: 'Current Term',
+    value: getTerm()
+  }
+];
+
 </script>
 
 <template>
@@ -51,48 +87,61 @@ onMounted(() => {
   <div id="Voting-description" class="box">The deadline to register for the next election is 15 days prior to the election. You can confirm your registration and learn about registering to vote at <a target="_blank" href="vote.phila.gov">vote.phila.gov</a>.</div>
 
   <h5 class="subtitle is-5 table-title">Polling Place</h5>
-  <div class="vert-table">
-    <div class="columns">
-      <div class="column is-4">Location</div>
-      <div class="column is-8">
-        <b>Ward {{ VotingStore.pollingPlaces.rows[0].ward }}, Division {{ VotingStore.pollingPlaces.rows[0].division }}</b><br>
-        {{ titleCase(VotingStore.pollingPlaces.rows[0].placename) }}<br>
-        {{ titleCase(VotingStore.pollingPlaces.rows[0].street_address) }}
-      </div>
-    </div>
-    <div class="columns">
-      <div class="column is-4">Hours</div>
-      <div class="column is-8">All polling places will be open on election day from 7 a.m. to 8 p.m.</div>
-    </div>
-    <div class="columns">
-      <div class="column is-4">Accessibility</div>
-      <div class="column is-8">{{  }}</div>
-    </div>
-    <div class="columns">
-      <div class="column is-4">Parking</div>
-      <div class="column is-8"></div>
-    </div>
-  </div>
+  <table id="polling-place-table">
+    <tbody>
+      <tr
+        v-for="(field, index) in pollingPlaceData"
+        :key="index"
+      >
+        <th>{{ field.label }}</th>
+        <td v-html="field.value"></td>
+      </tr>
+    </tbody>
+  </table>
 
   <h5 class="subtitle is-5 table-title">Elected Representatives</h5>
-  <div class="vert-table">
-    <div class="columns">
-      <div class="column is-4">District Council Member</div>
-      <div class="column is-8" v-html="getCouncilMember()"></div>
-    </div>
-    <div class="columns">
-      <div class="column is-4">City Hall Office</div>
-      <div class="column is-8" v-html="getOffice()"></div>
-    </div>
-    <div class="columns">
-      <div class="column is-4">Current Term</div>
-      <div class="column is-8">{{ getTerm() }}</div>
-    </div>
-  </div>
+  <table id="polling-place-table">
+    <tbody>
+      <tr
+        v-for="(field, index) in electedRepsData"
+        :key="index"
+      >
+        <th>{{ field.label }}</th>
+        <td v-html="field.value"></td>
+      </tr>
+    </tbody>
+  </table>
 
 </template>
 
 <style scoped>
+
+#polling-place-table {
+  margin-bottom: 2rem;
+}
+
+table {
+  border-collapse: separate;
+  border-spacing: 2px;
+  width: 100%;
+}
+
+th {
+  background-color: rgb(68, 68, 68);
+  color: white;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  width: 30%;
+}
+
+td {
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
 
 .badge-title {
   padding-top: 0.25rem !important;
