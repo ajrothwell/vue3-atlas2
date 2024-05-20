@@ -22,10 +22,10 @@ body {
 }
 
 .main {
-  height: calc(100vh - 38px);
+  height: calc(100vh - 50px);
   display: flex;
   flex-direction: row;
-  padding-top: 46px !important;
+  padding-top: 42px !important;
   margin-top: 0px !important;
 }
 
@@ -44,6 +44,7 @@ body {
   padding-left: 12px;
   padding-right: 12px;
   overflow-x: hidden;
+  padding-bottom: 30px !important;
 }
 
 .map-panel-holder {
@@ -113,7 +114,6 @@ body {
   }
 
   body {
-    /* min-height: 100vh; */
     height: auto;
     overflow-y: hidden;
   }
@@ -151,6 +151,7 @@ body {
   }
 
   .map-panel-holder {
+    padding-top: 28px !important;
     width: 100%;
     flex-grow: 1;
     margin-bottom: 0px;
@@ -190,9 +191,6 @@ body {
     height: 300px;
   }
 
-//   @media 
-// only screen and (max-width: 760px),
-// (min-device-width: 768px) and (max-device-width: 1024px)  {
 
 	/* Force table to not be like tables anymore */
 	table, thead, tbody, th, td, tr {

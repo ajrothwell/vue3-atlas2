@@ -20,10 +20,10 @@ const inputAddress = ref('');
         @keydown.enter="router.replace({ name: 'search', query: { address: inputAddress }})"
       />
       <button
-        class="button"
+        class="button address-input-button"
         @click="router.replace({ name: 'search', query: { address: inputAddress }})"
       >
-        <font-awesome-icon :icon="['fas', 'search']"/>
+        <font-awesome-icon :icon="['fas', 'search']" size="xl"/>
       </button>
     </div>
   <!-- </div> -->
@@ -42,12 +42,31 @@ const inputAddress = ref('');
 }
 
 .address-input {
+  border-style: solid;
+  border-width: 1px;
+  border-color: #0f4d90;
+  background-color: white;
+  border-radius: 3px;
   z-index: 2;
 }
 
-.button {
+.address-input:hover {
+  border-color: #0f4d90;
+}
+
+.address-input-button {
+  height: 40px !important;
   width: 40px;
   z-index: 2;
+  background-color: #0f4d90;
+  color: white;
+  padding-left: 6px;
+  padding-top: 10px;
 }
+
+.address-input-button:hover {
+  color: white;
+}
+
 
 </style>
