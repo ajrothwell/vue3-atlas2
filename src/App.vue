@@ -45,28 +45,7 @@ onMounted(async () => {
   main.scrollTop = -main.scrollHeight;
 });
 
-const footerLinks = {
-  links: [
-    {
-      type: 'native',
-      href: 'https://phila.formstack.com/forms/atlas_feedback_form',
-      text: 'Feedback',
-      attrs: {
-        target: '_blank',
-      },
-    }
-  ]
-};
-
 const links = [
-  {
-    type: 'native',
-    href: 'https://phila.formstack.com/forms/atlas_feedback_form',
-    text: 'Feedback',
-    attrs: {
-      target: '_blank',
-    },
-  },
   {
     type: 'native',
     href: 'https://phila.formstack.com/forms/atlas_feedback_form',
