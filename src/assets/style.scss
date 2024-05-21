@@ -226,7 +226,8 @@ body {
       border: none;
       border-bottom: 1px solid #eee; 
       position: relative;
-      padding-left: 75px !important;
+      padding-left: 90px !important;
+      padding-top: 9px !important;
       min-height: 45px;
     }
     
@@ -236,10 +237,10 @@ body {
       /* Top/left values mimic padding */
       top: 9px;
       left: 6px;
-      width: 90px; 
+      width: 95px; 
       padding-right: 10px; 
-      /* white-space: normal; */
       word-wrap: break-word;
+      font-weight: bold;
     }
   }
 

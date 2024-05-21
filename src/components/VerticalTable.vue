@@ -14,7 +14,7 @@ const props = defineProps({
     <tbody>
       <tr
         v-for="(field, index) in data"
-        :key="index"
+        :key="field"
       >
         <th>{{ field.label }}</th>
         <td v-html="field.value"></td>

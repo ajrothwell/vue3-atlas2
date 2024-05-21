@@ -1,6 +1,6 @@
 <script setup>
 console.log('LI.vue setup');
-import { computed, onMounted, onBeforeMount } from 'vue';
+import { computed, onMounted, onBeforeMount, reactive } from 'vue';
 import { polygon, featureCollection } from '@turf/helpers';
 
 import { useMainStore } from '@/stores/MainStore';
@@ -10,6 +10,8 @@ const LiStore = useLiStore();
 import { useMapStore } from '@/stores/MapStore';
 const MapStore = useMapStore();
 const map = MapStore.map;
+
+import VerticalTable from '../VerticalTable.vue';
 
 import useTransforms from '@/composables/useTransforms';
 const { date, integer, prettyNumber } = useTransforms();
@@ -154,6 +156,32 @@ const handleBinClick = (bin) => {
   LiStore.selectedLiBuildingNumber = bin;
 };
 
+const buildingData = computed(() => {
+  const selectedLiBuilding = LiStore.liBuildingFootprints.features.filter(feature => feature.attributes.BIN === selectedLiBuildingNumber.value)[0];
+  return [
+    {
+      label: 'Building ID',
+      value: selectedLiBuilding.attributes.BIN || 'N/A',
+    },
+    {
+      label: 'Building Name',
+      value: selectedLiBuilding.attributes.BUILDING_NAME || 'N/A',
+    },
+    {
+      label: 'Parcel Address',
+      value: selectedLiBuilding.attributes.ADDRESS || 'N/A',
+    },
+    {
+      label: 'Building Height (approx)',
+      value: selectedLiBuilding.attributes.APPROX_HGT + ' ft' || 'N/A',
+    },
+    {
+      label: 'Building Footprint (approx)',
+      value: prettyNumber(integer(selectedLiBuilding.attributes.Shape__Area * 6.3225)) + ' sq ft' || 'N/A',
+    },
+  ];
+});
+
 </script>
 
 <template>
@@ -178,37 +206,10 @@ const handleBinClick = (bin) => {
       </div>
 
       <!-- Li Building info-->
-      <!-- <h5 class="title is-5">Parcel Details</h5> -->
-      <div class="vert-table">
-        <div class="columns">
-          <div class="column is-4">Building ID</div>
-          <div class="column is-8">{{ selectedLiBuilding.attributes.BIN || 'N/A' }}</div>
-        </div>
-        <div class="columns">
-          <div class="column is-4">Building Name</div>
-          <div class="column is-8">{{ selectedLiBuilding.attributes.BUILDING_NAME || 'N/A' }}</div>
-        </div>
-        <div class="columns">
-          <div class="column is-4">Parcel Address</div>
-          <div class="column is-8">{{ selectedLiBuilding.attributes.ADDRESS || 'N/A' }}</div>
-        </div>
-        <div class="columns">
-          <div class="column is-4">Building Height (approx)</div>
-          <div class="column is-8">{{ selectedLiBuilding.attributes.APPROX_HGT || 'N/A' }} ft</div>
-        </div>
-        <div class="columns">
-          <div class="column is-4">Building Footprint (approx)</div>
-          <div class="column is-8">{{ prettyNumber(integer(selectedLiBuilding.attributes.Shape__Area * 6.3225)) || 'N/A' }} sq ft</div>
-        </div>
-      </div>
+      <vertical-table tableId="buildingTable" :data="buildingData"></vertical-table>
 
       <!-- Building Certs Table -->
       <h5 class="subtitle is-5 table-title">Building Certifications</h5>
-      <!-- <horizontal-table
-        :table-id="buildindCerts"
-        :headers="['InspectionType', 'Date Inspected', 'Inspection Result', 'Expiration Date']"
-        :data="selectedBuildingCerts"
-      /> -->
       <div class="horizontal-table">
         <table id="building-certs" class="table is-fullwidth is-striped link-at-bottom">
           <thead>
@@ -236,28 +237,30 @@ const handleBinClick = (bin) => {
 
     <!-- Li Permits Table -->
     <h5 class="subtitle is-5 table-title">Permits</h5>
-    <table
-      id="permits"
-      :class="LiStore.liPermits.rows.length > 5 ? 'link-at-bottom' : ''"
-      class="table is-fullwidth is-striped"
-    >
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>ID</th>
-          <th>Description</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="item in permits">
-          <td>{{ date(item.permitissuedate) }}</td>
-          <td v-html="getLinkPermit(item)"></td>
-          <td>{{ item.permitdescription }}</td>
-          <td>{{ item.status }}</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="horizontal-table">
+      <table
+        id="permits"
+        :class="LiStore.liPermits.rows.length > 5 ? 'link-at-bottom' : ''"
+        class="table is-fullwidth is-striped"
+      >
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>ID</th>
+            <th>Description</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="item in permits">
+            <td>{{ date(item.permitissuedate) }}</td>
+            <td v-html="getLinkPermit(item)"></td>
+            <td>{{ item.permitdescription }}</td>
+            <td>{{ item.status }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
     <div v-if="LiStore.liPermits.rows.length > 5" class="table-link">
       <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See {{ LiStore.liPermits.rows.length-5 }} older permits at L&I Property History <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
     </div>
@@ -265,111 +268,119 @@ const handleBinClick = (bin) => {
     <!-- liAisZoningDocs and liEclipseZoningDocs Table-->
     <h5 class="subtitle is-5 table-title">Zoning Permit Documents</h5>
     <h6 class="subtitle is-6">Formerly "Zoning Archive"</h6>
-    <table
-      id="zoning-permit-docs"
-      class="table is-fullwidth is-striped"
-    >
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Permit Number</th>
-          <th># Pages</th>
-          <th>ID</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="item in liAllZoningDocs">
-          <td>{{ getZoningDocDate(item) }}</td>
-          <td>{{ item.permit_number }}</td>
-          <td>{{ getZoningDocPages(item) }}</td>
-          <td v-html="getZoningDocLink(item)"></td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="horizontal-table">
+      <table
+        id="zoning-permit-docs"
+        class="table is-fullwidth is-striped"
+      >
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Permit Number</th>
+            <th># Pages</th>
+            <th>ID</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="item in liAllZoningDocs">
+            <td>{{ getZoningDocDate(item) }}</td>
+            <td>{{ item.permit_number }}</td>
+            <td>{{ getZoningDocPages(item) }}</td>
+            <td v-html="getZoningDocLink(item)"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
     <!-- Li Inspections Table -->
     <h5 class="subtitle is-5 table-title">Inspections</h5>
-    <table
-      id="inspections"
-      :class="LiStore.liInspections.rows.length > 5 ? 'link-at-bottom' : ''"
-      class="table is-fullwidth is-striped"
-    >
+    <div class="horizontal-table">
+      <table
+        id="inspections"
+        :class="LiStore.liInspections.rows.length > 5 ? 'link-at-bottom' : ''"
+        class="table is-fullwidth is-striped"
+      >
 
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>ID</th>
-          <th>Description</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="item in inspections">
-          <td>{{ date(item.investigationcompleted) }}</td>
-          <td v-html="getLinkInvestigationNumber(item)"></td>
-          <td>{{ item.investigationtype }}</td>
-          <td>{{ item.investigationstatus }}</td>
-        </tr>
-      </tbody>
-    </table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>ID</th>
+            <th>Description</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="item in inspections">
+            <td>{{ date(item.investigationcompleted) }}</td>
+            <td v-html="getLinkInvestigationNumber(item)"></td>
+            <td>{{ item.investigationtype }}</td>
+            <td>{{ item.investigationstatus }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
     <div v-if="LiStore.liInspections.rows.length > 5" class="table-link">
       <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See {{ LiStore.liInspections.rows.length }} older inspections at L&I Property History <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
     </div>
 
     <!-- Li Violations Table -->
     <h5 class="subtitle is-5 table-title">Violations</h5>
-    <table
-      id="violations"
-      :class="LiStore.liInspections.rows.length > 5 ? 'link-at-bottom' : ''"
-      class="table is-fullwidth is-striped"
-    >
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>ID</th>
-          <th>Description</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="item in violations">
-          <td>{{ date(item.casecreateddate) }}</td>
-          <td v-html="getLinkViolationNumber(item)"></td>
-          <td>{{ item.violationcodetitle }}</td>
-          <td>{{ item.violationstatus }}</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="horizontal-table">
+      <table
+        id="violations"
+        :class="LiStore.liInspections.rows.length > 5 ? 'link-at-bottom' : ''"
+        class="table is-fullwidth is-striped"
+      >
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>ID</th>
+            <th>Description</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="item in violations">
+            <td>{{ date(item.casecreateddate) }}</td>
+            <td v-html="getLinkViolationNumber(item)"></td>
+            <td>{{ item.violationcodetitle }}</td>
+            <td>{{ item.violationstatus }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
     <div v-if="LiStore.liInspections.rows.length > 5" class="table-link">
       <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See {{ LiStore.liViolations.rows.length-5 }} older violations at L&I Property History <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
     </div>
 
     <!-- Li Business Licenses Table -->
     <h5 class="subtitle is-5 table-title">Business Licenses</h5>
-    <table
-      id="business-licenses"
-      :class="LiStore.liBusinessLicenses.rows.length > 5 ? 'link-at-bottom' : ''"
-      class="table is-fullwidth is-striped link-at-bottom"
-    >
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>License Number</th>
-          <th>Name</th>
-          <th>Type</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="item in businessLicenses">
-          <td>{{ date(item.initialissuedate) }}</td>
-          <td v-html="getLinkLicenseNumber(item)"></td>
-          <td>{{ item.business_name }}</td>
-          <td>{{ item.licensetype }}</td>
-          <td>{{ item.licensestatus }}</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="horizontal-table">
+      <table
+        id="business-licenses"
+        :class="LiStore.liBusinessLicenses.rows.length > 5 ? 'link-at-bottom' : ''"
+        class="table is-fullwidth is-striped link-at-bottom"
+      >
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>License Number</th>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="item in businessLicenses">
+            <td>{{ date(item.initialissuedate) }}</td>
+            <td v-html="getLinkLicenseNumber(item)"></td>
+            <td>{{ item.business_name }}</td>
+            <td>{{ item.licensetype }}</td>
+            <td>{{ item.licensestatus }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
     <div v-if="LiStore.liBusinessLicenses.rows.length > 5" class="table-link">
       <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See {{ LiStore.liBusinessLicenses.rows.length-5 }} older business licenses at L&I Property History <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
     </div>
@@ -419,6 +430,8 @@ only screen and (max-width: 760px),
   }
 
   #zoning-permit-docs {
+    margin-bottom: 2rem;
+
     td:nth-of-type(2) {
       min-height: 60px;
     }
