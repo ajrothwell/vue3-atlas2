@@ -125,9 +125,9 @@ export const useParcelsStore = defineStore('ParcelsStore', {
         const MainStore = useMainStore();
         MainStore.selectedParcelId = processedData.features[0].properties.OBJECTID;
         this[parcelLayer] = processedData;
-      } else {
-        this[parcelLayer] = {};
-      }
+      } //else {
+        // this[parcelLayer] = {};
+      // }
     },
 
   }

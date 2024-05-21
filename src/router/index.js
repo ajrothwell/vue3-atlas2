@@ -38,13 +38,13 @@ const getGeocodeAndPutInStore = async(address) => {
 const getParcelsAndPutInStore = async(lng, lat) => {
   let currentAddress;
   const MainStore = useMainStore();
-  MainStore.selectedParcelId = null;
   let currentTopic = MainStore.currentTopic;
   const parcelLayer = $config.parcelLayerForTopic[currentTopic];
   const ParcelsStore = useParcelsStore();
   await ParcelsStore.fillParcelDataByLngLat(lng, lat, 'pwd');
   await ParcelsStore.fillParcelDataByLngLat(lng, lat, 'dor');
   if (!ParcelsStore.pwd.features[0] && !ParcelsStore.dor.features[0]) {
+    MainStore.selectedParcelId = null;
     router.push({ name: 'not-found' });
     return;
   }
