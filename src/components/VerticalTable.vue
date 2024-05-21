@@ -10,7 +10,7 @@ const props = defineProps({
 </script>
 
 <template>
-  <table id="tableId" class="vert-table">
+  <table :id="tableId" class="vert-table">
     <tbody>
       <tr
         v-for="(field, index) in data"

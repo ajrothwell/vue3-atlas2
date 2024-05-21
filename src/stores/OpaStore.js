@@ -27,11 +27,11 @@ export const useOpaStore = defineStore('OpaStore', {
     },
     getSaleDate: (state) =>  {
       if (!state.opaData.rows[0]) return null;
-      date(state.opaData.rows[0].sale_date);
+      return date(state.opaData.rows[0].sale_date);
     },
     getSalePrice: (state) => {
       if (!state.opaData.rows[0]) return null;
-      currency(state.opaData.rows[0].sale_price);
+      return currency(state.opaData.rows[0].sale_price);
     }
   },
 })
