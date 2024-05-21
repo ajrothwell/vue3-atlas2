@@ -56,7 +56,7 @@ const getParcelsAndPutInStore = async(lng, lat) => {
 }
 
 const dataFetch = async(to, from) => {
-  console.log('dataFetch is starting, to:', to.params.address, 'from:', from.params.address);
+  console.log('dataFetch is starting, to:', to, 'from:', from, 'to.params.address:', to.params.address, 'from.params.address:', from.params.address);
   const MainStore = useMainStore();
   const GeocodeStore = useGeocodeStore();
   const ParcelsStore = useParcelsStore();
@@ -69,10 +69,11 @@ const dataFetch = async(to, from) => {
   if (to.params.address) { address = to.params.address } else if (to.query.address) { address = to.query.address }
   if (to.params.topic) { topic = to.params.topic }
 
-  console.log('address:', address, 'from.params.address:', from.params.address, 'GeocodeStore.aisData.normalized:', GeocodeStore.aisData.normalized);
+  console.log('address:', address, 'to.params.address:', to.params.address, 'from.params.address:', from.params.address, 'GeocodeStore.aisData.normalized:', GeocodeStore.aisData.normalized);
+  
   let aisNeeded = to.params.address !== from.params.address;
   if (aisNeeded && !address) {
-    // console.log('address:', address, 'typeof address:', typeof address);
+    console.log('aisNeeded:', aisNeeded, 'address:', address, 'typeof address:', typeof address);
     if (ParcelsStore.dor.features) {
       // console.log('ParcelsStore.dor.features[0].properties.BASEREG:', ParcelsStore.dor.features[0].properties.BASEREG);
       await ParcelsStore.fillParcelDataByLngLat(MainStore.lastClickCoords.lng, MainStore.lastClickCoords.lat, 'pwd')
@@ -80,28 +81,41 @@ const dataFetch = async(to, from) => {
     }
   } else if (aisNeeded) {
     await getGeocodeAndPutInStore(address);
-  } else if (dataSourcesLoadedArray.includes(topic)) {
+  } else if (to.params.topic !== 'Nearby Activity' && dataSourcesLoadedArray.includes(topic)) {
+    return;
+  } else if (to.params.topic === 'Nearby Activity' && dataSourcesLoadedArray.includes(to.params.data)) {
+    console.log('dataFetch is still going, MainStore.currentNearbyDataType:', MainStore.currentNearbyDataType, 'to.params.data:', to.params.data);
     return;
   }
-
+  
   console.log('dataFetch is still going after address');
-  // GET PARCELS AND DATA FOR TOPIC
-  if (MainStore.lastSearchMethod === 'address') { 
-    await ParcelsStore.fillPwdParcelData();
-    await ParcelsStore.fillDorParcelData();
-  } 
-  const CondosStore = useCondosStore();
-  await CondosStore.fillCondoData(address);  
-  if (to.params.topic == "Condominiums" && !CondosStore.condosData.features.length) {
-    MainStore.currentTopic = "Property";
-    router.push({ name: 'address-and-topic', params: { address: to.params.address, topic: 'Property' } });
-    return
+  if (!MainStore.initialDatafetchComplete || to.params.data === from.params.data) {
+    // GET PARCELS AND DATA FOR TOPIC
+    if (MainStore.lastSearchMethod === 'address') { 
+      await ParcelsStore.fillPwdParcelData();
+      await ParcelsStore.fillDorParcelData();
+    } 
+    const CondosStore = useCondosStore();
+    await CondosStore.fillCondoData(address);  
+    if (to.params.topic == "Condominiums" && !CondosStore.condosData.features.length) {
+      MainStore.currentTopic = "Property";
+      router.push({ name: 'address-and-topic', params: { address: to.params.address, topic: 'Property' } });
+      return
+    }
   }
-  await topicDataFetch(to.params.topic);
-  MainStore.addToDataSourcesLoadedArray(to.params.topic);
+  await topicDataFetch(to.params.topic, to.params.data);
+  if (to.params.topic !== 'Nearby Activity') {
+    MainStore.addToDataSourcesLoadedArray(to.params.topic);
+  } else {
+    if (!MainStore.dataSourcesLoadedArray.includes('Nearby Activity')) {
+      MainStore.addToDataSourcesLoadedArray('Nearby Activity');
+    }
+    MainStore.addToDataSourcesLoadedArray(MainStore.currentNearbyDataType);
+  }
+  MainStore.initialDatafetchComplete = true;
 }
 
-const topicDataFetch = async (topic) => {
+const topicDataFetch = async (topic, data) => {
   console.log('topicDataFetch is running, topic:', topic);
   
   if (topic === 'Property') {
@@ -147,14 +161,15 @@ const topicDataFetch = async (topic) => {
   }
 
   if (topic === 'Nearby Activity') {
-    const MainStore = useMainStore();
-    const currentNearbyDataType = MainStore.currentNearbyDataType;
+    // const MainStore = useMainStore();
+    // const currentNearbyDataType = MainStore.currentNearbyDataType;
+    // console.log('topicDataFetch is running, currentNearbyDataType:', currentNearbyDataType);
     const NearbyActivityStore = useNearbyActivityStore();
-    await NearbyActivityStore.fetchData(currentNearbyDataType);
-    const GeocodeStore = useGeocodeStore();
-    const coordinates = GeocodeStore.aisData.features[0].geometry.coordinates;
-    const MapStore = useMapStore();
-    await MapStore.fillBufferForAddress(coordinates[0], coordinates[1]);
+    await NearbyActivityStore.fetchData(data);
+    // const GeocodeStore = useGeocodeStore();
+    // const coordinates = GeocodeStore.aisData.features[0].geometry.coordinates;
+    // const MapStore = useMapStore();
+    // await MapStore.fillBufferForAddress(coordinates[0], coordinates[1]);
   }
 }
 

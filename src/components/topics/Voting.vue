@@ -32,9 +32,12 @@ const getTerm = () => {
 }
 
 onMounted(() => {
-  const topic = document.getElementById('Voting-topic');
-  console.log('topic:', topic);
+  const topic = document.getElementById('Property-topic');
+  const topicPanel = document.getElementById('topic-panel-content');
   topic.scrollIntoView();
+  const main = document.getElementById('main');
+  const mainScrollTop = main.scrollTop;
+  main.scrollTo(0, mainScrollTop - 80);
 });
 
 const pollingPlaceData = [

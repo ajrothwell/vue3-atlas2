@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue';
+import { ref, computed, reactive, watch, onMounted } from 'vue';
 
 import { useNearbyActivityStore } from '@/stores/NearbyActivityStore';
 const NearbyActivityStore = useNearbyActivityStore();
@@ -31,8 +31,6 @@ const dataTypes = {
   nearbyImminentlyDangerous: 'Imminently Dangerous',
 }
 
-const dataDropdownOpen = ref(false);
-const toggleDataDropdown = () => dataDropdownOpen.value = !dataDropdownOpen.value;
 const currentNearbyDataType = computed(() => {
   return MainStore.currentNearbyDataType;
 });
@@ -41,14 +39,20 @@ const setDataTypeInRouter = (newDataType) => {
 }
 
 watch(() => route.params.data, (newDataType) => {
-  // console.log('watch route.params.data, newDataType:', newDataType, 'currentNearbyDataType.value:', currentNearbyDataType.value);
+  console.log('watch route.params.data, newDataType:', newDataType, 'currentNearbyDataType.value:', currentNearbyDataType.value);
   if (newDataType) {
     setDataType(newDataType);
   }
 })
 
+const selectedDataType = ref('nearby311');
+watch(() => selectedDataType.value, (newDataType) => {
+  console.log('watch selectedDataType.value, newDataType:', newDataType);
+  setDataTypeInRouter(newDataType);
+})
+
 const setDataType = async (newDataType) => {
-  // console.log('setDataType, newDataType:', newDataType);
+  console.log('setDataType, newDataType:', newDataType);
   MainStore.currentNearbyDataType = newDataType;
   if (NearbyActivityStore[newDataType] === null) {
     await NearbyActivityStore.fetchData(newDataType);
@@ -70,9 +74,17 @@ watch(() => hoveredStateId.value, (newHoveredStateId) => {
 onMounted( () => {
   // console.log('NearbyActivity.vue onMounted is running, route.params.data:', route.params.data);
   setDataType(route.params.data);
-  // const topic = document.getElementById('Nearby Activity-topic');
-  // console.log('topic:', topic);
-  // topic.scrollIntoView();
+  selectedDataType.value = route.params.data;
+  const topic = document.getElementById('Property-topic');
+  const topicPanel = document.getElementById('topic-panel-content');
+  topic.scrollIntoView();
+  const main = document.getElementById('main');
+  const mainScrollTop = main.scrollTop;
+  main.scrollTo(0, mainScrollTop - 80);
+})
+
+const nearbyActivities = reactive({
+  nearby311: 'Nearby 311',
 })
 
 </script>
@@ -84,31 +96,18 @@ onMounted( () => {
     </div>
 
     <!-- DATA DROPDOWN-->
+    <!-- @click="toggleDataDropdown" -->
+    <span>What nearby activity would you like to see?</span>
     <div
-      :class="dataDropdownOpen ? 'dropdown is-active' : 'dropdown'"
-      @click="toggleDataDropdown"
-    >
-      <div class="dropdown-trigger">
-        <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
-          <span>What nearby activity would you like to see?</span>
-          <span class="icon is-small">
-            <font-awesome-icon icon="fa-solid fa-angle-down" aria-hidden="true"></font-awesome-icon>
-          </span>
-        </button>
-      </div>
-      <div class="dropdown-menu" id="dropdown-menu" role="menu">
-        <div class="dropdown-content">
-          <a class="dropdown-item" @click="setDataTypeInRouter('nearby311')">311 Requests</a>
-          <a class="dropdown-item" @click="setDataTypeInRouter('nearbyCrimeIncidents')">Crime Incidents</a>
-          <a class="dropdown-item" @click="setDataTypeInRouter('nearbyZoningAppeals')">Zoning Appeals</a>
-          <a class="dropdown-item" @click="setDataTypeInRouter('nearbyVacantIndicatorPoints')">Vacant Properties</a>
-          <a class="dropdown-item" @click="setDataTypeInRouter('nearbyConstructionPermits')">Construction Permits</a>
-          <a class="dropdown-item" @click="setDataTypeInRouter('nearbyDemolitionPermits')">Demolition Permits</a>
-          <a class="dropdown-item" @click="setDataTypeInRouter('nearbyImminentlyDangerous')">Imminently Dangerous</a>
-        </div>
-      </div>
+      class="dropdown"
+    > 
+      <dropdown
+        v-model="selectedDataType"
+        :options="dataTypes"
+      >
+      </dropdown>
+
     </div>
-    <span>{{ dataTypes[currentNearbyDataType] }}</span>
     <br>
     
     <Nearby311 v-if="currentNearbyDataType == 'nearby311'"></Nearby311>

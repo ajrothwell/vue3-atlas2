@@ -13,7 +13,7 @@ const map = MapStore.map;
 import SortbyDropdown from '@/components/topics/nearbyActivity/SortbyDropdown.vue';
 import IntervalDropdown from '@/components/topics/nearbyActivity/IntervalDropdown.vue';
 import useTransforms from '@/composables/useTransforms';
-const { timeReverseFn } = useTransforms();
+const { date, timeReverseFn } = useTransforms();
 import useScrolling from '@/composables/useScrolling';
 const { handleRowMouseover, handleRowMouseleave } = useScrolling();
 
@@ -21,30 +21,34 @@ const loadingData = computed(() => NearbyActivityStore.loadingData );
 
 const sortby = ref('distance');
 const setSortby = (e) => sortby.value = e;
+
+const timeIntervalSelected = ref(0);
+
 const timeIntervals = reactive(
   {
-    labels: ['any time', 'the last 90 days', 'the next 90 days'],
-    values: [0, -90, 90],
-    selected: 0,
+    '0': 'any time',
+    '-90': 'the last 90 days',
+    '90': 'the next 90 days',
   }
 )
-const setTimeInterval = (e) => timeIntervals.selected = e;
+
+const setTimeInterval = (e) => timeIntervalSelected.value = e;
 
 const nearbyZoningAppeals = computed(() => {
   if (NearbyActivityStore.nearbyZoningAppeals) {
     let data = [ ...NearbyActivityStore.nearbyZoningAppeals.data.rows]
     // console.log(new Date(data[0].scheduleddate));
-    if (timeIntervals.selected < 0) {
+    if (timeIntervalSelected.value < 0) {
       data = data.filter(item => {
         let timeDiff = new Date() - new Date(item.scheduleddate);
         let daysDiff = timeDiff / (1000 * 60 * 60 * 24);
-        return daysDiff >= timeIntervals.selected;
+        return daysDiff >= timeIntervalSelected.value;
       })
-    } else if (timeIntervals.selected > 0) {
+    } else if (timeIntervalSelected.value > 0) {
       data = data.filter(item => {
         let timeDiff = new Date() - new Date(item.scheduleddate);
         let daysDiff = timeDiff / (1000 * 60 * 60 * 24);
-        return daysDiff <= timeIntervals.selected;
+        return daysDiff <= timeIntervalSelected.value;
       })
     }
     if (sortby.value === 'distance') {
@@ -63,7 +67,7 @@ watch (() => nearbyZoningAppealsGeojson.value, (newGeojson) => { map.getSource('
 
 const hoveredStateId = computed(() => { return MainStore.hoveredStateId; });
 
-onMounted(() => { if (nearbyZoningAppealsGeojson.value.length > 0) { map.getSource('nearby').setData(featureCollection(nearbyZoningAppealsGeojson.value)) }});
+onMounted(() => { if (!NearbyActivityStore.loadingData && nearbyZoningAppealsGeojson.value.length > 0) { map.getSource('nearby').setData(featureCollection(nearbyZoningAppealsGeojson.value)) }});
 onBeforeUnmount(() => { if (map.getSource('nearby')) { map.getSource('nearby').setData(featureCollection([point([0,0])])) }});
 
 </script>
@@ -98,7 +102,7 @@ onBeforeUnmount(() => { if (map.getSource('nearby')) { map.getSource('nearby').s
           @mouseleave="handleRowMouseleave"
           :class="hoveredStateId == item.objectid ? 'active-hover' : 'inactive'"
         >
-          <td>{{ item.scheduleddate }}</td>
+          <td>{{ date(item.scheduleddate) }}</td>
           <td>{{ item.address }}</td>
           <td>{{ item.appealgrounds }}</td>
           <td>{{ (item.distance * 3.28084).toFixed(0) }} ft</td>

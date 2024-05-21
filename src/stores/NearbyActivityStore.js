@@ -203,7 +203,10 @@ export const useNearbyActivityStore = defineStore('NearbyActivityStore', {
 
     async fillNearbyVacantIndicatorPoints() {
       this.setLoadingData(true);
+      const GeocodeStore = useGeocodeStore();
+      const coordinates = GeocodeStore.aisData.features[0].geometry.coordinates;
       const MapStore = useMapStore();
+      await MapStore.fillBufferForAddress(coordinates[0], coordinates[1]);
       const buffer = MapStore.bufferForAddress;
 
       const url = 'https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/Vacant_Indicators_Points/FeatureServer/0/query?';
@@ -234,7 +237,7 @@ export const useNearbyActivityStore = defineStore('NearbyActivityStore', {
       const data = await response.data;
 
       let features = (data || {}).features;
-      const GeocodeStore = useGeocodeStore();
+      // const GeocodeStore = useGeocodeStore();
       const feature = GeocodeStore.aisData.features[0];
       const from = point(feature.geometry.coordinates);
 

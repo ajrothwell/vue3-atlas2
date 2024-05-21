@@ -38,7 +38,7 @@ watch (() => nearbyVacantIndicatorPointsGeojson.value, (newGeojson) => { map.get
 
 const hoveredStateId = computed(() => { return MainStore.hoveredStateId; });
 
-onMounted(() => { if (nearbyVacantIndicatorPointsGeojson.value.length > 0) { map.getSource('nearby').setData(featureCollection(nearbyVacantIndicatorPointsGeojson.value)) }});
+onMounted(() => { if (!NearbyActivityStore.loadingData && nearbyVacantIndicatorPointsGeojson.value.length > 0) { map.getSource('nearby').setData(featureCollection(nearbyVacantIndicatorPointsGeojson.value)) }});
 onBeforeUnmount(() => { if (map.getSource('nearby')) { map.getSource('nearby').setData(featureCollection([point([0,0])])) }});
 
 </script>

@@ -21,14 +21,18 @@ const loadingData = computed(() => NearbyActivityStore.loadingData );
 
 const sortby = ref('distance');
 const setSortby = (e) => sortby.value = e;
+
+const timeIntervalSelected = ref(30);
+
 const timeIntervals = reactive(
   {
-    labels: ['the last 30 days', 'the last 90 days', '1 year'],
-    values: [30, 90, 365],
-    selected: 30,
+    30: 'the last 30 days',
+    90: 'the last 90 days',
+    365: '1 year',
   }
 )
-const setTimeInterval = (e) => timeIntervals.selected = e;
+
+const setTimeInterval = (e) => timeIntervalSelected.value = e;
 
 const nearby311 = computed(() => {
   if (NearbyActivityStore.nearby311.data) {
@@ -36,7 +40,7 @@ const nearby311 = computed(() => {
       .filter(item => {
       let timeDiff = new Date() - new Date(item.requested_datetime);
       let daysDiff = timeDiff / (1000 * 60 * 60 * 24);
-      return daysDiff <= timeIntervals.selected;
+      return daysDiff <= timeIntervalSelected.value;
     })
     if (sortby.value === 'distance') {
       data.sort((a, b) => a.distance - b.distance)
@@ -54,7 +58,7 @@ watch (() => nearby311Geojson.value, (newGeojson) => { map.getSource('nearby').s
 
 const hoveredStateId = computed(() => { return MainStore.hoveredStateId; });
 
-onMounted(() => { if (nearby311Geojson.value.length > 0) { map.getSource('nearby').setData(featureCollection(nearby311Geojson.value)) }});
+onMounted(() => { if (!NearbyActivityStore.loadingData && nearby311Geojson.value.length > 0) { map.getSource('nearby').setData(featureCollection(nearby311Geojson.value)) }});
 onBeforeUnmount(() => { if (map.getSource('nearby')) { map.getSource('nearby').setData(featureCollection([point([0,0])])) }});
 
 

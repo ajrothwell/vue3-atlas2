@@ -1,42 +1,25 @@
 <script setup>
 
-import { ref, reactive, computed, watch, onMounted } from 'vue';
+import { ref, watch } from 'vue';
 
 const $emit = defineEmits(['setSortby']);
 
-const sortbyDropdownOpen = ref(false);
-const toggleSortbyDropdown = () => sortbyDropdownOpen.value = !sortbyDropdownOpen.value;
 const sortby = ref('distance');
-const setSortby = (newSortby) => {
-  sortby.value = newSortby;
+
+watch(() => sortby.value, (newSortby) => {
   $emit('setSortby', sortby.value);
-}
+})
 
 </script>
 
 <template>
-
-  <div
-    :class="sortbyDropdownOpen ? 'dropdown is-active' : 'dropdown'"
-    @click="toggleSortbyDropdown"
-  >
-    <dropdown>test</dropdown>
-    <!-- <div class="dropdown-trigger">
-      <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
-        <span>Sort by</span>
-        <span class="icon is-small">
-          <font-awesome-icon icon="fa-solid fa-angle-down" aria-hidden="true"></font-awesome-icon>
-        </span>
-      </button>
-    </div>
-    <div class="dropdown-menu" id="dropdown-menu" role="menu">
-      <div class="dropdown-content">
-        <a class="dropdown-item" @click="setSortby('distance')">distance</a>
-        <a class="dropdown-item" @click="setSortby('time')">time</a>
-      </div>
-    </div> -->
+  <span>Sort by</span>
+  <div class="dropdown">
+    <dropdown
+      v-model="sortby"
+      :options="['distance', 'time']"
+    >
+    </dropdown>
   </div>
-  <span>{{ sortby }}</span>
-  <br></br>
 
 </template>

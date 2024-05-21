@@ -21,14 +21,18 @@ const loadingData = computed(() => NearbyActivityStore.loadingData );
 
 const sortby = ref('distance');
 const setSortby = (e) => sortby.value = e;
+
+const timeIntervalSelected = ref(30);
+
 const timeIntervals = reactive(
   {
-    labels: ['the last 30 days', 'the last 90 days', '1 year'],
-    values: [30, 90, 365],
-    selected: 30,
+    30: 'the last 30 days',
+    90: 'the last 90 days',
+    365: '1 year',
   }
 )
-const setTimeInterval = (e) => timeIntervals.selected = e;
+
+const setTimeInterval = (e) => timeIntervalSelected.value = e;
 
 const nearbyImminentlyDangerous = computed(() => {
   if (NearbyActivityStore.nearbyImminentlyDangerous) {
@@ -38,7 +42,7 @@ const nearbyImminentlyDangerous = computed(() => {
       let now = new Date();
       let timeDiff = now - itemDate;
       let daysDiff = timeDiff / (1000 * 60 * 60 * 24);
-      return daysDiff <= timeIntervals.selected;
+      return daysDiff <= timeIntervalSelected.value;
     })
     if (sortby.value === 'distance') {
       data.sort((a, b) => a.distance - b.distance)
@@ -56,7 +60,7 @@ watch (() => nearbyImminentlyDangerousGeojson.value, (newGeojson) => { map.getSo
 
 const hoveredStateId = computed(() => { return MainStore.hoveredStateId; });
 
-onMounted(() => { if (nearbyImminentlyDangerousGeojson.value.length > 0) { map.getSource('nearby').setData(featureCollection(nearbyImminentlyDangerousGeojson.value)) }});
+onMounted(() => { if (!NearbyActivityStore.loadingData && nearbyImminentlyDangerousGeojson.value.length > 0) { map.getSource('nearby').setData(featureCollection(nearbyImminentlyDangerousGeojson.value)) }});
 onBeforeUnmount(() => { if (map.getSource('nearby')) { map.getSource('nearby').setData(featureCollection([point([0,0])])) }});
 
 

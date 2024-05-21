@@ -30,6 +30,8 @@ import { useLiStore } from '@/stores/LiStore.js'
 const LiStore = useLiStore();
 import { useVotingStore } from '@/stores/VotingStore.js'
 const VotingStore = useVotingStore();
+import { useNearbyActivityStore } from '@/stores/NearbyActivityStore';
+const NearbyActivityStore = useNearbyActivityStore();
 
 // ROUTER
 import { useRouter, useRoute } from 'vue-router';
@@ -47,6 +49,7 @@ import OpacitySlider from '@/components/map/OpacitySlider.vue';
 import EagleviewPanel from '@/components/map/EagleviewPanel.vue';
 import CyclomediaPanel from '@/components/map/CyclomediaPanel.vue';
 import CyclomediaRecordingsClient from '@/components/map/recordings-client.js';
+import NearbyActivity from '../topics/nearbyActivity/NearbyActivity.vue';
 
 let map;
 
@@ -267,6 +270,16 @@ watch(
     map.getSource('dorParcel').setData(newParcel);
   }
 });
+
+// watch(
+//   () => NearbyActivityStore.loadingData,
+//   async newData => {
+//     console.log('Map.vue watch loadingData, newData:', newData);
+//     if (newData === true) {
+//       map.getSource('nearby').setData(point([0,0]));
+//     }
+//   }
+// )
 
 // watch topic for changing map style
 watch(
