@@ -15,7 +15,7 @@ const inputAddress = ref('');
       <input
         class="input address-input"
         type="text"
-        placeholder="Search an address"
+        placeholder="Search an address or OPA number"
         v-model="inputAddress"
         @keydown.enter="router.replace({ name: 'search', query: { address: inputAddress }})"
       />

@@ -66,6 +66,13 @@ const emitValue = (value) => {
   z-index: 2;
 }
 
+@media screen and (max-width: 768px) {
+  .imagery-dropdown {
+    top: 50px;
+    right: 50px;
+  }
+}
+
 .img-src {
   max-width: 100%; 
   border-radius: 5px;
