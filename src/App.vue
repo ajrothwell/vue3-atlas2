@@ -45,6 +45,14 @@ onMounted(async () => {
   main.scrollTop = -main.scrollHeight;
 });
 
+const applink = {
+  type: 'native',
+  href: 'https://phila.gov',
+  attrs: {
+    target: '_blank',
+  },
+}
+
 const links = [
   {
     type: 'native',
@@ -62,7 +70,7 @@ const links = [
   <!-- class="header" -->
   <app-header
     app-title="Atlas"
-    app-link="https://phila.gov"
+    app-link="/"
     :is-sticky="true"
     :is-fluid="true"
   >

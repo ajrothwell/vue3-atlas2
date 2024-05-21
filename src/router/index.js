@@ -89,7 +89,7 @@ const dataFetch = async(to, from) => {
   }
   
   console.log('dataFetch is still going after address');
-  if (!MainStore.initialDatafetchComplete || to.params.data === from.params.data) {
+  if (!MainStore.initialDatafetchComplete && aisNeeded && to.params.topic || to.params.data === from.params.data && aisNeeded && to.params.topic) {
     // GET PARCELS AND DATA FOR TOPIC
     if (MainStore.lastSearchMethod === 'address') { 
       await ParcelsStore.fillPwdParcelData();
@@ -161,15 +161,8 @@ const topicDataFetch = async (topic, data) => {
   }
 
   if (topic === 'Nearby Activity') {
-    // const MainStore = useMainStore();
-    // const currentNearbyDataType = MainStore.currentNearbyDataType;
-    // console.log('topicDataFetch is running, currentNearbyDataType:', currentNearbyDataType);
     const NearbyActivityStore = useNearbyActivityStore();
     await NearbyActivityStore.fetchData(data);
-    // const GeocodeStore = useGeocodeStore();
-    // const coordinates = GeocodeStore.aisData.features[0].geometry.coordinates;
-    // const MapStore = useMapStore();
-    // await MapStore.fillBufferForAddress(coordinates[0], coordinates[1]);
   }
 }
 
