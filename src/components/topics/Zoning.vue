@@ -91,7 +91,7 @@ onMounted(() => {
 
     <h5 class="subtitle is-5 table-title">Pending Bills</h5>
     <div class="horizontal-table">
-      <table id="pending-bills" class="table is-fullwidth is-striped">
+      <table id="pending-bills" class="table is-fullwidth is-striped no-link-at-bottom">
         <thead>
           <tr>
             <th>Bill Type</th>
@@ -128,7 +128,7 @@ onMounted(() => {
 
     <h5 class="subtitle is-5 table-title">Appeals</h5>
     <div class="horizontal-table">
-      <table id="appeals" class="table is-fullwidth is-striped">
+      <table id="appeals" class="table is-fullwidth is-striped no-link-at-bottom">
         <thead>
           <tr>
             <th>Processed Date</th>
@@ -155,7 +155,7 @@ onMounted(() => {
 
     <h5 class="subtitle is-5 table-title">Registered Community Organizations</h5>
     <div id="rcos" class="horizontal-table">
-      <table class="table is-fullwidth is-striped">
+      <table class="table is-fullwidth is-striped link-at-bottom">
         <thead>
           <tr>
             <th>RCO</th>

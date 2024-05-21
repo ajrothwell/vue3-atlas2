@@ -207,6 +207,7 @@ const buildingData = computed(() => {
 
       <!-- Li Building info-->
       <vertical-table tableId="buildingTable" :data="buildingData"></vertical-table>
+      <br>
 
       <!-- Building Certs Table -->
       <h5 class="subtitle is-5 table-title">Building Certifications</h5>

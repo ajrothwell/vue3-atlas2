@@ -26,7 +26,7 @@ const props = defineProps({
 <style scoped>
 
 .vert-table {
-  margin-bottom: 2rem;
+  /* margin-bottom: 2rem; */
 }
 
 table {

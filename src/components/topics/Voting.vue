@@ -89,10 +89,12 @@ const electedRepsData = [
   <div id="Voting-description" class="box">The deadline to register for the next election is 15 days prior to the election. You can confirm your registration and learn about registering to vote at <a target="_blank" href="vote.phila.gov">vote.phila.gov</a>.</div>
 
   <h5 class="subtitle is-5 table-title">Polling Place</h5>
-  <vertical-table :table-id="pollingPlaceTable" :data="pollingPlaceData" />
+  <vertical-table :table-id="'pollingPlaceTable'" :data="pollingPlaceData" />
+  <br>
 
   <h5 class="subtitle is-5 table-title">Elected Representatives</h5>
-  <vertical-table :table-id="electedRepsTable" :data="electedRepsData" />
+  <vertical-table :table-id="'electedRepsTable'" :data="electedRepsData" />
+  <br>
 
 </template>
 
