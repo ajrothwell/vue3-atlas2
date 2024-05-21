@@ -78,30 +78,47 @@ onBeforeUnmount(() => { if (map.getSource('nearby')) { map.getSource('nearby').s
   <div class="mt-5">
     <h5 class="subtitle is-5">Demolition Permits</h5>
     <div v-if="loadingData">Loading...</div>
-    <table class="table is-fullwidth is-striped">
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Location</th>
-          <th>Type</th>
-          <th>Distance</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr
-          v-for="item in nearbyDemolitionPermits"
-          :key="item.objectid"
-          :id="item.objectid"
-          @mouseover="handleRowMouseover"
-          @mouseleave="handleRowMouseleave"
-          :class="hoveredStateId == item.objectid ? 'active-hover' : 'inactive'"
-        >
-          <td>{{ date(item.permitissuedate) }}</td>
-          <td>{{ item.address }}</td>
-          <td>{{ item.typeofwork }}</td>
-          <td>{{ (item.distance * 3.28084).toFixed(0) }} ft</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="horizontal-table">
+      <table class="table is-fullwidth is-striped">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Location</th>
+            <th>Type</th>
+            <th>Distance</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            v-for="item in nearbyDemolitionPermits"
+            :key="item.objectid"
+            :id="item.objectid"
+            @mouseover="handleRowMouseover"
+            @mouseleave="handleRowMouseleave"
+            :class="hoveredStateId == item.objectid ? 'active-hover' : 'inactive'"
+          >
+            <td>{{ date(item.permitissuedate) }}</td>
+            <td>{{ item.address }}</td>
+            <td>{{ item.typeofwork }}</td>
+            <td>{{ (item.distance * 3.28084).toFixed(0) }} ft</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </template>
+
+<style scoped>
+
+@media 
+only screen and (max-width: 760px),
+(min-device-width: 768px) and (max-device-width: 1024px)  {
+	/*Label the data*/
+
+	td:nth-of-type(1):before { content: "Date"; }
+	td:nth-of-type(2):before { content: "Location"; }
+	td:nth-of-type(3):before { content: "Type"; }
+	td:nth-of-type(4):before { content: "Distance"; }
+}
+
+</style>
