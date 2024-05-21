@@ -1,6 +1,6 @@
 <script setup>
 
-import { computed, onBeforeMount, onMounted } from 'vue';
+import { computed, onBeforeMount, onMounted, reactive } from 'vue';
 // import { storeToRefs } from 'pinia';
 
 import useTransforms from '@/composables/useTransforms';
@@ -18,6 +18,7 @@ const MainStore = useMainStore();
 import { useMapStore } from '@/stores/MapStore';
 const MapStore = useMapStore();
 import CollectionSummary from '@/components/CollectionSummary.vue';
+import VerticalTable from '@/components/VerticalTable.vue';
 
 let selectedParcelId = computed(() => { return MainStore.selectedParcelId });
 const selectedParcel = computed(() => {
@@ -105,6 +106,45 @@ onMounted(() => {
   main.scrollTo(0, mainScrollTop - 80);
 });
 
+const parcelData = reactive([
+  {
+    label: 'Map Registry #',
+    value: selectedParcel.value ? selectedParcel.value.properties.MAPREG : '',
+  },
+  {
+    label: 'Parcel Address',
+    value: selectedParcel.value ? getAddress(selectedParcel.value.properties.ADDR_SOURCE) : '',
+  },
+  {
+    label: 'Status',
+    value: selectedParcel.value ? statusKey[selectedParcel.value.properties.STATUS] : '',
+  },
+  {
+    label: 'Origination Date',
+    value: selectedParcel.value ? date(selectedParcel.value.properties.ORIG_DATE) : '',
+  },
+  {
+    label: 'Inactive Date',
+    value: selectedParcel.value ? date(selectedParcel.value.properties.INACTDATE) : '',
+  },
+  {
+    label: 'Has Air Rights',
+    value: selectedParcel.value ? selectedParcel.value.properties.SUFFIX ? 'Yes' : 'No' : '',
+  },
+  {
+    label: 'Is Condo',
+    value: selectedParcel.value ? !selectedParcel.value.properties.CONDOFLAG ? 'No' : 'Yes' : '',
+  },
+  {
+    label: 'Perimeter',
+    value: selectedParcel.value ? prettyNumber(integer(selectedParcel.value.properties.TURF_PERIMETER)) + ' ft' : '',
+  },
+  {
+    label: 'Area',
+    value: selectedParcel.value ? prettyNumber(integer(selectedParcel.value.properties.TURF_AREA)) + ' sq ft' : '',
+  },
+]);
+
 </script>
 
 <template>
@@ -127,44 +167,7 @@ onMounted(() => {
   </div>
 
   <h5 class="title is-5">Parcel Details</h5>
-  <div class="vert-table" v-if="selectedParcel">
-    <div class="columns">
-      <div class="column is-4">Map Registry #</div>
-      <div class="column is-8">{{ selectedParcel.properties.MAPREG }}</div>
-    </div>
-    <div class="columns">
-      <div class="column is-4">Parcel Address</div>
-      <div class="column is-8">{{ getAddress(selectedParcel.properties.ADDR_SOURCE) }}</div>
-    </div>
-    <div class="columns">
-      <div class="column is-4">Status</div>
-      <div class="column is-8">{{ statusKey[selectedParcel.properties.STATUS] || 'none' }}</div>
-    </div>
-    <div class="columns">
-      <div class="column is-4">Origination Date</div>
-      <div class="column is-8">{{ date(selectedParcel.properties.ORIG_DATE) }}</div>
-    </div>
-    <div class="columns">
-      <div class="column is-4">Inactive Date</div>
-      <div class="column is-8">{{ date(selectedParcel.properties.INACTDATE) || 'None' }}</div>
-    </div>
-    <div class="columns">
-      <div class="column is-4">Has Air Rights</div>
-      <div class="column is-8">{{ selectedParcel.properties.SUFFIX ? 'Yes' : 'No' }}</div>
-    </div>
-    <div class="columns">
-      <div class="column is-4">Is Condo</div>
-      <div class="column is-8">{{ !selectedParcel.properties.CONDOFLAG ? 'No' : 'Yes' }}</div>
-    </div>
-    <div class="columns">
-      <div class="column is-4">Perimeter</div>
-      <div class="column is-8">{{ prettyNumber(integer(selectedParcel.properties.TURF_PERIMETER)) }} ft</div>
-    </div>
-    <div class="columns">
-      <div class="column is-4">Area</div>
-      <div class="column is-8">{{ prettyNumber(integer(selectedParcel.properties.TURF_AREA)) }} sq ft</div>
-    </div>
-  </div>
+  <vertical-table v-if="selectedParcel" tableId="dorTable" :data="parcelData"></vertical-table>
 
   <!-- Deeded Condominiums -->
   <div v-if="deededCondosExist" class="mt-6">
