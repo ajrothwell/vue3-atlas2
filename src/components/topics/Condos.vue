@@ -110,21 +110,23 @@ const getNextPage = () => {
       <router-link :to="{ name: 'address-topic-and-data', params: { data: getNextPage() }}" class="pagination-next">></router-link>
     </nav>
 
-    <table class="table is-fullwidth is-striped">
-      <thead>
-        <tr>
-          <th>Address</th>
-          <th>OPA Account #</th>
-        </tr>
-      </thead>
-      <div v-if="condosLoading">loading...</div>
-      <tbody v-if="!condosLoading">
-        <tr v-for="item in condos">
-          <td><router-link :to="{ name: 'address-and-topic', params: { address: item.properties.opa_address, topic: 'Property' }}">{{ item.properties.opa_address }}</router-link></td>
-          <td>{{ item.properties.opa_account_num }}</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="horizontal-table">
+      <table class="table is-fullwidth is-striped">
+        <thead>
+          <tr>
+            <th>Address</th>
+            <th>OPA Account #</th>
+          </tr>
+        </thead>
+        <div v-if="condosLoading">loading...</div>
+        <tbody v-if="!condosLoading">
+          <tr v-for="item in condos">
+            <td><router-link :to="{ name: 'address-and-topic', params: { address: item.properties.opa_address, topic: 'Property' }}">{{ item.properties.opa_address }}</router-link></td>
+            <td>{{ item.properties.opa_account_num }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
   </section>
 </template>

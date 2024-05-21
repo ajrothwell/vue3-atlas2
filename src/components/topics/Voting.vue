@@ -9,6 +9,8 @@ import { useVotingStore } from '@/stores/VotingStore';
 import { onMounted } from 'vue';
 const VotingStore = useVotingStore();
 
+import VerticalTable from '@/components/VerticalTable.vue';
+
 const council = VotingStore.electedOfficials.rows.filter((item) => {
   return item.office_label == "City Council";
 });
@@ -87,61 +89,14 @@ const electedRepsData = [
   <div id="Voting-description" class="box">The deadline to register for the next election is 15 days prior to the election. You can confirm your registration and learn about registering to vote at <a target="_blank" href="vote.phila.gov">vote.phila.gov</a>.</div>
 
   <h5 class="subtitle is-5 table-title">Polling Place</h5>
-  <table id="polling-place-table">
-    <tbody>
-      <tr
-        v-for="(field, index) in pollingPlaceData"
-        :key="index"
-      >
-        <th>{{ field.label }}</th>
-        <td v-html="field.value"></td>
-      </tr>
-    </tbody>
-  </table>
+  <vertical-table :table-id="pollingPlaceTable" :data="pollingPlaceData" />
 
   <h5 class="subtitle is-5 table-title">Elected Representatives</h5>
-  <table id="polling-place-table">
-    <tbody>
-      <tr
-        v-for="(field, index) in electedRepsData"
-        :key="index"
-      >
-        <th>{{ field.label }}</th>
-        <td v-html="field.value"></td>
-      </tr>
-    </tbody>
-  </table>
+  <vertical-table :table-id="electedRepsTable" :data="electedRepsData" />
 
 </template>
 
 <style scoped>
-
-#polling-place-table {
-  margin-bottom: 2rem;
-}
-
-table {
-  border-collapse: separate;
-  border-spacing: 2px;
-  width: 100%;
-}
-
-th {
-  background-color: rgb(68, 68, 68);
-  color: white;
-  padding-left: 10px;
-  padding-right: 10px;
-  padding-top: 6px;
-  padding-bottom: 6px;
-  width: 30%;
-}
-
-td {
-  padding-left: 10px;
-  padding-right: 10px;
-  padding-top: 6px;
-  padding-bottom: 6px;
-}
 
 .badge-title {
   padding-top: 0.25rem !important;

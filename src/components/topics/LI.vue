@@ -204,24 +204,31 @@ const handleBinClick = (bin) => {
 
       <!-- Building Certs Table -->
       <h5 class="subtitle is-5 table-title">Building Certifications</h5>
-      <table id="building-certs" class="table is-fullwidth is-striped link-at-bottom">
-        <thead>
-          <tr>
-            <th>InspectionType</th>
-            <th>Date Inspected</th>
-            <th>Inspection Result</th>
-            <th>Expiration Date</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="item in selectedBuildingCerts">
-            <td>{{ item.buildingcerttype }}</td>
-            <td>{{ date(item.inspectiondate) }}</td>
-            <td>{{ item.inspectionresult }}</td>
-            <td>{{ date(item.expirationdate) }}</td>
-          </tr>
-        </tbody>
-      </table>
+      <!-- <horizontal-table
+        :table-id="buildindCerts"
+        :headers="['InspectionType', 'Date Inspected', 'Inspection Result', 'Expiration Date']"
+        :data="selectedBuildingCerts"
+      /> -->
+      <div class="horizontal-table">
+        <table id="building-certs" class="table is-fullwidth is-striped link-at-bottom">
+          <thead>
+            <tr>
+              <th>InspectionType</th>
+              <th>Date Inspected</th>
+              <th>Inspection Result</th>
+              <th>Expiration Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="item in selectedBuildingCerts">
+              <td>{{ item.buildingcerttype }}</td>
+              <td>{{ date(item.inspectiondate) }}</td>
+              <td>{{ item.inspectionresult }}</td>
+              <td>{{ date(item.expirationdate) }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
       <div class="table-link">
         <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See all {{ LiStore.liBuildingCerts.rows.length || '' }} building certifications for this property at L&I Property History <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
       </div>

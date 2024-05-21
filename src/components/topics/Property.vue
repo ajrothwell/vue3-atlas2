@@ -10,6 +10,8 @@ import { useCondosStore } from '@/stores/CondosStore';
 import { onMounted } from 'vue';
 const CondosStore = useCondosStore();
 
+import VerticalTable from '@/components/VerticalTable.vue';
+
 onMounted(() => {
   const topic = document.getElementById('Property-topic');
   const topicPanel = document.getElementById('topic-panel-content');
@@ -55,17 +57,7 @@ const vertTableData = [
       Property assessment and sale information for this address. Source: Office of Property Assessments (OPA). OPA was formerly a part of the Bureau of Revision of Taxes (BRT) and some City records may still use that name.
     </div>
 
-    <table id="opa">
-      <tbody>
-        <tr
-          v-for="(field, index) in vertTableData"
-          :key="index"
-        >
-          <th>{{ field.label }}</th>
-          <td>{{ field.value }}</td>
-        </tr>
-      </tbody>
-    </table>
+    <vertical-table v-if="OpaStore.opaData.rows.length && !CondosStore.condosData.features.length" :table-id="opaTable" :data="vertTableData"></vertical-table>
 
     <div v-if="!OpaStore.opaData.rows.length && CondosStore.condosData.features.length">
       <h5 class="title is-5">There are {{ CondosStore.condosData.total_size }} condominium units at this address.</h5>

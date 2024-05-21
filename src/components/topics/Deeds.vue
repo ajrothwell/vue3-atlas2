@@ -198,26 +198,28 @@ onMounted(() => {
   <!-- DOR Docs Table -->
   <div class="mt-6">
     <h5 class="subtitle is-5">Documents</h5>
-    <table class="table is-fullwidth is-striped">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Date</th>
-          <th>Type</th>
-          <th>Grantor</th>
-          <th>Grantee</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="item in selectedDocs">
-          <td><a target='_blank' :href="getHref(item.attributes.DOCUMENT_ID)">{{item.attributes.DOCUMENT_ID}}<font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a></td>
-          <td>{{ date(item.attributes.DISPLAY_DATE) }}</td>
-          <td>{{ item.attributes.DOCUMENT_TYPE }}</td>
-          <td>{{ item.attributes.GRANTORS }}</td>
-          <td>{{ item.attributes.GRANTEES }}</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="horizontal-table">
+      <table class="table is-fullwidth is-striped">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Grantor</th>
+            <th>Grantee</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="item in selectedDocs">
+            <td><a target='_blank' :href="getHref(item.attributes.DOCUMENT_ID)">{{item.attributes.DOCUMENT_ID}}<font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a></td>
+            <td>{{ date(item.attributes.DISPLAY_DATE) }}</td>
+            <td>{{ item.attributes.DOCUMENT_TYPE }}</td>
+            <td>{{ item.attributes.GRANTORS }}</td>
+            <td>{{ item.attributes.GRANTEES }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 
   <div class="box">Use the buttons below to view images of hard-copy deed maps, some of which have handwritten information that may be useful for historical deed research.</div>
