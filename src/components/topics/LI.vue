@@ -211,7 +211,11 @@ const buildingData = computed(() => {
       <!-- Building Certs Table -->
       <h5 class="subtitle is-5 table-title">Building Certifications</h5>
       <div class="horizontal-table">
-        <table id="building-certs" class="table is-fullwidth is-striped link-at-bottom">
+        <table
+          id="building-certs"
+          :class="selectedBuildingCerts.length ? 'link-at-bottom' : 'no-link-at-bottom'"
+          class="table is-fullwidth is-striped"
+        >
           <thead>
             <tr>
               <th>InspectionType</th>
@@ -230,7 +234,8 @@ const buildingData = computed(() => {
           </tbody>
         </table>
       </div>
-      <div class="table-link">
+      <div class='mobile-no-data' v-if="!selectedBuildingCerts.length">No building certifications found</div>
+      <div class="table-link" v-if="selectedBuildingCerts.length">
         <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See all {{ LiStore.liBuildingCerts.rows.length || '' }} building certifications for this property at L&I Property History <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
       </div>
     </div>
@@ -240,7 +245,7 @@ const buildingData = computed(() => {
     <div class="horizontal-table">
       <table
         id="permits"
-        :class="LiStore.liPermits.rows.length > 5 ? 'link-at-bottom' : ''"
+        :class="LiStore.liPermits.rows.length > 5 ? 'link-at-bottom' : 'no-link-at-bottom'"
         class="table is-fullwidth is-striped"
       >
         <thead>
@@ -261,17 +266,18 @@ const buildingData = computed(() => {
         </tbody>
       </table>
     </div>
+    <div class='mobile-no-data' v-if="!LiStore.liPermits.rows.length">No permits</div>
     <div v-if="LiStore.liPermits.rows.length > 5" class="table-link">
       <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See {{ LiStore.liPermits.rows.length-5 }} older permits at L&I Property History <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
     </div>
 
     <!-- liAisZoningDocs and liEclipseZoningDocs Table-->
     <h5 class="subtitle is-5 table-title">Zoning Permit Documents</h5>
-    <h6 class="subtitle is-6">Formerly "Zoning Archive"</h6>
+    <h6 class="subtitle is-6 table-subtitle">Formerly "Zoning Archive"</h6>
     <div class="horizontal-table">
       <table
         id="zoning-permit-docs"
-        class="table is-fullwidth is-striped"
+        class="table is-fullwidth is-striped no-link-at-bottom"
       >
         <thead>
           <tr>
@@ -291,16 +297,17 @@ const buildingData = computed(() => {
         </tbody>
       </table>
     </div>
+    <div class='mobile-no-data' v-if="!liAllZoningDocs.length">No zoning permit documents</div>
+    
 
     <!-- Li Inspections Table -->
     <h5 class="subtitle is-5 table-title">Inspections</h5>
     <div class="horizontal-table">
       <table
         id="inspections"
-        :class="LiStore.liInspections.rows.length > 5 ? 'link-at-bottom' : ''"
+        :class="LiStore.liInspections.rows.length > 5 ? 'link-at-bottom' : 'no-link-at-bottom'"
         class="table is-fullwidth is-striped"
       >
-
         <thead>
           <tr>
             <th>Date</th>
@@ -328,7 +335,7 @@ const buildingData = computed(() => {
     <div class="horizontal-table">
       <table
         id="violations"
-        :class="LiStore.liInspections.rows.length > 5 ? 'link-at-bottom' : ''"
+        :class="LiStore.liInspections.rows.length > 5 ? 'link-at-bottom' : 'no-link-at-bottom'"
         class="table is-fullwidth is-striped"
       >
         <thead>
@@ -358,7 +365,7 @@ const buildingData = computed(() => {
     <div class="horizontal-table">
       <table
         id="business-licenses"
-        :class="LiStore.liBusinessLicenses.rows.length > 5 ? 'link-at-bottom' : ''"
+        :class="LiStore.liBusinessLicenses.rows.length > 5 ? 'link-at-bottom' : 'no-link-at-bottom'"
         class="table is-fullwidth is-striped link-at-bottom"
       >
         <thead>
@@ -404,9 +411,9 @@ const buildingData = computed(() => {
 only screen and (max-width: 760px),
 (min-device-width: 768px) and (max-device-width: 1024px)  {
 
-  td {
+  /* td {
     padding-left: 85px !important;
-  }
+  } */
 
 	/* Label the data */
 	#building-certs {
@@ -430,7 +437,7 @@ only screen and (max-width: 760px),
   }
 
   #zoning-permit-docs {
-    margin-bottom: 2rem;
+    /* margin-bottom: 2rem; */
 
     td:nth-of-type(2) {
       min-height: 60px;

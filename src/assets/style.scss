@@ -117,6 +117,10 @@ body {
   height: 100%;
 }
 
+.mobile-no-data {
+  display: none;
+}
+
 
 
 
@@ -244,15 +248,26 @@ body {
     }
   }
 
+  .mobile-no-data {
+    display: block;
+    margin-bottom: 3rem;
+  }
+  
 }
 
-
+.no-link-at-bottom {
+  margin-bottom: 2rem !important;
+}
 
 .vert-table {
   margin-bottom: 2rem;
 }
 
 .table-title {
+  margin-bottom: .5rem !important;
+}
+
+.table-subtitle {
   margin-bottom: .5rem !important;
 }
 

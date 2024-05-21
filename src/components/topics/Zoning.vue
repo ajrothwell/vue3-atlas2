@@ -14,7 +14,7 @@ const MainStore = useMainStore();
 import CollectionSummary from '@/components/CollectionSummary.vue';
 
 import useTransforms from '@/composables/useTransforms';
-const { rcoPrimaryContact } = useTransforms();
+const { date, rcoPrimaryContact } = useTransforms();
 
 let selectedParcelId = computed(() => { return MainStore.selectedParcelId });
 const selectedParcel = computed(() => {
@@ -90,25 +90,28 @@ onMounted(() => {
     </div>
 
     <h5 class="subtitle is-5 table-title">Pending Bills</h5>
-    <table class="table is-fullwidth is-striped">
-      <thead>
-        <tr>
-          <th>Bill Type</th>
-          <th>Current Zoning</th>
-          <th>Pending Bill</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="item in ZoningStore.pendingBills[selectedParcelId]">
-          <td>{{ item.billType }}</td>
-          <td>{{ item.currentZoning }}</td>
-          <td v-html="`<a target='_blank' href='${item.pendingbillurl}'>${item.pendingbill} <i class='fa fa-external-link-alt'></i></a>`"></td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="horizontal-table">
+      <table id="pending-bills" class="table is-fullwidth is-striped">
+        <thead>
+          <tr>
+            <th>Bill Type</th>
+            <th>Current Zoning</th>
+            <th>Pending Bill</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="item in ZoningStore.pendingBills[selectedParcelId]">
+            <td>{{ item.billType }}</td>
+            <td>{{ item.currentZoning }}</td>
+            <td v-html="`<a target='_blank' href='${item.pendingbillurl}'>${item.pendingbill} <i class='fa fa-external-link-alt'></i></a>`"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class='mobile-no-data' v-if="!ZoningStore.pendingBills[selectedParcelId].length">No pending bills found</div>
 
     <h5 class="subtitle is-5 table-title">Overlays</h5>
-    <table class="table is-fullwidth is-striped">
+    <table id="overlays" class="table is-fullwidth is-striped">
       <thead>
         <tr>
           <th>Name</th>
@@ -124,51 +127,56 @@ onMounted(() => {
     </table>
 
     <h5 class="subtitle is-5 table-title">Appeals</h5>
-    <table class="table is-fullwidth is-striped">
-      <thead>
-        <tr>
-          <th>Processed Date</th>
-          <th>Id</th>
-          <th>Description</th>
-          <th>Scheduled Date</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="item in zoningAppeals">
-          <td>{{ date(item.createddate) }}</td>
-          <td>{{ getLinkAppeals(item) }}</td>
-          <td>{{ item.appealgrounds }}</td>
-          <td>{{ item.scheduleddate }}</td>
-          <td>{{ item.decision }}</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="horizontal-table">
+      <table id="appeals" class="table is-fullwidth is-striped">
+        <thead>
+          <tr>
+            <th>Processed Date</th>
+            <th>Id</th>
+            <th>Description</th>
+            <th>Scheduled Date</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="item in zoningAppeals">
+            <td>{{ date(item.createddate) }}</td>
+            <td v-html="getLinkAppeals(item)"></td>
+            <td>{{ item.appealgrounds }}</td>
+            <td>{{ date(item.scheduleddate) }}</td>
+            <td>{{ item.decision }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class='mobile-no-data' v-if="!zoningAppeals.length">No appeals found</div>
 
     <div class="box">Looking for zoning documents? They are now located in the Licenses & Inspections tab under "Zoning Permit Documents".</div>
 
     <h5 class="subtitle is-5 table-title">Registered Community Organizations</h5>
-    <table class="table is-fullwidth is-striped">
-      <thead>
-        <tr>
-          <th>RCO</th>
-          <th>Meeting Address</th>
-          <th>Primary Contact</th>
-          <th>Preferred Method</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="item in ZoningStore.rcos.features">
-          <td v-html = "'<b>' + item.properties.ORGANIZATION_NAME + '</b><br>'
-                + item.properties.ORGANIZATION_ADDRESS"></td>
-          <td>{{ item.properties.MEETING_LOCATION_ADDRESS }}</td>
-          <td v-html="rcoPrimaryContact(item.properties.PRIMARY_NAME + '<br>'
-                + item.properties.PRIMARY_PHONE + '<br>'
-                + item.properties.PRIMARY_EMAIL)"></td>
-          <td>{{ item.properties.PREFFERED_CONTACT_METHOD }}</td>
-        </tr>
-      </tbody>
-    </table>
+    <div id="rcos" class="horizontal-table">
+      <table class="table is-fullwidth is-striped">
+        <thead>
+          <tr>
+            <th>RCO</th>
+            <th>Meeting Address</th>
+            <th>Primary Contact</th>
+            <th>Preferred Method</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="item in ZoningStore.rcos.features">
+            <td v-html = "'<b>' + item.properties.ORGANIZATION_NAME + '</b><br>'
+                  + item.properties.ORGANIZATION_ADDRESS"></td>
+            <td>{{ item.properties.MEETING_LOCATION_ADDRESS }}</td>
+            <td v-html="rcoPrimaryContact(item.properties.PRIMARY_NAME + '<br>'
+                  + item.properties.PRIMARY_PHONE + '<br>'
+                  + item.properties.PRIMARY_EMAIL)"></td>
+            <td>{{ item.properties.PREFFERED_CONTACT_METHOD }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
     <div class="table-link">
       <a target="_blank" href="//www.phila.gov/documents/registered-community-organization-rco-materials/">See a list of all RCOs in the city [PDF] <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
     </div>
@@ -178,6 +186,15 @@ onMounted(() => {
 </template>
 
 <style scoped>
+
+.add-borders {
+  border: 1px solid #ccc;
+  padding: .5em;
+}
+
+.is-selected {
+  background-color: #b8b8b8
+}
 
 .badge-title {
   padding-top: 0.25rem !important;
@@ -196,6 +213,58 @@ onMounted(() => {
   background-color: #f0f0f0;
   margin-left: 2px;
   margin-right: 1px;
+}
+
+@media 
+only screen and (max-width: 760px),
+(min-device-width: 768px) and (max-device-width: 1024px)  {
+
+  /* td {
+    padding-left: 85px !important;
+  } */
+
+	/* Label the data */
+	#pending-bills {
+    td {
+      min-height: 60px;
+    }
+
+    td:nth-of-type(1):before { content: "Bill Type"; }
+    td:nth-of-type(2):before { content: "Current Zoning"; }
+    td:nth-of-type(3):before { content: "Pending Bill"; }
+  }
+
+  #overlays {
+    td {
+      min-height: 60px;
+    }
+
+    td:nth-of-type(1):before { content: "Name"; }
+    td:nth-of-type(2):before { content: "Code Section"; }
+  }
+
+  #appeals {
+    td {
+      min-height: 60px;
+    }
+
+    td:nth-of-type(1):before { content: "Processed Date"; }
+    td:nth-of-type(2):before { content: "Id"; }
+    td:nth-of-type(3):before { content: "Description"; }
+    td:nth-of-type(4):before { content: "Scheduled Date"; }
+    td:nth-of-type(5):before { content: "Status"; }
+  }
+
+  #rcos {
+    td {
+      min-height: 60px;
+    }
+
+    td:nth-of-type(1):before { content: "RCO"; }
+    td:nth-of-type(2):before { content: "Meeting Address"; }
+    td:nth-of-type(3):before { content: "Primary Contact"; }
+    td:nth-of-type(4):before { content: "Preferred Method"; }
+  }
 }
 
 </style>

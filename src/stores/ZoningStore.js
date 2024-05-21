@@ -175,7 +175,7 @@ export const useZoningStore = defineStore('ZoningStore', {
       
       const url = baseUrl += query;
       const response = await fetch(url);
-      this.liZoningAppeals = await response.json();
+      this.zoningAppeals = await response.json();
 
     },
 
