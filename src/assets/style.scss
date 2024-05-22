@@ -128,6 +128,17 @@ body {
 only screen and (max-width: 760px),
 (min-device-width: 768px) and (max-device-width: 1024px)  {
 
+  @supports (-webkit-touch-callout: none) {
+    /* CSS specific to iOS devices */ 
+    .main {
+      padding-top: 142px !important;
+    }
+  }
+  
+  @supports not (-webkit-touch-callout: none) {
+    /* CSS for other than iOS devices */ 
+  }
+
   html {
     min-height: 100dvh;
     overflow-y: hidden;
