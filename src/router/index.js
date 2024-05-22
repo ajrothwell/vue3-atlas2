@@ -90,7 +90,7 @@ const dataFetch = async(to, from) => {
   }
   
   console.log('dataFetch is still going after address');
-  if (!MainStore.initialDatafetchComplete && aisNeeded && to.params.topic || to.params.data === from.params.data && aisNeeded && to.params.topic) {
+  if (!MainStore.initialDatafetchComplete && aisNeeded || to.params.data === from.params.data && aisNeeded) {
     // GET PARCELS AND DATA FOR TOPIC
     if (MainStore.lastSearchMethod === 'address') { 
       await ParcelsStore.fillPwdParcelData();

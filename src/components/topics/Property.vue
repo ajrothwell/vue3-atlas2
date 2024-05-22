@@ -1,7 +1,7 @@
 <script setup>
 console.log('Property.vue setup');
 
-import { reactive } from 'vue';
+import { reactive, computed } from 'vue';
 
 // import the GeocodeStore and OpaStore
 import { useGeocodeStore } from '@/stores/GeocodeStore';
@@ -49,6 +49,14 @@ const vertTableData = reactive([
   },
 ]);
 
+const shouldShowTable = computed(() => {
+  if (!CondosStore.condosData.features) {
+    return OpaStore.opaData.rows.length;
+  } else {
+    return OpaStore.opaData.rows.length && !CondosStore.condosData.features.length;
+  }
+});
+
 
 </script>
 
@@ -58,7 +66,7 @@ const vertTableData = reactive([
       Property assessment and sale information for this address. Source: Office of Property Assessments (OPA). OPA was formerly a part of the Bureau of Revision of Taxes (BRT) and some City records may still use that name.
     </div>
 
-    <vertical-table v-if="OpaStore.opaData.rows.length && !CondosStore.condosData.features.length" tableId="opaTable" :data="vertTableData"></vertical-table>
+    <vertical-table v-if="shouldShowTable" tableId="opaTable" :data="vertTableData"></vertical-table>
 
     <div v-if="!OpaStore.opaData.rows.length && CondosStore.condosData.features.length">
       <h5 class="title is-5">There are {{ CondosStore.condosData.total_size }} condominium units at this address.</h5>
