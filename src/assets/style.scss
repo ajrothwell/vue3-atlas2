@@ -131,7 +131,7 @@ only screen and (max-width: 760px),
   @supports (-webkit-touch-callout: none) {
     /* CSS specific to iOS devices */ 
     .main {
-      padding-top: 142px !important;
+      margin-top: 42px !important;
     }
   }
   
@@ -163,6 +163,7 @@ only screen and (max-width: 760px),
     display: flex;
     flex-direction: column-reverse;
     overflow-y: scroll;
+    padding-top: 42px !important;
   }
 
   .topics-holder {
