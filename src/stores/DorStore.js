@@ -100,7 +100,7 @@ export const useDorStore = defineStore("DorStore", {
       let baseUrl = 'https://phl.carto.com/api/v2/sql?q=';
       parcels.forEach(async(feature) => {
         console.log('feature:', feature);
-        const url = baseUrl += `select * from condominium where mapref = '${ feature.properties.MAPREG }' and status in (1,3)`;
+        const url = baseUrl + `select * from condominium where mapref = '${ feature.properties.MAPREG }' and status in (1,3)`;
         const response = await fetch(url);
         this.dorCondos[feature.properties.OBJECTID] = await response.json();
       });
