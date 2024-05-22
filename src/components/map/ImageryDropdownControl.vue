@@ -4,13 +4,12 @@ import { useMapStore } from '@/stores/MapStore.js';
 const MapStore = useMapStore();
 
 const $emit = defineEmits(['setImagery']);
-const dropdownValue = ref('2023');
+const dropdownValue = computed(() => MapStore.imagerySelected);
 
 const imageryDropdownOpen = ref(false);
 const toggleImageryDropdown = () => imageryDropdownOpen.value = !imageryDropdownOpen.value;
 
 const emitValue = (value) => {
-  dropdownValue.value = value;
   $emit('setImagery', value);
   imageryDropdownOpen.value = false;
 }
