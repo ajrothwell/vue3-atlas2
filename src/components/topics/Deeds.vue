@@ -270,9 +270,10 @@ const parcelData = reactive([
   right: 0 !important;
 }
 
-@media 
+/* @media 
 only screen and (max-width: 760px),
-(min-device-width: 768px) and (max-device-width: 1024px)  {
+(min-device-width: 768px) and (max-device-width: 1024px)  { */
+@media screen and (max-width: 768px){
 	/*Label the data*/
 
 	td:nth-of-type(1):before { content: "ID"; }
