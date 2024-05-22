@@ -24,6 +24,7 @@ const getGeocodeAndPutInStore = async(address) => {
   MainStore.clearDataSourcesLoadedArray();
   const CondosStore = useCondosStore();
   CondosStore.lastPageUsed = 1;
+  CondosStore.condosData = {};
   const GeocodeStore = useGeocodeStore();
   await GeocodeStore.fillaisData(address);
   if (!GeocodeStore.aisData.features) {

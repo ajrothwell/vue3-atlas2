@@ -271,15 +271,6 @@ watch(
   }
 });
 
-// watch(
-//   () => NearbyActivityStore.loadingData,
-//   async newData => {
-//     console.log('Map.vue watch loadingData, newData:', newData);
-//     if (newData === true) {
-//       map.getSource('nearby').setData(point([0,0]));
-//     }
-//   }
-// )
 
 // watch topic for changing map style
 watch(
@@ -287,7 +278,12 @@ watch(
   async newTopic => {
     // console.log('Map route.params.topic watch, newTopic:', newTopic);
     if (newTopic) {
+      // setMapStyleForTopic(newTopic);
       map.setStyle($config[$config.topicStyles[newTopic]]);
+      if (MapStore.imageryOn) {
+        map.addLayer($config.mapLayers[imagerySelected.value], 'cyclomediaRecordings')
+        map.addLayer($config.mapLayers.imageryLabels, 'cyclomediaRecordings')
+      }
       const addressMarker = map.getSource('addressMarker');
       const dorParcel = map.getSource('dorParcel');
       if (addressMarker && dorParcel && pwdCoordinates.value.length) {

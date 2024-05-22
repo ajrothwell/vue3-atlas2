@@ -99,7 +99,6 @@ const getAddress = (address) => {
 
 onMounted(() => {
   const topic = document.getElementById('Deeds-topic');
-  console.log('topic:', topic);
   topic.scrollIntoView();
   const main = document.getElementById('main');
   const mainScrollTop = main.scrollTop;

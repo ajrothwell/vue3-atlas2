@@ -138,7 +138,6 @@ onMounted( async () => {
   await map.getSource('liBuildingFootprints').setData(geojson);
 
   const topic = document.getElementById('Licenses & Inspections-topic');
-  console.log('topic:', topic);
   topic.scrollIntoView();
   const main = document.getElementById('main');
   const mainScrollTop = main.scrollTop;

@@ -55,7 +55,6 @@ onBeforeMount(() => {
 
 onMounted(() => {
   const topic = document.getElementById('Property-topic');
-  const topicPanel = document.getElementById('topic-panel-content');
   topic.scrollIntoView();
   const main = document.getElementById('main');
   const mainScrollTop = main.scrollTop;

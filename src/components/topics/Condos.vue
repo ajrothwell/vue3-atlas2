@@ -146,7 +146,7 @@ const getNextPage = () => {
 
   .pagination-link {
     margin: 0px !important;
-    padding: 0px;
+    /* padding: 0px; */
     min-width: 16px !important;
   }
 
@@ -168,17 +168,19 @@ const getNextPage = () => {
     font-weight: bold !important;
   }
 
-  td {
-    padding-left: 115px !important;
-    /* min-height: 60px; */
+  .horizontal-table {
+    /* td {
+      padding-left: 125px !important;
+    } */
+    
+    /* td:before {
+      width: 90px !important; 
+    } */
+    td:nth-of-type(2) { min-height: 60px; }
+    /* Label the data */
+    td:nth-of-type(1):before { content: "Address"; }
+    td:nth-of-type(2):before { content: "OPA Account #"; }
   }
-
-  td:before {
-    width: 110px !important; 
-  }
-	/* Label the data */
-  td:nth-of-type(1):before { content: "Address"; }
-  td:nth-of-type(2):before { content: "OPA Account #"; }
 
 }
 
