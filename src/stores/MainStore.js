@@ -11,7 +11,7 @@ export const useMainStore = defineStore("MainStore", {
       currentAddress: '',
       currentTopic: 'Property',
       // currentNearbyDataType: null,
-      currentNearbyDataType: 'nearby311',
+      currentNearbyDataType: null,
       dataSourcesLoadedArray: [],
       hoveredStateId: null,
       selectedParcelId: null,

@@ -34,30 +34,18 @@ const dataTypes = {
 const currentNearbyDataType = computed(() => {
   return MainStore.currentNearbyDataType;
 });
+
 const setDataTypeInRouter = (newDataType) => {
   router.push({ name: 'address-topic-and-data', params: { address: MainStore.currentAddress, topic: route.params.topic, data: newDataType } });
 }
 
-watch(() => route.params.data, (newDataType) => {
-  console.log('watch route.params.data, newDataType:', newDataType, 'currentNearbyDataType.value:', currentNearbyDataType.value);
-  if (newDataType) {
-    setDataType(newDataType);
-  }
-})
-
 const selectedDataType = ref('nearby311');
+
 watch(() => selectedDataType.value, (newDataType) => {
   console.log('watch selectedDataType.value, newDataType:', newDataType);
   setDataTypeInRouter(newDataType);
-})
-
-const setDataType = async (newDataType) => {
-  console.log('setDataType, newDataType:', newDataType);
   MainStore.currentNearbyDataType = newDataType;
-  if (NearbyActivityStore[newDataType] === null) {
-    await NearbyActivityStore.fetchData(newDataType);
-  }
-}
+})
 
 const hoveredStateId = computed(() => { return MainStore.hoveredStateId; });
 
@@ -73,7 +61,6 @@ watch(() => hoveredStateId.value, (newHoveredStateId) => {
 
 onMounted( () => {
   // console.log('NearbyActivity.vue onMounted is running, route.params.data:', route.params.data);
-  setDataType(route.params.data);
   selectedDataType.value = route.params.data;
   const topic = document.getElementById('Property-topic');
   topic.scrollIntoView();
