@@ -1,7 +1,7 @@
 <script setup>
 console.log('Property.vue setup');
 
-import { reactive, computed } from 'vue';
+import { computed } from 'vue';
 
 // import the GeocodeStore and OpaStore
 import { useGeocodeStore } from '@/stores/GeocodeStore';
@@ -22,7 +22,7 @@ onMounted(() => {
   // main.scrollTo(0, mainScrollTop - 80);
 });
 
-const vertTableData = reactive([
+const vertTableData = computed(() => [
   {
     label: 'OPA Account #',
     value: GeocodeStore.aisData.features[0].properties.opa_account_num,

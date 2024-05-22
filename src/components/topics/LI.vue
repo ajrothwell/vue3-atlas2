@@ -1,6 +1,6 @@
 <script setup>
 console.log('LI.vue setup');
-import { computed, onMounted, onBeforeMount, reactive } from 'vue';
+import { computed, onMounted, onBeforeMount } from 'vue';
 import { polygon, featureCollection } from '@turf/helpers';
 
 import { useMainStore } from '@/stores/MainStore';

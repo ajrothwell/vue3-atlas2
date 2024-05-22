@@ -6,7 +6,7 @@ import useTransforms from '@/composables/useTransforms';
 const { nth, phoneNumber, titleCase } = useTransforms();
 
 import { useVotingStore } from '@/stores/VotingStore';
-import { onMounted } from 'vue';
+import { onMounted, computed } from 'vue';
 const VotingStore = useVotingStore();
 
 import VerticalTable from '@/components/VerticalTable.vue';
@@ -39,7 +39,7 @@ onMounted(() => {
   // main.scrollTo(0, mainScrollTop - 80);
 });
 
-const pollingPlaceData = [
+const pollingPlaceData = computed(() => [
   {
     label: 'Location',
     value: '<b>Ward ' + VotingStore.pollingPlaces.rows[0].ward + ', Division ' + VotingStore.pollingPlaces.rows[0].division + '</b><br>' +
@@ -58,9 +58,9 @@ const pollingPlaceData = [
     label: 'Parking',
     value: ''
   },
-];
+]);
 
-const electedRepsData = [
+const electedRepsData = computed(() => [
   {
     label: 'District Council Member',
     value: getCouncilMember()
@@ -73,7 +73,7 @@ const electedRepsData = [
     label: 'Current Term',
     value: getTerm()
   }
-];
+]);
 
 </script>
 

@@ -1,6 +1,6 @@
 <script setup>
 
-import { computed, onBeforeMount, onMounted, reactive } from 'vue';
+import { computed, onBeforeMount, onMounted } from 'vue';
 // import { storeToRefs } from 'pinia';
 
 import useTransforms from '@/composables/useTransforms';
@@ -105,7 +105,7 @@ onMounted(() => {
   // main.scrollTo(0, mainScrollTop - 80);
 });
 
-const parcelData = reactive([
+const parcelData = computed(() => [
   {
     label: 'Map Registry #',
     value: selectedParcel.value ? selectedParcel.value.properties.MAPREG : '',
