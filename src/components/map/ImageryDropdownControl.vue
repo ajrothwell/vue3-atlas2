@@ -66,7 +66,10 @@ const emitValue = (value) => {
   z-index: 2;
 }
 
-@media screen and (max-width: 768px) {
+@media 
+only screen and (max-width: 760px),
+(min-device-width: 768px) and (max-device-width: 1024px)  {
+  
   .imagery-dropdown {
     top: 50px;
     right: 50px;

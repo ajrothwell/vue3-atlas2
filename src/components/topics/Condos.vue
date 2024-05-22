@@ -142,8 +142,10 @@ const getNextPage = () => {
   font-weight: bold !important;
 }
 
-@media screen and (max-width: 768px) {
-
+@media 
+only screen and (max-width: 760px),
+(min-device-width: 768px) and (max-device-width: 1024px)  {
+  
   .pagination-link {
     margin: 0px !important;
     /* padding: 0px; */
