@@ -84,7 +84,7 @@ const links = [
   <main id="main" class="main invisible-scrollbar">
 
     <!-- TOPIC PANEL ON LEFT -->
-    <div v-if="!isMobileDevice" class="topics-holder">
+    <div v-if="!isMobileDevice()" class="topics-holder">
       <topic-panel></topic-panel>
     </div>
 
@@ -93,7 +93,7 @@ const links = [
       <map-panel></map-panel>
     </div>
 
-    <div v-if="isMobileDevice" class="topics-holder">
+    <div v-if="isMobileDevice()" class="topics-holder">
       <topic-panel></topic-panel>
     </div>
       
