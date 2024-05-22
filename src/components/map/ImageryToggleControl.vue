@@ -64,7 +64,7 @@ only screen and (max-width: 760px),
   @supports (-webkit-touch-callout: none) {
     /* CSS specific to iOS devices */ 
     .img-src {
-      margin-left: -9px !important;
+      margin-left: -10px !important;
     }
   }
 }
