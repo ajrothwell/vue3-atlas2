@@ -55,7 +55,18 @@ button {
   width: 34px;
   height: 34px;
   max-width: 300%; 
-  /* border-radius: 5px; */
+}
+
+@media 
+only screen and (max-width: 760px),
+(min-device-width: 768px) and (max-device-width: 1024px)  {
+
+  @supports (-webkit-touch-callout: none) {
+    /* CSS specific to iOS devices */ 
+    .img-src {
+      margin-left: 0px !important;
+    }
+  }
 }
 
 </style>
