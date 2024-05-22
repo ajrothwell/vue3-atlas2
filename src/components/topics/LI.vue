@@ -137,11 +137,11 @@ onMounted( async () => {
   // console.log('geojson:', geojson, 'map.getSource("liBuildingFootprints"):', map.getSource('liBuildingFootprints'), 'map.getLayer("liBuildingFootprints"):', map.getLayer('liBuildingFootprints'));
   await map.getSource('liBuildingFootprints').setData(geojson);
 
-  const topic = document.getElementById('Licenses & Inspections-topic');
-  topic.scrollIntoView();
-  const main = document.getElementById('main');
-  const mainScrollTop = main.scrollTop;
-  main.scrollTo(0, mainScrollTop - 80);
+  // const topic = document.getElementById('Licenses & Inspections-topic');
+  // topic.scrollIntoView();
+  // const main = document.getElementById('main');
+  // const mainScrollTop = main.scrollTop;
+  // main.scrollTo(0, mainScrollTop - 80);
 });
 
 const selectedLiBuildingNumber = computed(() => LiStore.selectedLiBuildingNumber);

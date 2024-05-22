@@ -161,7 +161,7 @@ only screen and (max-width: 760px),
   .main {
     height: auto;
     display: flex;
-    flex-direction: column-reverse;
+    flex-direction: column;
     overflow-y: scroll;
   }
 
@@ -183,13 +183,12 @@ only screen and (max-width: 760px),
 
   #topic-panel-set-content {
     overflow-x: hidden;
-    overflow-y: auto;
+    overflow-y: hidden;
     padding-left: 20px;
     padding-right: 20px;
     padding-top: 20px !important;
     padding-bottom: 30px !important;
     flex-grow: 1;
-    height: 80vh;
   }
 
   .map-panel-holder {
@@ -288,6 +287,22 @@ only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
   .map-class {
     height: 500px;
   }
+
+  #topic-panel-set-content {
+    min-height: calc(100vh - 570px) !important;
+    // height: 60dvh !important;
+  }
+
+  #topic-panel-content {
+    min-height: calc(100vh - 700px) !important;
+    // height: 60dvh !important;
+  }
+
+  // .main {
+  //   padding-top: 0px !important;
+  //   margin-top: 0px !important;
+  //   height: 80dvh;
+  // }
 }
 
 .no-link-at-bottom {

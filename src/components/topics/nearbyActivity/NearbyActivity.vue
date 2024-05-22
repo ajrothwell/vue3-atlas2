@@ -62,11 +62,11 @@ watch(() => hoveredStateId.value, (newHoveredStateId) => {
 onMounted( () => {
   // console.log('NearbyActivity.vue onMounted is running, route.params.data:', route.params.data);
   selectedDataType.value = route.params.data;
-  const topic = document.getElementById('Property-topic');
-  topic.scrollIntoView();
-  const main = document.getElementById('main');
-  const mainScrollTop = main.scrollTop;
-  main.scrollTo(0, mainScrollTop - 80);
+  // const topic = document.getElementById('Property-topic');
+  // topic.scrollIntoView();
+  // const main = document.getElementById('main');
+  // const mainScrollTop = main.scrollTop;
+  // main.scrollTo(0, mainScrollTop - 80);
 })
 
 const nearbyActivities = reactive({

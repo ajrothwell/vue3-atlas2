@@ -98,11 +98,11 @@ const getAddress = (address) => {
 }
 
 onMounted(() => {
-  const topic = document.getElementById('Deeds-topic');
-  topic.scrollIntoView();
-  const main = document.getElementById('main');
-  const mainScrollTop = main.scrollTop;
-  main.scrollTo(0, mainScrollTop - 80);
+  // const topic = document.getElementById('Deeds-topic');
+  // topic.scrollIntoView();
+  // const main = document.getElementById('main');
+  // const mainScrollTop = main.scrollTop;
+  // main.scrollTo(0, mainScrollTop - 80);
 });
 
 const parcelData = reactive([

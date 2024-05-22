@@ -54,11 +54,11 @@ onBeforeMount(() => {
 });
 
 onMounted(() => {
-  const topic = document.getElementById('Property-topic');
-  topic.scrollIntoView();
-  const main = document.getElementById('main');
-  const mainScrollTop = main.scrollTop;
-  main.scrollTo(0, mainScrollTop - 80);
+  // const topic = document.getElementById('Property-topic');
+  // topic.scrollIntoView();
+  // const main = document.getElementById('main');
+  // const mainScrollTop = main.scrollTop;
+  // main.scrollTo(0, mainScrollTop - 80);
 });
 
 </script>

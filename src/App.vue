@@ -84,13 +84,17 @@ const links = [
   <main id="main" class="main invisible-scrollbar">
 
     <!-- TOPIC PANEL ON LEFT -->
-    <div class="topics-holder">
+    <div v-if="!isMobileDevice" class="topics-holder">
       <topic-panel></topic-panel>
     </div>
 
     <!-- MAP PANEL ON RIGHT - right now only contains the address input -->
     <div class="map-panel-holder">
       <map-panel></map-panel>
+    </div>
+
+    <div v-if="isMobileDevice" class="topics-holder">
+      <topic-panel></topic-panel>
     </div>
       
   </main>
