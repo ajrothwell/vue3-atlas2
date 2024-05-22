@@ -101,7 +101,6 @@ const links = [
 
   <!-- FOOTER -->
   <app-footer
-    class="is-hidden-mobile"
     :is-sticky="true"
     :is-hidden-mobile="true"
     :links="links"
@@ -109,5 +108,7 @@ const links = [
 </template>
 
 <style>
+
+
 
 </style>
