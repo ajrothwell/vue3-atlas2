@@ -65,6 +65,7 @@ only screen and (max-width: 760px),
     /* CSS specific to iOS devices */ 
     .img-src {
       margin-left: -10px !important;
+      width: 36x;
     }
   }
 }
