@@ -17,7 +17,7 @@ const imgSrc = computed(() => {
 <template>
   <div class="cyclomedia-toggle" :class="MapStore.cyclomediaOn ? 'active' : 'inactive'">
     <button type="button" @click="$emit('toggleCyclomedia')">
-      <img class='img-src' :src="imgSrc" />
+      <img class='img-src' alt="street-view" :src="imgSrc" />
     </button>
   </div>
 </template>

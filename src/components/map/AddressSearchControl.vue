@@ -11,8 +11,9 @@ const inputAddress = ref('');
 <template>
   <!-- <div class="columns"> -->
     <div class="holder">
-      
+      <label for="search-input">Search</label>
       <input
+        id="search-input"
         class="input address-input"
         type="text"
         placeholder="Search an address or OPA number"
@@ -21,6 +22,7 @@ const inputAddress = ref('');
       />
       <button
         class="button address-input-button"
+        title="Address Search Button"
         @click="router.replace({ name: 'search', query: { address: inputAddress }})"
       >
         <font-awesome-icon :icon="['fas', 'search']" size="xl"/>

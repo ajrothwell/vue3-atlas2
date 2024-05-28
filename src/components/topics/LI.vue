@@ -266,7 +266,7 @@ const buildingData = computed(() => {
         </tbody>
       </table>
     </div>
-    <div class='mobile-no-data' v-if="!LiStore.liPermits.rows.length">No permits</div>
+    <div class='mobile-no-data' v-if="!LiStore.liPermits.rows.length">No permits found</div>
     <div v-if="LiStore.liPermits.rows.length > 5" class="table-link">
       <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See {{ LiStore.liPermits.rows.length-5 }} older permits at L&I Property History <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
     </div>
@@ -297,7 +297,7 @@ const buildingData = computed(() => {
         </tbody>
       </table>
     </div>
-    <div class='mobile-no-data' v-if="!liAllZoningDocs.length">No zoning permit documents</div>
+    <div class='mobile-no-data' v-if="!liAllZoningDocs.length">No zoning permit documents found</div>
     
 
     <!-- Li Inspections Table -->
@@ -326,6 +326,7 @@ const buildingData = computed(() => {
         </tbody>
       </table>
     </div>
+    <div class='mobile-no-data' v-if="!LiStore.liInspections.length">No inspections found</div>
     <div v-if="LiStore.liInspections.rows.length > 5" class="table-link">
       <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See {{ LiStore.liInspections.rows.length }} older inspections at L&I Property History <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
     </div>
@@ -335,7 +336,7 @@ const buildingData = computed(() => {
     <div class="horizontal-table">
       <table
         id="violations"
-        :class="LiStore.liInspections.rows.length > 5 ? 'link-at-bottom' : 'no-link-at-bottom'"
+        :class="LiStore.liViolations.rows.length > 5 ? 'link-at-bottom' : 'no-link-at-bottom'"
         class="table is-fullwidth is-striped"
       >
         <thead>
@@ -356,7 +357,8 @@ const buildingData = computed(() => {
         </tbody>
       </table>
     </div>
-    <div v-if="LiStore.liInspections.rows.length > 5" class="table-link">
+    <div class='mobile-no-data' v-if="!LiStore.liViolations.length">No violations found</div>
+    <div v-if="LiStore.liViolations.rows.length > 5" class="table-link">
       <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See {{ LiStore.liViolations.rows.length-5 }} older violations at L&I Property History <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
     </div>
 
@@ -388,6 +390,7 @@ const buildingData = computed(() => {
         </tbody>
       </table>
     </div>
+    <div class='mobile-no-data' v-if="!LiStore.liBusinessLicenses.length">No business licenses found</div>
     <div v-if="LiStore.liBusinessLicenses.rows.length > 5" class="table-link">
       <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See {{ LiStore.liBusinessLicenses.rows.length-5 }} older business licenses at L&I Property History <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
     </div>

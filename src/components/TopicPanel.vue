@@ -36,7 +36,7 @@ const zipCode = computed(() => {
       
   <!-- FRONT PAGE CONTENT -->
   <div id="topic-panel-set-content" v-if="route.name == 'home'">
-    <h3 class="subtitle is-3">Atlas is your front door to the City of Philadelphia.</h3>
+    <h1 class="subtitle is-3">Atlas is your front door to the City of Philadelphia.</h1>
     <p class="subtitle is-4">Here are some things you can do with Atlas:</p>
     <ul class="bullet-list">
       <li>Find your polling place</li>
@@ -66,7 +66,7 @@ const zipCode = computed(() => {
   <!-- IF AN ADDRESS IS LOADED, SHOW THE TOPICS  -->
   <div v-if="address" class="address-holder">
     <div>
-      <h3 class="subtitle is-3"><font-awesome-icon :icon="['fas', 'map-marker-alt']" /><div class="address">{{ address }}</div></h3>
+      <h1 class="subtitle is-3"><font-awesome-icon :icon="['fas', 'map-marker-alt']" /><div class="address">{{ address }}</div></h1>
     </div>
     <div>PHILADELPHIA, PA {{ zipCode }}</div>
   </div>

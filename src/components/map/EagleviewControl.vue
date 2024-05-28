@@ -18,7 +18,7 @@ const imgSrc = computed(() => {
 <template>
   <div class="eagleview-toggle" :class="MapStore.eagleviewOn ? 'active' : 'inactive'">
     <button type="button" @click="$emit('toggleEagleview')">
-      <img class='img-src' :src="imgSrc" />
+      <img class='img-src' alt="oblique-view" :src="imgSrc" />
     </button>
   </div>
 </template>

@@ -24,7 +24,7 @@ const imgSrc = computed(() => {
 <template>
   <div class="imagery-toggle">
     <button type="button" @click="$emit('toggleImagery')">
-      <img class='img-src' :src="imgSrc" />
+      <img class='img-src' alt="imagery-or-basemap" :src="imgSrc" />
     </button>
   </div>
 </template>
