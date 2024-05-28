@@ -127,6 +127,8 @@ onMounted(() => {
         </tr>
       </tbody>
     </table>
+    <div class='mobile-no-data' v-if="!ZoningStore.zoningOverlays[selectedParcelId].rows.length">No pending bills found</div>
+
 
     <h5 class="subtitle is-5 table-title">Appeals</h5>
     <div class="horizontal-table">
@@ -179,6 +181,7 @@ onMounted(() => {
         </tbody>
       </table>
     </div>
+    <div class='mobile-no-data' v-if="!ZoningStore.rcos.featuers.length">No RCOs found</div>
     <div class="table-link">
       <a target="_blank" href="//www.phila.gov/documents/registered-community-organization-rco-materials/">See a list of all RCOs in the city [PDF] <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
     </div>

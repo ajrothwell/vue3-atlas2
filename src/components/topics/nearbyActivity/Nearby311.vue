@@ -103,6 +103,7 @@ onBeforeUnmount(() => { if (map.getSource('nearby')) { map.getSource('nearby').s
         </tbody>
       </table>
     </div>
+    <div class='mobile-no-data' v-if="!nearby311.length">No nearby 311 service requests found for this time interval</div>
   </div>
 </template>
 

@@ -100,6 +100,7 @@ onBeforeUnmount(() => { if (map.getSource('nearby')) { map.getSource('nearby').s
         </tbody>
       </table>
     </div>
+    <div class='mobile-no-data' v-if="!nearbyCrimeIncidents.length">No nearby crime incidents found for this time interval</div>
   </div>
 </template>
 

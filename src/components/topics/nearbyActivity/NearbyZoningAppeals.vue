@@ -111,6 +111,7 @@ onBeforeUnmount(() => { if (map.getSource('nearby')) { map.getSource('nearby').s
         </tbody>
       </table>
     </div>
+    <div class='mobile-no-data' v-if="!nearbyZoningAppeals.length">No nearby zoning appeals found for this time interval</div>
   </div>
 </template>
 

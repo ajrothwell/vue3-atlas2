@@ -76,6 +76,7 @@ onBeforeUnmount(() => { if (map.getSource('nearby')) { map.getSource('nearby').s
           </tbody>
         </table>
       </div>
+      <div class='mobile-no-data' v-if="!nearbyVacantIndicators.length">No nearby likely vacant buildings found</div>
     </div>
 </template>
 

@@ -105,6 +105,7 @@ onBeforeUnmount(() => { if (map.getSource('nearby')) { map.getSource('nearby').s
         </tbody>
       </table>
     </div>
+    <div class='mobile-no-data' v-if="!nearbyDemolitionPermits.length">No nearby demolition permits found for this time interval</div>
   </div>
 </template>
 

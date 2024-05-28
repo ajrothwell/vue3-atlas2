@@ -223,6 +223,7 @@ const parcelData = computed(() => [
       </table>
     </div>
   </div>
+  <div class='mobile-no-data' v-if="!selectedDocs.length">No documents found</div>
 
   <div class="box">Use the buttons below to view images of hard-copy deed maps, some of which have handwritten information that may be useful for historical deed research.</div>
 

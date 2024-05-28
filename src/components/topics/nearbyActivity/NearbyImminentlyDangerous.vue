@@ -105,6 +105,7 @@ onBeforeUnmount(() => { if (map.getSource('nearby')) { map.getSource('nearby').s
         </tbody>
       </table>
     </div>
+    <div class='mobile-no-data' v-if="!nearbyImminentlyDangerous.length">No nearby imminently dangerous properties found for this time interval</div>
   </div>
 </template>
 
