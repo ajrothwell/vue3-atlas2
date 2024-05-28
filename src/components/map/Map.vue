@@ -46,6 +46,7 @@ import ImageryDropdownControl from '@/components/map/ImageryDropdownControl.vue'
 import CyclomediaControl from '@/components/map/CyclomediaControl.vue';
 import EagleviewControl from '@/components/map/EagleviewControl.vue';
 import OpacitySlider from '@/components/map/OpacitySlider.vue';
+import OverlayLegend from '@/components/map/OverlayLegend.vue';
 import EagleviewPanel from '@/components/map/EagleviewPanel.vue';
 import CyclomediaPanel from '@/components/map/CyclomediaPanel.vue';
 import CyclomediaRecordingsClient from '@/components/map/recordings-client.js';
@@ -761,6 +762,34 @@ const toggleEagleview = () => {
   MapStore.eagleviewOn = !MapStore.eagleviewOn;
 }
 
+const legendData = ref({
+  // TODO give these an id instead of using the label as a key
+  'Easements': {
+    'border-color': 'rgb(255, 0, 197)',
+    'border-style': 'solid',
+    'border-weight': '1px',
+    'width': '12px',
+    'height': '12px',
+    'font-size': '10px',
+  },
+  'Trans Parcels': {
+    'border-color': 'rgb(0, 168, 132)',
+    'border-style': 'solid',
+    'border-weight': '1px',
+    'width': '12px',
+    'height': '12px',
+    'font-size': '10px',
+  },
+  'Rights of Way': {
+    'border-color': 'rgb(249, 147, 0)',
+    'border-style': 'solid',
+    'border-weight': '1px',
+    'width': '12px',
+    'height': '12px',
+    'font-size': '10px',
+  },
+})
+
 </script>
 
 <template>
@@ -774,6 +803,7 @@ const toggleEagleview = () => {
     <OpacitySlider v-if="MainStore.currentTopic == 'Zoning'" :initialOpacity="MapStore.zoningOpacity"@opacityChange="handleZoningOpacityChange"></OpacitySlider>
     <!-- the distance measure control uses a ref, so that functions within the component can be called from this file -->
     <DistanceMeasureControl ref="distanceMeasureControlRef"></DistanceMeasureControl>
+    <OverlayLegend v-show="!MapStore.imageryOn && ['Deeds', 'Zoning'].includes(MainStore.currentTopic)" :items="legendData" :options="{ shape: 'square' }"></OverlayLegend>
   </div>
   <KeepAlive>
     <CyclomediaPanel

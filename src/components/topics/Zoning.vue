@@ -181,7 +181,7 @@ onMounted(() => {
         </tbody>
       </table>
     </div>
-    <div class='mobile-no-data' v-if="!ZoningStore.rcos.featuers.length">No RCOs found</div>
+    <div class='mobile-no-data' v-if="!ZoningStore.rcos.features.length">No RCOs found</div>
     <div class="table-link">
       <a target="_blank" href="//www.phila.gov/documents/registered-community-organization-rco-materials/">See a list of all RCOs in the city [PDF] <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
     </div>
