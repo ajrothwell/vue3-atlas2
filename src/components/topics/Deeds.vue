@@ -164,10 +164,10 @@ const tableData = ref({
     enabled: true,
     mode: 'pages',
     perPage: 5,
-    position: 'top',
+    // position: 'top',
     // perPageDropdown: [3, 7, 9],
     dropdownAllowAll: false,
-    setCurrentPage: 2,
+    // setCurrentPage: 2,
     nextLabel: '',
     prevLabel: '',
     rowsPerPageLabel: '# rows',
@@ -224,7 +224,8 @@ const tableData = ref({
       </table>
     </div> -->
 
-    <div v-if="selectedCondos">
+    <div v-if="deededCondosExist" class="mt-6 mb-4">
+      <h5 class="subtitle is-5">Deeded Condominiums</h5>
       <vue-good-table
         :columns="tableData.columns"
         :rows="tableData.rows"
