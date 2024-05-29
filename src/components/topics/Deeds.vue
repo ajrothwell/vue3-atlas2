@@ -164,7 +164,7 @@ const tableData = ref({
     enabled: true,
     mode: 'pages',
     perPage: 5,
-    // position: 'top',
+    position: 'top',
     // perPageDropdown: [3, 7, 9],
     dropdownAllowAll: false,
     // setCurrentPage: 2,
