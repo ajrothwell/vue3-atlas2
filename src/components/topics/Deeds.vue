@@ -187,88 +187,90 @@ const tableData = ref({
     :descriptor="'parcel'"
   >
   </collection-summary>
-  <div v-if="selectedParcel" id="parcel-div" class="section add-borders p-3">
-    <div class="columns is-multiline is-mobile">
-      <div
-        v-for="parcel in ParcelsStore.dor.features"
-        :key="parcel.properties.OBJECTID"
-        @click="MainStore.selectedParcelId = parcel.properties.OBJECTID"
-        class="column is-3 add-borders has-text-centered p-2"
-        :class="{ 'is-selected': parcel.properties.OBJECTID === selectedParcelId }"
-      >
-        {{ parcel.properties.MAPREG }}
+  <div v-if="selectedParcel" id="parcel-div" class="columns add-borders p-2">
+    <div class="column is-12">
+      <div class="columns is-multiline is-mobile">
+        <div
+          v-for="parcel in ParcelsStore.dor.features"
+          :key="parcel.properties.OBJECTID"
+          @click="MainStore.selectedParcelId = parcel.properties.OBJECTID"
+          class="column is-one-quarter-desktop is-half-mobile add-white-borders has-text-centered p-2"
+          :class="{ 'is-selected': parcel.properties.OBJECTID === selectedParcelId }"
+        >
+          {{ parcel.properties.MAPREG }}
+        </div>
       </div>
-    </div>
 
-    <h5 class="title is-5">Parcel Details</h5>
-    <vertical-table v-if="selectedParcel" tableId="dorTable" :data="parcelData"></vertical-table>
+      <h5 class="title is-5">Parcel Details</h5>
+      <vertical-table v-if="selectedParcel" tableId="dorTable" :data="parcelData"></vertical-table>
 
-    <!-- Deeded Condominiums -->
-    <!-- <div v-if="deededCondosExist" class="mt-6 mb-4">
-      <h5 class="subtitle is-5">Deeded Condominiums</h5>
-      <table class="table is-fullwidth is-striped">
-        <thead>
-          <tr>
-            <th>Condo Parcel</th>
-            <th>Condo Name</th>
-            <th>Unit #</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="item in selectedCondos" :key="item.cartodb_id">
-            <td>{{ item.recmap }}-{{ item.parcel }}</td>
-            <td>{{ item.condo_name }}</td>
-            <td>Unit #{{ item.condounit }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div> -->
-
-    <div v-if="deededCondosExist" class="mt-6 mb-4">
-      <h5 class="subtitle is-5">Deeded Condominiums</h5>
-      <vue-good-table
-        :columns="tableData.columns"
-        :rows="tableData.rows"
-        :pagination-options="tableData.paginationOptions"
-        style-class="table"
-      />
-    </div>
-
-    <div class="box mt-6 mb-0">You can access a view-only, watermarked unofficial copy of the deeds below at
-      no cost by clicking on the deeds below. In order to view and print non-watermarked 
-      copies of the deeds below, you must purchase a subscription to 
-      <a target="_blank" href="https://epay.phila-records.com/phillyepay/web/">PhilaDox</a>.
-      Please note that the following list shows documents recorded from December 1999 forward,
-      and may not be a complete history of title for the parcel.
-    </div>
-
-    <!-- DOR Docs Table -->
-    <div class="mt-4">
-      <h5 class="subtitle is-5">Documents</h5>
-      <div class="horizontal-table">
-        <table id="dor-docs" class="table is-fullwidth is-striped">
+      <!-- Deeded Condominiums -->
+      <!-- <div v-if="deededCondosExist" class="mt-6 mb-4">
+        <h5 class="subtitle is-5">Deeded Condominiums</h5>
+        <table class="table is-fullwidth is-striped">
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Date</th>
-              <th>Type</th>
-              <th>Grantor</th>
-              <th>Grantee</th>
+              <th>Condo Parcel</th>
+              <th>Condo Name</th>
+              <th>Unit #</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="item in selectedDocs">
-              <td><a target='_blank' :href="getHref(item.attributes.DOCUMENT_ID)">{{item.attributes.DOCUMENT_ID}}<font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a></td>
-              <td>{{ date(item.attributes.DISPLAY_DATE) }}</td>
-              <td>{{ item.attributes.DOCUMENT_TYPE }}</td>
-              <td>{{ item.attributes.GRANTORS }}</td>
-              <td>{{ item.attributes.GRANTEES }}</td>
+            <tr v-for="item in selectedCondos" :key="item.cartodb_id">
+              <td>{{ item.recmap }}-{{ item.parcel }}</td>
+              <td>{{ item.condo_name }}</td>
+              <td>Unit #{{ item.condounit }}</td>
             </tr>
           </tbody>
         </table>
+      </div> -->
+
+      <div v-if="deededCondosExist" class="mt-6 mb-4">
+        <h5 class="subtitle is-5">Deeded Condominiums</h5>
+        <vue-good-table
+          :columns="tableData.columns"
+          :rows="tableData.rows"
+          :pagination-options="tableData.paginationOptions"
+          style-class="table"
+        />
       </div>
+
+      <div class="box mt-6 mb-0">You can access a view-only, watermarked unofficial copy of the deeds below at
+        no cost by clicking on the deeds below. In order to view and print non-watermarked 
+        copies of the deeds below, you must purchase a subscription to 
+        <a target="_blank" href="https://epay.phila-records.com/phillyepay/web/">PhilaDox</a>.
+        Please note that the following list shows documents recorded from December 1999 forward,
+        and may not be a complete history of title for the parcel.
+      </div>
+
+      <!-- DOR Docs Table -->
+      <div class="mt-4">
+        <h5 class="subtitle is-5">Documents</h5>
+        <div class="horizontal-table">
+          <table id="dor-docs" class="table is-fullwidth is-striped">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Grantor</th>
+                <th>Grantee</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="item in selectedDocs">
+                <td><a target='_blank' :href="getHref(item.attributes.DOCUMENT_ID)">{{item.attributes.DOCUMENT_ID}}<font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a></td>
+                <td>{{ date(item.attributes.DISPLAY_DATE) }}</td>
+                <td>{{ item.attributes.DOCUMENT_TYPE }}</td>
+                <td>{{ item.attributes.GRANTORS }}</td>
+                <td>{{ item.attributes.GRANTEES }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class='mobile-no-data' v-if="!selectedDocs.length">No documents found</div>
     </div>
-    <div class='mobile-no-data' v-if="!selectedDocs.length">No documents found</div>
   </div>
 
   <div class="box">Use the buttons below to view images of hard-copy deed maps, some of which have handwritten information that may be useful for historical deed research.</div>
@@ -279,7 +281,7 @@ const tableData = ref({
     <div class="columns is-multiline is-mobile">
       <div
         v-for="regmap in regmaps"
-        class="column is-2 add-borders has-text-centered regmap-div p-1 mr-1 ml-1"
+        class="column is-2-desktop is-3-mobile add-borders has-text-centered regmap-div p-1 mr-1 ml-1"
         :class="{ 'is-selected': regmap.properties.RECMAP === selectedRegmap }"
         @click="addRegmapLayer(regmap.properties.RECMAP)"
       >
@@ -296,11 +298,17 @@ const tableData = ref({
   border: 1px solid #ccc;
 }
 
+.add-white-borders {
+  background-color: #e8e8e8;
+  border: 2px solid white;
+}
+
 .is-selected {
-  background-color: #b8b8b8
+  background-color: #a9a9a9
 }
 
 #parcel-div {
+  padding: 0px !important;
   margin-bottom: 1.5rem;
 }
 
