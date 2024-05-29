@@ -11,7 +11,7 @@ const inputAddress = ref('');
 <template>
   <!-- <div class="columns"> -->
     <div class="holder">
-      <label for="search-input">Search</label>
+      <label for="search-input" class="search-label">Search an address or OPA number</label>
       <input
         id="search-input"
         class="input address-input"
@@ -33,6 +33,10 @@ const inputAddress = ref('');
 </template>
 
 <style scoped>
+
+.search-label {
+  display: none !important
+}
 
 .holder {
   position: absolute;

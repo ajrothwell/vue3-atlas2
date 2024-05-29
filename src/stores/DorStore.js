@@ -102,7 +102,14 @@ export const useDorStore = defineStore("DorStore", {
         console.log('feature:', feature);
         const url = baseUrl + `select * from condominium where mapref = '${ feature.properties.MAPREG }' and status in (1,3)`;
         const response = await fetch(url);
-        this.dorCondos[feature.properties.OBJECTID] = await response.json();
+        const data = await response.json();
+        console.log('fillDorCondos data:', data);
+        for (let row of data.rows) {
+          row.condo_parcel = row.recmap + '-' + row.parcel;
+          row.unit_number = 'Unit #' + row.condounit;
+        }
+
+        this.dorCondos[feature.properties.OBJECTID] = data;
       });
     },
     async fillRegmaps() {

@@ -70,13 +70,13 @@ onMounted(() => {
     :descriptor="'parcel'"
   >
   </collection-summary>
-  <div v-if="selectedParcel">
-    <div class="columns is-multiline">
+  <div v-if="selectedParcel" id="parcel-div" class="section add-borders p-3">
+    <div class="columns is-multiline is-mobile">
       <div
         v-for="parcel in ParcelsStore.dor.features"
         :key="parcel.properties.OBJECTID"
         @click="MainStore.selectedParcelId = parcel.properties.OBJECTID"
-        class="column is-3 add-borders has-text-centered"
+        class="column is-3 add-borders has-text-centered p-2"
         :class="{ 'is-selected': parcel.properties.OBJECTID === selectedParcelId }"
       >
         {{ parcel.properties.MAPREG }}
@@ -84,9 +84,9 @@ onMounted(() => {
     </div>
 
     <div class="columns mt-3" v-if="selectedParcel">
-      <div class="columns is-multiline column is-8 is-offset-2 has-text-centered badge">
-        <div class="column is-12 mb-1 badge-title"><b>Base District</b></div>
-        <div class="column is-3 is-flex is-align-items-center code"><b>{{ ZoningStore.zoningBase[selectedParcelId].rows[0].long_code }}</b></div>
+      <div class="columns is-multiline is-mobile column is-8 is-offset-2 has-text-centered badge">
+        <div class="column is-12 badge-title"><b>Base District</b></div>
+        <div class="column is-3 code"><b>{{ ZoningStore.zoningBase[selectedParcelId].rows[0].long_code }}</b></div>
         <div class="column is-9 description">{{ $config.ZONING_CODE_MAP[ZoningStore.zoningBase[selectedParcelId].rows[0].long_code] }}</div>
       </div>
     </div>
@@ -128,65 +128,63 @@ onMounted(() => {
       </tbody>
     </table>
     <div class='mobile-no-data' v-if="!ZoningStore.zoningOverlays[selectedParcelId].rows.length">No pending bills found</div>
-
-
-    <h5 class="subtitle is-5 table-title">Appeals</h5>
-    <div class="horizontal-table">
-      <table id="appeals" class="table is-fullwidth is-striped no-link-at-bottom">
-        <thead>
-          <tr>
-            <th>Processed Date</th>
-            <th>Id</th>
-            <th>Description</th>
-            <th>Scheduled Date</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="item in zoningAppeals">
-            <td>{{ date(item.createddate) }}</td>
-            <td v-html="getLinkAppeals(item)"></td>
-            <td>{{ item.appealgrounds }}</td>
-            <td>{{ date(item.scheduleddate) }}</td>
-            <td>{{ item.decision }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <div class='mobile-no-data' v-if="!zoningAppeals.length">No appeals found</div>
-
-    <div class="box">Looking for zoning documents? They are now located in the Licenses & Inspections tab under "Zoning Permit Documents".</div>
-
-    <h5 class="subtitle is-5 table-title">Registered Community Organizations</h5>
-    <div id="rcos" class="horizontal-table">
-      <table class="table is-fullwidth is-striped link-at-bottom">
-        <thead>
-          <tr>
-            <th>RCO</th>
-            <th>Meeting Address</th>
-            <th>Primary Contact</th>
-            <th>Preferred Method</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="item in ZoningStore.rcos.features">
-            <td v-html = "'<b>' + item.properties.ORGANIZATION_NAME + '</b><br>'
-                  + item.properties.ORGANIZATION_ADDRESS"></td>
-            <td>{{ item.properties.MEETING_LOCATION_ADDRESS }}</td>
-            <td v-html="rcoPrimaryContact(item.properties.PRIMARY_NAME + '<br>'
-                  + item.properties.PRIMARY_PHONE + '<br>'
-                  + item.properties.PRIMARY_EMAIL)"></td>
-            <td>{{ item.properties.PREFFERED_CONTACT_METHOD }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <div class='mobile-no-data' v-if="!ZoningStore.rcos.features.length">No RCOs found</div>
-    <div class="table-link">
-      <a target="_blank" href="//www.phila.gov/documents/registered-community-organization-rco-materials/">See a list of all RCOs in the city [PDF] <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
-    </div>
   </div>
 
+  <h5 class="subtitle is-5 table-title">Appeals</h5>
+  <div class="horizontal-table">
+    <table id="appeals" class="table is-fullwidth is-striped no-link-at-bottom">
+      <thead>
+        <tr>
+          <th>Processed Date</th>
+          <th>Id</th>
+          <th>Description</th>
+          <th>Scheduled Date</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="item in zoningAppeals">
+          <td>{{ date(item.createddate) }}</td>
+          <td v-html="getLinkAppeals(item)"></td>
+          <td>{{ item.appealgrounds }}</td>
+          <td>{{ date(item.scheduleddate) }}</td>
+          <td>{{ item.decision }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class='mobile-no-data' v-if="!zoningAppeals.length">No appeals found</div>
+
+  <div class="box">Looking for zoning documents? They are now located in the Licenses & Inspections tab under "Zoning Permit Documents".</div>
+
+  <h5 class="subtitle is-5 table-title">Registered Community Organizations</h5>
+  <div id="rcos" class="horizontal-table">
+    <table class="table is-fullwidth is-striped link-at-bottom">
+      <thead>
+        <tr>
+          <th>RCO</th>
+          <th>Meeting Address</th>
+          <th>Primary Contact</th>
+          <th>Preferred Method</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="item in ZoningStore.rcos.features">
+          <td v-html = "'<b>' + item.properties.ORGANIZATION_NAME + '</b><br>'
+                + item.properties.ORGANIZATION_ADDRESS"></td>
+          <td>{{ item.properties.MEETING_LOCATION_ADDRESS }}</td>
+          <td v-html="rcoPrimaryContact(item.properties.PRIMARY_NAME + '<br>'
+                + item.properties.PRIMARY_PHONE + '<br>'
+                + item.properties.PRIMARY_EMAIL)"></td>
+          <td>{{ item.properties.PREFFERED_CONTACT_METHOD }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class='mobile-no-data' v-if="!ZoningStore.rcos.features.length">No RCOs found</div>
+  <div class="table-link">
+    <a target="_blank" href="//www.phila.gov/documents/registered-community-organization-rco-materials/">See a list of all RCOs in the city [PDF] <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
+  </div>
 
 </template>
 
@@ -194,11 +192,14 @@ onMounted(() => {
 
 .add-borders {
   border: 1px solid #ccc;
-  padding: .5em;
 }
 
 .is-selected {
   background-color: #b8b8b8
+}
+
+#parcel-div {
+  margin-bottom: 1.5rem;
 }
 
 .badge-title {
@@ -206,18 +207,26 @@ onMounted(() => {
   height: 2rem;
   color: white;
   background-color: #58c04d;
+  border-style: solid;
+  border-color: white;
+  border-width: 1px;
 }
 
 .code {
   background-color: #f0f0f0;
-  margin-left: 1px;
-  margin-right: 2px;
+  border-style: solid;
+  border-color: white;
+  border-width: 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .description {
   background-color: #f0f0f0;
-  margin-left: 2px;
-  margin-right: 1px;
+  border-style: solid;
+  border-color: white;
+  border-width: 1px;
 }
 
 @media 

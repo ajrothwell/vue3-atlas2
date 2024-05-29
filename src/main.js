@@ -4,6 +4,7 @@ import { createPinia } from 'pinia';
 import App from './App.vue';
 import router from './router';
 
+import 'vue-good-table-next/dist/vue-good-table-next.css'
 import "bulma";
 import "@fortawesome/fontawesome-pro/css/fontawesome.min.css";
 import "@fortawesome/fontawesome-pro/css/solid.min.css";
@@ -62,6 +63,9 @@ library.add(
 
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 app.component('font-awesome-icon', FontAwesomeIcon)
+
+import VueGoodTablePlugin from 'vue-good-table-next';
+app.use(VueGoodTablePlugin);
 
 app.use(createPinia())
 app.use(router)
