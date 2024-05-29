@@ -105,7 +105,7 @@ export const useDorStore = defineStore("DorStore", {
         const data = await response.json();
         console.log('fillDorCondos data:', data);
         for (let row of data.rows) {
-          row.condo_parcel = row.recmap + '-' + row.parcel;
+          row.condo_parcel = row.recmap + '-' + row.condoparcel;
           row.unit_number = 'Unit #' + row.condounit;
         }
 
