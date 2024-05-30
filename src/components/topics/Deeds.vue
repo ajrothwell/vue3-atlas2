@@ -194,7 +194,7 @@ const tableData = ref({
           v-for="parcel in ParcelsStore.dor.features"
           :key="parcel.properties.OBJECTID"
           @click="MainStore.selectedParcelId = parcel.properties.OBJECTID"
-          class="column is-one-quarter-desktop is-half-mobile add-white-borders has-text-centered p-2"
+          class="column is-one-quarter-desktop is-half-mobile has-text-centered add-borders p-2"
           :class="{ 'is-selected': parcel.properties.OBJECTID === selectedParcelId }"
         >
           {{ parcel.properties.MAPREG }}
@@ -304,7 +304,8 @@ const tableData = ref({
 }
 
 .is-selected {
-  background-color: #a9a9a9
+  background-color: #ccc;
+  /* background-color: #a9a9a9 */
 }
 
 #parcel-div {

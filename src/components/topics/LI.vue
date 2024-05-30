@@ -191,52 +191,56 @@ const buildingData = computed(() => {
 
     <h5 class="subtitle is-5">There are {{ LiStore.liBuildingFootprints.features.length }} buildings at this address</h5>
     <!-- Li Building Footprints Section -->
-    <div v-if="selectedLiBuilding">
-      <div class="columns is-multiline">
-        <div
-          v-for="footprint in LiStore.liBuildingFootprints.features"
-          :key="footprint.attributes.BIN"
-          @click="handleBinClick(footprint.attributes.BIN)"
-          class="column is-2 add-borders has-text-centered"
-          :class="{ 'is-selected': footprint.attributes.BIN === selectedLiBuildingNumber }"
-        >
-          {{ footprint.attributes.BIN }}
+    <div v-if="selectedLiBuilding" id="li-building-div" class="columns add-borders p-2">
+      <div class="column is-12">
+        <div v-if="selectedLiBuilding">
+          <div class="columns is-multiline is-mobile">
+            <div
+              v-for="footprint in LiStore.liBuildingFootprints.features"
+              :key="footprint.attributes.BIN"
+              @click="handleBinClick(footprint.attributes.BIN)"
+              class="column is-2-desktop is-3-mobile has-text-centered add-borders"
+              :class="{ 'is-selected': footprint.attributes.BIN === selectedLiBuildingNumber }"
+            >
+              {{ footprint.attributes.BIN }}
+            </div>
+          </div>
+
+          <!-- Li Building info-->
+          <vertical-table tableId="buildingTable" :data="buildingData"></vertical-table>
+          <br>
+
+          <!-- Building Certs Table -->
+          <h5 class="subtitle is-5 table-title">Building Certifications</h5>
+          <div class="horizontal-table">
+            <table
+              id="building-certs"
+              :class="selectedBuildingCerts.length ? 'link-at-bottom' : 'no-link-at-bottom'"
+              class="table is-fullwidth is-striped"
+            >
+              <thead>
+                <tr>
+                  <th>InspectionType</th>
+                  <th>Date Inspected</th>
+                  <th>Inspection Result</th>
+                  <th>Expiration Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="item in selectedBuildingCerts">
+                  <td>{{ item.buildingcerttype }}</td>
+                  <td>{{ date(item.inspectiondate) }}</td>
+                  <td>{{ item.inspectionresult }}</td>
+                  <td>{{ date(item.expirationdate) }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class='mobile-no-data' v-if="!selectedBuildingCerts.length">No building certifications found</div>
+          <div class="table-link" v-if="selectedBuildingCerts.length">
+            <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See all {{ LiStore.liBuildingCerts.rows.length || '' }} building certifications for this property at L&I Property History <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
+          </div>
         </div>
-      </div>
-
-      <!-- Li Building info-->
-      <vertical-table tableId="buildingTable" :data="buildingData"></vertical-table>
-      <br>
-
-      <!-- Building Certs Table -->
-      <h5 class="subtitle is-5 table-title">Building Certifications</h5>
-      <div class="horizontal-table">
-        <table
-          id="building-certs"
-          :class="selectedBuildingCerts.length ? 'link-at-bottom' : 'no-link-at-bottom'"
-          class="table is-fullwidth is-striped"
-        >
-          <thead>
-            <tr>
-              <th>InspectionType</th>
-              <th>Date Inspected</th>
-              <th>Inspection Result</th>
-              <th>Expiration Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="item in selectedBuildingCerts">
-              <td>{{ item.buildingcerttype }}</td>
-              <td>{{ date(item.inspectiondate) }}</td>
-              <td>{{ item.inspectionresult }}</td>
-              <td>{{ date(item.expirationdate) }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class='mobile-no-data' v-if="!selectedBuildingCerts.length">No building certifications found</div>
-      <div class="table-link" v-if="selectedBuildingCerts.length">
-        <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See all {{ LiStore.liBuildingCerts.rows.length || '' }} building certifications for this property at L&I Property History <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
       </div>
     </div>
 
@@ -402,11 +406,21 @@ const buildingData = computed(() => {
 
 .add-borders {
   border: 1px solid #ccc;
-  padding: .5em;
+}
+
+.add-white-borders {
+  background-color: #e8e8e8;
+  border: 2px solid white;
 }
 
 .is-selected {
-  background-color: #b8b8b8
+  background-color: #ccc;
+  /* background-color: #a9a9a9 */
+}
+
+#li-building-div {
+  padding: 0px !important;
+  margin-bottom: 1.5rem;
 }
 
 
