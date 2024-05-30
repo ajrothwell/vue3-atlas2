@@ -1,6 +1,6 @@
 <script setup>
 console.log('LI.vue setup');
-import { computed, onMounted, onBeforeMount } from 'vue';
+import { ref, computed, onMounted, onBeforeMount } from 'vue';
 import { polygon, featureCollection } from '@turf/helpers';
 
 import { useMainStore } from '@/stores/MainStore';
@@ -22,7 +22,8 @@ const selectedBuildingCerts = computed(() => LiStore.liBuildingCerts.rows.filter
 
 // PERMITS
 const permitsCompareFn = (a, b) => new Date(b.permitissuedate) - new Date(a.permitissuedate);
-const permits = computed(() => LiStore.liPermits.rows.sort(permitsCompareFn).slice(0, 5));
+// const permits = computed(() => LiStore.liPermits.rows.sort(permitsCompareFn).slice(0, 5));
+const permits = computed(() => LiStore.liPermits.rows.sort(permitsCompareFn));
 
 const getLinkPermit = (item) => {
   let address = item.address;
@@ -181,6 +182,50 @@ const buildingData = computed(() => {
   ];
 });
 
+const paginationOptions = ref({
+  enabled: true,
+  mode: 'pages',
+  perPage: 5,
+  position: 'top',
+  // perPageDropdown: [3, 7, 9],
+  dropdownAllowAll: false,
+  // setCurrentPage: 2,
+  nextLabel: '',
+  prevLabel: '',
+  rowsPerPageLabel: '# rows',
+  ofLabel: 'of',
+  pageLabel: 'page', // for 'pages' mode
+  allLabel: 'All',
+  // infoFn: (params) => `my own page ${params.firstRecordOnPage}`, 
+});
+
+const permitsTableData = ref({
+  columns: [
+    {
+      label: 'Date',
+      field: 'permitissuedate',
+      type: 'date',
+      // dateInputFormat: '%yyyy-%mm-%ddT%hh:%mm:%s.%LZ',
+      dateInputFormat: "yyyy-MM-dd'T'HH:mm:ssX",
+      dateOutputFormat: 'MM/dd/yyyy',
+    },
+    {
+      label: 'ID',
+      field: 'link',
+      html: true,
+    },
+    {
+      label: 'Description',
+      field: 'permitdescription',
+    },
+    {
+      label: 'Status',
+      field: 'status',
+    }
+  ],
+  rows: permits.value,
+})
+
 </script>
 
 <template>
@@ -247,7 +292,15 @@ const buildingData = computed(() => {
     <!-- Li Permits Table -->
     <h5 class="subtitle is-5 table-title">Permits</h5>
     <div class="horizontal-table">
-      <table
+      <vue-good-table
+        id="permits"
+        class="test"
+        :columns="permitsTableData.columns"
+        :rows="permitsTableData.rows"
+        :pagination-options="paginationOptions"
+        style-class="table"
+      />
+      <!-- <table
         id="permits"
         :class="LiStore.liPermits.rows.length > 5 ? 'link-at-bottom' : 'no-link-at-bottom'"
         class="table is-fullwidth is-striped"
@@ -268,12 +321,12 @@ const buildingData = computed(() => {
             <td>{{ item.status }}</td>
           </tr>
         </tbody>
-      </table>
+      </table> -->
     </div>
     <div class='mobile-no-data' v-if="!LiStore.liPermits.rows.length">No permits found</div>
-    <div v-if="LiStore.liPermits.rows.length > 5" class="table-link">
+    <!-- <div v-if="LiStore.liPermits.rows.length > 5" class="table-link">
       <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See {{ LiStore.liPermits.rows.length-5 }} older permits at L&I Property History <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
-    </div>
+    </div> -->
 
     <!-- liAisZoningDocs and liEclipseZoningDocs Table-->
     <h5 class="subtitle is-5 table-title">Zoning Permit Documents</h5>
@@ -444,10 +497,12 @@ only screen and (max-width: 760px),
     td:nth-of-type(4):before { content: "Expiration Date"; }
   }
 
-  #permits, #inspections, #violations {
-    
+  #permits #vgt-table td:nth-of-type(1):before { content: "Date" !important; }
 
-    td:nth-of-type(1):before { content: "Date"; }
+  #permits, #inspections, #violations {
+
+    /* td:nth-of-type(1):before { content: "Date"; }} */
+    td:nth-of-type(1) { content: "Date"; }
     td:nth-of-type(2):before { content: "ID"; }
     td:nth-of-type(3):before { content: "Description"; }
     td:nth-of-type(4):before { content: "Status"; }

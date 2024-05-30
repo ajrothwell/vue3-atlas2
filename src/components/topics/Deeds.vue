@@ -144,7 +144,7 @@ const parcelData = computed(() => [
   },
 ]);
 
-const tableData = ref({
+const condosTableData = ref({
   columns: [
     {
       label: 'Condo Parcel',
@@ -204,33 +204,12 @@ const tableData = ref({
       <h5 class="title is-5">Parcel Details</h5>
       <vertical-table v-if="selectedParcel" tableId="dorTable" :data="parcelData"></vertical-table>
 
-      <!-- Deeded Condominiums -->
-      <!-- <div v-if="deededCondosExist" class="mt-6 mb-4">
-        <h5 class="subtitle is-5">Deeded Condominiums</h5>
-        <table class="table is-fullwidth is-striped">
-          <thead>
-            <tr>
-              <th>Condo Parcel</th>
-              <th>Condo Name</th>
-              <th>Unit #</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="item in selectedCondos" :key="item.cartodb_id">
-              <td>{{ item.recmap }}-{{ item.parcel }}</td>
-              <td>{{ item.condo_name }}</td>
-              <td>Unit #{{ item.condounit }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div> -->
-
       <div v-if="deededCondosExist" class="mt-6 mb-4">
         <h5 class="subtitle is-5">Deeded Condominiums</h5>
         <vue-good-table
-          :columns="tableData.columns"
-          :rows="tableData.rows"
-          :pagination-options="tableData.paginationOptions"
+          :columns="condosTableData.columns"
+          :rows="condosTableData.rows"
+          :pagination-options="condosTableData.paginationOptions"
           style-class="table"
         />
       </div>
@@ -341,8 +320,6 @@ only screen and (max-width: 760px),
     td:nth-of-type(4):before { content: "Grantor"; }
     td:nth-of-type(5):before { content: "Grantee"; }
   }
-
-
 
 }
 
