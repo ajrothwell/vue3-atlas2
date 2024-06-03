@@ -290,9 +290,13 @@ const buildingCertsTableData = ref({
               :rows="buildingCertsTableData.rows"
               :pagination-options="paginationOptions"
               style-class="table"
-            />
+            >
+              <template #emptystate>
+                No building certifications found
+              </template>
+            </vue-good-table>
           </div>
-          <div class='mobile-no-data' v-if="!selectedBuildingCerts.length">No building certifications found</div>
+          <!-- <div class='mobile-no-data' v-if="!selectedBuildingCerts.length">No building certifications found</div> -->
           <div class="table-link" v-if="selectedBuildingCerts.length">
             <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See all {{ LiStore.liBuildingCerts.rows.length || '' }} building certifications for this property at L&I Property History <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
           </div>
@@ -443,7 +447,7 @@ const buildingCertsTableData = ref({
   </section>
 </template>
 
-<style scoped>
+<style>
 
 .add-borders {
   border: 1px solid #ccc;
@@ -464,7 +468,6 @@ const buildingCertsTableData = ref({
   margin-bottom: 1.5rem;
 }
 
-
 @media 
 only screen and (max-width: 760px),
 (min-device-width: 768px) and (max-device-width: 1024px)  {
@@ -472,9 +475,14 @@ only screen and (max-width: 760px),
   /* td {
     padding-left: 85px !important;
   } */
+  td[colspan="4"] {
+    padding-left: 0px !important;
+  }
 
 	/* Label the data */
+    
 	#building-certs {
+
     td {
       min-height: 60px;
     }
@@ -485,12 +493,10 @@ only screen and (max-width: 760px),
     td:nth-of-type(4):before { content: "Expiration Date"; }
   }
 
-  #permits #vgt-table td:nth-of-type(1):before { content: "Date" !important; }
-
   #permits, #inspections, #violations {
 
     /* td:nth-of-type(1):before { content: "Date"; }} */
-    td:nth-of-type(1) { content: "Date"; }
+    td:nth-of-type(1):before { content: "Date"; }
     td:nth-of-type(2):before { content: "ID"; }
     td:nth-of-type(3):before { content: "Description"; }
     td:nth-of-type(4):before { content: "Status"; }
