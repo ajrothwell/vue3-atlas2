@@ -1,6 +1,6 @@
 <script setup>
 console.log('LI.vue setup');
-import { ref, computed, onMounted, onBeforeMount } from 'vue';
+import { ref, computed, watch, onMounted, onBeforeMount } from 'vue';
 import { polygon, featureCollection } from '@turf/helpers';
 
 import { useMainStore } from '@/stores/MainStore';
@@ -23,7 +23,7 @@ const selectedBuildingCerts = computed(() => LiStore.liBuildingCerts.rows.filter
 // PERMITS
 const permitsCompareFn = (a, b) => new Date(b.permitissuedate) - new Date(a.permitissuedate);
 // const permits = computed(() => LiStore.liPermits.rows.sort(permitsCompareFn).slice(0, 5));
-const permits = computed(() => LiStore.liPermits.rows.sort(permitsCompareFn));
+const permits = computed(() => { if(LiStore.liPermits.rows) return LiStore.liPermits.rows.sort(permitsCompareFn) });
 
 const getLinkPermit = (item) => {
   let address = item.address;
@@ -38,8 +38,11 @@ const liZoningDocsCompareFn = (a, b) => new Date(b.scan_date || a.issue_date) - 
 const liAisZoningDocs = computed(() => LiStore.liAisZoningDocs.rows);
 const liEclipseZoningDocs = computed(() => LiStore.liEclipseZoningDocs.rows);
 console.log('liAisZoningDocs.value:', liAisZoningDocs.value, 'liEclipseZoningDocs.value:', liEclipseZoningDocs.value);
-const liAllZoningDocs = liAisZoningDocs.value.concat(liEclipseZoningDocs.value).sort(liZoningDocsCompareFn);
-console.log('allDocs:', liAllZoningDocs);
+const liAllZoningDocs = computed(() => {
+  if (!liAisZoningDocs.value || !liEclipseZoningDocs.value) return [];
+  liAisZoningDocs.value.concat(liEclipseZoningDocs.value).sort(liZoningDocsCompareFn)
+});
+console.log('liAllZoningDocs:', liAllZoningDocs);
 
 const getZoningDocDate = (item) => {
   if (item.issue_date) {
@@ -88,7 +91,10 @@ const getZoningDocPages = (item) => {
 
 // INSPECTIONS
 const inspectionsCompareFn = (a, b) => new Date(b.investigationcompleted) - new Date(a.investigationcompleted);
-const inspections = computed(() => LiStore.liInspections.rows.sort(inspectionsCompareFn).slice(0, 5));
+const inspections = computed(() => {
+  if (!LiStore.liInspections.rows) return [];
+  return LiStore.liInspections.rows.sort(inspectionsCompareFn).slice(0, 5);
+});
 
 const getLinkInvestigationNumber = (item) => {
   let address = item.address;
@@ -100,7 +106,10 @@ const getLinkInvestigationNumber = (item) => {
 
 // VIOLATIONS
 const violationsCompareFn = (a, b) => new Date(b.casecreateddate) - new Date(a.casecreateddate);
-const violations = computed(() => LiStore.liViolations.rows.sort(violationsCompareFn).slice(0, 5));
+const violations = computed(() => {
+  if (!LiStore.liViolations.rows) return [];
+  return LiStore.liViolations.rows.sort(violationsCompareFn).slice(0, 5);
+});
 
 const getLinkViolationNumber = (item) => {
   let address = item.address;
@@ -112,7 +121,10 @@ const getLinkViolationNumber = (item) => {
 
 // BUSINESS LICENSES
 const businessLicensesCompareFn = (a, b) => new Date(b.initialissuedate) - new Date(a.initialissuedate);
-const businessLicenses = computed(() => LiStore.liBusinessLicenses.rows.sort(businessLicensesCompareFn).slice(0, 5));
+const businessLicenses = computed(() => {
+  if (!LiStore.liBusinessLicenses.rows) return [];
+  return LiStore.liBusinessLicenses.rows.sort(businessLicensesCompareFn).slice(0, 5);
+});
 
 const getLinkLicenseNumber = (item) => {
   let address = item.address;
@@ -122,32 +134,49 @@ const getLinkLicenseNumber = (item) => {
   return "<a target='_blank' href='https://li.phila.gov/Property-History/search/Business-License-Detail?address="+encodeURIComponent(address)+"&Id="+item.licensenum+"'>"+item.licensenum+" <i class='fa fa-external-link-alt'></i></a>";
 };
 
-onBeforeMount( async() => {
-  if (LiStore.liBuildingFootprints.features.length) {
+// onBeforeMount( async() => {
+//   if (LiStore.liBuildingFootprints.features.length) {
+//     LiStore.selectedLiBuildingNumber = LiStore.liBuildingFootprints.features[0].attributes.BIN;
+//   }
+// })
+
+// onMounted( async () => {
+//   let features = [];
+//   if (!LiStore.liBuildingFootprints.features) return features;
+//   for (let item of LiStore.liBuildingFootprints.features) {
+//     features.push(polygon([item.geometry.rings[0]], { id: item.attributes.BIN, type: 'liBuildingFootprints' }));
+//   }
+//   let geojson = featureCollection(features);
+//   // console.log('geojson:', geojson, 'map.getSource("liBuildingFootprints"):', map.getSource('liBuildingFootprints'), 'map.getLayer("liBuildingFootprints"):', map.getLayer('liBuildingFootprints'));
+//   await map.getSource('liBuildingFootprints').setData(geojson);
+
+//   // const topic = document.getElementById('Licenses & Inspections-topic');
+//   // topic.scrollIntoView();
+//   // const main = document.getElementById('main');
+//   // const mainScrollTop = main.scrollTop;
+//   // main.scrollTo(0, mainScrollTop - 80);
+// });
+
+const liBuildingFootprints = computed(() => LiStore.liBuildingFootprints);
+
+watch (
+  () => liBuildingFootprints,
+  async (newLiBuildingFootprints, oldLiBuildingFootprints) => {
     LiStore.selectedLiBuildingNumber = LiStore.liBuildingFootprints.features[0].attributes.BIN;
-  }
-})
 
-onMounted( async () => {
-  let features = [];
-  if (!LiStore.liBuildingFootprints.features) return features;
-  for (let item of LiStore.liBuildingFootprints.features) {
-    features.push(polygon([item.geometry.rings[0]], { id: item.attributes.BIN, type: 'liBuildingFootprints' }));
+    for (let item of newLiBuildingFootprints.features) {
+      features.push(polygon([item.geometry.rings[0]], { id: item.attributes.BIN, type: 'liBuildingFootprints' }));
+    }
+    let geojson = featureCollection(features);
+    // console.log('geojson:', geojson, 'map.getSource("liBuildingFootprints"):', map.getSource('liBuildingFootprints'), 'map.getLayer("liBuildingFootprints"):', map.getLayer('liBuildingFootprints'));
+    await map.getSource('liBuildingFootprints').setData(geojson);
   }
-  let geojson = featureCollection(features);
-  // console.log('geojson:', geojson, 'map.getSource("liBuildingFootprints"):', map.getSource('liBuildingFootprints'), 'map.getLayer("liBuildingFootprints"):', map.getLayer('liBuildingFootprints'));
-  await map.getSource('liBuildingFootprints').setData(geojson);
-
-  // const topic = document.getElementById('Licenses & Inspections-topic');
-  // topic.scrollIntoView();
-  // const main = document.getElementById('main');
-  // const mainScrollTop = main.scrollTop;
-  // main.scrollTo(0, mainScrollTop - 80);
-});
+)
 
 const selectedLiBuildingNumber = computed(() => LiStore.selectedLiBuildingNumber);
 
 const selectedLiBuilding = computed(() => {
+  if (!LiStore.liBuildingFootprints.features) return;
   return LiStore.liBuildingFootprints.features.filter(feature => feature.attributes.BIN === selectedLiBuildingNumber.value)[0];
 });
 
@@ -259,7 +288,7 @@ const buildingCertsTableData = ref({
       Licenses, inspections, permits, property maintenance violations, and zoning permit documents at your search address. Source: Department of Licenses & Inspections
     </div>
 
-    <h5 class="subtitle is-5">There are {{ LiStore.liBuildingFootprints.features.length }} buildings at this address</h5>
+    <!-- <h5 class="subtitle is-5">There are {{ LiStore.liBuildingFootprints.features.length }} buildings at this address</h5> -->
     <!-- Li Building Footprints Section -->
     <div v-if="selectedLiBuilding" id="li-building-div" class="columns add-borders p-2">
       <div class="column is-12">
@@ -282,7 +311,7 @@ const buildingCertsTableData = ref({
 
           <!-- Building Certs Table -->
           <h5 class="subtitle is-5 table-title">Building Certifications</h5>
-          <div class="horizontal-table">
+          <div v-if="selectedBuildingCerts" class="horizontal-table">
 
             <vue-good-table
               id="building-certs"
@@ -306,7 +335,7 @@ const buildingCertsTableData = ref({
 
     <!-- Li Permits Table -->
     <h5 class="subtitle is-5 table-title">Permits</h5>
-    <div class="horizontal-table">
+    <div v-if="permits" class="horizontal-table">
       <vue-good-table
         id="permits"
         :columns="permitsTableData.columns"
@@ -315,10 +344,11 @@ const buildingCertsTableData = ref({
         style-class="table"
       />
     </div>
-    <div class='mobile-no-data' v-if="!LiStore.liPermits.rows.length">No permits found</div>
-    <div v-if="LiStore.liPermits.rows.length > 5" class="table-link">
-      <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See all {{ LiStore.liPermits.rows.length }} permits at L&I Property History <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
-    </div>
+    <!-- <div class='mobile-no-data' v-if="!LiStore.liPermits.rows.length">No permits found</div> -->
+    <!-- <div v-if="LiStore.liPermits.rows.length > 5" class="table-link"> -->
+      <!-- <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See all {{ LiStore.liPermits.rows.length }} permits at L&I Property History <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a> -->
+      <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See all permits at L&I Property History <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
+    <!-- </div> -->
 
     <!-- liAisZoningDocs and liEclipseZoningDocs Table-->
     <h5 class="subtitle is-5 table-title">Zoning Permit Documents</h5>
@@ -346,7 +376,7 @@ const buildingCertsTableData = ref({
         </tbody>
       </table>
     </div>
-    <div class='mobile-no-data' v-if="!liAllZoningDocs.length">No zoning permit documents found</div>
+    <!-- <div class='mobile-no-data' v-if="!liAllZoningDocs.length">No zoning permit documents found</div> -->
     
 
     <!-- Li Inspections Table -->
@@ -354,9 +384,9 @@ const buildingCertsTableData = ref({
     <div class="horizontal-table">
       <table
         id="inspections"
-        :class="LiStore.liInspections.rows.length > 5 ? 'link-at-bottom' : 'no-link-at-bottom'"
         class="table is-fullwidth is-striped"
       >
+        <!-- :class="LiStore.liInspections.rows.length > 5 ? 'link-at-bottom' : 'no-link-at-bottom'" -->
         <thead>
           <tr>
             <th>Date</th>
@@ -376,18 +406,19 @@ const buildingCertsTableData = ref({
       </table>
     </div>
     <div class='mobile-no-data' v-if="!LiStore.liInspections.length">No inspections found</div>
-    <div v-if="LiStore.liInspections.rows.length > 5" class="table-link">
-      <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See {{ LiStore.liInspections.rows.length }} older inspections at L&I Property History <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
-    </div>
+    <!-- <div v-if="LiStore.liInspections.rows.length > 5" class="table-link"> -->
+      <!-- <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See {{ LiStore.liInspections.rows.length }} older inspections at L&I Property History <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a> -->
+      <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See older inspections at L&I Property History <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
+    <!-- </div> -->
 
     <!-- Li Violations Table -->
     <h5 class="subtitle is-5 table-title">Violations</h5>
     <div class="horizontal-table">
       <table
         id="violations"
-        :class="LiStore.liViolations.rows.length > 5 ? 'link-at-bottom' : 'no-link-at-bottom'"
         class="table is-fullwidth is-striped"
-      >
+        >
+        <!-- :class="LiStore.liViolations.rows.length > 5 ? 'link-at-bottom' : 'no-link-at-bottom'" -->
         <thead>
           <tr>
             <th>Date</th>
@@ -407,18 +438,19 @@ const buildingCertsTableData = ref({
       </table>
     </div>
     <div class='mobile-no-data' v-if="!LiStore.liViolations.length">No violations found</div>
-    <div v-if="LiStore.liViolations.rows.length > 5" class="table-link">
-      <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See {{ LiStore.liViolations.rows.length-5 }} older violations at L&I Property History <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
-    </div>
+    <!-- <div v-if="LiStore.liViolations.rows.length > 5" class="table-link"> -->
+      <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See older violations at L&I Property History <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
+      <!-- <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See {{ LiStore.liViolations.rows.length-5 }} older violations at L&I Property History <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a> -->
+    <!-- </div> -->
 
     <!-- Li Business Licenses Table -->
     <h5 class="subtitle is-5 table-title">Business Licenses</h5>
     <div class="horizontal-table">
       <table
         id="business-licenses"
-        :class="LiStore.liBusinessLicenses.rows.length > 5 ? 'link-at-bottom' : 'no-link-at-bottom'"
         class="table is-fullwidth is-striped link-at-bottom"
-      >
+        >
+        <!-- :class="LiStore.liBusinessLicenses.rows.length > 5 ? 'link-at-bottom' : 'no-link-at-bottom'" -->
         <thead>
           <tr>
             <th>Date</th>
@@ -440,9 +472,10 @@ const buildingCertsTableData = ref({
       </table>
     </div>
     <div class='mobile-no-data' v-if="!LiStore.liBusinessLicenses.length">No business licenses found</div>
-    <div v-if="LiStore.liBusinessLicenses.rows.length > 5" class="table-link">
-      <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See {{ LiStore.liBusinessLicenses.rows.length-5 }} older business licenses at L&I Property History <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
-    </div>
+    <!-- <div v-if="LiStore.liBusinessLicenses.rows.length > 5" class="table-link"> -->
+      <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See older business licenses at L&I Property History <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
+      <!-- <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See {{ LiStore.liBusinessLicenses.rows.length-5 }} older business licenses at L&I Property History <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a> -->
+    <!-- </div> -->
 
   </section>
 </template>
