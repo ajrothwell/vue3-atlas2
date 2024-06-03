@@ -797,8 +797,8 @@ const legendData = ref({
     <AddressSearchControl></AddressSearchControl>
     <ImageryToggleControl @toggleImagery="toggleImagery"></ImageryToggleControl>
     <ImageryDropdownControl v-if="MapStore.imageryOn" @setImagery="setImagery"></ImageryDropdownControl>
-    <CyclomediaControl @toggleCyclomedia="toggleCyclomedia"></CyclomediaControl>
     <EagleviewControl @toggleEagleview="toggleEagleview"></EagleviewControl>
+    <CyclomediaControl @toggleCyclomedia="toggleCyclomedia"></CyclomediaControl>
     <OpacitySlider v-if="selectedRegmap" :initialOpacity="MapStore.regmapOpacity"@opacityChange="handleRegmapOpacityChange"></OpacitySlider>
     <OpacitySlider v-if="MainStore.currentTopic == 'Zoning'" :initialOpacity="MapStore.zoningOpacity"@opacityChange="handleZoningOpacityChange"></OpacitySlider>
     <!-- the distance measure control uses a ref, so that functions within the component can be called from this file -->
