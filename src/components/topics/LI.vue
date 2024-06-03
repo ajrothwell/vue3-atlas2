@@ -187,16 +187,13 @@ const paginationOptions = ref({
   mode: 'pages',
   perPage: 5,
   position: 'top',
-  // perPageDropdown: [3, 7, 9],
   dropdownAllowAll: false,
-  // setCurrentPage: 2,
   nextLabel: '',
   prevLabel: '',
   rowsPerPageLabel: '# rows',
   ofLabel: 'of',
   pageLabel: 'page', // for 'pages' mode
   allLabel: 'All',
-  // infoFn: (params) => `my own page ${params.firstRecordOnPage}`, 
 });
 
 const permitsTableData = ref({
@@ -205,7 +202,6 @@ const permitsTableData = ref({
       label: 'Date',
       field: 'permitissuedate',
       type: 'date',
-      // dateInputFormat: '%yyyy-%mm-%ddT%hh:%mm:%s.%LZ',
       dateInputFormat: "yyyy-MM-dd'T'HH:mm:ssX",
       dateOutputFormat: 'MM/dd/yyyy',
     },
@@ -224,6 +220,35 @@ const permitsTableData = ref({
     }
   ],
   rows: permits.value,
+})
+
+
+const buildingCertsTableData = ref({
+  columns: [
+    {
+      label: 'Inspection Type',
+      field: 'buildingcerttype',
+    },
+    {
+      label: 'Date Inspected',
+      field: 'inspectiondate',
+      type: 'date',
+      dateInputFormat: "yyyy-MM-dd'T'HH:mm:ssX",
+      dateOutputFormat: 'MM/dd/yyyy',
+    },
+    {
+      label: 'Inspection Result',
+      field: 'inspectionresult',
+    },
+    {
+      label: 'Expiration Date',
+      field: 'expirationdate',
+      type: 'date',
+      dateInputFormat: "yyyy-MM-dd'T'HH:mm:ssX",
+      dateOutputFormat: 'MM/dd/yyyy',
+    }
+  ],
+  rows: selectedBuildingCerts,
 })
 
 </script>
@@ -258,28 +283,14 @@ const permitsTableData = ref({
           <!-- Building Certs Table -->
           <h5 class="subtitle is-5 table-title">Building Certifications</h5>
           <div class="horizontal-table">
-            <table
+
+            <vue-good-table
               id="building-certs"
-              :class="selectedBuildingCerts.length ? 'link-at-bottom' : 'no-link-at-bottom'"
-              class="table is-fullwidth is-striped"
-            >
-              <thead>
-                <tr>
-                  <th>InspectionType</th>
-                  <th>Date Inspected</th>
-                  <th>Inspection Result</th>
-                  <th>Expiration Date</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="item in selectedBuildingCerts">
-                  <td>{{ item.buildingcerttype }}</td>
-                  <td>{{ date(item.inspectiondate) }}</td>
-                  <td>{{ item.inspectionresult }}</td>
-                  <td>{{ date(item.expirationdate) }}</td>
-                </tr>
-              </tbody>
-            </table>
+              :columns="buildingCertsTableData.columns"
+              :rows="buildingCertsTableData.rows"
+              :pagination-options="paginationOptions"
+              style-class="table"
+            />
           </div>
           <div class='mobile-no-data' v-if="!selectedBuildingCerts.length">No building certifications found</div>
           <div class="table-link" v-if="selectedBuildingCerts.length">
@@ -294,39 +305,16 @@ const permitsTableData = ref({
     <div class="horizontal-table">
       <vue-good-table
         id="permits"
-        class="test"
         :columns="permitsTableData.columns"
         :rows="permitsTableData.rows"
         :pagination-options="paginationOptions"
         style-class="table"
       />
-      <!-- <table
-        id="permits"
-        :class="LiStore.liPermits.rows.length > 5 ? 'link-at-bottom' : 'no-link-at-bottom'"
-        class="table is-fullwidth is-striped"
-      >
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>ID</th>
-            <th>Description</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="item in permits">
-            <td>{{ date(item.permitissuedate) }}</td>
-            <td v-html="getLinkPermit(item)"></td>
-            <td>{{ item.permitdescription }}</td>
-            <td>{{ item.status }}</td>
-          </tr>
-        </tbody>
-      </table> -->
     </div>
     <div class='mobile-no-data' v-if="!LiStore.liPermits.rows.length">No permits found</div>
-    <!-- <div v-if="LiStore.liPermits.rows.length > 5" class="table-link">
-      <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See {{ LiStore.liPermits.rows.length-5 }} older permits at L&I Property History <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
-    </div> -->
+    <div v-if="LiStore.liPermits.rows.length > 5" class="table-link">
+      <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See all {{ LiStore.liPermits.rows.length }} permits at L&I Property History <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
+    </div>
 
     <!-- liAisZoningDocs and liEclipseZoningDocs Table-->
     <h5 class="subtitle is-5 table-title">Zoning Permit Documents</h5>
