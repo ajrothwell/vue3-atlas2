@@ -85,7 +85,8 @@ const zipCode = computed(() => {
     </topic>
 
     <topic :topic-name="'Licenses & Inspections'" :topic-icon="'fa-solid fa-wrench'" :loading="!dataSourcesLoadedArray.includes('Licenses & Inspections')">
-      <LI v-if="dataSourcesLoadedArray.includes('Licenses & Inspections')"/>
+      <LI />
+      <!-- <LI v-if="dataSourcesLoadedArray.includes('Licenses & Inspections')"/> -->
     </topic>
 
     <topic :topic-name="'Zoning'" :topic-icon="'fa-solid fa-university'" :loading="!dataSourcesLoadedArray.includes('Zoning')">
