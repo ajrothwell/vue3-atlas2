@@ -455,7 +455,7 @@ const businessLicensesTableData = computed(() => {
       <h6 class="subtitle is-6 table-subtitle">Formerly "Zoning Archive"</h6>
       <div v-if="zoningDocsTableData.rows" class="horizontal-table">
         <vue-good-table
-          id="zoningDocs"
+          id="zoning-permit-docs"
           :columns="zoningDocsTableData.columns"
           :rows="zoningDocsTableData.rows"
           :pagination-options="paginationOptions"
