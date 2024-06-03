@@ -7,5 +7,7 @@ export default function () {
   const isMobileOrTablet = (mobileOrTabletRegexA.test(userAgent) ||
                             mobileOrTabletRegexB.test(userAgent.substr(0,4)));
 
-  return isMobileOrTablet;
+  const isIPadPro = /Macintosh/.test(navigator.userAgent) && 'ontouchend' in document;
+
+  return isMobileOrTablet || isIPadPro;
 }
