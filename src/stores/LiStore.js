@@ -123,14 +123,59 @@ export const useLiStore = defineStore('LiStore', {
       });
       this.liPermits = data;
     },
+    addDataToZoningDocs(data) {
+      data.rows.forEach((item) => {
+        if (item.issue_date) {
+          item.doc_date = date(item.issue_date);
+        } else if (item.scan_date) {
+          item.doc_date = date(item.scan_date);
+        } else {
+          item.doc_date = 'N/A';
+        }
 
+        let appId;
+        if (item.app_id) {
+          appId = item.app_id;
+          if (appId.length < 3) {
+            appId = '0' + appId;
+          }
+        }
+        let docId, url;
+        if (item.doc_id) {
+          docId = item.doc_id;
+          url = '//s3.amazonaws.com/lni-zoning-pdfs/';
+        } else if (item.permit_number ) {
+          docId = item.permit_number ;
+          url = 'http://s3.amazonaws.com/eclipse-docs-pdfs/zoning/';
+        }
+        item.link = '<a target="_blank" href="' //s3.amazonaws.com/lni-zoning-pdfs/'
+                + url
+                + docId
+                + '.pdf">'
+                + docId
+                + ' <i class="fa fa-external-link-alt"></i>'
+                + '</a>';
+
+
+        if (item.num_pages) {
+          item.pages = item.num_pages;
+        } else if (item.pages_scanned) {
+          item.pages = item.page_scanned;
+        } else {
+          item.pages = 'N/A';
+        }
+      });
+      return data;
+    },
     async fillLiAisZoningDocs() {
       const GeocodeStore = useGeocodeStore();
       const feature = GeocodeStore.aisData.features[0];
       let baseUrl = 'https://phl.carto.com/api/v2/sql?q=';
       const url = baseUrl += `select * from ais_zoning_documents where doc_id = ANY('{ ${feature.properties.zoning_document_ids} }'::text[])`;
       const response = await fetch(url);
-      this.liAisZoningDocs = await response.json()
+      const data = await response.json();
+      let addedData = this.addDataToZoningDocs(data);
+      this.liAisZoningDocs = addedData;
     },
     async fillLiEclipseZoningDocs() {
       const GeocodeStore = useGeocodeStore();
@@ -152,7 +197,9 @@ export const useLiStore = defineStore('LiStore', {
       }
       const url = baseUrl += query;
       const response = await fetch(url);
-      this.liEclipseZoningDocs = await response.json();
+      const data = await response.json();
+      let addedData = this.addDataToZoningDocs(data);
+      this.liEclipseZoningDocs = addedData;
     },
 
     async fillLiInspections() {
@@ -171,7 +218,15 @@ export const useLiStore = defineStore('LiStore', {
           AND systemofrecord IN ('ECLIPSE') ${ opaQuery }`;
 
       const response = await fetch(url);
-      this.liInspections = await response.json();
+      const data = await response.json();
+      data.rows.forEach((item) => {
+        let address = item.address;
+        if (item.unit_num && item.unit_num != null) {
+          address += ' Unit ' + item.unit_num;
+        }
+        item.link = "<a target='_blank' href='https://li.phila.gov/Property-History/search/Violation-Detail?address="+encodeURIComponent(address)+"&Id="+item.casenumber+"'>"+item.casenumber+" <i class='fa fa-external-link-alt'></i></a>";
+      });
+      this.liInspections = data;
     },
 
     async fillLiViolations() {
@@ -196,7 +251,15 @@ export const useLiStore = defineStore('LiStore', {
         ORDER BY casenumber DESC`;
 
       const response = await fetch(url);
-      this.liViolations = await response.json();
+      const data = await response.json();
+      data.rows.forEach((item) => {
+        let address = item.address;
+        if (item.unit_num && item.unit_num != null) {
+          address += ' Unit ' + item.unit_num;
+        }
+        item.link = "<a target='_blank' href='https://li.phila.gov/Property-History/search/Violation-Detail?address="+encodeURIComponent(address)+"&Id="+item.casenumber+"'>"+item.casenumber+" <i class='fa fa-external-link-alt'></i></a>";
+      });
+      this.liViolations = data;
     },
 
     async fillLiBusinessLicenses() {
@@ -223,7 +286,15 @@ export const useLiStore = defineStore('LiStore', {
       }
       const url = baseUrl += query;
       const response = await fetch(url);
-      this.liBusinessLicenses = await response.json();
+      const data = await response.json();
+      data.rows.forEach((item) => {
+        let address = item.address;
+        if (item.unit_num && item.unit_num != null) {
+          address += ' Unit ' + item.unit_num;
+        }
+        item.link = "<a target='_blank' href='https://li.phila.gov/Property-History/search/Business-License-Detail?address="+encodeURIComponent(address)+"&Id="+item.licensenum+"'>"+item.licensenum+" <i class='fa fa-external-link-alt'></i></a>";
+      });
+      this.liBusinessLicenses = data;
     }
   },
   // keeping formatting getters here in the store only works if the data is not looped
