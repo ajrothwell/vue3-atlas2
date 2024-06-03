@@ -1,6 +1,7 @@
 <script setup>
 
 import isMobileDevice from './util/is-mobile-device';
+import isMac from './util/is-mac';
 
 // STORES
 import { useMainStore } from '@/stores/MainStore.js'
@@ -32,6 +33,7 @@ const inputAddress = ref('');
 
 onMounted(async () => {
   MainStore.isMobileDevice = isMobileDevice();
+  MainStore.isMac = isMac();
   await router.isReady()
   console.log('App onMounted, route.params.topic:', route.params.topic, 'route.params.address:', route.params.address);
   if (route.name === 'not-found') {

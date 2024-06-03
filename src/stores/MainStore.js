@@ -6,6 +6,7 @@ export const useMainStore = defineStore("MainStore", {
       initialDatafetchComplete: false,
       publicPath: null,
       isMobileDevice: null,
+      isMac: null,
       lastSearchMethod: 'address',
       lastClickCoords: [0,0],
       currentAddress: '',
