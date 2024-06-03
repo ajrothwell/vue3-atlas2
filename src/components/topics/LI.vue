@@ -18,7 +18,10 @@ const { date, integer, prettyNumber } = useTransforms();
 
 // BUILDING CERTIFICATIONS
 const buildingCertsCompareFn = (a, b) => new Date(b.expirationdate) - new Date(a.expirationdate);
-const selectedBuildingCerts = computed(() => LiStore.liBuildingCerts.rows.filter(building => building.bin == selectedLiBuildingNumber.value).sort(buildingCertsCompareFn));
+const selectedBuildingCerts = computed(() => {
+  if (!LiStore.liBuildingCerts.rows || !selectedLiBuildingNumber.value) return [];
+  return LiStore.liBuildingCerts.rows.filter(building => building.bin == selectedLiBuildingNumber.value).sort(buildingCertsCompareFn)
+});
 
 // PERMITS
 const permitsCompareFn = (a, b) => new Date(b.permitissuedate) - new Date(a.permitissuedate);
@@ -40,7 +43,7 @@ const liEclipseZoningDocs = computed(() => LiStore.liEclipseZoningDocs.rows);
 console.log('liAisZoningDocs.value:', liAisZoningDocs.value, 'liEclipseZoningDocs.value:', liEclipseZoningDocs.value);
 const liAllZoningDocs = computed(() => {
   if (!liAisZoningDocs.value || !liEclipseZoningDocs.value) return [];
-  liAisZoningDocs.value.concat(liEclipseZoningDocs.value).sort(liZoningDocsCompareFn)
+  return liAisZoningDocs.value.concat(liEclipseZoningDocs.value).sort(liZoningDocsCompareFn);
 });
 console.log('liAllZoningDocs:', liAllZoningDocs);
 
@@ -159,16 +162,18 @@ const getLinkLicenseNumber = (item) => {
 
 const liBuildingFootprints = computed(() => LiStore.liBuildingFootprints);
 
-watch (
-  () => liBuildingFootprints,
+watch (liBuildingFootprints,
   async (newLiBuildingFootprints, oldLiBuildingFootprints) => {
+    console.log('watch newLiBuildingFootprints.features:', newLiBuildingFootprints.features);
     LiStore.selectedLiBuildingNumber = LiStore.liBuildingFootprints.features[0].attributes.BIN;
 
+    let features = [];
     for (let item of newLiBuildingFootprints.features) {
       features.push(polygon([item.geometry.rings[0]], { id: item.attributes.BIN, type: 'liBuildingFootprints' }));
     }
     let geojson = featureCollection(features);
     // console.log('geojson:', geojson, 'map.getSource("liBuildingFootprints"):', map.getSource('liBuildingFootprints'), 'map.getLayer("liBuildingFootprints"):', map.getLayer('liBuildingFootprints'));
+    const map = MapStore.map;
     await map.getSource('liBuildingFootprints').setData(geojson);
   }
 )
@@ -225,30 +230,32 @@ const paginationOptions = ref({
   allLabel: 'All',
 });
 
-const permitsTableData = ref({
-  columns: [
-    {
-      label: 'Date',
-      field: 'permitissuedate',
-      type: 'date',
-      dateInputFormat: "yyyy-MM-dd'T'HH:mm:ssX",
-      dateOutputFormat: 'MM/dd/yyyy',
-    },
-    {
-      label: 'ID',
-      field: 'link',
-      html: true,
-    },
-    {
-      label: 'Description',
-      field: 'permitdescription',
-    },
-    {
-      label: 'Status',
-      field: 'status',
-    }
-  ],
-  rows: permits.value,
+const permitsTableData = computed(() => {
+  return {
+    columns: [
+      {
+        label: 'Date',
+        field: 'permitissuedate',
+        type: 'date',
+        dateInputFormat: "yyyy-MM-dd'T'HH:mm:ssX",
+        dateOutputFormat: 'MM/dd/yyyy',
+      },
+      {
+        label: 'ID',
+        field: 'link',
+        html: true,
+      },
+      {
+        label: 'Description',
+        field: 'permitdescription',
+      },
+      {
+        label: 'Status',
+        field: 'status',
+      }
+    ],
+    rows: permits.value,
+  }
 })
 
 
@@ -335,7 +342,7 @@ const buildingCertsTableData = ref({
 
     <!-- Li Permits Table -->
     <h5 class="subtitle is-5 table-title">Permits</h5>
-    <div v-if="permits" class="horizontal-table">
+    <div v-if="permitsTableData.rows" class="horizontal-table">
       <vue-good-table
         id="permits"
         :columns="permitsTableData.columns"
