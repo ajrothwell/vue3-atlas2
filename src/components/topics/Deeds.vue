@@ -43,6 +43,9 @@ const selectedDocs = computed(() => {
     return null;
   }
 });
+const selectedDocsLength = computed(() => {
+  return selectedDocs.value ? selectedDocs.value.length : 0;
+});
 
 const selectedCondos = computed(() => {
   if (selectedParcelId.value && DorStore.dorCondos[selectedParcelId.value]) {
@@ -226,7 +229,7 @@ const dorDocsTableData = computed(() => {
         />
       </div>
 
-      <div class="box mt-6 mb-0">You can access a view-only, watermarked unofficial copy of the deeds below at
+      <div class="box mt-4 mb-6">You can access a view-only, watermarked unofficial copy of the deeds below at
         no cost by clicking on the deeds below. In order to view and print non-watermarked 
         copies of the deeds below, you must purchase a subscription to 
         <a target="_blank" href="https://epay.phila-records.com/phillyepay/web/">PhilaDox</a>.
@@ -236,7 +239,7 @@ const dorDocsTableData = computed(() => {
 
       <!-- DOR Docs Table -->
       <div class="mt-4">
-        <h5 class="subtitle is-5">Documents ({{ selectedDocs.length }})</h5>
+        <h5 class="subtitle is-5">Documents ({{ selectedDocsLength }})</h5>
         <div class="horizontal-table">
           <vue-good-table
           id="dor-documents"
