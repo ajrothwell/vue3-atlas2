@@ -32,7 +32,10 @@ const { integer, prettyNumber } = useTransforms();
 // )
 
 onMounted(async () => {
-  await setLiBuildingFootprints(LiStore.liBuildingFootprints);
+  console.log('Li.vue onMounted');
+  if (LiStore.liBuildingFootprints.features) {
+    await setLiBuildingFootprints(LiStore.liBuildingFootprints);
+  }
 });
 
 // BUILDING FOOTPRINTS
