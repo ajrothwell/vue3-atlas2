@@ -118,6 +118,19 @@ body {
   display: none;
 }
 
+.data-section {
+  margin-bottom: 2rem;
+}
+
+.add-borders {
+  border: 1px solid #ccc;
+}
+
+.is-selected {
+  background-color: #ccc;
+}
+
+// for vue-good-tables pagination
 .vgt-wrap__footer {
   padding: .4rem;
   border-style: solid;
@@ -129,6 +142,7 @@ body {
 .footer__row-count__label, .footer__row-count__select {
   font-size: 14px !important;
 }
+
 
 @media 
 only screen and (max-width: 760px),
@@ -304,11 +318,6 @@ only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
     // height: 60dvh !important;
   }
 
-  // .main {
-  //   padding-top: 0px !important;
-  //   margin-top: 0px !important;
-  //   height: 80dvh;
-  // }
 }
 
 .no-link-at-bottom {

@@ -22,6 +22,8 @@ const getGeocodeAndPutInStore = async(address) => {
   console.log('getGeocodeAndPutInStore is running, address:', address);
   const MainStore = useMainStore();
   MainStore.clearDataSourcesLoadedArray();
+  const LiStore = useLiStore();
+  LiStore.clearAllLiData();
   const CondosStore = useCondosStore();
   CondosStore.lastPageUsed = 1;
   CondosStore.condosData = {};
@@ -140,6 +142,7 @@ const topicDataFetch = async (topic, data) => {
     await LiStore.fillLiPermits();
     await LiStore.fillLiViolations();
     await LiStore.fillLiBusinessLicenses();
+    LiStore.loadingLiData = false;
   }
 
   if (topic === 'Deeds') {

@@ -436,7 +436,15 @@ const selectedLiBuildingNumber = computed(() => { return LiStore.selectedLiBuild
 watch(
   () => selectedLiBuildingNumber.value,
   newSelectedLiBuildingNumber => {
-    // console.log('Map.vue watch selectedLiBuildingNumber.value:', selectedLiBuildingNumber.value);
+    console.log('Map.vue watch newSelectedLiBuildingNumber:', newSelectedLiBuildingNumber, 'selectedLiBuildingNumber.value:', selectedLiBuildingNumber.value);
+    if (newSelectedLiBuildingNumber == null) {
+      map.setPaintProperty(
+        'liBuildingFootprints',
+        'fill-color',
+        '#C2B7FF',
+      )
+      return;
+    }
     map.setPaintProperty(
       'liBuildingFootprints',
       'fill-color',

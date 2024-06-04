@@ -14,7 +14,62 @@ const map = MapStore.map;
 import VerticalTable from '../VerticalTable.vue';
 
 import useTransforms from '@/composables/useTransforms';
-const { date, integer, prettyNumber } = useTransforms();
+import { set } from 'date-fns';
+const { integer, prettyNumber } = useTransforms();
+
+// ON OPEN TOPIC
+// const currentTopic = computed(() => { return MainStore.currentTopic});
+const currentTopic = ref(MainStore.currentTopic);
+
+watch (currentTopic,
+  async (newTopic) => {
+    console.log('watch currentTopic, newTopic:', newTopic);
+    if (newTopic === 'Licenses & Inspections') {
+      console.log('watch current topic is Licenses & Inspections');
+      await setLiBuildingFootprints(LiStore.liBuildingFootprints);
+    }
+  }
+)
+
+// BUILDING FOOTPRINTS
+const liBuildingFootprints = computed(() => LiStore.liBuildingFootprints);
+const liBuildingFootprintsLength = computed(() => {
+  if (LiStore.liBuildingFootprints.features){
+    return LiStore.liBuildingFootprints.features.length;
+  }
+});
+
+watch (liBuildingFootprints,
+  async (newLiBuildingFootprints) => {
+    console.log('watch newLiBuildingFootprints.features:', newLiBuildingFootprints.features);
+    if (newLiBuildingFootprints.features) {
+      setLiBuildingFootprints(newLiBuildingFootprints);
+    }
+  }
+)
+
+const setLiBuildingFootprints = async(footprints) => {
+  LiStore.selectedLiBuildingNumber = footprints.features[0].attributes.BIN;
+    
+  let features = [];
+  for (let item of footprints.features) {
+    features.push(polygon([item.geometry.rings[0]], { id: item.attributes.BIN, type: 'liBuildingFootprints' }));
+  }
+  let geojson = featureCollection(features);
+  // console.log('geojson:', geojson, 'map.getSource("liBuildingFootprints"):', map.getSource('liBuildingFootprints'), 'map.getLayer("liBuildingFootprints"):', map.getLayer('liBuildingFootprints'));
+  const map = MapStore.map;
+  await map.getSource('liBuildingFootprints').setData(geojson);
+};
+
+const selectedLiBuildingNumber = computed(() => LiStore.selectedLiBuildingNumber);
+const selectedLiBuilding = computed(() => {
+  if (!LiStore.liBuildingFootprints.features) return;
+  return LiStore.liBuildingFootprints.features.filter(feature => feature.attributes.BIN === selectedLiBuildingNumber.value)[0];
+});
+
+const handleBinClick = (bin) => {
+  LiStore.selectedLiBuildingNumber = bin;
+};
 
 // BUILDING CERTIFICATIONS
 const buildingCertsCompareFn = (a, b) => new Date(b.expirationdate) - new Date(a.expirationdate);
@@ -25,147 +80,47 @@ const selectedBuildingCerts = computed(() => {
 
 // PERMITS
 const permitsCompareFn = (a, b) => new Date(b.permitissuedate) - new Date(a.permitissuedate);
-// const permits = computed(() => LiStore.liPermits.rows.sort(permitsCompareFn).slice(0, 5));
-const permits = computed(() => { if(LiStore.liPermits.rows) return LiStore.liPermits.rows.sort(permitsCompareFn) });
-
-const getLinkPermit = (item) => {
-  let address = item.address;
-  if (item.unit_num && item.unit_num != null) {
-    address += ' Unit ' + item.unit_num;
-  }
-  return "<a target='_blank' href='https://li.phila.gov/Property-History/search/Permit-Detail?address="+encodeURIComponent(address)+"&Id="+item.permitnumber+"'>"+item.permitnumber+" <i class='fa fa-external-link-alt'></i></a>";
-};
+const permits = computed(() => { if (LiStore.liPermits.rows) return LiStore.liPermits.rows.sort(permitsCompareFn) });
+const permitsLength = computed(() => { if (LiStore.liPermits.rows) return LiStore.liPermits.rows.length });
 
 // ZONING DOCS
 const liZoningDocsCompareFn = (a, b) => new Date(b.scan_date || a.issue_date) - new Date(a.scan_date || a.issue_date);
 const liAisZoningDocs = computed(() => LiStore.liAisZoningDocs.rows);
 const liEclipseZoningDocs = computed(() => LiStore.liEclipseZoningDocs.rows);
-console.log('liAisZoningDocs.value:', liAisZoningDocs.value, 'liEclipseZoningDocs.value:', liEclipseZoningDocs.value);
 const liAllZoningDocs = computed(() => {
   if (!liAisZoningDocs.value || !liEclipseZoningDocs.value) return [];
   return liAisZoningDocs.value.concat(liEclipseZoningDocs.value).sort(liZoningDocsCompareFn);
 });
-console.log('liAllZoningDocs:', liAllZoningDocs);
-
-const getZoningDocDate = (item) => {
-  if (item.issue_date) {
-    return date(item.issue_date);
-  } else if (item.scan_date) {
-    return date(item.scan_date);
-  } else {
-    return 'N/A';
-  }
-};
-
-const getZoningDocLink = (item) => {
-  let appId;
-  if (item.app_id) {
-    appId = item.app_id;
-    if (appId.length < 3) {
-      appId = '0' + appId;
-    }
-  }
-  let docId, url;
-  if (item.doc_id) {
-    docId = item.doc_id;
-    url = '//s3.amazonaws.com/lni-zoning-pdfs/';
-  } else if (item.permit_number ) {
-    docId = item.permit_number ;
-    url = 'http://s3.amazonaws.com/eclipse-docs-pdfs/zoning/';
-  }
-  return '<a target="_blank" href="' //s3.amazonaws.com/lni-zoning-pdfs/'
-          + url
-          + docId
-          + '.pdf">'
-          + docId
-          + ' <font-awesome-icon icon="fa-solid fa-external-link-alt"></font-awesome-icon></a>'
-          + '</a>';
-};
-
-const getZoningDocPages = (item) => {
-  if (item.num_pages) {
-    return item.num_pages;
-  } else if (item.pages_scanned) {
-    return item.page_scanned;
-  } else {
-    return 'N/A';
-  }
-};
 
 // INSPECTIONS
 const inspectionsCompareFn = (a, b) => new Date(b.investigationcompleted) - new Date(a.investigationcompleted);
-const inspections = computed(() => {
-  if (!LiStore.liInspections.rows) return [];
-  return LiStore.liInspections.rows.sort(inspectionsCompareFn);//.slice(0, 5);
-});
-
-// const getLinkInvestigationNumber = (item) => {
-//   let address = item.address;
-//   if (item.unit_num && item.unit_num != null) {
-//     address += ' Unit ' + item.unit_num;
-//   }
-//   return "<a target='_blank' href='https://li.phila.gov/Property-History/search/Violation-Detail?address="+encodeURIComponent(address)+"&Id="+item.casenumber+"'>"+item.casenumber+" <i class='fa fa-external-link-alt'></i></a>";
-// };
+const inspections = computed(() => { if (LiStore.liInspections.rows) return LiStore.liInspections.rows.sort(inspectionsCompareFn) });
+const inspectionsLength = computed(() => { if (LiStore.liInspections.rows) return LiStore.liInspections.rows.length});
 
 // VIOLATIONS
 const violationsCompareFn = (a, b) => new Date(b.casecreateddate) - new Date(a.casecreateddate);
-const violations = computed(() => {
-  if (!LiStore.liViolations.rows) return [];
-  return LiStore.liViolations.rows.sort(violationsCompareFn);//.slice(0, 5);
-});
-
-// const getLinkViolationNumber = (item) => {
-//   let address = item.address;
-//   if (item.unit_num && item.unit_num != null) {
-//     address += ' Unit ' + item.unit_num;
-//   }
-//   return "<a target='_blank' href='https://li.phila.gov/Property-History/search/Violation-Detail?address="+encodeURIComponent(address)+"&Id="+item.casenumber+"'>"+item.casenumber+" <i class='fa fa-external-link-alt'></i></a>";
-// };
+const violations = computed(() => { if (LiStore.liViolations.rows) return LiStore.liViolations.rows.sort(violationsCompareFn) });
+const violationsLength = computed(() => { if (LiStore.liViolations.rows) return LiStore.liViolations.rows.length });
 
 // BUSINESS LICENSES
 const businessLicensesCompareFn = (a, b) => new Date(b.initialissuedate) - new Date(a.initialissuedate);
-const businessLicenses = computed(() => {
-  if (!LiStore.liBusinessLicenses.rows) return [];
-  return LiStore.liBusinessLicenses.rows.sort(businessLicensesCompareFn);//.slice(0, 5);
+const businessLicenses = computed(() => { if (LiStore.liBusinessLicenses.rows) return LiStore.liBusinessLicenses.rows.sort(businessLicensesCompareFn) });
+const businessLicensesLength = computed(() => { if (LiStore.liBusinessLicenses.rows) return LiStore.liBusinessLicenses.rows.length });
+
+// TABLES
+const paginationOptions = ref({
+  enabled: true,
+  mode: 'pages',
+  perPage: 5,
+  position: 'top',
+  dropdownAllowAll: false,
+  nextLabel: '',
+  prevLabel: '',
+  rowsPerPageLabel: '# rows',
+  ofLabel: 'of',
+  pageLabel: 'page', // for 'pages' mode
+  allLabel: 'All',
 });
-
-// const getLinkLicenseNumber = (item) => {
-//   let address = item.address;
-//   if (item.unit_num && item.unit_num != null) {
-//     address += ' Unit ' + item.unit_num;
-//   }
-//   return "<a target='_blank' href='https://li.phila.gov/Property-History/search/Business-License-Detail?address="+encodeURIComponent(address)+"&Id="+item.licensenum+"'>"+item.licensenum+" <i class='fa fa-external-link-alt'></i></a>";
-// };
-
-const liBuildingFootprints = computed(() => LiStore.liBuildingFootprints);
-
-watch (liBuildingFootprints,
-  async (newLiBuildingFootprints, oldLiBuildingFootprints) => {
-    console.log('watch newLiBuildingFootprints.features:', newLiBuildingFootprints.features);
-    LiStore.selectedLiBuildingNumber = LiStore.liBuildingFootprints.features[0].attributes.BIN;
-
-    let features = [];
-    for (let item of newLiBuildingFootprints.features) {
-      features.push(polygon([item.geometry.rings[0]], { id: item.attributes.BIN, type: 'liBuildingFootprints' }));
-    }
-    let geojson = featureCollection(features);
-    // console.log('geojson:', geojson, 'map.getSource("liBuildingFootprints"):', map.getSource('liBuildingFootprints'), 'map.getLayer("liBuildingFootprints"):', map.getLayer('liBuildingFootprints'));
-    const map = MapStore.map;
-    await map.getSource('liBuildingFootprints').setData(geojson);
-  }
-)
-
-const selectedLiBuildingNumber = computed(() => LiStore.selectedLiBuildingNumber);
-
-const selectedLiBuilding = computed(() => {
-  if (!LiStore.liBuildingFootprints.features) return;
-  return LiStore.liBuildingFootprints.features.filter(feature => feature.attributes.BIN === selectedLiBuildingNumber.value)[0];
-});
-
-const handleBinClick = (bin) => {
-  // LiStore.selectedLiBuildingNumber = footprint.attributes.BIN
-  LiStore.selectedLiBuildingNumber = bin;
-};
 
 const buildingData = computed(() => {
   const selectedLiBuilding = LiStore.liBuildingFootprints.features.filter(feature => feature.attributes.BIN === selectedLiBuildingNumber.value)[0];
@@ -193,20 +148,6 @@ const buildingData = computed(() => {
   ];
 });
 
-const paginationOptions = ref({
-  enabled: true,
-  mode: 'pages',
-  perPage: 5,
-  position: 'top',
-  dropdownAllowAll: false,
-  nextLabel: '',
-  prevLabel: '',
-  rowsPerPageLabel: '# rows',
-  ofLabel: 'of',
-  pageLabel: 'page', // for 'pages' mode
-  allLabel: 'All',
-});
-
 const buildingCertsTableData = ref({
   columns: [
     {
@@ -232,7 +173,7 @@ const buildingCertsTableData = ref({
       dateOutputFormat: 'MM/dd/yyyy',
     }
   ],
-  rows: selectedBuildingCerts,
+  rows: selectedBuildingCerts || [],
 })
 
 const permitsTableData = computed(() => {
@@ -259,7 +200,7 @@ const permitsTableData = computed(() => {
         field: 'status',
       }
     ],
-    rows: permits.value,
+    rows: permits.value || [],
   }
 });
 
@@ -287,7 +228,7 @@ const zoningDocsTableData = computed(() => {
         html: true,
       }
     ],
-    rows: liAllZoningDocs.value,
+    rows: liAllZoningDocs.value || [],
   }
 });
 
@@ -315,7 +256,7 @@ const inspectionsTableData = computed(() => {
         field: 'investigationstatus',
       }
     ],
-    rows: inspections.value,
+    rows: inspections.value || [],
   }
 });
 
@@ -343,7 +284,7 @@ const violationsTableData = computed(() => {
         field: 'violationstatus',
       }
     ],
-    rows: violations.value,
+    rows: violations.value || [],
   }
 });
 
@@ -375,7 +316,7 @@ const businessLicensesTableData = computed(() => {
         field: 'licensestatus',
       }
     ],
-    rows: businessLicenses.value,
+    rows: businessLicenses.value || [],
   }
 });
 
@@ -387,7 +328,7 @@ const businessLicensesTableData = computed(() => {
       Licenses, inspections, permits, property maintenance violations, and zoning permit documents at your search address. Source: Department of Licenses & Inspections
     </div>
 
-    <!-- <h5 class="subtitle is-5">There are {{ LiStore.liBuildingFootprints.features.length }} buildings at this address</h5> -->
+    <h5 class="subtitle is-5">There {{ liBuildingFootprintsLength > 1 ? 'are' : 'is' }} {{ liBuildingFootprintsLength }} {{ liBuildingFootprintsLength > 1 ? 'buildings' : 'building' }} at this address</h5>
     <!-- Li Building Footprints Section -->
     <div v-if="selectedLiBuilding" id="li-building-div" class="columns add-borders p-2">
       <div class="column is-12">
@@ -420,14 +361,18 @@ const businessLicensesTableData = computed(() => {
               style-class="table"
             >
               <template #emptystate>
-                No building certifications found
+                <div v-if="LiStore.loadingLiData">
+                  Loading building certifications... <font-awesome-icon icon='fa-solid fa-spinner fa-spin'></font-awesome-icon>
+                </div>
+                <div v-else>
+                  No building certifications found
+                </div>
               </template>
             </vue-good-table>
           </div>
-          <!-- <div class='mobile-no-data' v-if="!selectedBuildingCerts.length">No building certifications found</div> -->
-          <!-- <div class="table-link" v-if="selectedBuildingCerts.length"> -->
-          <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See all {{ LiStore.liBuildingCerts.rows.length || '' }} building certifications for this property at L&I Property History <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
-          <!-- </div> -->
+          <div class="table-link" v-if="selectedBuildingCerts.length">
+            <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See all {{ LiStore.liBuildingCerts.rows.length || '' }} building certifications for this property at L&I Property History <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
+          </div>
         </div>
       </div>
     </div>
@@ -442,13 +387,20 @@ const businessLicensesTableData = computed(() => {
           :rows="permitsTableData.rows"
           :pagination-options="paginationOptions"
           style-class="table"
-        />
+        >
+          <template #emptystate>
+            <div v-if="LiStore.loadingLiData">
+              Loading permits... <font-awesome-icon icon='fa-solid fa-spinner fa-spin'></font-awesome-icon>
+            </div>
+            <div v-else>
+              No permits found
+            </div>
+          </template>
+        </vue-good-table>
       </div>
-      <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See all permits at L&I Property History <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
+      <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See all {{ permitsLength }} permits at L&I Property History <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
     </div>
     
-    <!-- <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See all {{ LiStore.liPermits.rows.length }} permits at L&I Property History <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a> -->
-
     <!-- liAisZoningDocs and liEclipseZoningDocs Table-->
     <div class="data-section">
       <h5 class="subtitle is-5 table-title">Zoning Permit Documents</h5>
@@ -460,7 +412,16 @@ const businessLicensesTableData = computed(() => {
           :rows="zoningDocsTableData.rows"
           :pagination-options="paginationOptions"
           style-class="table"
-        />
+        >
+          <template #emptystate>
+            <div v-if="LiStore.loadingLiData">
+              Loading zoning permit documents... <font-awesome-icon icon='fa-solid fa-spinner fa-spin'></font-awesome-icon>
+            </div>
+            <div v-else>
+              No zoning permit documents found
+            </div>
+          </template>
+        </vue-good-table>
       </div>
     </div>
 
@@ -474,13 +435,20 @@ const businessLicensesTableData = computed(() => {
           :rows="inspectionsTableData.rows"
           :pagination-options="paginationOptions"
           style-class="table"
-        />
+        >
+          <template #emptystate>
+            <div v-if="LiStore.loadingLiData">
+              Loading inspections... <font-awesome-icon icon='fa-solid fa-spinner fa-spin'></font-awesome-icon>
+            </div>
+            <div v-else>
+              No inspections found
+            </div>
+          </template>
+        </vue-good-table>
       </div>
-      <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See older inspections at L&I Property History <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
+      <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See all {{ inspectionsLength }} inspections at L&I Property History <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
     </div>
     
-      <!-- <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See {{ LiStore.liInspections.rows.length }} older inspections at L&I Property History <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a> -->
-
     <!-- Li Violations Table -->
     <div class="data-section">
       <h5 class="subtitle is-5 table-title">Violations</h5>
@@ -491,12 +459,19 @@ const businessLicensesTableData = computed(() => {
           :rows="violationsTableData.rows"
           :pagination-options="paginationOptions"
           style-class="table"
-        />
+        >
+          <template #emptystate>
+            <div v-if="LiStore.loadingLiData">
+              Loading violations... <font-awesome-icon icon='fa-solid fa-spinner fa-spin'></font-awesome-icon>
+            </div>
+            <div v-else>
+              No violations found
+            </div>
+          </template>
+        </vue-good-table>
       </div>
-      <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See older violations at L&I Property History <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
+      <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See all {{ violationsLength }} violations at L&I Property History <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
     </div>
-
-    <!-- <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See {{ LiStore.liViolations.rows.length-5 }} older violations at L&I Property History <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a> -->
 
     <!-- Li Business Licenses Table -->
     <div class="data-section">
@@ -508,35 +483,24 @@ const businessLicensesTableData = computed(() => {
           :rows="businessLicensesTableData.rows"
           :pagination-options="paginationOptions"
           style-class="table"
-        />
+        >
+          <template #emptystate>
+            <div v-if="LiStore.loadingLiData">
+              Loading business licenses... <font-awesome-icon icon='fa-solid fa-spinner fa-spin'></font-awesome-icon>
+            </div>
+            <div v-else>
+              No business licenses found
+            </div>
+          </template>
+        </vue-good-table>
       </div>
-      <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See older business licenses at L&I Property History <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
+      <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See all {{ businessLicensesLength }} business licenses at L&I Property History <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
     </div>
     
-    <!-- <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See {{ LiStore.liBusinessLicenses.rows.length-5 }} older business licenses at L&I Property History <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a> -->
-
   </section>
 </template>
 
 <style>
-
-.data-section {
-  margin-bottom: 2rem;
-}
-
-.add-borders {
-  border: 1px solid #ccc;
-}
-
-.add-white-borders {
-  background-color: #e8e8e8;
-  border: 2px solid white;
-}
-
-.is-selected {
-  background-color: #ccc;
-  /* background-color: #a9a9a9 */
-}
 
 #li-building-div {
   padding: 0px !important;

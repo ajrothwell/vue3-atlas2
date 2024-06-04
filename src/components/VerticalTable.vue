@@ -10,7 +10,7 @@ const props = defineProps({
 </script>
 
 <template>
-  <table :id="tableId" class="vert-table">
+  <table :id="tableId" class="table vert-table">
     <tbody>
       <tr
         v-for="(field, index) in data"
@@ -25,10 +25,6 @@ const props = defineProps({
 
 <style scoped>
 
-.vert-table {
-  /* margin-bottom: 2rem; */
-}
-
 table {
   border-collapse: separate;
   border-spacing: 2px;
@@ -37,7 +33,7 @@ table {
 
 th {
   background-color: rgb(68, 68, 68);
-  color: white;
+  color: white !important;
   padding-left: 10px;
   padding-right: 10px;
   padding-top: 6px;
@@ -46,6 +42,7 @@ th {
 }
 
 td {
+  border: 1px !important;
   padding-left: 10px;
   padding-right: 10px;
   padding-top: 6px;

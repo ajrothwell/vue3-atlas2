@@ -18,10 +18,24 @@ export const useLiStore = defineStore('LiStore', {
       liInspections: {},
       liViolations: {},
       liBusinessLicenses: {},
+      loadingLiData: true,
     };
   },
   // each of these functions was originally a single data-source file in atlas
   actions: {
+    async clearAllLiData() {
+      this.loadingLiData = true;
+      this.selectedLiBuildingNumber = null;
+      this.liBuildingFootprints = {};
+      this.liBuildingCertSummary = {};
+      this.liBuildingCerts = {};
+      this.liPermits = {};
+      this.liAisZoningDocs = {};
+      this.liEclipseZoningDocs = {};
+      this.liInspections = {};
+      this.liViolations = {};
+      this.liBusinessLicenses = {};
+    },
     async fillLiBuildingFootprints() {
       console.log('fillLiBuildingFootprints is running');
       const GeocodeStore = useGeocodeStore();
