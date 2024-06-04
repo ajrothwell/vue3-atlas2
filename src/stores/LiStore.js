@@ -115,6 +115,7 @@ export const useLiStore = defineStore('LiStore', {
     },
 
     async fillLiPermits() {
+      console.log('fillLiPermits is running');
       const GeocodeStore = useGeocodeStore();
       const feature = GeocodeStore.aisData.features[0];
       let baseUrl = 'https://phl.carto.com/api/v2/sql?q=';

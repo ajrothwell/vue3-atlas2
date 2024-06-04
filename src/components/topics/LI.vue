@@ -19,17 +19,21 @@ const { integer, prettyNumber } = useTransforms();
 
 // ON OPEN TOPIC
 // const currentTopic = computed(() => { return MainStore.currentTopic});
-const currentTopic = ref(MainStore.currentTopic);
+// const currentTopic = ref(MainStore.currentTopic);
 
-watch (currentTopic,
-  async (newTopic) => {
-    console.log('watch currentTopic, newTopic:', newTopic);
-    if (newTopic === 'Licenses & Inspections') {
-      console.log('watch current topic is Licenses & Inspections');
-      await setLiBuildingFootprints(LiStore.liBuildingFootprints);
-    }
-  }
-)
+// watch (currentTopic,
+//   async (newTopic) => {
+//     console.log('watch currentTopic, newTopic:', newTopic);
+//     if (newTopic === 'Licenses & Inspections') {
+//       console.log('watch current topic is Licenses & Inspections');
+//       await setLiBuildingFootprints(LiStore.liBuildingFootprints);
+//     }
+//   }
+// )
+
+onMounted(async () => {
+  await setLiBuildingFootprints(LiStore.liBuildingFootprints);
+});
 
 // BUILDING FOOTPRINTS
 const liBuildingFootprints = computed(() => LiStore.liBuildingFootprints);
