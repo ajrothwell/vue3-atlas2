@@ -73,7 +73,7 @@ const zipCode = computed(() => {
 
   <div v-if="address" id="topic-panel-content" class="topics">
     <topic :topic-name="'Property'" :topic-icon="'fa-solid fa-home'" :loading="!dataSourcesLoadedArray.includes('Property')">
-      <Property v-if="dataSourcesLoadedArray.includes('Property')"></Property>
+      <Property />
     </topic>
 
     <topic v-show="CondosStore.condosData.features && CondosStore.condosData.features.length" :topic-name="'Condominiums'" :topic-icon="'fa-solid fa-building'" :loading="!dataSourcesLoadedArray.includes('Condominiums')">
@@ -86,7 +86,6 @@ const zipCode = computed(() => {
 
     <topic :topic-name="'Licenses & Inspections'" :topic-icon="'fa-solid fa-wrench'" :loading="!dataSourcesLoadedArray.includes('Licenses & Inspections')">
       <LI />
-      <!-- <LI v-if="dataSourcesLoadedArray.includes('Licenses & Inspections')"/> -->
     </topic>
 
     <topic :topic-name="'Zoning'" :topic-icon="'fa-solid fa-university'" :loading="!dataSourcesLoadedArray.includes('Zoning')">

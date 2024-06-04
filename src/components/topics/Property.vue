@@ -50,18 +50,22 @@ const vertTableData = computed(() => [
 ]);
 
 const shouldShowTable = computed(() => {
-  if (!CondosStore.condosData.features) {
-    return OpaStore.opaData.rows.length;
-  } else {
-    return OpaStore.opaData.rows.length && !CondosStore.condosData.features.length;
+  if (OpaStore.opaData.rows) {
+    if (!CondosStore.condosData.features) {
+      return OpaStore.opaData.rows.length;
+    } else {
+      return OpaStore.opaData.rows.length && !CondosStore.condosData.features.length;
+    }
   }
 });
 
 const shouldShowCondosMessage = computed(() => {
-  if (!CondosStore.condosData.features) {
-    return false;
-  } else {
-    return !OpaStore.opaData.rows.length && CondosStore.condosData.features.length;
+  if (OpaStore.opaData.rows) {
+    if (!CondosStore.condosData.features) {
+      return false;
+    } else {
+      return !OpaStore.opaData.rows.length && CondosStore.condosData.features.length;
+    }
   }
 });
 
@@ -69,7 +73,7 @@ const shouldShowCondosMessage = computed(() => {
 
 <template>
   <section>
-    <div id="Property-description" class="box" v-if="OpaStore.opaData.rows.length">
+    <div id="Property-description" class="box">
       Property assessment and sale information for this address. Source: Office of Property Assessments (OPA). OPA was formerly a part of the Bureau of Revision of Taxes (BRT) and some City records may still use that name.
     </div>
 
@@ -79,7 +83,10 @@ const shouldShowCondosMessage = computed(() => {
       <h5 class="title is-5">There are {{ CondosStore.condosData.total_size }} condominium units at this address.</h5>
       <p>You can use the Condominiums tab below to see information for an individual unit.</p>
     </div>
-    <div v-else-if="!OpaStore.opaData.rows.length">
+    <div v-else-if="OpaStore.loadingOpaData">
+      <p>Loading property assessment data... <font-awesome-icon icon="fa-solid fa-spinner"/></p>
+    </div>
+    <div v-else-if="!OpaStore.opaData.rows">
       <p>There is no property assessment record for this address.</p>
     </div>
     <div>

@@ -8,9 +8,14 @@ export const useOpaStore = defineStore('OpaStore', {
   state: () => {
     return {
       opaData: {},
+      loadingOpaData: true,
     };
   },
   actions: {
+    async clearOpaData() {
+      this.loadingOpaData = true;
+      this.opaData = {};
+    },
     async fillOpaData() {
       try {
         const GeocodeStore = useGeocodeStore();

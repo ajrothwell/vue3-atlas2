@@ -22,8 +22,12 @@ const getGeocodeAndPutInStore = async(address) => {
   console.log('getGeocodeAndPutInStore is running, address:', address);
   const MainStore = useMainStore();
   MainStore.clearDataSourcesLoadedArray();
+
+  const OpaStore = useOpaStore();
+  OpaStore.clearOpaData();
   const LiStore = useLiStore();
   LiStore.clearAllLiData();
+  
   const CondosStore = useCondosStore();
   CondosStore.lastPageUsed = 1;
   CondosStore.condosData = {};
@@ -129,6 +133,7 @@ const topicDataFetch = async (topic, data) => {
   if (topic === 'Property') {
     const OpaStore = useOpaStore();
     await OpaStore.fillOpaData();
+    OpaStore.loadingOpaData = false;
   }
 
   if (topic === 'Licenses & Inspections') {
