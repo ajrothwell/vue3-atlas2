@@ -1,7 +1,6 @@
 <script setup>
 
-import { ref, computed, onBeforeMount, onMounted } from 'vue';
-// import { storeToRefs } from 'pinia';
+import { ref, computed, onBeforeMount } from 'vue';
 
 import useTransforms from '@/composables/useTransforms';
 const { date, integer, prettyNumber, timeReverseFn } = useTransforms();
@@ -32,14 +31,13 @@ const selectedParcel = computed(() => {
 const selectedDocs = computed(() => {
   if (selectedParcelId.value && DorStore.dorDocuments[selectedParcelId.value]) {
     // console.log('selectedParcelId.value:', selectedParcelId.value);
-    let data = { rows: [] }
+    let data = [];
     for (let feature of DorStore.dorDocuments[selectedParcelId.value].features) {
-      data.rows.push({
+      data.push({
         ...feature.attributes,
       });
     }
-    // const data = DorStore.dorDocuments[selectedParcelId.value].features;
-    data.rows.sort((a, b) => new Date(b.DISPLAY_DATE) - new Date(a.DISPLAY_DATE));
+    data.sort((a, b) => new Date(b.DISPLAY_DATE) - new Date(a.DISPLAY_DATE));
     return data;
   } else {
     return null;
@@ -86,10 +84,6 @@ const selectedRegmap = computed(() => {
   return MapStore.selectedRegmap;
 });
 
-const getHref = (DOCUMENT_ID) => {
-  return `http://epay.phila-records.com/phillyepay/web/integration/document/InstrumentID=${DOCUMENT_ID}&Guest=true`;
-}
-
 const deededCondosExist = computed(() => {
   let flag = false;
   if (DorStore.dorCondos[selectedParcelId.value] && DorStore.dorCondos[selectedParcelId.value].rows && DorStore.dorCondos[selectedParcelId.value].rows.length > 0) {
@@ -106,14 +100,6 @@ const getAddress = (address) => {
     return 'Parcel has no address';
   }
 }
-
-onMounted(() => {
-  // const topic = document.getElementById('Deeds-topic');
-  // topic.scrollIntoView();
-  // const main = document.getElementById('main');
-  // const mainScrollTop = main.scrollTop;
-  // main.scrollTo(0, mainScrollTop - 80);
-});
 
 const parcelData = computed(() => [
   {
@@ -170,22 +156,6 @@ const condosTableData = ref({
     },
   ],
   rows: selectedCondos,
-  paginationOptions: {
-    enabled: true,
-    mode: 'pages',
-    perPage: 5,
-    position: 'top',
-    // perPageDropdown: [3, 7, 9],
-    dropdownAllowAll: false,
-    // setCurrentPage: 2,
-    nextLabel: '',
-    prevLabel: '',
-    rowsPerPageLabel: '# rows',
-    ofLabel: 'of',
-    pageLabel: 'page', // for 'pages' mode
-    allLabel: 'All',
-    // infoFn: (params) => `my own page ${params.firstRecordOnPage}`, 
-  }
 });
 
 const dorDocsTableData = computed(() => {
@@ -216,30 +186,9 @@ const dorDocsTableData = computed(() => {
         field: 'GRANTEES',
       },
     ],
-    rows: selectedDocs.value.rows || [],
+    rows: selectedDocs.value || [],
   }
 });
-
-{/* <table id="dor-docs" class="table is-fullwidth is-striped">
-<thead>
-<tr>
-<th>ID</th>
-<th>Date</th>
-<th>Type</th>
-<th>Grantor</th>
-<th>Grantee</th>
-</tr>
-</thead>
-<tbody>
-<tr v-for="item in selectedDocs">
-<td><a target='_blank' :href="getHref(item.attributes.DOCUMENT_ID)">{{item.attributes.DOCUMENT_ID}}<font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a></td>
-<td>{{ date(item.attributes.DISPLAY_DATE) }}</td>
-<td>{{ item.attributes.DOCUMENT_TYPE }}</td>
-<td>{{ item.attributes.GRANTORS }}</td>
-<td>{{ item.attributes.GRANTEES }}</td>
-</tr>
-</tbody>
-</table> */}
 
 </script>
 
@@ -272,7 +221,7 @@ const dorDocsTableData = computed(() => {
         <vue-good-table
           :columns="condosTableData.columns"
           :rows="condosTableData.rows"
-          :pagination-options="condosTableData.paginationOptions"
+          :pagination-options="paginationOptions"
           style-class="table"
         />
       </div>
@@ -287,7 +236,7 @@ const dorDocsTableData = computed(() => {
 
       <!-- DOR Docs Table -->
       <div class="mt-4">
-        <h5 class="subtitle is-5">Documents</h5>
+        <h5 class="subtitle is-5">Documents ({{ selectedDocs.length }})</h5>
         <div class="horizontal-table">
           <vue-good-table
           id="dor-documents"
@@ -307,7 +256,6 @@ const dorDocsTableData = computed(() => {
         </vue-good-table>
         </div>
       </div>
-      <!-- <div class='mobile-no-data' v-if="!selectedDocs.length">No documents found</div> -->
     </div>
   </div>
 
@@ -330,21 +278,7 @@ const dorDocsTableData = computed(() => {
     
 </template>
 
-<style scoped>
-
-.add-borders {
-  border: 1px solid #ccc;
-}
-
-.add-white-borders {
-  background-color: #e8e8e8;
-  border: 2px solid white;
-}
-
-.is-selected {
-  background-color: #ccc;
-  /* background-color: #a9a9a9 */
-}
+<style>
 
 #parcel-div {
   padding: 0px !important;
@@ -362,17 +296,12 @@ const dorDocsTableData = computed(() => {
   cursor: pointer;
 }
 
-.table .is-full-width {
-  left: 0 !important;
-  right: 0 !important;
-}
-
 @media 
 only screen and (max-width: 760px),
 (min-device-width: 768px) and (max-device-width: 1024px)  {
 	/*Label the data*/
 
-  #dor-docs {
+  #dor-documents {
     td:nth-of-type(1):before { content: "ID"; }
     td:nth-of-type(2):before { content: "Date"; }
     td:nth-of-type(3):before { content: "Type"; }

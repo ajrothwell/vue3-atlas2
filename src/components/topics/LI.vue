@@ -3,6 +3,9 @@ console.log('LI.vue setup');
 import { ref, computed, watch, onMounted, onBeforeMount } from 'vue';
 import { polygon, featureCollection } from '@turf/helpers';
 
+import useTables from '@/composables/useTables';
+const { paginationOptions } = useTables();
+
 import { useMainStore } from '@/stores/MainStore';
 const MainStore = useMainStore();
 import { useLiStore } from '@/stores/LiStore';
@@ -16,20 +19,6 @@ import VerticalTable from '../VerticalTable.vue';
 import useTransforms from '@/composables/useTransforms';
 import { set } from 'date-fns';
 const { integer, prettyNumber } = useTransforms();
-
-// ON OPEN TOPIC
-// const currentTopic = computed(() => { return MainStore.currentTopic});
-// const currentTopic = ref(MainStore.currentTopic);
-
-// watch (currentTopic,
-//   async (newTopic) => {
-//     console.log('watch currentTopic, newTopic:', newTopic);
-//     if (newTopic === 'Licenses & Inspections') {
-//       console.log('watch current topic is Licenses & Inspections');
-//       await setLiBuildingFootprints(LiStore.liBuildingFootprints);
-//     }
-//   }
-// )
 
 onMounted(async () => {
   console.log('Li.vue onMounted');
@@ -115,19 +104,6 @@ const businessLicenses = computed(() => { if (LiStore.liBusinessLicenses.rows) r
 const businessLicensesLength = computed(() => { if (LiStore.liBusinessLicenses.rows) return LiStore.liBusinessLicenses.rows.length });
 
 // TABLES
-const paginationOptions = ref({
-  enabled: true,
-  mode: 'pages',
-  perPage: 5,
-  position: 'top',
-  dropdownAllowAll: false,
-  nextLabel: '',
-  prevLabel: '',
-  rowsPerPageLabel: '# rows',
-  ofLabel: 'of',
-  pageLabel: 'page', // for 'pages' mode
-  allLabel: 'All',
-});
 
 const buildingData = computed(() => {
   const selectedLiBuilding = LiStore.liBuildingFootprints.features.filter(feature => feature.attributes.BIN === selectedLiBuildingNumber.value)[0];
@@ -518,9 +494,6 @@ const businessLicensesTableData = computed(() => {
 only screen and (max-width: 760px),
 (min-device-width: 768px) and (max-device-width: 1024px)  {
 
-  /* td {
-    padding-left: 85px !important;
-  } */
   td[colspan="4"] {
     padding-left: 0px !important;
   }

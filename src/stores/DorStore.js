@@ -109,17 +109,24 @@ export const useDorStore = defineStore("DorStore", {
       if (!parcels) return;
       let baseUrl = 'https://phl.carto.com/api/v2/sql?q=';
       parcels.forEach(async(feature) => {
-        console.log('feature:', feature);
-        const url = baseUrl + `select * from condominium where mapref = '${ feature.properties.MAPREG }' and status in (1,3)`;
-        const response = await fetch(url);
-        const data = await response.json();
-        console.log('fillDorCondos data:', data);
-        for (let row of data.rows) {
-          row.condo_parcel = row.recmap + '-' + row.condoparcel;
-          row.unit_number = 'Unit #' + row.condounit;
+        try {
+          console.log('feature:', feature);
+          const url = baseUrl + `select * from condominium where mapref = '${ feature.properties.MAPREG }' and status in (1,3)`;
+          const response = await fetch(url);
+          if (response.ok) {
+            const data = await response.json();
+            console.log('fillDorCondos data:', data);
+            for (let row of data.rows) {
+              row.condo_parcel = row.recmap + '-' + row.condoparcel;
+              row.unit_number = 'Unit #' + row.condounit;
+            }
+            this.dorCondos[feature.properties.OBJECTID] = data;
+          } else {
+            console.warn('fillDorCondos - await resolved but HTTP status was not successful');
+          }
+        } catch {
+          console.error('fillDorCondos - await never resolved, failed to fetch data');
         }
-
-        this.dorCondos[feature.properties.OBJECTID] = data;
       });
     },
     async fillRegmaps() {
@@ -202,8 +209,16 @@ export const useDorStore = defineStore("DorStore", {
         'geometry': `{ "xmin": ${bounds.coordinates[0][0][0]}, "ymin": ${bounds.coordinates[0][0][1]}, "xmax": ${bounds.coordinates[0][2][0]}, "ymax": ${bounds.coordinates[0][2][1]}, "spatialReference": { "wkid":4326 }}`,
       };
 
-      const response = await axios.get(url, { params })
-      this.regmaps = response;
+      try {
+        const response = await axios.get(url, { params })
+        if (response.status === 200) {
+          this.regmaps = response;
+        } else {
+          console.warn('fillRegmaps - await resolved but HTTP status was not successful');
+        }
+      } catch {
+        console.error('fillRegmaps - await never resolved, failed to fetch data');
+      }
     },
     async fillDorDocuments() {
       console.log('fillDorDocuments is running');
@@ -274,7 +289,6 @@ export const useDorStore = defineStore("DorStore", {
           }
       
           where += ") or MATCHED_REGMAP = '" + ParcelsStore.dor.features[0].properties.BASEREG + "'";
-          // where += ") or MATCHED_REGMAP like '%" + ParcelsStore.dor.features[0].properties.BASEREG + "%'";
           where += " or REG_MAP_ID = '" + ParcelsStore.dor.features[0].properties.BASEREG + "'";
         }
       
@@ -291,14 +305,13 @@ export const useDorStore = defineStore("DorStore", {
           const params = {
             where: theWhere,
             outFields: "DOCUMENT_ID, DISPLAY_DATE, DOCUMENT_TYPE, GRANTORS, GRANTEES",
-            // outFields: "R_NUM, DISPLAY_DATE, DOCUMENT_TYPE, GRANTORS, GRANTEES",
             returnDistinctValues: 'true',
             returnGeometry: 'false',
             f: 'json',
             sqlFormat: 'standard',
           }
 
-          console.log('params:', params);
+          // console.log('params:', params);
           const response = await axios(url, { params });
           if (response.status === 200) {
             const data = response.data;
