@@ -29,6 +29,8 @@ const getGeocodeAndPutInStore = async(address) => {
   DorStore.clearDorData();
   const LiStore = useLiStore();
   LiStore.clearAllLiData();
+  const ZoningStore = useZoningStore();
+  ZoningStore.clearZoningData();
 
   const CondosStore = useCondosStore();
   CondosStore.lastPageUsed = 1;
@@ -167,6 +169,7 @@ const topicDataFetch = async (topic, data) => {
     await ZoningStore.fillPendingBills();
     await ZoningStore.fillZoningAppeals();
     await ZoningStore.fillRcos();
+    ZoningStore.loadingZoningData = false;
   }
 
   if (topic === 'Voting') {

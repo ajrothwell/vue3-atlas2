@@ -333,7 +333,7 @@ const businessLicensesTableData = computed(() => {
           <br>
 
           <!-- Building Certs Table -->
-          <h5 class="subtitle is-5 table-title">Building Certifications</h5>
+          <h5 class="subtitle is-5 table-title">Building Certifications ({{ buildingCertsTableData.rows.length }})</h5>
           <div v-if="selectedBuildingCerts" class="horizontal-table">
 
             <vue-good-table
@@ -362,7 +362,7 @@ const businessLicensesTableData = computed(() => {
 
     <!-- Li Permits Table -->
     <div class="data-section">
-      <h5 class="subtitle is-5 table-title">Permits</h5>
+      <h5 class="subtitle is-5 table-title">Permits ({{ permitsLength }})</h5>
       <div v-if="permitsTableData.rows" class="horizontal-table">
         <vue-good-table
           id="permits"
@@ -386,7 +386,7 @@ const businessLicensesTableData = computed(() => {
     
     <!-- liAisZoningDocs and liEclipseZoningDocs Table-->
     <div class="data-section">
-      <h5 class="subtitle is-5 table-title">Zoning Permit Documents</h5>
+      <h5 class="subtitle is-5 table-title">Zoning Permit Documents ({{ zoningDocsTableData.rows.length }})</h5>
       <h6 class="subtitle is-6 table-subtitle">Formerly "Zoning Archive"</h6>
       <div v-if="zoningDocsTableData.rows" class="horizontal-table">
         <vue-good-table
@@ -410,7 +410,7 @@ const businessLicensesTableData = computed(() => {
 
     <!-- Li Inspections Table -->
     <div class="data-section">
-      <h5 class="subtitle is-5 table-title">Inspections</h5>
+      <h5 class="subtitle is-5 table-title">Inspections ({{ inspectionsLength }})</h5>
       <div v-if="inspectionsTableData.rows" class="horizontal-table">
         <vue-good-table
           id="inspections"
@@ -434,7 +434,7 @@ const businessLicensesTableData = computed(() => {
     
     <!-- Li Violations Table -->
     <div class="data-section">
-      <h5 class="subtitle is-5 table-title">Violations</h5>
+      <h5 class="subtitle is-5 table-title">Violations ({{ violationsLength }})</h5>
       <div v-if="violationsTableData.rows" class="horizontal-table">
         <vue-good-table
           id="violations"
@@ -458,7 +458,7 @@ const businessLicensesTableData = computed(() => {
 
     <!-- Li Business Licenses Table -->
     <div class="data-section">
-      <h5 class="subtitle is-5 table-title">Business Licenses</h5>
+      <h5 class="subtitle is-5 table-title">Business Licenses ({{ businessLicensesLength }})</h5>
       <div v-if="businessLicensesTableData" class="horizontal-table">
         <vue-good-table
           id="business-licenses"
