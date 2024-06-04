@@ -66,7 +66,11 @@ export const useLiStore = defineStore('LiStore', {
           f: 'pjson',
         };
         const response = await axios.get(baseUrl, { params });
-        this.liBuildingFootprints = await response.data;
+        if (response.status === 200) {
+          this.liBuildingFootprints = await response.data;
+        } else {
+          console.warn('liBuildingFootprints - await resolved but HTTP status was not successful')
+        }
       } catch {
         console.error('liBuildingFootprints - await never resolved, failed to fetch address data')
       }

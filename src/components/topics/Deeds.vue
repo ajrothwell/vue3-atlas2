@@ -6,6 +6,9 @@ import { ref, computed, onBeforeMount, onMounted } from 'vue';
 import useTransforms from '@/composables/useTransforms';
 const { date, integer, prettyNumber, timeReverseFn } = useTransforms();
 
+import useTables from '@/composables/useTables';
+const { paginationOptions } = useTables();
+
 // import the GeocodeStore and DorParcels
 import { useGeocodeStore } from '@/stores/GeocodeStore';
 const GeocodeStore = useGeocodeStore();
@@ -29,8 +32,15 @@ const selectedParcel = computed(() => {
 const selectedDocs = computed(() => {
   if (selectedParcelId.value && DorStore.dorDocuments[selectedParcelId.value]) {
     // console.log('selectedParcelId.value:', selectedParcelId.value);
-    const data = DorStore.dorDocuments[selectedParcelId.value].data.features;
-    return data.sort((a, b) => new Date(b.attributes.DISPLAY_DATE) - new Date(a.attributes.DISPLAY_DATE));
+    let data = { rows: [] }
+    for (let feature of DorStore.dorDocuments[selectedParcelId.value].features) {
+      data.rows.push({
+        ...feature.attributes,
+      });
+    }
+    // const data = DorStore.dorDocuments[selectedParcelId.value].features;
+    data.rows.sort((a, b) => new Date(b.DISPLAY_DATE) - new Date(a.DISPLAY_DATE));
+    return data;
   } else {
     return null;
   }
@@ -178,6 +188,59 @@ const condosTableData = ref({
   }
 });
 
+const dorDocsTableData = computed(() => {
+  return {
+    columns: [
+      {
+        label: 'ID',
+        field: 'link',
+        html: true,
+      },
+      {
+        label: 'Date',
+        field: 'date',
+        type: 'date',
+        dateInputFormat: 'MM/dd/yyyy',
+        dateOutputFormat: 'MM/dd/yyyy',
+      },
+      {
+        label: 'Type',
+        field: 'DOCUMENT_TYPE',
+      },
+      {
+        label: 'Grantor',
+        field: 'GRANTORS',
+      },
+      {
+        label: 'Grantee',
+        field: 'GRANTEES',
+      },
+    ],
+    rows: selectedDocs.value.rows || [],
+  }
+});
+
+{/* <table id="dor-docs" class="table is-fullwidth is-striped">
+<thead>
+<tr>
+<th>ID</th>
+<th>Date</th>
+<th>Type</th>
+<th>Grantor</th>
+<th>Grantee</th>
+</tr>
+</thead>
+<tbody>
+<tr v-for="item in selectedDocs">
+<td><a target='_blank' :href="getHref(item.attributes.DOCUMENT_ID)">{{item.attributes.DOCUMENT_ID}}<font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a></td>
+<td>{{ date(item.attributes.DISPLAY_DATE) }}</td>
+<td>{{ item.attributes.DOCUMENT_TYPE }}</td>
+<td>{{ item.attributes.GRANTORS }}</td>
+<td>{{ item.attributes.GRANTEES }}</td>
+</tr>
+</tbody>
+</table> */}
+
 </script>
 
 <template>
@@ -226,29 +289,25 @@ const condosTableData = ref({
       <div class="mt-4">
         <h5 class="subtitle is-5">Documents</h5>
         <div class="horizontal-table">
-          <table id="dor-docs" class="table is-fullwidth is-striped">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Date</th>
-                <th>Type</th>
-                <th>Grantor</th>
-                <th>Grantee</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="item in selectedDocs">
-                <td><a target='_blank' :href="getHref(item.attributes.DOCUMENT_ID)">{{item.attributes.DOCUMENT_ID}}<font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a></td>
-                <td>{{ date(item.attributes.DISPLAY_DATE) }}</td>
-                <td>{{ item.attributes.DOCUMENT_TYPE }}</td>
-                <td>{{ item.attributes.GRANTORS }}</td>
-                <td>{{ item.attributes.GRANTEES }}</td>
-              </tr>
-            </tbody>
-          </table>
+          <vue-good-table
+          id="dor-documents"
+          :columns="dorDocsTableData.columns"
+          :rows="dorDocsTableData.rows"
+          :pagination-options="paginationOptions"
+          style-class="table"
+        >
+          <template #emptystate>
+            <div v-if="DorStore.loadingDorData">
+              Loading DOR Documents... <font-awesome-icon icon='fa-solid fa-spinner fa-spin'></font-awesome-icon>
+            </div>
+            <div v-else>
+              No DOR Documents found
+            </div>
+          </template>
+        </vue-good-table>
         </div>
       </div>
-      <div class='mobile-no-data' v-if="!selectedDocs.length">No documents found</div>
+      <!-- <div class='mobile-no-data' v-if="!selectedDocs.length">No documents found</div> -->
     </div>
   </div>
 

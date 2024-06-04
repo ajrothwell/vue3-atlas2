@@ -5,6 +5,9 @@ import { useGeocodeStore } from './GeocodeStore';
 import bboxPolygon from '@turf/bbox-polygon';
 import axios from 'axios';
 
+import useTransforms from '@/composables/useTransforms';
+const { date } = useTransforms();
+
 const cleanDorAttribute = function(attr) {
   // console.log('cleanDorAttribute is running with attr', attr);
   // trim leading and trailing whitespace
@@ -87,10 +90,17 @@ export const useDorStore = defineStore("DorStore", {
       dorDocuments: {},
       regmaps: {},
       dorCondos: {},
+      loadingDorData: true,
     };
   },
 
   actions: {
+    async clearDorData() {
+      this.dorDocuments = {};
+      this.regmaps = {};
+      this.dorCondos = {};
+      this.loadingDorData = true;
+    },
     async fillDorCondos() {
       this.dorCondos = {};
       console.log('fillRegmaps is running');
@@ -197,6 +207,7 @@ export const useDorStore = defineStore("DorStore", {
     },
     async fillDorDocuments() {
       console.log('fillDorDocuments is running');
+
       this.dorDocuments = {};
       const ParcelsStore = useParcelsStore();
       const GeocodeStore = useGeocodeStore();
@@ -274,23 +285,35 @@ export const useDorStore = defineStore("DorStore", {
         return;
       }
       for (let feature of ParcelsStore.dor.features) {
-        let theWhere = where(feature);
-          
-        const params = {
-          where: theWhere,
-          outFields: "DOCUMENT_ID, DISPLAY_DATE, DOCUMENT_TYPE, GRANTORS, GRANTEES",
-          // outFields: "R_NUM, DISPLAY_DATE, DOCUMENT_TYPE, GRANTORS, GRANTEES",
-          returnDistinctValues: 'true',
-          returnGeometry: 'false',
-          f: 'json',
-          sqlFormat: 'standard',
-        }
+        try {
+          let theWhere = where(feature);
+            
+          const params = {
+            where: theWhere,
+            outFields: "DOCUMENT_ID, DISPLAY_DATE, DOCUMENT_TYPE, GRANTORS, GRANTEES",
+            // outFields: "R_NUM, DISPLAY_DATE, DOCUMENT_TYPE, GRANTORS, GRANTEES",
+            returnDistinctValues: 'true',
+            returnGeometry: 'false',
+            f: 'json',
+            sqlFormat: 'standard',
+          }
 
-        console.log('params:', params);
-        const response = await axios(url, { params });
-        this.dorDocuments[feature.properties.OBJECTID] = response;
+          console.log('params:', params);
+          const response = await axios(url, { params });
+          if (response.status === 200) {
+            const data = response.data;
+            data.features.forEach((doc) => {
+              doc.attributes.date = date(doc.attributes.DISPLAY_DATE);
+              doc.attributes.link = `<a target='_blank' href='http://epay.phila-records.com/phillyepay/web/integration/document/InstrumentID=${doc.attributes.DOCUMENT_ID}&Guest=true'>${doc.attributes.DOCUMENT_ID}<i class='fa fa-external-link-alt'></i></a>`;
+            })
+            this.dorDocuments[feature.properties.OBJECTID] = data;
+          } else {
+            console.warn('dorDocs - await resolved but HTTP status was not successful')
+          }
+        } catch {
+          console.error('dorDocs - await never resolved, failed to fetch data')
+        }
       }
-      return;
-    },
+    } 
   },
 })

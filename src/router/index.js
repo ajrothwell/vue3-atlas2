@@ -25,9 +25,11 @@ const getGeocodeAndPutInStore = async(address) => {
 
   const OpaStore = useOpaStore();
   OpaStore.clearOpaData();
+  const DorStore = useDorStore();
+  DorStore.clearDorData();
   const LiStore = useLiStore();
   LiStore.clearAllLiData();
-  
+
   const CondosStore = useCondosStore();
   CondosStore.lastPageUsed = 1;
   CondosStore.condosData = {};
@@ -155,6 +157,7 @@ const topicDataFetch = async (topic, data) => {
     await DorStore.fillDorDocuments();
     await DorStore.fillRegmaps();
     await DorStore.fillDorCondos();
+    DorStore.loadingDorData = false;
   }
 
   if (topic === 'Zoning') {
