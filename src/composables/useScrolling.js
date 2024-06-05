@@ -2,11 +2,14 @@ import { useMainStore } from '@/stores/MainStore';
 
 export default function useScrolling() {
 
-  const handleRowMouseover = (e) => {
+  const handleRowMouseover = (e, id) => {
+    console.log('handleRowMouseover, e:', e, 'id:', id);//, 'e.target.parentElement.id:', e.target.parentElement.id);
     const MainStore = useMainStore();
-    let hoveredStateId = parseInt(e.target.parentElement.id);
+    // let hoveredStateId = parseInt(e.target.parentElement.id);
+    let hoveredStateId = parseInt(e.row[id]);
     if (isNaN(hoveredStateId)) {
-      hoveredStateId = e.target.parentElement.id;
+      hoveredStateId = e.row[id];
+      // hoveredStateId = e.target.parentElement.id;
     }
     MainStore.hoveredStateId = hoveredStateId;
     // if (typeof e.target.parentElement.id === 'number') {
@@ -22,6 +25,7 @@ export default function useScrolling() {
   }
 
   const isElementInViewport = (el) => {
+    console.log('isElementInViewport, el:', el);
     const rect = el.getBoundingClientRect();
     // console.log('bounding box', rect);
     const visibility = {

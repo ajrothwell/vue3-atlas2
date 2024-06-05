@@ -530,7 +530,7 @@ watch(
         ['match',
         ['get', 'id'],
         newHoveredStateId,
-        "#FFFF00",
+        "#F3D661",
         ['match',
         ['get', 'type'],
         'nearby311',

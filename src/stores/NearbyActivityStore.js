@@ -147,22 +147,35 @@ export const useNearbyActivityStore = defineStore('NearbyActivityStore', {
       }
     },
     async fillNearby311() {
-      const GeocodeStore = useGeocodeStore();
-      this.setLoadingData(true);
-      const feature = GeocodeStore.aisData.features[0];
-      let dataSource = {
-        url: 'https://phl.carto.com/api/v2/sql?',
-        options: {
-          table: 'public_cases_fc',
-          dateMinNum: 365,
-          dateMinType: 'day',
-          dateField: 'requested_datetime',
-        },
-      };
-      let params = fetchNearby(feature, dataSource);
-      const response = await axios.get(dataSource.url, { params })
-      this.nearby311 = response;
-      this.setLoadingData(false);
+      try {
+        const GeocodeStore = useGeocodeStore();
+        this.setLoadingData(true);
+        const feature = GeocodeStore.aisData.features[0];
+        let dataSource = {
+          url: 'https://phl.carto.com/api/v2/sql?',
+          options: {
+            table: 'public_cases_fc',
+            dateMinNum: 365,
+            dateMinType: 'day',
+            dateField: 'requested_datetime',
+          },
+        };
+        let params = fetchNearby(feature, dataSource);
+        const response = await axios.get(dataSource.url, { params })
+        if (response.status === 200) {
+          const data = response.data;
+          console.log('nearby311 data:', data);
+          data.rows.forEach(row => {
+            row.distance_ft = (row.distance * 3.28084).toFixed(0) + ' ft';
+          });
+          this.nearby311 = data;
+          this.setLoadingData(false);
+        } else {
+          console.warn('nearby311 - await resolved but HTTP status was not successful');
+        }
+      } catch {
+        console.error('nearby311 - await never resolved, failed to fetch address data');
+      }
     },
     async fillNearbyCrimeIncidents() {
       const GeocodeStore = useGeocodeStore();

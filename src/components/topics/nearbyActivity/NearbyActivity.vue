@@ -51,7 +51,8 @@ const hoveredStateId = computed(() => { return MainStore.hoveredStateId; });
 
 watch(() => hoveredStateId.value, (newHoveredStateId) => {
   if (newHoveredStateId) {
-    const el = document.getElementById(newHoveredStateId);
+    const el = document.getElementsByClassName(newHoveredStateId)[0];
+    // const el = document.getElementById(newHoveredStateId);
     const visible = isElementInViewport(el);
     if (!visible && !MainStore.isMobileDevice) {
       el.scrollIntoView({ block: 'center' });
