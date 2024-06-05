@@ -164,7 +164,6 @@ export const useNearbyActivityStore = defineStore('NearbyActivityStore', {
         const response = await axios.get(dataSource.url, { params })
         if (response.status === 200) {
           const data = response.data;
-          console.log('nearby311 data:', data);
           data.rows.forEach(row => {
             row.distance_ft = (row.distance * 3.28084).toFixed(0) + ' ft';
           });
@@ -195,7 +194,6 @@ export const useNearbyActivityStore = defineStore('NearbyActivityStore', {
         const response = await axios.get(dataSource.url, { params })
         if (response.status === 200) {
           const data = response.data;
-          console.log('nearbyCrimeIncidents data:', data);
           data.rows.forEach(row => {
             row.distance_ft = (row.distance * 3.28084).toFixed(0) + ' ft';
           });
@@ -209,22 +207,34 @@ export const useNearbyActivityStore = defineStore('NearbyActivityStore', {
       }
     },
     async fillNearbyZoningAppeals() {
-      const GeocodeStore = useGeocodeStore();
-      this.setLoadingData(true);
-      const feature = GeocodeStore.aisData.features[0];
-      let dataSource = {
-        url: 'https://phl.carto.com/api/v2/sql?',
-        options: {
-          table: 'appeals',
-          dateMinNum: 1,
-          dateMinType: 'year',
-          dateField: 'scheduleddate',
-        },
-      };
-      let params = fetchNearby(feature, dataSource);
-      const response = await axios.get(dataSource.url, { params })
-      this.nearbyZoningAppeals = response;
-      this.setLoadingData(false);
+      try {
+        const GeocodeStore = useGeocodeStore();
+        this.setLoadingData(true);
+        const feature = GeocodeStore.aisData.features[0];
+        let dataSource = {
+          url: 'https://phl.carto.com/api/v2/sql?',
+          options: {
+            table: 'appeals',
+            dateMinNum: 1,
+            dateMinType: 'year',
+            dateField: 'scheduleddate',
+          },
+        };
+        let params = fetchNearby(feature, dataSource);
+        const response = await axios.get(dataSource.url, { params })
+        if (response.status === 200) {
+          const data = response.data;
+          data.rows.forEach(row => {
+            row.distance_ft = (row.distance * 3.28084).toFixed(0) + ' ft';
+          });
+          this.nearbyZoningAppeals = data;
+          this.setLoadingData(false);
+        } else {
+          console.warn('nearbyZoningAppeals - await resolved but HTTP status was not successful');
+        }
+      } catch {
+        console.error('nearbyZoningAppeals - await never resolved, failed to fetch address data');
+      }
     },
 
     async fillNearbyVacantIndicatorPoints() {

@@ -10,7 +10,6 @@ import { useMapStore } from '@/stores/MapStore';
 const MapStore = useMapStore();
 const map = MapStore.map;
 
-import SortbyDropdown from '@/components/topics/nearbyActivity/SortbyDropdown.vue';
 import IntervalDropdown from '@/components/topics/nearbyActivity/IntervalDropdown.vue';
 import useTransforms from '@/composables/useTransforms';
 const { date, timeReverseFn } = useTransforms();
@@ -18,9 +17,6 @@ import useScrolling from '@/composables/useScrolling';
 const { handleRowMouseover, handleRowMouseleave } = useScrolling();
 
 const loadingData = computed(() => NearbyActivityStore.loadingData );
-
-const sortby = ref('distance');
-const setSortby = (e) => sortby.value = e;
 
 const timeIntervalSelected = ref(0);
 
@@ -36,7 +32,7 @@ const setTimeInterval = (e) => timeIntervalSelected.value = e;
 
 const nearbyZoningAppeals = computed(() => {
   if (NearbyActivityStore.nearbyZoningAppeals) {
-    let data = [ ...NearbyActivityStore.nearbyZoningAppeals.data.rows]
+    let data = [ ...NearbyActivityStore.nearbyZoningAppeals.rows]
     // console.log(new Date(data[0].scheduleddate));
     if (timeIntervalSelected.value < 0) {
       data = data.filter(item => {
@@ -51,11 +47,7 @@ const nearbyZoningAppeals = computed(() => {
         return daysDiff <= timeIntervalSelected.value;
       })
     }
-    if (sortby.value === 'distance') {
-      data.sort((a, b) => a.distance - b.distance)
-    } else if (sortby.value === 'time') {
-      data.sort((a, b) => timeReverseFn(a, b, 'dispatch_date'))
-    }
+    data.sort((a, b) => timeReverseFn(a, b, 'dispatch_date'))
     return data;
   }
 });
@@ -70,6 +62,59 @@ const hoveredStateId = computed(() => { return MainStore.hoveredStateId; });
 onMounted(() => { if (!NearbyActivityStore.loadingData && nearbyZoningAppealsGeojson.value.length > 0) { map.getSource('nearby').setData(featureCollection(nearbyZoningAppealsGeojson.value)) }});
 onBeforeUnmount(() => { if (map.getSource('nearby')) { map.getSource('nearby').setData(featureCollection([point([0,0])])) }});
 
+const nearbyZoningAppealsTableData = computed(() => {
+  return {
+    columns: [
+      {
+        label: 'Date',
+        field: 'scheduleddate',
+        type: 'date',
+        dateInputFormat: "yyyy-MM-dd'T'HH:mm:ssX",
+        dateOutputFormat: 'MM/dd/yyyy',
+      },
+      {
+        label: 'Location',
+        field: 'address',
+      },
+      {
+        label: 'Description',
+        field: 'appealgrounds',
+      },
+      {
+        label: 'Distance',
+        field: 'distance_ft',
+      }
+    ],
+    rows: nearbyZoningAppeals.value || [],
+  }
+});
+
+{/* <table class="table is-fullwidth is-striped">
+<thead>
+<tr>
+<th>Date</th>
+<th>Location</th>
+<th>Description</th>
+<th>Distance</th>
+</tr>
+</thead>
+<tbody>
+<tr
+v-for="item in nearbyZoningAppeals"
+:key=item.objectid
+:id="item.objectid"
+@mouseover="handleRowMouseover"
+@mouseleave="handleRowMouseleave"
+:class="hoveredStateId == item.objectid ? 'active-hover' : 'inactive'"
+>
+<td>{{ date(item.scheduleddate) }}</td>
+<td>{{ item.address }}</td>
+<td>{{ item.appealgrounds }}</td>
+<td>{{ (item.distance * 3.28084).toFixed(0) }} ft</td>
+</tr>
+</tbody>
+</table> */}
+
 </script>
 
 <template>
@@ -78,40 +123,29 @@ onBeforeUnmount(() => { if (map.getSource('nearby')) { map.getSource('nearby').s
     :timeIntervals="timeIntervals"
     @setTimeInterval="setTimeInterval"
   ></IntervalDropdown>
-  <SortbyDropdown
-    @setSortby="setSortby"
-  ></SortbyDropdown>
   <div class='mt-5'>
     <h5 class="subtitle is-5">Zoning Appeals</h5>
     <div v-if="loadingData">Loading...</div>
     <div class="horizontal-table">
-      <table class="table is-fullwidth is-striped">
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Location</th>
-            <th>Description</th>
-            <th>Distance</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="item in nearbyZoningAppeals"
-            :key=item.objectid
-            :id="item.objectid"
-            @mouseover="handleRowMouseover"
-            @mouseleave="handleRowMouseleave"
-            :class="hoveredStateId == item.objectid ? 'active-hover' : 'inactive'"
-          >
-            <td>{{ date(item.scheduleddate) }}</td>
-            <td>{{ item.address }}</td>
-            <td>{{ item.appealgrounds }}</td>
-            <td>{{ (item.distance * 3.28084).toFixed(0) }} ft</td>
-          </tr>
-        </tbody>
-      </table>
+      <vue-good-table
+        id="nearbyZoningAppeals"
+        :columns="nearbyZoningAppealsTableData.columns"
+        :rows="nearbyZoningAppealsTableData.rows"
+        :row-style-class="row => hoveredStateId === row.objectid ? 'active-hover ' + row.objectid : 'inactive ' + row.objectid"
+        style-class="table"
+        @row-mouseenter="handleRowMouseover($event, 'objectid')"
+        @row-mouseleave="handleRowMouseleave"
+      >
+        <template #emptystate>
+          <div v-if="NearbyActivityStore.loadingData">
+            Loading nearby zoning appeals... <font-awesome-icon icon='fa-solid fa-spinner fa-spin'></font-awesome-icon>
+          </div>
+          <div v-else>
+            No nearby zoning appeals found
+          </div>
+        </template>
+      </vue-good-table>
     </div>
-    <div class='mobile-no-data' v-if="!nearbyZoningAppeals.length">No nearby zoning appeals found for this time interval</div>
   </div>
 </template>
 

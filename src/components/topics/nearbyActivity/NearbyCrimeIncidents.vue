@@ -29,7 +29,7 @@ const timeIntervals = reactive(
 const setTimeInterval = (e) => timeIntervalSelected.value = e;
 
 const nearbyCrimeIncidents = computed(() => {
-  if (NearbyActivityStore.nearbyCrimeIncidents) {
+  if (NearbyActivityStore.nearbyCrimeIncidents.rows) {
     let data = [ ...NearbyActivityStore.nearbyCrimeIncidents.rows]
       .filter(item => {
       let timeDiff = new Date() - new Date(item.dispatch_date);
@@ -51,7 +51,7 @@ const hoveredStateId = computed(() => { return MainStore.hoveredStateId; });
 onMounted(() => { if (!NearbyActivityStore.loadingData && nearbyCrimeIncidentsGeojson.value.length > 0) { map.getSource('nearby').setData(featureCollection(nearbyCrimeIncidentsGeojson.value)) }});
 onBeforeUnmount(() => { if (map.getSource('nearby')) { map.getSource('nearby').setData(featureCollection([point([0,0])])) }});
 
-const nearby311TableData = computed(() => {
+const nearbyCrimeIncidentsTableData = computed(() => {
   return {
     columns: [
       {
@@ -78,6 +78,12 @@ const nearby311TableData = computed(() => {
   }
 });
 
+// const nearbyCrimeIncidentsTableDataLength = computed(() => { 
+//   if (nearby311TableData.value.rows) {
+//     return nearby311TableData.value.rows.length;
+//   }
+// });
+
 </script>
 
 <template>
@@ -87,29 +93,28 @@ const nearby311TableData = computed(() => {
     @setTimeInterval="setTimeInterval"
   ></IntervalDropdown>
   <div class='mt-5'>
-    <h5 class="subtitle is-5">Crime Incidents ({{ nearby311TableData.rows.length }})</h5>
+    <h5 class="subtitle is-5">Crime Incidents ({{ nearbyCrimeIncidentsTableData.rows.length }})</h5>
     <div v-if="loadingData">Loading...</div>
     <div class="horizontal-table">
       <vue-good-table
-        id="nearby311"
-        :columns="nearby311TableData.columns"
-        :rows="nearby311TableData.rows"
+        id="nearbyCrimeIncidents"
+        :columns="nearbyCrimeIncidentsTableData.columns"
+        :rows="nearbyCrimeIncidentsTableData.rows"
         :row-style-class="row => hoveredStateId === row.objectid ? 'active-hover ' + row.objectid : 'inactive ' + row.objectid"
         style-class="table"
         @row-mouseenter="handleRowMouseover($event, 'objectid')"
         @row-mouseleave="handleRowMouseleave"
       >
         <template #emptystate>
-          <div v-if="LiStore.loadingLiData">
-            Loading nearby 311... <font-awesome-icon icon='fa-solid fa-spinner fa-spin'></font-awesome-icon>
+          <div v-if="NearbyActivityStore.loadingData">
+            Loading nearby crime incidents... <font-awesome-icon icon='fa-solid fa-spinner fa-spin'></font-awesome-icon>
           </div>
           <div v-else>
-            No nearby 311 found
+            No nearby crime incidents found
           </div>
         </template>
       </vue-good-table>
     </div>
-    <div class='mobile-no-data' v-if="!nearbyCrimeIncidents.length">No nearby crime incidents found for this time interval</div>
   </div>
 </template>
 

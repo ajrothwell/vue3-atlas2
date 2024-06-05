@@ -31,7 +31,7 @@ const timeIntervals = reactive(
 const setTimeInterval = (e) => timeIntervalSelected.value = e;
 
 const nearby311 = computed(() => {
-  if (NearbyActivityStore.nearby311) {
+  if (NearbyActivityStore.nearby311.rows) {
     let data = [ ...NearbyActivityStore.nearby311.rows]
       .filter(item => {
       let timeDiff = new Date() - new Date(item.requested_datetime);
@@ -102,7 +102,7 @@ const nearby311TableData = computed(() => {
         @row-mouseleave="handleRowMouseleave"
       >
         <template #emptystate>
-          <div v-if="LiStore.loadingLiData">
+          <div v-if="NearbyActivityStore.loadingData">
             Loading nearby 311... <font-awesome-icon icon='fa-solid fa-spinner fa-spin'></font-awesome-icon>
           </div>
           <div v-else>
@@ -111,7 +111,6 @@ const nearby311TableData = computed(() => {
         </template>
       </vue-good-table>
     </div>
-    <div class='mobile-no-data' v-if="!nearby311.length">No nearby 311 service requests found for this time interval</div>
   </div>
 </template>
 
