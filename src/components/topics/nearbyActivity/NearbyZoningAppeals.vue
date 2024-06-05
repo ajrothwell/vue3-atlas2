@@ -99,7 +99,6 @@ const nearbyZoningAppealsTableData = computed(() => {
   ></IntervalDropdown>
   <div class='mt-5'>
     <h5 class="subtitle is-5">Zoning Appeals</h5>
-    <!-- <div v-if="loadingData">Loading...</div> -->
     <div class="horizontal-table">
       <vue-good-table
         id="nearbyZoningAppeals"
@@ -112,7 +111,7 @@ const nearbyZoningAppealsTableData = computed(() => {
       >
         <template #emptystate>
           <div v-if="NearbyActivityStore.loadingData">
-            Loading nearby zoning appeals... <font-awesome-icon icon='fa-solid fa-spinner fa-spin'></font-awesome-icon>
+            Loading nearby zoning appeals... <font-awesome-icon icon='fa-solid fa-spinner' spin></font-awesome-icon>
           </div>
           <div v-else>
             No nearby zoning appeals found

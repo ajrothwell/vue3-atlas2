@@ -250,7 +250,7 @@ const dorDocsTableData = computed(() => {
         >
           <template #emptystate>
             <div v-if="DorStore.loadingDorData">
-              Loading DOR Documents... <font-awesome-icon icon='fa-solid fa-spinner fa-spin'></font-awesome-icon>
+              Loading DOR Documents... <font-awesome-icon icon='fa-solid fa-spinner' spin></font-awesome-icon>
             </div>
             <div v-else>
               No DOR Documents found

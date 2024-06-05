@@ -101,7 +101,7 @@ const nearbyCrimeIncidentsTableData = computed(() => {
       >
         <template #emptystate>
           <div v-if="NearbyActivityStore.loadingData">
-            Loading nearby crime incidents... <font-awesome-icon icon='fa-solid fa-spinner fa-spin'></font-awesome-icon>
+            Loading nearby crime incidents... <font-awesome-icon icon='fa-solid fa-spinner' spin></font-awesome-icon>
           </div>
           <div v-else>
             No nearby crime incidents found

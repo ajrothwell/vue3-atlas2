@@ -20,7 +20,14 @@ export const useZoningStore = defineStore('ZoningStore', {
     };
   },
   actions: {
-    async clearZoningData() {
+    async fillAllZoningData() {
+      this.fillZoningBase();
+      this.fillZoningOverlays();
+      this.fillPendingBills();
+      this.fillZoningAppeals();
+      this.fillRcos();
+    },
+    async clearAllZoningData() {
       this.zoningBase = {};
       this.zoningOverlays = {};
       this.pendingBills = {};

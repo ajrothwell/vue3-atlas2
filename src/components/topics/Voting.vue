@@ -44,7 +44,7 @@ const office = computed(() => {
     return council.value[0].main_contact_address_2 + '<br>' +
       phoneNumber(council.value[0].main_contact_phone_1) + ", " + phoneNumber(council.value[0].main_contact_phone_2) + '<br>\
       F: '+ phoneNumber(council.value[0].main_contact_fax) + ' <br>\
-      <b><a href=mailto:"' + council.value[0].email + '">' + council[0].email + '</a></b>';
+      <b><a href=mailto:"' + council.value[0].email + '">' + council.value[0].email + '</a></b>';
   }
 });
 

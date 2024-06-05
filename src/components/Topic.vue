@@ -49,7 +49,7 @@ const handleTopicClick = () => {
       <div class="topic-name">
         <div class="icon-holder"><font-awesome-icon :icon="props.topicIcon"/></div>
         <div class="name-holder">{{ topicName }}</div>
-        <div class="mr-2 is-pulled-right" v-if="open && loading"><font-awesome-icon icon="fa-solid fa-spinner"/></div>
+        <div class="mr-2 is-pulled-right" v-if="open && loading"><font-awesome-icon icon="fa-solid fa-spinner" spin/></div>
       </div>
     </div>
     <div

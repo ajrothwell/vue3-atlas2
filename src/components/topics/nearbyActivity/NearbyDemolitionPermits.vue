@@ -121,7 +121,7 @@ v-for="item in nearbyDemolitionPermits"
       >
         <template #emptystate>
           <div v-if="NearbyActivityStore.loadingData">
-            Loading nearby demolition permits... <font-awesome-icon icon='fa-solid fa-spinner fa-spin'></font-awesome-icon>
+            Loading nearby demolition permits... <font-awesome-icon icon='fa-solid fa-spinner' spin></font-awesome-icon>
           </div>
           <div v-else>
             No nearby demolition permits found

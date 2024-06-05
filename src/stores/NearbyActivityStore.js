@@ -132,7 +132,7 @@ export const useNearbyActivityStore = defineStore('NearbyActivityStore', {
     setLoadingData(loading) {
       this.loadingData = loading;
     },
-    async clearNearbyActivityData() {
+    async clearAllNearbyActivityData() {
       this.dataError = false;
       this.loadingData = true;
       this.nearby311 = {};

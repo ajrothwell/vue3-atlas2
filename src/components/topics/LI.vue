@@ -345,7 +345,7 @@ const businessLicensesTableData = computed(() => {
             >
               <template #emptystate>
                 <div v-if="LiStore.loadingLiData">
-                  Loading building certifications... <font-awesome-icon icon='fa-solid fa-spinner fa-spin'></font-awesome-icon>
+                  Loading building certifications... <font-awesome-icon icon='fa-solid fa-spinner' spin></font-awesome-icon>
                 </div>
                 <div v-else>
                   No building certifications found
@@ -373,7 +373,7 @@ const businessLicensesTableData = computed(() => {
         >
           <template #emptystate>
             <div v-if="LiStore.loadingLiData">
-              Loading permits... <font-awesome-icon icon='fa-solid fa-spinner fa-spin'></font-awesome-icon>
+              Loading permits... <font-awesome-icon icon='fa-solid fa-spinner' spin></font-awesome-icon>
             </div>
             <div v-else>
               No permits found
@@ -398,7 +398,7 @@ const businessLicensesTableData = computed(() => {
         >
           <template #emptystate>
             <div v-if="LiStore.loadingLiData">
-              Loading zoning permit documents... <font-awesome-icon icon='fa-solid fa-spinner fa-spin'></font-awesome-icon>
+              Loading zoning permit documents... <font-awesome-icon icon='fa-solid fa-spinner' spin></font-awesome-icon>
             </div>
             <div v-else>
               No zoning permit documents found
@@ -421,7 +421,7 @@ const businessLicensesTableData = computed(() => {
         >
           <template #emptystate>
             <div v-if="LiStore.loadingLiData">
-              Loading inspections... <font-awesome-icon icon='fa-solid fa-spinner fa-spin'></font-awesome-icon>
+              Loading inspections... <font-awesome-icon icon='fa-solid fa-spinner' spin></font-awesome-icon>
             </div>
             <div v-else>
               No inspections found
@@ -445,7 +445,7 @@ const businessLicensesTableData = computed(() => {
         >
           <template #emptystate>
             <div v-if="LiStore.loadingLiData">
-              Loading violations... <font-awesome-icon icon='fa-solid fa-spinner fa-spin'></font-awesome-icon>
+              Loading violations... <font-awesome-icon icon='fa-solid fa-spinner' spin></font-awesome-icon>
             </div>
             <div v-else>
               No violations found
@@ -469,7 +469,7 @@ const businessLicensesTableData = computed(() => {
         >
           <template #emptystate>
             <div v-if="LiStore.loadingLiData">
-              Loading business licenses... <font-awesome-icon icon='fa-solid fa-spinner fa-spin'></font-awesome-icon>
+              Loading business licenses... <font-awesome-icon icon='fa-solid fa-spinner' spin></font-awesome-icon>
             </div>
             <div v-else>
               No business licenses found

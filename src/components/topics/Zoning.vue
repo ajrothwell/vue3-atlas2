@@ -214,7 +214,7 @@ const rcosTableData = computed(() => {
           >
             <template #emptystate>
               <div v-if="ZoningStore.loadingZoningData">
-                Loading pending bills... <font-awesome-icon icon='fa-solid fa-spinner fa-spin'></font-awesome-icon>
+                Loading pending bills... <font-awesome-icon icon='fa-solid fa-spinner' spin></font-awesome-icon>
               </div>
               <div v-else>
                 No pending bills found
@@ -235,7 +235,7 @@ const rcosTableData = computed(() => {
         >
           <template #emptystate>
             <div v-if="ZoningStore.loadingZoningData">
-              Loading overlays... <font-awesome-icon icon='fa-solid fa-spinner fa-spin'></font-awesome-icon>
+              Loading overlays... <font-awesome-icon icon='fa-solid fa-spinner' spin></font-awesome-icon>
             </div>
             <div v-else>
               No overlays found
@@ -257,7 +257,7 @@ const rcosTableData = computed(() => {
     >
       <template #emptystate>
         <div v-if="ZoningStore.loadingZoningData">
-          Loading appeals... <font-awesome-icon icon='fa-solid fa-spinner fa-spin'></font-awesome-icon>
+          Loading appeals... <font-awesome-icon icon='fa-solid fa-spinner' spin></font-awesome-icon>
         </div>
         <div v-else>
           No appeals found
@@ -279,7 +279,7 @@ const rcosTableData = computed(() => {
     >
       <template #emptystate>
         <div v-if="ZoningStore.loadingZoningData">
-          Loading RCOs... <font-awesome-icon icon='fa-solid fa-spinner fa-spin'></font-awesome-icon>
+          Loading RCOs... <font-awesome-icon icon='fa-solid fa-spinner' spin></font-awesome-icon>
         </div>
         <div v-else>
           No RCOs found

@@ -304,16 +304,18 @@ watch(
         console.log('2 map.layers:', map.getStyle().layers, map.getStyle().sources);
       }
       if (newTopic === 'Licenses & Inspections') {
-        map.setPaintProperty(
-          'liBuildingFootprints',
-          'fill-color',
-          ['match',
-          ['get', 'id'],
-          LiStore.selectedLiBuildingNumber,
-          '#FFFA80',
-          /* other */ '#C2B7FF'
-          ],
-        )
+        if (selectedLiBuildingNumber.value) {
+          map.setPaintProperty(
+            'liBuildingFootprints',
+            'fill-color',
+            ['match',
+            ['get', 'id'],
+            selectedLiBuildingNumber.value,
+            '#FFFA80',
+            /* other */ '#C2B7FF'
+            ],
+          )
+        }
       }
       MapStore.selectedRegmap = null;
       if (MapStore.cyclomediaOn) {

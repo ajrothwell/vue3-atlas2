@@ -95,7 +95,12 @@ export const useDorStore = defineStore("DorStore", {
   },
 
   actions: {
-    async clearDorData() {
+    async fillAllDorData() {
+      this.fillDorDocuments();
+      this.fillRegmaps();
+      this.fillDorCondos();
+    },
+    async clearAllDorData() {
       this.dorDocuments = {};
       this.regmaps = {};
       this.dorCondos = {};

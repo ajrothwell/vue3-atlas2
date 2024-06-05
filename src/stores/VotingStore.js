@@ -10,10 +10,20 @@ export const useVotingStore = defineStore("VotingStore", {
       pollingPlaces: {},
       electedOfficials: {},
       nextElection: {},
+      loadingVotingData: true,
     };
   },
   actions: {
-    async clearVotingData() {
+    setLoadingData(loading) {
+      this.loadingData = loading;
+    },
+    async fillAllVotingData() {
+      this.fillDivisions();
+      this.fillPollingPlaces();
+      this.fillElectedOfficials();
+      this.fillNextElection();
+    },
+    async clearAllVotingData() {
       this.divisions = {};
       this.pollingPlaces = {};
       this.electedOfficials = {};

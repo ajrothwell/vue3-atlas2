@@ -12,7 +12,7 @@ export const useOpaStore = defineStore('OpaStore', {
     };
   },
   actions: {
-    async clearOpaData() {
+    async clearAllOpaData() {
       this.loadingOpaData = true;
       this.opaData = {};
     },

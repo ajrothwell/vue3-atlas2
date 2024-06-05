@@ -105,7 +105,7 @@ const nearbyConstructionPermitsTableData = computed(() => {
       >
         <template #emptystate>
           <div v-if="NearbyActivityStore.loadingData">
-            Loading nearby construction permits... <font-awesome-icon icon='fa-solid fa-spinner fa-spin'></font-awesome-icon>
+            Loading nearby construction permits... <font-awesome-icon icon='fa-solid fa-spinner' spin></font-awesome-icon>
           </div>
           <div v-else>
             No nearby construction permits found

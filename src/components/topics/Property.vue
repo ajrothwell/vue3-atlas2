@@ -84,7 +84,7 @@ const shouldShowCondosMessage = computed(() => {
       <p>You can use the Condominiums tab below to see information for an individual unit.</p>
     </div>
     <div v-else-if="OpaStore.loadingOpaData">
-      <p>Loading property assessment data... <font-awesome-icon icon="fa-solid fa-spinner"/></p>
+      <p>Loading property assessment data... <font-awesome-icon icon="fa-solid fa-spinner" spin/></p>
     </div>
     <div v-else-if="!OpaStore.opaData.rows">
       <p>There is no property assessment record for this address.</p>

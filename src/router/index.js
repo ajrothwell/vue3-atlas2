@@ -24,17 +24,17 @@ const getGeocodeAndPutInStore = async(address) => {
   MainStore.clearDataSourcesLoadedArray();
 
   const OpaStore = useOpaStore();
-  OpaStore.clearOpaData();
+  OpaStore.clearAllOpaData();
   const DorStore = useDorStore();
-  DorStore.clearDorData();
+  DorStore.clearAllDorData();
   const LiStore = useLiStore();
   LiStore.clearAllLiData();
   const ZoningStore = useZoningStore();
-  ZoningStore.clearZoningData();
+  ZoningStore.clearAllZoningData();
   const VotingStore = useVotingStore();
-  VotingStore.clearVotingData();
+  VotingStore.clearAllVotingData();
   const NearbyActivityStore = useNearbyActivityStore();
-  NearbyActivityStore.clearNearbyActivityData();
+  NearbyActivityStore.clearAllNearbyActivityData();
 
   const CondosStore = useCondosStore();
   CondosStore.lastPageUsed = 1;
@@ -152,28 +152,20 @@ const topicDataFetch = async (topic, data) => {
 
   if (topic === 'Deeds') {
     const DorStore = useDorStore();
-    await DorStore.fillDorDocuments();
-    await DorStore.fillRegmaps();
-    await DorStore.fillDorCondos();
+    await DorStore.fillAllDorData();
     DorStore.loadingDorData = false;
   }
 
   if (topic === 'Zoning') {
     const ZoningStore = useZoningStore();
-    await ZoningStore.fillZoningBase();
-    await ZoningStore.fillZoningOverlays();
-    await ZoningStore.fillPendingBills();
-    await ZoningStore.fillZoningAppeals();
-    await ZoningStore.fillRcos();
+    await ZoningStore.fillAllZoningData();
     ZoningStore.loadingZoningData = false;
   }
 
   if (topic === 'Voting') {
     const VotingStore = useVotingStore();
-    await VotingStore.fillDivisions();
-    await VotingStore.fillPollingPlaces();
-    await VotingStore.fillElectedOfficials();
-    await VotingStore.fillNextElection();
+    await VotingStore.fillAllVotingData();
+    VotingStore.loadingVotingData = false;
   }
 
   if (topic === 'Nearby Activity') {
