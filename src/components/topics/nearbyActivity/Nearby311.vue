@@ -10,17 +10,13 @@ import { useMapStore } from '@/stores/MapStore';
 const MapStore = useMapStore();
 const map = MapStore.map;
 
-// import SortbyDropdown from '@/components/topics/nearbyActivity/SortbyDropdown.vue';
 import IntervalDropdown from '@/components/topics/nearbyActivity/IntervalDropdown.vue';
 import useTransforms from '@/composables/useTransforms';
-const { date, timeReverseFn } = useTransforms();
+const { timeReverseFn } = useTransforms();
 import useScrolling from '@/composables/useScrolling';
 const { handleRowMouseover, handleRowMouseleave } = useScrolling();
 
 const loadingData = computed(() => NearbyActivityStore.loadingData );
-
-// const sortby = ref('distance');
-// const setSortby = (e) => sortby.value = e;
 
 const timeIntervalSelected = ref(30);
 
@@ -42,11 +38,7 @@ const nearby311 = computed(() => {
       let daysDiff = timeDiff / (1000 * 60 * 60 * 24);
       return daysDiff <= timeIntervalSelected.value;
     })
-    // if (sortby.value === 'distance') {
-    //   data.sort((a, b) => a.distance - b.distance)
-    // } else if (sortby.value === 'time') {
     data.sort((a, b) => timeReverseFn(a, b, 'requested_datetime'))
-    // }
     return data;
   }
 });
@@ -60,7 +52,6 @@ const hoveredStateId = computed(() => { return MainStore.hoveredStateId; });
 
 onMounted(() => { if (!NearbyActivityStore.loadingData && nearby311Geojson.value.length > 0) { map.getSource('nearby').setData(featureCollection(nearby311Geojson.value)) }});
 onBeforeUnmount(() => { if (map.getSource('nearby')) { map.getSource('nearby').setData(featureCollection([point([0,0])])) }});
-
 
 const nearby311TableData = computed(() => {
   return {
@@ -89,32 +80,6 @@ const nearby311TableData = computed(() => {
   }
 });
 
-{/* <table class="table is-fullwidth is-striped">
-<thead>
-<tr>
-<th>Date</th>
-<th>Location</th>
-<th>Type</th>
-<th>Distance</th>
-</tr>
-</thead>
-<tbody>
-<tr
-v-for="item in nearby311"
-:key="item.service_request_id"
-:id="item.service_request_id"
-@mouseover="handleRowMouseover"
-@mouseleave="handleRowMouseleave"
-:class="hoveredStateId == item.service_request_id ? 'active-hover' : 'inactive'"
->
-<td>{{ date(item.requested_datetime) }}</td>
-<td>{{ item.address }}</td>
-<td>{{ item.service_name }}</td>
-<td>{{ (item.distance * 3.28084).toFixed(0) }} ft</td>
-</tr>
-</tbody>
-</table> */}
-
 </script>
 
 <template>
@@ -123,11 +88,8 @@ v-for="item in nearby311"
     :timeIntervals="timeIntervals"
     @setTimeInterval="setTimeInterval"
   ></IntervalDropdown>
-  <!-- <SortbyDropdown
-    @setSortby="setSortby"
-  ></SortbyDropdown> -->
   <div class="mt-5">
-    <h5 class="subtitle is-5">311 Requests</h5>
+    <h5 class="subtitle is-5">311 Requests ({{ nearby311TableData.rows.length }})</h5>
     <div v-if="loadingData">Loading...</div>
     <div class="horizontal-table">
       <vue-good-table
@@ -139,7 +101,6 @@ v-for="item in nearby311"
         @row-mouseenter="handleRowMouseover($event, 'service_request_id')"
         @row-mouseleave="handleRowMouseleave"
       >
-      <!-- :pagination-options="paginationOptions" -->
         <template #emptystate>
           <div v-if="LiStore.loadingLiData">
             Loading nearby 311... <font-awesome-icon icon='fa-solid fa-spinner fa-spin'></font-awesome-icon>

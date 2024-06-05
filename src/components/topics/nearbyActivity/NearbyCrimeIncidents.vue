@@ -10,7 +10,6 @@ import { useMapStore } from '@/stores/MapStore';
 const MapStore = useMapStore();
 const map = MapStore.map;
 
-import SortbyDropdown from '@/components/topics/nearbyActivity/SortbyDropdown.vue';
 import IntervalDropdown from '@/components/topics/nearbyActivity/IntervalDropdown.vue';
 import useTransforms from '@/composables/useTransforms';
 const { date, timeReverseFn } = useTransforms();
@@ -18,9 +17,6 @@ import useScrolling from '@/composables/useScrolling';
 const { handleRowMouseover, handleRowMouseleave } = useScrolling();
 
 const loadingData = computed(() => NearbyActivityStore.loadingData );
-
-const sortby = ref('distance');
-const setSortby = (e) => sortby.value = e;
 
 const timeIntervalSelected = ref(30);
 
@@ -34,17 +30,13 @@ const setTimeInterval = (e) => timeIntervalSelected.value = e;
 
 const nearbyCrimeIncidents = computed(() => {
   if (NearbyActivityStore.nearbyCrimeIncidents) {
-    let data = [ ...NearbyActivityStore.nearbyCrimeIncidents.data.rows]
+    let data = [ ...NearbyActivityStore.nearbyCrimeIncidents.rows]
       .filter(item => {
       let timeDiff = new Date() - new Date(item.dispatch_date);
       let daysDiff = timeDiff / (1000 * 60 * 60 * 24);
       return daysDiff <= timeIntervalSelected.value;
     })
-    if (sortby.value === 'distance') {
-      data.sort((a, b) => a.distance - b.distance)
-    } else if (sortby.value === 'time') {
-      data.sort((a, b) => timeReverseFn(a, b, 'dispatch_date'))
-    }
+    data.sort((a, b) => timeReverseFn(a, b, 'dispatch_date'))
     return data;
   }
 });
@@ -59,6 +51,33 @@ const hoveredStateId = computed(() => { return MainStore.hoveredStateId; });
 onMounted(() => { if (!NearbyActivityStore.loadingData && nearbyCrimeIncidentsGeojson.value.length > 0) { map.getSource('nearby').setData(featureCollection(nearbyCrimeIncidentsGeojson.value)) }});
 onBeforeUnmount(() => { if (map.getSource('nearby')) { map.getSource('nearby').setData(featureCollection([point([0,0])])) }});
 
+const nearby311TableData = computed(() => {
+  return {
+    columns: [
+      {
+        label: 'Date',
+        field: 'dispatch_date',
+        type: 'date',
+        dateInputFormat: "yyyy-MM-dd",
+        dateOutputFormat: 'MM/dd/yyyy',
+      },
+      {
+        label: 'Location',
+        field: 'location_block',
+      },
+      {
+        label: 'Description',
+        field: 'text_general_code',
+      },
+      {
+        label: 'Distance',
+        field: 'distance_ft',
+      }
+    ],
+    rows: nearbyCrimeIncidents.value || [],
+  }
+});
+
 </script>
 
 <template>
@@ -67,38 +86,28 @@ onBeforeUnmount(() => { if (map.getSource('nearby')) { map.getSource('nearby').s
     :timeIntervals="timeIntervals"
     @setTimeInterval="setTimeInterval"
   ></IntervalDropdown>
-  <SortbyDropdown
-    @setSortby="setSortby"
-  ></SortbyDropdown>
   <div class='mt-5'>
-    <h5 class="subtitle is-5">Crime Incidents</h5>
+    <h5 class="subtitle is-5">Crime Incidents ({{ nearby311TableData.rows.length }})</h5>
     <div v-if="loadingData">Loading...</div>
     <div class="horizontal-table">
-      <table class="table is-fullwidth is-striped">
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Location</th>
-            <th>Description</th>
-            <th>Distance</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="item in nearbyCrimeIncidents"
-            :key=item.objectid
-            :id="item.objectid"
-            @mouseover="handleRowMouseover"
-            @mouseleave="handleRowMouseleave"
-            :class="hoveredStateId == item.objectid ? 'active-hover' : 'inactive'"
-          >
-            <td>{{ date(item.dispatch_date) }}</td>
-            <td>{{ item.location_block }}</td>
-            <td>{{ item.text_general_code }}</td>
-            <td>{{ (item.distance * 3.28084).toFixed(0) }} ft</td>
-          </tr>
-        </tbody>
-      </table>
+      <vue-good-table
+        id="nearby311"
+        :columns="nearby311TableData.columns"
+        :rows="nearby311TableData.rows"
+        :row-style-class="row => hoveredStateId === row.objectid ? 'active-hover ' + row.objectid : 'inactive ' + row.objectid"
+        style-class="table"
+        @row-mouseenter="handleRowMouseover($event, 'objectid')"
+        @row-mouseleave="handleRowMouseleave"
+      >
+        <template #emptystate>
+          <div v-if="LiStore.loadingLiData">
+            Loading nearby 311... <font-awesome-icon icon='fa-solid fa-spinner fa-spin'></font-awesome-icon>
+          </div>
+          <div v-else>
+            No nearby 311 found
+          </div>
+        </template>
+      </vue-good-table>
     </div>
     <div class='mobile-no-data' v-if="!nearbyCrimeIncidents.length">No nearby crime incidents found for this time interval</div>
   </div>

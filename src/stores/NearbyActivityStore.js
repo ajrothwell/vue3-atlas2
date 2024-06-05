@@ -178,22 +178,35 @@ export const useNearbyActivityStore = defineStore('NearbyActivityStore', {
       }
     },
     async fillNearbyCrimeIncidents() {
-      const GeocodeStore = useGeocodeStore();
-      this.setLoadingData(true);
-      const feature = GeocodeStore.aisData.features[0];
-      let dataSource = {
-        url: 'https://phl.carto.com/api/v2/sql?',
-        options: {
-          table: 'incidents_part1_part2',
-          dateMinNum: 90,
-          dateMinType: 'day',
-          dateField: 'dispatch_date',
-        },
-      };
-      let params = fetchNearby(feature, dataSource);
-      const response = await axios.get(dataSource.url, { params })
-      this.nearbyCrimeIncidents = response;
-      this.setLoadingData(false);
+      try {
+        const GeocodeStore = useGeocodeStore();
+        this.setLoadingData(true);
+        const feature = GeocodeStore.aisData.features[0];
+        let dataSource = {
+          url: 'https://phl.carto.com/api/v2/sql?',
+          options: {
+            table: 'incidents_part1_part2',
+            dateMinNum: 90,
+            dateMinType: 'day',
+            dateField: 'dispatch_date',
+          },
+        };
+        let params = fetchNearby(feature, dataSource);
+        const response = await axios.get(dataSource.url, { params })
+        if (response.status === 200) {
+          const data = response.data;
+          console.log('nearbyCrimeIncidents data:', data);
+          data.rows.forEach(row => {
+            row.distance_ft = (row.distance * 3.28084).toFixed(0) + ' ft';
+          });
+          this.nearbyCrimeIncidents = data;
+          this.setLoadingData(false);
+        } else {
+          console.warn('nearbyCrimeIncidents - await resolved but HTTP status was not successful');
+        }
+      } catch {
+        console.error('nearbyCrimeIncidents - await never resolved, failed to fetch address data');
+      }
     },
     async fillNearbyZoningAppeals() {
       const GeocodeStore = useGeocodeStore();
