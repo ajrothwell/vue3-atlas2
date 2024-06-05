@@ -10,7 +10,6 @@ import { useMapStore } from '@/stores/MapStore';
 const MapStore = useMapStore();
 const map = MapStore.map;
 
-import SortbyDropdown from '@/components/topics/nearbyActivity/SortbyDropdown.vue';
 import IntervalDropdown from '@/components/topics/nearbyActivity/IntervalDropdown.vue';
 import useTransforms from '@/composables/useTransforms';
 const { date, timeReverseFn } = useTransforms();
@@ -18,9 +17,6 @@ import useScrolling from '@/composables/useScrolling';
 const { handleRowMouseover, handleRowMouseleave } = useScrolling();
 
 const loadingData = computed(() => NearbyActivityStore.loadingData );
-
-const sortby = ref('distance');
-const setSortby = (e) => sortby.value = e;
 
 const timeIntervalSelected = ref(30);
 
@@ -36,7 +32,7 @@ const setTimeInterval = (e) => timeIntervalSelected.value = e;
 
 const nearbyImminentlyDangerous = computed(() => {
   if (NearbyActivityStore.nearbyImminentlyDangerous) {
-    let data = [ ...NearbyActivityStore.nearbyImminentlyDangerous.data.rows]
+    let data = [ ...NearbyActivityStore.nearbyImminentlyDangerous.rows]
       .filter(item => {
       let itemDate = new Date(item.casecreateddate);
       let now = new Date();
@@ -44,11 +40,7 @@ const nearbyImminentlyDangerous = computed(() => {
       let daysDiff = timeDiff / (1000 * 60 * 60 * 24);
       return daysDiff <= timeIntervalSelected.value;
     })
-    if (sortby.value === 'distance') {
-      data.sort((a, b) => a.distance - b.distance)
-    } else if (sortby.value === 'time') {
-      data.sort((a, b) => timeReverseFn(a, b, 'casecreateddate'))
-    }
+    data.sort((a, b) => timeReverseFn(a, b, 'casecreateddate'))
     return data;
   }
 });
@@ -63,6 +55,49 @@ const hoveredStateId = computed(() => { return MainStore.hoveredStateId; });
 onMounted(() => { if (!NearbyActivityStore.loadingData && nearbyImminentlyDangerousGeojson.value.length > 0) { map.getSource('nearby').setData(featureCollection(nearbyImminentlyDangerousGeojson.value)) }});
 onBeforeUnmount(() => { if (map.getSource('nearby')) { map.getSource('nearby').setData(featureCollection([point([0,0])])) }});
 
+const nearbyImminentlyDangerousTableData = computed(() => {
+  return {
+    columns: [
+      {
+        label: 'Date',
+        field: 'casecreateddate',
+        type: 'date',
+        dateInputFormat: "yyyy-MM-dd'T'HH:mm:ssX",
+        dateOutputFormat: 'MM/dd/yyyy',
+      },
+      {
+        label: 'Location',
+        field: 'address',
+      },
+      {
+        label: 'Type',
+        field: 'link',
+        html: true,
+      },
+      {
+        label: 'Distance',
+        field: 'distance_ft',
+      }
+    ],
+    rows: nearbyImminentlyDangerous.value || [],
+  }
+});
+
+{/* <table class="table is-fullwidth is-striped">
+v-for="item in nearbyImminentlyDangerous"
+:key="item.casenumber"
+:id="item.casenumber"
+@mouseover="handleRowMouseover"
+@mouseleave="handleRowMouseleave"
+:class="hoveredStateId == item.casenumber ? 'active-hover' : 'inactive'"
+>
+<td>{{ date(item.casecreateddate) }}</td>
+<td>{{ item.address }}</td>
+<td v-html="`<a target='_blank' href='https://li.phila.gov/property-history/search/violation-detail?address=${item.address}&Id=${item.casenumber}'>${item.casestatus}</a>`"></td>
+<td>{{ (item.distance * 3.28084).toFixed(0) }} ft</td>
+</tr>
+</tbody>
+</table> */}
 
 </script>
 
@@ -72,40 +107,28 @@ onBeforeUnmount(() => { if (map.getSource('nearby')) { map.getSource('nearby').s
     :timeIntervals="timeIntervals"
     @setTimeInterval="setTimeInterval"
   ></IntervalDropdown>
-  <SortbyDropdown
-    @setSortby="setSortby"
-  ></SortbyDropdown>
   <div class="mt-5">
-    <h5 class="subtitle is-5">Imminently Dangerous</h5>
-    <div v-if="loadingData">Loading...</div>
+    <h5 class="subtitle is-5">Imminently Dangerous ({{ nearbyImminentlyDangerousTableData.rows.length }})</h5>
     <div class="horizontal-table">
-      <table class="table is-fullwidth is-striped">
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Location</th>
-            <th>Type</th>
-            <th>Distance</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="item in nearbyImminentlyDangerous"
-            :key="item.casenumber"
-            :id="item.casenumber"
-            @mouseover="handleRowMouseover"
-            @mouseleave="handleRowMouseleave"
-            :class="hoveredStateId == item.casenumber ? 'active-hover' : 'inactive'"
-          >
-            <td>{{ date(item.casecreateddate) }}</td>
-            <td>{{ item.address }}</td>
-            <td v-html="`<a target='_blank' href='https://li.phila.gov/property-history/search/violation-detail?address=${item.address}&Id=${item.casenumber}'>${item.casestatus}</a>`"></td>
-            <td>{{ (item.distance * 3.28084).toFixed(0) }} ft</td>
-          </tr>
-        </tbody>
-      </table>
+      <vue-good-table
+        id="nearbyImminentlyDangerous"
+        :columns="nearbyImminentlyDangerousTableData.columns"
+        :rows="nearbyImminentlyDangerousTableData.rows"
+        :row-style-class="row => hoveredStateId === row.casenumber ? 'active-hover ' + row.casenumber : 'inactive ' + row.casenumber"
+        style-class="table"
+        @row-mouseenter="handleRowMouseover($event, 'casenumber')"
+        @row-mouseleave="handleRowMouseleave"
+      >
+        <template #emptystate>
+          <div v-if="NearbyActivityStore.loadingData">
+            Loading nearby imminently dangerous properties... <font-awesome-icon icon='fa-solid fa-spinner fa-spin'></font-awesome-icon>
+          </div>
+          <div v-else>
+            No nearby imminently dangerous properties found
+          </div>
+        </template>
+      </vue-good-table>
     </div>
-    <div class='mobile-no-data' v-if="!nearbyImminentlyDangerous.length">No nearby imminently dangerous properties found for this time interval</div>
   </div>
 </template>
 

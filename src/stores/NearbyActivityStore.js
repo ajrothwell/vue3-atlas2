@@ -344,44 +344,69 @@ export const useNearbyActivityStore = defineStore('NearbyActivityStore', {
     },
 
     async fillNearbyDemolitionPermits() {
-      const GeocodeStore = useGeocodeStore();
-      this.setLoadingData(true);
-      const feature = GeocodeStore.aisData.features[0];
-      let dataSource = {
-        url: 'https://phl.carto.com/api/v2/sql?',
-        options: {
-          table: 'permits',
-          where: "permitdescription like '%DEMOLITION PERMIT%'",
-          dateMinNum: 1,
-          dateMinType: 'year',
-          dateField: 'permitissuedate',
-        },
-      };
-      let params = fetchNearby(feature, dataSource);
-      const response = await axios.get(dataSource.url, { params })
-      this.nearbyDemolitionPermits = response;
-      this.setLoadingData(false);
+      try {
+        const GeocodeStore = useGeocodeStore();
+        this.setLoadingData(true);
+        const feature = GeocodeStore.aisData.features[0];
+        let dataSource = {
+          url: 'https://phl.carto.com/api/v2/sql?',
+          options: {
+            table: 'permits',
+            where: "permitdescription like '%DEMOLITION PERMIT%'",
+            dateMinNum: 1,
+            dateMinType: 'year',
+            dateField: 'permitissuedate',
+          },
+        };
+        let params = fetchNearby(feature, dataSource);
+        const response = await axios.get(dataSource.url, { params })
+        if (response.status === 200) {
+          const data = response.data;
+          data.rows.forEach(row => {
+            row.distance_ft = (row.distance * 3.28084).toFixed(0) + ' ft';
+          });
+          this.nearbyDemolitionPermits = data;
+          this.setLoadingData(false);
+        } else {
+          console.warn('nearbyDemolitionPermits - await resolved but HTTP status was not successful');
+        }
+      } catch {
+        console.error('nearbyDemolitionPermits - await never resolved, failed to fetch address data');
+      }
     },
 
     async fillNearbyImminentlyDangerous() {
-      const GeocodeStore = useGeocodeStore();
-      this.setLoadingData(true);
-      const feature = GeocodeStore.aisData.features[0];
-      let dataSource = {
-        url: 'https://phl.carto.com/api/v2/sql?',
-        options: {
-          table: 'violations',
-          where: "caseprioritydesc like '%IMMINENTLY DANGEROUS%'",
-          dateMinNum: 1,
-          dateMinType: 'year',
-          dateField: 'casecreateddate',
-          groupby: 'casenumber, casecreateddate, caseprioritydesc, casestatus, address',
-        },
-      };
-      let params = fetchNearby(feature, dataSource);
-      const response = await axios.get(dataSource.url, { params })
-      this.nearbyImminentlyDangerous = response;
-      this.setLoadingData(false);
+      try {
+        const GeocodeStore = useGeocodeStore();
+        this.setLoadingData(true);
+        const feature = GeocodeStore.aisData.features[0];
+        let dataSource = {
+          url: 'https://phl.carto.com/api/v2/sql?',
+          options: {
+            table: 'violations',
+            where: "caseprioritydesc like '%IMMINENTLY DANGEROUS%'",
+            dateMinNum: 1,
+            dateMinType: 'year',
+            dateField: 'casecreateddate',
+            groupby: 'casenumber, casecreateddate, caseprioritydesc, casestatus, address',
+          },
+        };
+        let params = fetchNearby(feature, dataSource);
+        const response = await axios.get(dataSource.url, { params })
+        if (response.status === 200) {
+          const data = response.data;
+          data.rows.forEach(row => {
+            row.distance_ft = (row.distance * 3.28084).toFixed(0) + ' ft';
+            row.link = `<a target='_blank' href='https://li.phila.gov/property-history/search/violation-detail?address=${row.address}&Id=${row.casenumber}'>${row.casestatus}</a>`;
+          });
+          this.nearbyImminentlyDangerous = data;
+          this.setLoadingData(false);
+        } else {
+          console.warn('nearbyImminentlyDangerous - await resolved but HTTP status was not successful');
+        }
+      } catch {
+        console.error('nearbyImminentlyDangerous - await never resolved, failed to fetch address data');
+      }
     },
   },
 

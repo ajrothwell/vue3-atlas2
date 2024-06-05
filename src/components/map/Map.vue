@@ -544,7 +544,7 @@ watch(
         'nearbyConstructionPermits',
         '#FF0000',
         'nearbyDemolitionPermits',
-        '#FFA500',
+        '#0096FF',
         'nearbyImminentlyDangerous',
         '#009900',
         /* other */ '#000000'
@@ -573,7 +573,7 @@ watch(
         'nearbyConstructionPermits',
         '#FF0000',
         'nearbyDemolitionPermits',
-        '#FFA500',
+        '#0096FF',
         'nearbyImminentlyDangerous',
         '#009900',
         /* other */ '#000000'

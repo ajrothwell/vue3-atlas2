@@ -91,7 +91,7 @@ const nearbyConstructionPermitsTableData = computed(() => {
     @setTimeInterval="setTimeInterval"
   ></IntervalDropdown>
   <div class="mt-5">
-    <h5 class="subtitle is-5">Construction Permits</h5>
+    <h5 class="subtitle is-5">Construction Permits ({{ nearbyConstructionPermitsTableData.rows.length }})</h5>
     <!-- <div v-if="loadingData">Loading...</div> -->
     <div class="horizontal-table">
       <vue-good-table
@@ -113,7 +113,6 @@ const nearbyConstructionPermitsTableData = computed(() => {
         </template>
       </vue-good-table>
     </div>
-    <div class='mobile-no-data' v-if="!nearbyConstructionPermits.length">No nearby construction permits found for this time interval</div>
   </div>
 </template>
 

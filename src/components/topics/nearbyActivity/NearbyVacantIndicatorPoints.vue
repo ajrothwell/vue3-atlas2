@@ -58,7 +58,7 @@ const nearbyVacantIndicatorsTableData = computed(() => {
 <template>
   
   <div class='mt-5'>
-      <h5 class="subtitle is-5">Likely Vacant Properties ({{ nearbyVacantIndicatorPoints.length }})</h5>
+      <h5 class="subtitle is-5">Likely Vacant Properties ({{ nearbyVacantIndicatorsTableData.rows.length }})</h5>
       <!-- <div v-if="loadingData">Loading...</div> -->
       <div class="horizontal-table">
         <vue-good-table
