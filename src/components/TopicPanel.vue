@@ -93,7 +93,7 @@ const zipCode = computed(() => {
     </topic>
 
     <topic :topic-name="'Voting'" :topic-icon="'fa-solid fa-gavel'" :loading="!dataSourcesLoadedArray.includes('Voting')">
-      <Voting v-if="dataSourcesLoadedArray.includes('Voting')"/>
+      <Voting />
     </topic>
 
     <topic :topic-name="'Nearby Activity'" :topic-icon="'fa-solid fa-map-marker-alt'" :loading="!dataSourcesLoadedArray.includes('Nearby Activity')">

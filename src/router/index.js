@@ -32,6 +32,7 @@ const getGeocodeAndPutInStore = async(address) => {
   const ZoningStore = useZoningStore();
   ZoningStore.clearZoningData();
   const VotingStore = useVotingStore();
+  VotingStore.clearVotingData();
   const NearbyActivityStore = useNearbyActivityStore();
   NearbyActivityStore.clearNearbyActivityData();
 

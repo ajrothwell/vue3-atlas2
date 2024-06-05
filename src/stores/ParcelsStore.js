@@ -111,23 +111,27 @@ export const useParcelsStore = defineStore('ParcelsStore', {
         'geometryType': 'esriGeometryPoint',
         'spatialRel': 'esriSpatialRelWithin',
       };
-      const response = await axios(`https://services.arcgis.com/fLeGjb7u4uXqeF9q/ArcGIS/rest/services/${ESRILayer}/FeatureServer/0/query`, { params });
-      console.log('response', response);
-      if (response.data.features.length > 0) {
-        let data = await response.data;
-        let processedData;
-        if (parcelLayer === 'dor') {
-          processedData = await processParcels(data);
-        } else {
-          processedData = data;
-        }
-        console.log('processedData:', processedData);
-        const MainStore = useMainStore();
-        MainStore.selectedParcelId = processedData.features[0].properties.OBJECTID;
-        this[parcelLayer] = processedData;
-      } //else {
-        // this[parcelLayer] = {};
-      // }
+      try {
+        const response = await axios(`https://services.arcgis.com/fLeGjb7u4uXqeF9q/ArcGIS/rest/services/${ESRILayer}/FeatureServer/0/query`, { params });
+        console.log('response', response);
+        if (response.data.features.length > 0) {
+          let data = await response.data;
+          let processedData;
+          if (parcelLayer === 'dor') {
+            processedData = await processParcels(data);
+          } else {
+            processedData = data;
+          }
+          console.log('processedData:', processedData);
+          const MainStore = useMainStore();
+          MainStore.selectedParcelId = processedData.features[0].properties.OBJECTID;
+          this[parcelLayer] = processedData;
+        } //else {
+          // this[parcelLayer] = {};
+        // }
+      } catch {
+        console.error(`Failed to fetch ${parcelLayer} parcel data by lng/lat`)
+      }
     },
 
   }
