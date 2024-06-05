@@ -105,6 +105,9 @@ const nearby311TableData = computed(() => {
           <div v-if="NearbyActivityStore.loadingData">
             Loading nearby 311... <font-awesome-icon icon='fa-solid fa-spinner fa-spin'></font-awesome-icon>
           </div>
+          <div v-else-if="NearbyActivityStore.dataError">
+            Data loading error - try refreshing the page
+          </div>
           <div v-else>
             No nearby 311 found
           </div>

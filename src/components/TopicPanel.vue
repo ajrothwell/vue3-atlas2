@@ -98,7 +98,7 @@ const zipCode = computed(() => {
 
     <topic :topic-name="'Nearby Activity'" :topic-icon="'fa-solid fa-map-marker-alt'" :loading="!dataSourcesLoadedArray.includes('Nearby Activity')">
       <KeepAlive>
-        <NearbyActivity v-if="dataSourcesLoadedArray.includes('Nearby Activity')"/>
+        <NearbyActivity />
       </KeepAlive>
     </topic>
   </div>

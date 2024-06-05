@@ -3,7 +3,7 @@ import { useGeocodeStore } from '@/stores/GeocodeStore.js'
 import { useMapStore } from '@/stores/MapStore.js'
 
 import axios from 'axios';
-import { format, subHours, addHours, subDays, addDays, subWeeks, addWeeks, subMonths, addMonths, subYears, addYears } from 'date-fns';
+import { format, subHours, addHours, subDays, addDays, subWeeks, addWeeks, subMonths, addMonths, subYears, addYears, set } from 'date-fns';
 import { point, polygon, lineString } from '@turf/helpers';
 import distance from '@turf/distance';
 import explode from '@turf/explode';
@@ -113,7 +113,8 @@ const fetchNearby = (feature, dataSource) => {
 export const useNearbyActivityStore = defineStore('NearbyActivityStore', {
   state: () => {
     return {
-      loadingData: false,
+      dataError: false,
+      loadingData: true,
       nearby311: {},
       nearbyCrimeIncidents: null,
       nearbyZoningAppeals: null,
@@ -125,8 +126,22 @@ export const useNearbyActivityStore = defineStore('NearbyActivityStore', {
   },
 
   actions: {
+    setDataError(error) {
+      this.dataError = error;
+    },
     setLoadingData(loading) {
       this.loadingData = loading;
+    },
+    async clearNearbyActivityData() {
+      this.dataError = false;
+      this.loadingData = true;
+      this.nearby311 = {};
+      this.nearbyCrimeIncidents = null;
+      this.nearbyZoningAppeals = null;
+      this.nearbyVacantIndicatorPoints = null;
+      this.nearbyConstructionPermits = null;
+      this.nearbyDemolitionPermits = null;
+      this.nearbyImminentlyDangerous = null;
     },
     async fetchData(dataType) {
       console.log("fetchData is runnning, dataType:", dataType);
@@ -171,9 +186,13 @@ export const useNearbyActivityStore = defineStore('NearbyActivityStore', {
           this.setLoadingData(false);
         } else {
           console.warn('nearby311 - await resolved but HTTP status was not successful');
+          this.setLoadingData(false);
+          this.setDataError(true);
         }
       } catch {
         console.error('nearby311 - await never resolved, failed to fetch address data');
+        this.setLoadingData(false);
+        this.setDataError(true);
       }
     },
     async fillNearbyCrimeIncidents() {

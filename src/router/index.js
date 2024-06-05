@@ -31,6 +31,9 @@ const getGeocodeAndPutInStore = async(address) => {
   LiStore.clearAllLiData();
   const ZoningStore = useZoningStore();
   ZoningStore.clearZoningData();
+  const VotingStore = useVotingStore();
+  const NearbyActivityStore = useNearbyActivityStore();
+  NearbyActivityStore.clearNearbyActivityData();
 
   const CondosStore = useCondosStore();
   CondosStore.lastPageUsed = 1;
