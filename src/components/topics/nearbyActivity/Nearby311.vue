@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, computed, watch, onMounted, onBeforeUnmount } from 'vue';
+import { nextTick, ref, reactive, computed, watch, onMounted, onBeforeUnmount } from 'vue';
 import { point, featureCollection } from '@turf/helpers';
 
 import { useNearbyActivityStore } from '@/stores/NearbyActivityStore';
@@ -8,7 +8,7 @@ import { useMainStore } from '@/stores/MainStore';
 const MainStore = useMainStore();
 import { useMapStore } from '@/stores/MapStore';
 const MapStore = useMapStore();
-const map = MapStore.map;
+// const map = MapStore.map;
 
 import IntervalDropdown from '@/components/topics/nearbyActivity/IntervalDropdown.vue';
 import useTransforms from '@/composables/useTransforms';
@@ -46,12 +46,23 @@ const nearby311Geojson = computed(() => {
   if (!nearby311.value) return [point([0,0])];
   return nearby311.value.map(item => point([item.lng, item.lat], { id: item.service_request_id, type: 'nearby311' }));
 })
-watch (() => nearby311Geojson.value, (newGeojson) => { map.getSource('nearby').setData(featureCollection(newGeojson)) });
+watch (() => nearby311Geojson.value, async(newGeojson) => {
+  const map = MapStore.map;
+  // await nextTick()
+  console.log('updating nearby 311 geojson', newGeojson, 'map.getSource:', map.getSource);
+  map.getSource('nearby').setData(featureCollection(newGeojson))
+});
 
 const hoveredStateId = computed(() => { return MainStore.hoveredStateId; });
 
-onMounted(() => { if (!NearbyActivityStore.loadingData && nearby311Geojson.value.length > 0) { map.getSource('nearby').setData(featureCollection(nearby311Geojson.value)) }});
-onBeforeUnmount(() => { if (map.getSource('nearby')) { map.getSource('nearby').setData(featureCollection([point([0,0])])) }});
+onMounted(() => {
+  const map = MapStore.map;
+  if (!NearbyActivityStore.loadingData && nearby311Geojson.value.length > 0) { map.getSource('nearby').setData(featureCollection(nearby311Geojson.value)) }
+});
+onBeforeUnmount(() => {
+  const map = MapStore.map;
+  if (map.getSource('nearby')) { map.getSource('nearby').setData(featureCollection([point([0,0])])) }
+});
 
 const nearby311TableData = computed(() => {
   return {
@@ -90,7 +101,6 @@ const nearby311TableData = computed(() => {
   ></IntervalDropdown>
   <div class="mt-5">
     <h5 class="subtitle is-5">311 Requests ({{ nearby311TableData.rows.length }})</h5>
-    <!-- <div v-if="loadingData">Loading...</div> -->
     <div class="horizontal-table">
       <vue-good-table
         id="nearby311"
