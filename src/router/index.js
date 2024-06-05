@@ -146,15 +146,7 @@ const topicDataFetch = async (topic, data) => {
 
   if (topic === 'Licenses & Inspections') {
     const LiStore = useLiStore();
-    await LiStore.fillLiBuildingFootprints();
-    await LiStore.fillLiBuildingCertSummary();
-    await LiStore.fillLiBuildingCerts();
-    await LiStore.fillLiInspections();
-    await LiStore.fillLiAisZoningDocs();
-    await LiStore.fillLiEclipseZoningDocs();
-    await LiStore.fillLiPermits();
-    await LiStore.fillLiViolations();
-    await LiStore.fillLiBusinessLicenses();
+    await LiStore.fillAllLiData();
     LiStore.loadingLiData = false;
   }
 

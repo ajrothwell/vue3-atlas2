@@ -23,6 +23,17 @@ export const useLiStore = defineStore('LiStore', {
   },
   // each of these functions was originally a single data-source file in atlas
   actions: {
+    async fillAllLiData() {
+      this.fillLiBuildingFootprints();
+      this.fillLiBuildingCertSummary();
+      this.fillLiBuildingCerts();
+      this.fillLiInspections();
+      this.fillLiAisZoningDocs();
+      this.fillLiEclipseZoningDocs();
+      this.fillLiPermits();
+      this.fillLiViolations();
+      this.fillLiBusinessLicenses();
+    },
     async clearAllLiData() {
       this.loadingLiData = true;
       this.selectedLiBuildingNumber = null;
