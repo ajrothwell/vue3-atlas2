@@ -10,7 +10,6 @@ import { useMapStore } from '@/stores/MapStore';
 const MapStore = useMapStore();
 const map = MapStore.map;
 
-import SortbyDropdown from '@/components/topics/nearbyActivity/SortbyDropdown.vue';
 import IntervalDropdown from '@/components/topics/nearbyActivity/IntervalDropdown.vue';
 import useTransforms from '@/composables/useTransforms';
 const { date, timeReverseFn } = useTransforms();
@@ -18,9 +17,6 @@ import useScrolling from '@/composables/useScrolling';
 const { handleRowMouseover, handleRowMouseleave } = useScrolling();
 
 const loadingData = computed(() => NearbyActivityStore.loadingData );
-
-const sortby = ref('distance');
-const setSortby = (e) => sortby.value = e;
 
 const timeIntervalSelected = ref(30);
 
@@ -36,7 +32,7 @@ const setTimeInterval = (e) => timeIntervalSelected.value = e;
 
 const nearbyConstructionPermits = computed(() => {
   if (NearbyActivityStore.nearbyConstructionPermits) {
-    let data = [ ...NearbyActivityStore.nearbyConstructionPermits.data.rows]
+    let data = [ ...NearbyActivityStore.nearbyConstructionPermits.rows]
       .filter(item => {
       let itemDate = new Date(item.permitissuedate);
       let now = new Date();
@@ -44,11 +40,7 @@ const nearbyConstructionPermits = computed(() => {
       let daysDiff = timeDiff / (1000 * 60 * 60 * 24);
       return daysDiff <= timeIntervalSelected.value;
     })
-    if (sortby.value === 'distance') {
-      data.sort((a, b) => a.distance - b.distance)
-    } else if (sortby.value === 'time') {
-      data.sort((a, b) => timeReverseFn(a, b, 'permitissuedate'))
-    }
+    data.sort((a, b) => timeReverseFn(a, b, 'permitissuedate'))
     return data;
   }
 });
@@ -63,6 +55,33 @@ const hoveredStateId = computed(() => { return MainStore.hoveredStateId; });
 onMounted(() => { if (!NearbyActivityStore.loadingData && nearbyConstructionPermitsGeojson.value.length > 0) { map.getSource('nearby').setData(featureCollection(nearbyConstructionPermitsGeojson.value)) }});
 onBeforeUnmount(() => { if (map.getSource('nearby')) { map.getSource('nearby').setData(featureCollection([point([0,0])])) }});
 
+const nearbyConstructionPermitsTableData = computed(() => {
+  return {
+    columns: [
+      {
+        label: 'Date',
+        field: 'permitissuedate',
+        type: 'date',
+        dateInputFormat: "yyyy-MM-dd'T'HH:mm:ssX",
+        dateOutputFormat: 'MM/dd/yyyy',
+      },
+      {
+        label: 'Location',
+        field: 'address',
+      },
+      {
+        label: 'Type',
+        field: 'typeofwork',
+      },
+      {
+        label: 'Distance',
+        field: 'distance_ft',
+      }
+    ],
+    rows: nearbyConstructionPermits.value || [],
+  }
+});
+
 </script>
 
 <template>
@@ -71,38 +90,28 @@ onBeforeUnmount(() => { if (map.getSource('nearby')) { map.getSource('nearby').s
     :timeIntervals="timeIntervals"
     @setTimeInterval="setTimeInterval"
   ></IntervalDropdown>
-  <SortbyDropdown
-    @setSortby="setSortby"
-  ></SortbyDropdown>
   <div class="mt-5">
     <h5 class="subtitle is-5">Construction Permits</h5>
-    <div v-if="loadingData">Loading...</div>
+    <!-- <div v-if="loadingData">Loading...</div> -->
     <div class="horizontal-table">
-      <table class="table is-fullwidth is-striped">
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Location</th>
-            <th>Type</th>
-            <th>Distance</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="item in nearbyConstructionPermits"
-            :key="item.objectid"
-            :id="item.objectid"
-            @mouseover="handleRowMouseover"
-            @mouseleave="handleRowMouseleave"
-            :class="hoveredStateId == item.objectid ? 'active-hover' : 'inactive'"
-          >
-            <td>{{ date(item.permitissuedate) }}</td>
-            <td>{{ item.address }}</td>
-            <td>{{ item.typeofwork }}</td>
-            <td>{{ (item.distance * 3.28084).toFixed(0) }} ft</td>
-          </tr>
-        </tbody>
-      </table>
+      <vue-good-table
+        id="nearbyConstructionPermits"
+        :columns="nearbyConstructionPermitsTableData.columns"
+        :rows="nearbyConstructionPermitsTableData.rows"
+        :row-style-class="row => hoveredStateId === row.objectid ? 'active-hover ' + row.objectid : 'inactive ' + row.objectid"
+        style-class="table"
+        @row-mouseenter="handleRowMouseover($event, 'objectid')"
+        @row-mouseleave="handleRowMouseleave"
+      >
+        <template #emptystate>
+          <div v-if="NearbyActivityStore.loadingData">
+            Loading nearby construction permits... <font-awesome-icon icon='fa-solid fa-spinner fa-spin'></font-awesome-icon>
+          </div>
+          <div v-else>
+            No nearby construction permits found
+          </div>
+        </template>
+      </vue-good-table>
     </div>
     <div class='mobile-no-data' v-if="!nearbyConstructionPermits.length">No nearby construction permits found for this time interval</div>
   </div>

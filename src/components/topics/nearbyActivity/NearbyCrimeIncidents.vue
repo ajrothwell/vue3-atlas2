@@ -29,7 +29,7 @@ const timeIntervals = reactive(
 const setTimeInterval = (e) => timeIntervalSelected.value = e;
 
 const nearbyCrimeIncidents = computed(() => {
-  if (NearbyActivityStore.nearbyCrimeIncidents.rows) {
+  if (NearbyActivityStore.nearbyCrimeIncidents && NearbyActivityStore.nearbyCrimeIncidents.rows) {
     let data = [ ...NearbyActivityStore.nearbyCrimeIncidents.rows]
       .filter(item => {
       let timeDiff = new Date() - new Date(item.dispatch_date);
@@ -78,12 +78,6 @@ const nearbyCrimeIncidentsTableData = computed(() => {
   }
 });
 
-// const nearbyCrimeIncidentsTableDataLength = computed(() => { 
-//   if (nearby311TableData.value.rows) {
-//     return nearby311TableData.value.rows.length;
-//   }
-// });
-
 </script>
 
 <template>
@@ -94,7 +88,7 @@ const nearbyCrimeIncidentsTableData = computed(() => {
   ></IntervalDropdown>
   <div class='mt-5'>
     <h5 class="subtitle is-5">Crime Incidents ({{ nearbyCrimeIncidentsTableData.rows.length }})</h5>
-    <div v-if="loadingData">Loading...</div>
+    <!-- <div v-if="loadingData">Loading...</div> -->
     <div class="horizontal-table">
       <vue-good-table
         id="nearbyCrimeIncidents"

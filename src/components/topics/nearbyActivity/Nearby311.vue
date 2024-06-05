@@ -90,7 +90,7 @@ const nearby311TableData = computed(() => {
   ></IntervalDropdown>
   <div class="mt-5">
     <h5 class="subtitle is-5">311 Requests ({{ nearby311TableData.rows.length }})</h5>
-    <div v-if="loadingData">Loading...</div>
+    <!-- <div v-if="loadingData">Loading...</div> -->
     <div class="horizontal-table">
       <vue-good-table
         id="nearby311"

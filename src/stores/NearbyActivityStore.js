@@ -238,89 +238,109 @@ export const useNearbyActivityStore = defineStore('NearbyActivityStore', {
     },
 
     async fillNearbyVacantIndicatorPoints() {
-      this.setLoadingData(true);
-      const GeocodeStore = useGeocodeStore();
-      const coordinates = GeocodeStore.aisData.features[0].geometry.coordinates;
-      const MapStore = useMapStore();
-      await MapStore.fillBufferForAddress(coordinates[0], coordinates[1]);
-      const buffer = MapStore.bufferForAddress;
+      try {
+        this.setLoadingData(true);
+        const GeocodeStore = useGeocodeStore();
+        const coordinates = GeocodeStore.aisData.features[0].geometry.coordinates;
+        const MapStore = useMapStore();
+        await MapStore.fillBufferForAddress(coordinates[0], coordinates[1]);
+        const buffer = MapStore.bufferForAddress;
 
-      const url = 'https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/Vacant_Indicators_Points/FeatureServer/0/query?';
-      const xyCoords = buffer.geometries[0].rings[0];
-      let xyCoordsReduced = [[ parseFloat(xyCoords[0][0].toFixed(6)), parseFloat(xyCoords[0][1].toFixed(6)) ]];
-      var i;
-      for (i = 0; i < xyCoords.length; i++) {
-        if (i%3 == 0) {
-          let newXyCoordReduced = [ parseFloat(xyCoords[i][0].toFixed(6)), parseFloat(xyCoords[i][1].toFixed(6)) ];
-          xyCoordsReduced.push(newXyCoordReduced);
-        }
-      }
-      xyCoordsReduced.push([ parseFloat(xyCoords[0][0].toFixed(6)), parseFloat(xyCoords[0][1].toFixed(6)) ]);
-
-      const params = {
-        'returnGeometry': true,
-        'where': '1=1',
-        'outSR': 4326,
-        'outFields': '*',
-        'inSr': 4326,
-        'geometryType': 'esriGeometryPolygon',
-        'spatialRel': 'esriSpatialRelContains',
-        'f': 'geojson',
-        'geometry': JSON.stringify({ "rings": [xyCoordsReduced], "spatialReference": { "wkid": 4326 }}),
-      };
-
-      const response = await axios.get(url, { params });
-      const data = await response.data;
-
-      let features = (data || {}).features;
-      // const GeocodeStore = useGeocodeStore();
-      const feature = GeocodeStore.aisData.features[0];
-      const from = point(feature.geometry.coordinates);
-
-      features = features.map(feature => {
-        const featureCoords = feature.geometry.coordinates;
-        let dist;
-        if (Array.isArray(featureCoords[0])) {
-          let instance;
-          if (feature.geometry.type === 'LineString') {
-            instance = lineString([ featureCoords[0], featureCoords[1] ], { name: 'line 1' });
-          } else {
-            instance = polygon([ featureCoords[0] ]);
+        const url = 'https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/Vacant_Indicators_Points/FeatureServer/0/query?';
+        const xyCoords = buffer.geometries[0].rings[0];
+        let xyCoordsReduced = [[ parseFloat(xyCoords[0][0].toFixed(6)), parseFloat(xyCoords[0][1].toFixed(6)) ]];
+        var i;
+        for (i = 0; i < xyCoords.length; i++) {
+          if (i%3 == 0) {
+            let newXyCoordReduced = [ parseFloat(xyCoords[i][0].toFixed(6)), parseFloat(xyCoords[i][1].toFixed(6)) ];
+            xyCoordsReduced.push(newXyCoordReduced);
           }
-          const vertices = explode(instance);
-          const closestVertex = nearest(from, vertices);
-          dist = distance(from, closestVertex, { units: 'miles' });
-        } else {
-          const to = point(featureCoords);
-          dist = distance(from, to, { units: 'miles' });
         }
-        const distFeet = parseInt(dist * 5280);
-        feature._distance = distFeet;
-        return feature;
-      });
+        xyCoordsReduced.push([ parseFloat(xyCoords[0][0].toFixed(6)), parseFloat(xyCoords[0][1].toFixed(6)) ]);
 
-      this.nearbyVacantIndicatorPoints = features;
-      this.setLoadingData(false);
+        const params = {
+          'returnGeometry': true,
+          'where': '1=1',
+          'outSR': 4326,
+          'outFields': '*',
+          'inSr': 4326,
+          'geometryType': 'esriGeometryPolygon',
+          'spatialRel': 'esriSpatialRelContains',
+          'f': 'geojson',
+          'geometry': JSON.stringify({ "rings": [xyCoordsReduced], "spatialReference": { "wkid": 4326 }}),
+        };
+
+        const response = await axios.get(url, { params });
+        if (response.status === 200) {
+          const data = await response.data;
+
+          let features = (data || {}).features;
+          // const GeocodeStore = useGeocodeStore();
+          const feature = GeocodeStore.aisData.features[0];
+          const from = point(feature.geometry.coordinates);
+
+          features = features.map(feature => {
+            const featureCoords = feature.geometry.coordinates;
+            let dist;
+            if (Array.isArray(featureCoords[0])) {
+              let instance;
+              if (feature.geometry.type === 'LineString') {
+                instance = lineString([ featureCoords[0], featureCoords[1] ], { name: 'line 1' });
+              } else {
+                instance = polygon([ featureCoords[0] ]);
+              }
+              const vertices = explode(instance);
+              const closestVertex = nearest(from, vertices);
+              dist = distance(from, closestVertex, { units: 'miles' });
+            } else {
+              const to = point(featureCoords);
+              dist = distance(from, to, { units: 'miles' });
+            }
+            const distFeet = parseInt(dist * 5280);
+            feature.properties.distance_ft = distFeet + ' ft';
+            return feature;
+          });
+
+          this.nearbyVacantIndicatorPoints = features;
+          this.setLoadingData(false);
+        } else {
+          console.warn('nearbyVacantIndicatorPoints - await resolved but HTTP status was not successful');
+        }
+      } catch {
+        console.error('nearbyVacantIndicatorPoints - await never resolved, failed to fetch address data');
+      }
     },
 
     async fillNearbyConstructionPermits() {
-      const GeocodeStore = useGeocodeStore();
-      this.setLoadingData(true);
-      const feature = GeocodeStore.aisData.features[0];
-      let dataSource = {
-        url: 'https://phl.carto.com/api/v2/sql?',
-        options: {
-          table: 'permits',
-          where: "typeofwork like '%NEW CONSTRUCTION%'",
-          dateMinNum: 1,
-          dateMinType: 'year',
-          dateField: 'permitissuedate',
-        },
-      };
-      let params = fetchNearby(feature, dataSource);
-      const response = await axios.get(dataSource.url, { params })
-      this.nearbyConstructionPermits = response;
-      this.setLoadingData(false);
+      try {
+        const GeocodeStore = useGeocodeStore();
+        this.setLoadingData(true);
+        const feature = GeocodeStore.aisData.features[0];
+        let dataSource = {
+          url: 'https://phl.carto.com/api/v2/sql?',
+          options: {
+            table: 'permits',
+            where: "typeofwork like '%NEW CONSTRUCTION%'",
+            dateMinNum: 1,
+            dateMinType: 'year',
+            dateField: 'permitissuedate',
+          },
+        };
+        let params = fetchNearby(feature, dataSource);
+        const response = await axios.get(dataSource.url, { params })
+        if (response.status === 200) {
+          const data = response.data;
+          data.rows.forEach(row => {
+            row.distance_ft = (row.distance * 3.28084).toFixed(0) + ' ft';
+          });
+          this.nearbyConstructionPermits = data;
+          this.setLoadingData(false);
+        } else {
+          console.warn('nearbyConstructionPermits - await resolved but HTTP status was not successful');
+        }
+      } catch {
+        console.error('nearbyConstructionPermits - await never resolved, failed to fetch address data');
+      }
     },
 
     async fillNearbyDemolitionPermits() {

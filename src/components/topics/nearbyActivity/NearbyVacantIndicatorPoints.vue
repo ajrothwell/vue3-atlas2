@@ -10,23 +10,15 @@ import { useMapStore } from '@/stores/MapStore';
 const MapStore = useMapStore();
 const map = MapStore.map;
 
-import SortbyDropdown from '@/components/topics/nearbyActivity/SortbyDropdown.vue';
 import useScrolling from '@/composables/useScrolling';
 const { handleRowMouseover, handleRowMouseleave } = useScrolling();
 
 const loadingData = computed(() => NearbyActivityStore.loadingData );
 
-const sortby = ref('distance');
-const setSortby = (e) => sortby.value = e;
-
 const nearbyVacantIndicatorPoints = computed(() => {
   if (NearbyActivityStore.nearbyVacantIndicatorPoints) {
-    let data = [ ...NearbyActivityStore.nearbyVacantIndicatorPoints]
-    if (sortby.value === 'distance') {
-      data.sort((a, b) => a._distance - b._distance)
-    } else if (sortby.value === 'type') {
-      data.sort((a, b) => a.distance - b.distance)
-    }
+    let data = [ ...NearbyActivityStore.nearbyVacantIndicatorPoints];
+    data.sort((a, b) => a.distance_ft - b.distance_ft)
     return data;
   }
 });
@@ -41,42 +33,53 @@ const hoveredStateId = computed(() => { return MainStore.hoveredStateId; });
 onMounted(() => { if (!NearbyActivityStore.loadingData && nearbyVacantIndicatorPointsGeojson.value.length > 0) { map.getSource('nearby').setData(featureCollection(nearbyVacantIndicatorPointsGeojson.value)) }});
 onBeforeUnmount(() => { if (map.getSource('nearby')) { map.getSource('nearby').setData(featureCollection([point([0,0])])) }});
 
+const nearbyVacantIndicatorsTableData = computed(() => {
+  return {
+    columns: [
+      {
+        label: 'Address',
+        field: 'properties.ADDRESS',
+      },
+      {
+        label: 'Property',
+        field: 'properties.VACANT_FLAG',
+      },
+      {
+        label: 'Distance',
+        field: 'properties.distance_ft',
+      }
+    ],
+    rows: nearbyVacantIndicatorPoints.value || [],
+  }
+});
+
 </script>
 
 <template>
   
-  <SortbyDropdown
-    @setSortby="setSortby"
-  ></SortbyDropdown>
   <div class='mt-5'>
-      <h5 class="subtitle is-5">Likely Vacant Properties</h5>
-      <div v-if="loadingData">Loading...</div>
+      <h5 class="subtitle is-5">Likely Vacant Properties ({{ nearbyVacantIndicatorPoints.length }})</h5>
+      <!-- <div v-if="loadingData">Loading...</div> -->
       <div class="horizontal-table">
-        <table class="table is-fullwidth is-striped">
-          <thead>
-            <tr>
-              <th>Address</th>
-              <th>Property Type</th>
-              <th>Distance</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              v-for="item in nearbyVacantIndicatorPoints"
-              :key="item.id"
-              :id="item.id"
-              @mouseover="handleRowMouseover"
-              @mouseleave="handleRowMouseleave"
-              :class="hoveredStateId == item.id ? 'active-hover' : 'inactive'"
-            >
-              <td>{{ item.properties.ADDRESS }}</td>
-              <td>{{ item.properties.VACANT_FLAG }}</td>
-              <td>{{ (item._distance * 3.28084).toFixed(0) }} ft</td>
-            </tr>
-          </tbody>
-        </table>
+        <vue-good-table
+        id="nearbyVacantIndicators"
+        :columns="nearbyVacantIndicatorsTableData.columns"
+        :rows="nearbyVacantIndicatorsTableData.rows"
+        :row-style-class="row => hoveredStateId === row.id ? 'active-hover ' + row.id : 'inactive ' + row.id"
+        style-class="table"
+        @row-mouseenter="handleRowMouseover($event, 'id')"
+        @row-mouseleave="handleRowMouseleave"
+      >
+        <template #emptystate>
+          <div v-if="NearbyActivityStore.loadingData">
+            Loading nearby vacant indicators... <font-awesome-icon icon='fa-solid fa-spinner fa-spin'></font-awesome-icon>
+          </div>
+          <div v-else>
+            No nearby vacant indicators found
+          </div>
+        </template>
+      </vue-good-table>
       </div>
-      <div class='mobile-no-data' v-if="!nearbyVacantIndicators.length">No nearby likely vacant buildings found</div>
     </div>
 </template>
 

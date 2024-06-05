@@ -12,7 +12,7 @@ const map = MapStore.map;
 
 import IntervalDropdown from '@/components/topics/nearbyActivity/IntervalDropdown.vue';
 import useTransforms from '@/composables/useTransforms';
-const { date, timeReverseFn } = useTransforms();
+const { timeReverseFn } = useTransforms();
 import useScrolling from '@/composables/useScrolling';
 const { handleRowMouseover, handleRowMouseleave } = useScrolling();
 
@@ -89,32 +89,6 @@ const nearbyZoningAppealsTableData = computed(() => {
   }
 });
 
-{/* <table class="table is-fullwidth is-striped">
-<thead>
-<tr>
-<th>Date</th>
-<th>Location</th>
-<th>Description</th>
-<th>Distance</th>
-</tr>
-</thead>
-<tbody>
-<tr
-v-for="item in nearbyZoningAppeals"
-:key=item.objectid
-:id="item.objectid"
-@mouseover="handleRowMouseover"
-@mouseleave="handleRowMouseleave"
-:class="hoveredStateId == item.objectid ? 'active-hover' : 'inactive'"
->
-<td>{{ date(item.scheduleddate) }}</td>
-<td>{{ item.address }}</td>
-<td>{{ item.appealgrounds }}</td>
-<td>{{ (item.distance * 3.28084).toFixed(0) }} ft</td>
-</tr>
-</tbody>
-</table> */}
-
 </script>
 
 <template>
@@ -125,7 +99,7 @@ v-for="item in nearbyZoningAppeals"
   ></IntervalDropdown>
   <div class='mt-5'>
     <h5 class="subtitle is-5">Zoning Appeals</h5>
-    <div v-if="loadingData">Loading...</div>
+    <!-- <div v-if="loadingData">Loading...</div> -->
     <div class="horizontal-table">
       <vue-good-table
         id="nearbyZoningAppeals"
