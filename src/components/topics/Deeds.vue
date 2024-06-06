@@ -119,11 +119,11 @@ const parcelData = computed(() => [
   },
   {
     label: 'Origination Date',
-    value: selectedParcel.value ? date(selectedParcel.value.properties.ORIG_DATE) : '',
+    value: selectedParcel.value ? date(selectedParcel.value.properties.ORIG_DATE) || 'None' : 'None',
   },
   {
     label: 'Inactive Date',
-    value: selectedParcel.value ? date(selectedParcel.value.properties.INACTDATE) : '',
+    value: selectedParcel.value ? date(selectedParcel.value.properties.INACTDATE) || 'None' : 'None',
   },
   {
     label: 'Has Air Rights',

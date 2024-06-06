@@ -10,13 +10,28 @@ const GeocodeStore = useGeocodeStore();
 import { useCondosStore } from '@/stores/CondosStore';
 const CondosStore = useCondosStore();
 
-const totalSize = computed(() => {
-  return CondosStore.condosData.total_size
-})
+import CustomPagination from '@/components/pagination/CustomPagination.vue';
 
-const totalPages = computed(() => {
-  return Math.ceil(totalSize.value / 10)
-})
+const totalSize = computed(() => CondosStore.condosData.total_size);
+
+const totalPages = computed(() => Math.ceil(totalSize.value / 10));
+
+const paginationOptions = ref({
+  enabled: true,
+  mode: 'pages',
+  perPage: 10,
+  position: 'top',
+  dropdownAllowAll: false,
+  nextLabel: '',
+  prevLabel: '',
+  rowsPerPageLabel: '# rows',
+  ofLabel: 'of',
+  pageLabel: 'page', // for 'pages' mode
+  allLabel: 'All',
+  infoFn: (params) => {
+    return `${params.firstRecordOnPage} - ${params.lastRecordOnPage} of ${totalSize.value}`
+  }
+});
 
 let currentPage = computed(() => parseInt(route.params.data));
 
@@ -51,7 +66,8 @@ let startingCondo = computed(() => {
 });
 
 const condos = computed(() => {
-  return CondosStore.condosData.features.slice(startingCondo.value, startingCondo.value + 10);
+  return CondosStore.condosData.features;
+  // return CondosStore.condosData.features.slice(startingCondo.value, startingCondo.value + 10);
 });
 
 const currentDataPage = computed(() => {
@@ -71,20 +87,41 @@ watch(
   }
 )
 
-const getPreviousPage = () => {
-  if (currentPage.value > 1) {
-    return currentPage.value - 1;
-  } else {
-    return 1;
-  }
-}
+// const getPreviousPage = () => {
+//   if (currentPage.value > 1) {
+//     return currentPage.value - 1;
+//   } else {
+//     return 1;
+//   }
+// }
 
-const getNextPage = () => {
-  if (currentPage.value < totalPages.value) {
-    return currentPage.value + 1;
-  } else {
-    return totalPages.value;
+// const getNextPage = () => {
+//   if (currentPage.value < totalPages.value) {
+//     return currentPage.value + 1;
+//   } else {
+//     return totalPages.value;
+//   }
+// }
+
+const condosTableData = computed(() => {
+  return {
+    columns: [
+      {
+        label: 'Address',
+        field: 'properties.opa_address',
+      },
+      {
+        label: 'OPA Account #',
+        field: 'properties.opa_account_num',
+      },
+    ],
+    rows: condos.value || [],
   }
+});
+
+const pageChanged = (currentPage) => {
+  console.log('pageChanged, currentPage:', currentPage);
+  // router.push({ name: 'address-topic-and-data', params: { data: currentPage } });
 }
 
 </script>
@@ -95,37 +132,37 @@ const getNextPage = () => {
       Condominium units at your search address, as recorded for property assessment purposes. Click one of the addresses below to see information for that unit. Use the back button to return to this list. Source: Office of Property Assessment
     </div>
 
-    <h5 class="subtitle is-5">Condominiums</h5>
-
-    <nav class="pagination is-small is-centered" role="navigation" aria-label="pagination">
-      <router-link :to="{ name: 'address-topic-and-data', params: { data: getPreviousPage() }}" class="pagination-previous"><</router-link>
-      <ul class="pagination-list">
-        <li v-if="!currentPages.includes(1)"><span class="pagination-ellipsis">&hellip;</span></li>
-        <li><router-link :to="{ name: 'address-topic-and-data', params: { data: currentPages[0] }}" class="pagination-link" :class="currentPage === currentPages[0] ? 'is-current' : ''" aria-label="Goto page 1">{{ currentPages[0] }}</router-link></li>
-        <li v-if="currentPages[1]"><router-link :to="{ name: 'address-topic-and-data', params: { data: currentPages[1] }}" class="pagination-link" :class="currentPage === currentPages[1] ? 'is-current' : ''" aria-label="Goto page 45">{{ currentPages[1] }}</router-link></li>
-        <li v-if="currentPages[2]"><router-link :to="{ name: 'address-topic-and-data', params: { data: currentPages[2] }}" class="pagination-link" :class="currentPage === currentPages[2] ? 'is-current' : ''" aria-label="Page 46" aria-current="page">{{ currentPages[2] }}</router-link></li>
-        <li v-if="!currentPages.includes(totalPages)"><span class="pagination-ellipsis">&hellip;</span></li>
-        <li v-if="!currentPages.includes(totalPages)"><router-link :to="{ name: 'address-topic-and-data', params: { data: totalPages }}" class="pagination-link" :class="currentPage === totalPages" :aria-label="`Goto page ${totalPages}`">{{totalPages}}</router-link></li>
-      </ul>
-      <router-link :to="{ name: 'address-topic-and-data', params: { data: getNextPage() }}" class="pagination-next">></router-link>
-    </nav>
+    <h5 class="subtitle is-5">Condominiums ({{ totalSize }})</h5>
 
     <div class="horizontal-table">
-      <table class="table is-fullwidth is-striped">
-        <thead>
-          <tr>
-            <th>Address</th>
-            <th>OPA Account #</th>
-          </tr>
-        </thead>
-        <div v-if="condosLoading">loading...</div>
-        <tbody v-if="!condosLoading">
-          <tr v-for="item in condos">
-            <td><router-link :to="{ name: 'address-and-topic', params: { address: item.properties.opa_address, topic: 'Property' }}">{{ item.properties.opa_address }}</router-link></td>
-            <td>{{ item.properties.opa_account_num }}</td>
-          </tr>
-        </tbody>
-      </table>
+      <vue-good-table
+        id="condos"
+        :columns="condosTableData.columns"
+        :rows="condosTableData.rows"
+        :total-rows="totalSize"
+        style-class="table"
+        :pagination-options="paginationOptions"
+        :sort-options="{ enabled: false }"
+        @page-changed="pageChanged"
+      >
+        <template #emptystate>
+          <!-- <div v-if="DorStore.loadingDorData">
+            Loading Condos... <font-awesome-icon icon='fa-solid fa-spinner' spin></font-awesome-icon>
+          </div>
+          <div v-else>
+            No Condos found
+          </div> -->
+        </template>
+        <template #pagination-top="props">
+          <custom-pagination
+            :mode="'pages'"
+            :total="props.total"
+            :pageChanged="props.pageChanged"
+            :perPageChanged="props.perPageChanged"
+          >
+          </custom-pagination>
+        </template>
+      </vue-good-table>
     </div>
 
   </section>
