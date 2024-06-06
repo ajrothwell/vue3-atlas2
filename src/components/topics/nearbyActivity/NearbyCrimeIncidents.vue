@@ -50,11 +50,11 @@ const hoveredStateId = computed(() => { return MainStore.hoveredStateId; });
 
 onMounted(() => {
   const map = MapStore.map;
-  if (!NearbyActivityStore.loadingData && nearbyCrimeIncidentsGeojson.value.length > 0) { map.getSource('nearby').setData(featureCollection(nearbyCrimeIncidentsGeojson.value)) }
+  if (!NearbyActivityStore.loadingData && nearbyCrimeIncidentsGeojson.value.length > 0) { map.getSource('nearby').setData(featureCollection(nearbyCrimeIncidentsGeojson.value)) };
 });
 onBeforeUnmount(() => {
   const map = MapStore.map;
-  if (map.getSource('nearby')) { map.getSource('nearby').setData(featureCollection([point([0,0])])) }
+  if (map.getSource('nearby')) { map.getSource('nearby').setData(featureCollection([point([0,0])])) };
 });
 
 const nearbyCrimeIncidentsTableData = computed(() => {

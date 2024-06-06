@@ -16,10 +16,7 @@ const { timeReverseFn } = useTransforms();
 import useScrolling from '@/composables/useScrolling';
 const { handleRowMouseover, handleRowMouseleave } = useScrolling();
 
-const loadingData = computed(() => NearbyActivityStore.loadingData );
-
 const timeIntervalSelected = ref(0);
-
 const timeIntervals = reactive(
   {
     '0': 'any time',
@@ -27,7 +24,6 @@ const timeIntervals = reactive(
     '90': 'the next 90 days',
   }
 )
-
 const setTimeInterval = (e) => timeIntervalSelected.value = e;
 
 const nearbyZoningAppeals = computed(() => {
@@ -55,12 +51,21 @@ const nearbyZoningAppealsGeojson = computed(() => {
   if (!nearbyZoningAppeals.value) return [point([0,0])];
   return nearbyZoningAppeals.value.map(item => point([item.lng, item.lat], { id: item.objectid, type: 'nearbyZoningAppeals' }));
 })
-watch (() => nearbyZoningAppealsGeojson.value, (newGeojson) => { map.getSource('nearby').setData(featureCollection(newGeojson)) });
+watch (() => nearbyZoningAppealsGeojson.value, (newGeojson) => {
+  const map = MapStore.map;
+  map.getSource('nearby').setData(featureCollection(newGeojson));
+});
 
 const hoveredStateId = computed(() => { return MainStore.hoveredStateId; });
 
-onMounted(() => { if (!NearbyActivityStore.loadingData && nearbyZoningAppealsGeojson.value.length > 0) { map.getSource('nearby').setData(featureCollection(nearbyZoningAppealsGeojson.value)) }});
-onBeforeUnmount(() => { if (map.getSource('nearby')) { map.getSource('nearby').setData(featureCollection([point([0,0])])) }});
+onMounted(() => {
+  const map = MapStore.map;
+  if (!NearbyActivityStore.loadingData && nearbyZoningAppealsGeojson.value.length > 0) { map.getSource('nearby').setData(featureCollection(nearbyZoningAppealsGeojson.value)) };
+});
+onBeforeUnmount(() => {
+  const map = MapStore.map;
+  if (map.getSource('nearby')) { map.getSource('nearby').setData(featureCollection([point([0,0])])) };
+});
 
 const nearbyZoningAppealsTableData = computed(() => {
   return {
