@@ -13,7 +13,6 @@ dist-ssr
 coverage
 *.local
 *.development
-package-lock.json
 .env
 .npmrc
 
