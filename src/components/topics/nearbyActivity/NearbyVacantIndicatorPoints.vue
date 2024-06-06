@@ -8,7 +8,6 @@ import { useMainStore } from '@/stores/MainStore';
 const MainStore = useMainStore();
 import { useMapStore } from '@/stores/MapStore';
 const MapStore = useMapStore();
-const map = MapStore.map;
 
 import useScrolling from '@/composables/useScrolling';
 const { handleRowMouseover, handleRowMouseleave } = useScrolling();
@@ -26,12 +25,21 @@ const nearbyVacantIndicatorPointsGeojson = computed(() => {
   if (!nearbyVacantIndicatorPoints.value) return [point([0,0])];
   return nearbyVacantIndicatorPoints.value.map(item => point(item.geometry.coordinates, { id: item.id, type: 'nearbyVacantIndicatorPoints' }));
 })
-watch (() => nearbyVacantIndicatorPointsGeojson.value, (newGeojson) => { map.getSource('nearby').setData(featureCollection(newGeojson)) });
+watch (() => nearbyVacantIndicatorPointsGeojson.value, (newGeojson) => {
+  const map = MapStore.map;
+  map.getSource('nearby').setData(featureCollection(newGeojson));
+});
 
 const hoveredStateId = computed(() => { return MainStore.hoveredStateId; });
 
-onMounted(() => { if (!NearbyActivityStore.loadingData && nearbyVacantIndicatorPointsGeojson.value.length > 0) { map.getSource('nearby').setData(featureCollection(nearbyVacantIndicatorPointsGeojson.value)) }});
-onBeforeUnmount(() => { if (map.getSource('nearby')) { map.getSource('nearby').setData(featureCollection([point([0,0])])) }});
+onMounted(() => {
+  const map = MapStore.map;
+  if (!NearbyActivityStore.loadingData && nearbyVacantIndicatorPointsGeojson.value.length > 0) { map.getSource('nearby').setData(featureCollection(nearbyVacantIndicatorPointsGeojson.value)) };
+});
+onBeforeUnmount(() => {
+  const map = MapStore.map;
+  if (map.getSource('nearby')) { map.getSource('nearby').setData(featureCollection([point([0,0])])) };
+});
 
 const nearbyVacantIndicatorsTableData = computed(() => {
   return {
@@ -71,7 +79,7 @@ const nearbyVacantIndicatorsTableData = computed(() => {
         @row-mouseleave="handleRowMouseleave"
       >
         <template #emptystate>
-          <div v-if="NearbyActivityStore.loadingData">
+          <div v-if="loadingData">
             Loading nearby vacant indicators... <font-awesome-icon icon='fa-solid fa-spinner' spin></font-awesome-icon>
           </div>
           <div v-else>

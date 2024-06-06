@@ -16,6 +16,8 @@ const { timeReverseFn } = useTransforms();
 import useScrolling from '@/composables/useScrolling';
 const { handleRowMouseover, handleRowMouseleave } = useScrolling();
 
+const loadingData = computed(() => NearbyActivityStore.loadingData );
+
 const timeIntervalSelected = ref(30);
 const timeIntervals = reactive(
   {
@@ -106,7 +108,7 @@ const nearby311TableData = computed(() => {
         @row-mouseleave="handleRowMouseleave"
       >
         <template #emptystate>
-          <div v-if="NearbyActivityStore.loadingData">
+          <div v-if="loadingData">
             Loading nearby 311... <font-awesome-icon icon='fa-solid fa-spinner' spin></font-awesome-icon>
           </div>
           <div v-else-if="NearbyActivityStore.dataError">

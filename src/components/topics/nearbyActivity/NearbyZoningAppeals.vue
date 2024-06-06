@@ -8,13 +8,14 @@ import { useMainStore } from '@/stores/MainStore';
 const MainStore = useMainStore();
 import { useMapStore } from '@/stores/MapStore';
 const MapStore = useMapStore();
-const map = MapStore.map;
 
 import IntervalDropdown from '@/components/topics/nearbyActivity/IntervalDropdown.vue';
 import useTransforms from '@/composables/useTransforms';
 const { timeReverseFn } = useTransforms();
 import useScrolling from '@/composables/useScrolling';
 const { handleRowMouseover, handleRowMouseleave } = useScrolling();
+
+const loadingData = computed(() => NearbyActivityStore.loadingData );
 
 const timeIntervalSelected = ref(0);
 const timeIntervals = reactive(
@@ -115,7 +116,7 @@ const nearbyZoningAppealsTableData = computed(() => {
         @row-mouseleave="handleRowMouseleave"
       >
         <template #emptystate>
-          <div v-if="NearbyActivityStore.loadingData">
+          <div v-if="loadingData">
             Loading nearby zoning appeals... <font-awesome-icon icon='fa-solid fa-spinner' spin></font-awesome-icon>
           </div>
           <div v-else>

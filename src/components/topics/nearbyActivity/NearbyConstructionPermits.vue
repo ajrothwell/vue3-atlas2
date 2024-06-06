@@ -12,7 +12,7 @@ const map = MapStore.map;
 
 import IntervalDropdown from '@/components/topics/nearbyActivity/IntervalDropdown.vue';
 import useTransforms from '@/composables/useTransforms';
-const { date, timeReverseFn } = useTransforms();
+const { timeReverseFn } = useTransforms();
 import useScrolling from '@/composables/useScrolling';
 const { handleRowMouseover, handleRowMouseleave } = useScrolling();
 
@@ -48,12 +48,21 @@ const nearbyConstructionPermitsGeojson = computed(() => {
   if (!nearbyConstructionPermits.value) return [point([0,0])];
   return nearbyConstructionPermits.value.map(item => point([item.lng, item.lat], { id: item.objectid, type: 'nearbyConstructionPermits' }));
 })
-watch (() => nearbyConstructionPermitsGeojson.value, (newGeojson) => { map.getSource('nearby').setData(featureCollection(newGeojson)) });
+watch (() => nearbyConstructionPermitsGeojson.value, (newGeojson) => {
+  const map = MapStore.map;
+  map.getSource('nearby').setData(featureCollection(newGeojson));
+});
 
 const hoveredStateId = computed(() => { return MainStore.hoveredStateId; });
 
-onMounted(() => { if (!NearbyActivityStore.loadingData && nearbyConstructionPermitsGeojson.value.length > 0) { map.getSource('nearby').setData(featureCollection(nearbyConstructionPermitsGeojson.value)) }});
-onBeforeUnmount(() => { if (map.getSource('nearby')) { map.getSource('nearby').setData(featureCollection([point([0,0])])) }});
+onMounted(() => {
+  const map = MapStore.map;
+  if (!NearbyActivityStore.loadingData && nearbyConstructionPermitsGeojson.value.length > 0) { map.getSource('nearby').setData(featureCollection(nearbyConstructionPermitsGeojson.value)) };
+});
+onBeforeUnmount(() => {
+  const map = MapStore.map;
+  if (map.getSource('nearby')) { map.getSource('nearby').setData(featureCollection([point([0,0])])) };
+});
 
 const nearbyConstructionPermitsTableData = computed(() => {
   return {
@@ -92,7 +101,6 @@ const nearbyConstructionPermitsTableData = computed(() => {
   ></IntervalDropdown>
   <div class="mt-5">
     <h5 class="subtitle is-5">Construction Permits ({{ nearbyConstructionPermitsTableData.rows.length }})</h5>
-    <!-- <div v-if="loadingData">Loading...</div> -->
     <div class="horizontal-table">
       <vue-good-table
         id="nearbyConstructionPermits"
@@ -104,7 +112,7 @@ const nearbyConstructionPermitsTableData = computed(() => {
         @row-mouseleave="handleRowMouseleave"
       >
         <template #emptystate>
-          <div v-if="NearbyActivityStore.loadingData">
+          <div v-if="loadingData">
             Loading nearby construction permits... <font-awesome-icon icon='fa-solid fa-spinner' spin></font-awesome-icon>
           </div>
           <div v-else>

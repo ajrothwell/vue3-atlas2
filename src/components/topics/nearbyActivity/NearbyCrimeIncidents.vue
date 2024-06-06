@@ -16,6 +16,8 @@ const { timeReverseFn } = useTransforms();
 import useScrolling from '@/composables/useScrolling';
 const { handleRowMouseover, handleRowMouseleave } = useScrolling();
 
+const loadingData = computed(() => NearbyActivityStore.loadingData );
+
 const timeIntervalSelected = ref(30);
 const timeIntervals = reactive(
   {
@@ -94,7 +96,6 @@ const nearbyCrimeIncidentsTableData = computed(() => {
   ></IntervalDropdown>
   <div class='mt-5'>
     <h5 class="subtitle is-5">Crime Incidents ({{ nearbyCrimeIncidentsTableData.rows.length }})</h5>
-    <!-- <div v-if="loadingData">Loading...</div> -->
     <div class="horizontal-table">
       <vue-good-table
         id="nearbyCrimeIncidents"
@@ -106,7 +107,7 @@ const nearbyCrimeIncidentsTableData = computed(() => {
         @row-mouseleave="handleRowMouseleave"
       >
         <template #emptystate>
-          <div v-if="NearbyActivityStore.loadingData">
+          <div v-if="loadingData">
             Loading nearby crime incidents... <font-awesome-icon icon='fa-solid fa-spinner' spin></font-awesome-icon>
           </div>
           <div v-else>
