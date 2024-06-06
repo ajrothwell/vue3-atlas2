@@ -16,10 +16,7 @@ const { timeReverseFn } = useTransforms();
 import useScrolling from '@/composables/useScrolling';
 const { handleRowMouseover, handleRowMouseleave } = useScrolling();
 
-const loadingData = computed(() => NearbyActivityStore.loadingData );
-
 const timeIntervalSelected = ref(30);
-
 const timeIntervals = reactive(
   {
     30: 'the last 30 days',
@@ -27,7 +24,6 @@ const timeIntervals = reactive(
     365: '1 year',
   }
 )
-
 const setTimeInterval = (e) => timeIntervalSelected.value = e;
 
 const nearby311 = computed(() => {
@@ -48,8 +44,6 @@ const nearby311Geojson = computed(() => {
 })
 watch (() => nearby311Geojson.value, async(newGeojson) => {
   const map = MapStore.map;
-  // await nextTick()
-  console.log('updating nearby 311 geojson', newGeojson, 'map.getSource:', map.getSource);
   map.getSource('nearby').setData(featureCollection(newGeojson))
 });
 

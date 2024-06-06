@@ -12,14 +12,11 @@ const map = MapStore.map;
 
 import IntervalDropdown from '@/components/topics/nearbyActivity/IntervalDropdown.vue';
 import useTransforms from '@/composables/useTransforms';
-const { date, timeReverseFn } = useTransforms();
+const { timeReverseFn } = useTransforms();
 import useScrolling from '@/composables/useScrolling';
 const { handleRowMouseover, handleRowMouseleave } = useScrolling();
 
-const loadingData = computed(() => NearbyActivityStore.loadingData );
-
 const timeIntervalSelected = ref(30);
-
 const timeIntervals = reactive(
   {
     30: 'the last 30 days',
@@ -44,12 +41,21 @@ const nearbyCrimeIncidentsGeojson = computed(() => {
   if (!nearbyCrimeIncidents.value) return [point([0,0])];
   return nearbyCrimeIncidents.value.map(item => point([item.lng, item.lat], { id: item.objectid, type: 'nearbyCrimeIncidents' }));
 })
-watch (() => nearbyCrimeIncidentsGeojson.value, (newGeojson) => { map.getSource('nearby').setData(featureCollection(newGeojson)) });
+watch (() => nearbyCrimeIncidentsGeojson.value, (newGeojson) => {
+  const map = MapStore.map;
+  map.getSource('nearby').setData(featureCollection(newGeojson))
+});
 
 const hoveredStateId = computed(() => { return MainStore.hoveredStateId; });
 
-onMounted(() => { if (!NearbyActivityStore.loadingData && nearbyCrimeIncidentsGeojson.value.length > 0) { map.getSource('nearby').setData(featureCollection(nearbyCrimeIncidentsGeojson.value)) }});
-onBeforeUnmount(() => { if (map.getSource('nearby')) { map.getSource('nearby').setData(featureCollection([point([0,0])])) }});
+onMounted(() => {
+  const map = MapStore.map;
+  if (!NearbyActivityStore.loadingData && nearbyCrimeIncidentsGeojson.value.length > 0) { map.getSource('nearby').setData(featureCollection(nearbyCrimeIncidentsGeojson.value)) }
+});
+onBeforeUnmount(() => {
+  const map = MapStore.map;
+  if (map.getSource('nearby')) { map.getSource('nearby').setData(featureCollection([point([0,0])])) }
+});
 
 const nearbyCrimeIncidentsTableData = computed(() => {
   return {
