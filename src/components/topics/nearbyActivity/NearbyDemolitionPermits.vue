@@ -8,7 +8,6 @@ import { useMainStore } from '@/stores/MainStore';
 const MainStore = useMainStore();
 import { useMapStore } from '@/stores/MapStore';
 const MapStore = useMapStore();
-const map = MapStore.map;
 
 import IntervalDropdown from '@/components/topics/nearbyActivity/IntervalDropdown.vue';
 import useTransforms from '@/composables/useTransforms';
@@ -19,7 +18,6 @@ const { handleRowMouseover, handleRowMouseleave } = useScrolling();
 const loadingData = computed(() => NearbyActivityStore.loadingData );
 
 const timeIntervalSelected = ref(30);
-
 const timeIntervals = reactive(
   {
     30: 'the last 30 days',
@@ -27,7 +25,6 @@ const timeIntervals = reactive(
     365: '1 year',
   }
 )
-
 const setTimeInterval = (e) => timeIntervalSelected.value = e;
 
 const nearbyDemolitionPermits = computed(() => {
@@ -48,12 +45,21 @@ const nearbyDemolitionPermitsGeojson = computed(() => {
   if (!nearbyDemolitionPermits.value) return [point([0,0])];
   return nearbyDemolitionPermits.value.map(item => point([item.lng, item.lat], { id: item.objectid, type: 'nearbyDemolitionPermits' }));
 })
-watch (() => nearbyDemolitionPermitsGeojson.value, (newGeojson) => { map.getSource('nearby').setData(featureCollection(newGeojson)) });
+watch (() => nearbyDemolitionPermitsGeojson.value, (newGeojson) => {
+  const map = MapStore.map;
+  map.getSource('nearby').setData(featureCollection(newGeojson));
+});
 
 const hoveredStateId = computed(() => { return MainStore.hoveredStateId; });
 
-onMounted(() => { if (!NearbyActivityStore.loadingData && nearbyDemolitionPermitsGeojson.value.length > 0) { map.getSource('nearby').setData(featureCollection(nearbyDemolitionPermitsGeojson.value)) }});
-onBeforeUnmount(() => { if (map.getSource('nearby')) { map.getSource('nearby').setData(featureCollection([point([0,0])])) }});
+onMounted(() => {
+  const map = MapStore.map;
+  if (!NearbyActivityStore.loadingData && nearbyDemolitionPermitsGeojson.value.length > 0) { map.getSource('nearby').setData(featureCollection(nearbyDemolitionPermitsGeojson.value)) };
+});
+onBeforeUnmount(() => {
+  const map = MapStore.map;
+  if (map.getSource('nearby')) { map.getSource('nearby').setData(featureCollection([point([0,0])])) };
+});
 
 const nearbyDemolitionPermitsTableData = computed(() => {
   return {
@@ -82,23 +88,6 @@ const nearbyDemolitionPermitsTableData = computed(() => {
   }
 });
 
-{/* <table class="table is-fullwidth is-striped">
-<tr
-v-for="item in nearbyDemolitionPermits"
-:key="item.objectid"
-:id="item.objectid"
-@mouseover="handleRowMouseover"
-@mouseleave="handleRowMouseleave"
-:class="hoveredStateId == item.objectid ? 'active-hover' : 'inactive'"
->
-<td>{{ date(item.permitissuedate) }}</td>
-<td>{{ item.address }}</td>
-<td>{{ item.typeofwork }}</td>
-<td>{{ (item.distance * 3.28084).toFixed(0) }} ft</td>
-</tr>
-</tbody>
-</table> */}
-
 </script>
 
 <template>
@@ -120,11 +109,11 @@ v-for="item in nearbyDemolitionPermits"
         @row-mouseleave="handleRowMouseleave"
       >
         <template #emptystate>
-          <div v-if="NearbyActivityStore.loadingData">
+          <div v-if="loadingData">
             Loading nearby demolition permits... <font-awesome-icon icon='fa-solid fa-spinner' spin></font-awesome-icon>
           </div>
           <div v-else>
-            No nearby demolition permits found
+            No nearby demolition permits found for the selected time interval
           </div>
         </template>
       </vue-good-table>

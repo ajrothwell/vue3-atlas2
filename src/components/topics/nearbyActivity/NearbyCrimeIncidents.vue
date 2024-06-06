@@ -111,7 +111,7 @@ const nearbyCrimeIncidentsTableData = computed(() => {
             Loading nearby crime incidents... <font-awesome-icon icon='fa-solid fa-spinner' spin></font-awesome-icon>
           </div>
           <div v-else>
-            No nearby crime incidents found
+            No nearby crime incidents found for the selected time interval
           </div>
         </template>
       </vue-good-table>

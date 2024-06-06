@@ -120,7 +120,7 @@ const nearbyZoningAppealsTableData = computed(() => {
             Loading nearby zoning appeals... <font-awesome-icon icon='fa-solid fa-spinner' spin></font-awesome-icon>
           </div>
           <div v-else>
-            No nearby zoning appeals found
+            No nearby zoning appeals found for the selected time interval
           </div>
         </template>
       </vue-good-table>

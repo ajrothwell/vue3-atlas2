@@ -8,7 +8,6 @@ import { useMainStore } from '@/stores/MainStore';
 const MainStore = useMainStore();
 import { useMapStore } from '@/stores/MapStore';
 const MapStore = useMapStore();
-// const map = MapStore.map;
 
 import IntervalDropdown from '@/components/topics/nearbyActivity/IntervalDropdown.vue';
 import useTransforms from '@/composables/useTransforms';
@@ -115,7 +114,7 @@ const nearby311TableData = computed(() => {
             Data loading error - try refreshing the page
           </div>
           <div v-else>
-            No nearby 311 found
+            No nearby 311 service requests found for the selected time interval
           </div>
         </template>
       </vue-good-table>

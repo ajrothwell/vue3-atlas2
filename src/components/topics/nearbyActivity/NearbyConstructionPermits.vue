@@ -116,7 +116,7 @@ const nearbyConstructionPermitsTableData = computed(() => {
             Loading nearby construction permits... <font-awesome-icon icon='fa-solid fa-spinner' spin></font-awesome-icon>
           </div>
           <div v-else>
-            No nearby construction permits found
+            No nearby construction permits found for the selected time interval
           </div>
         </template>
       </vue-good-table>

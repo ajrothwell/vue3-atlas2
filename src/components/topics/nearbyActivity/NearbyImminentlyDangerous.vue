@@ -8,18 +8,16 @@ import { useMainStore } from '@/stores/MainStore';
 const MainStore = useMainStore();
 import { useMapStore } from '@/stores/MapStore';
 const MapStore = useMapStore();
-const map = MapStore.map;
 
 import IntervalDropdown from '@/components/topics/nearbyActivity/IntervalDropdown.vue';
 import useTransforms from '@/composables/useTransforms';
-const { date, timeReverseFn } = useTransforms();
+const { timeReverseFn } = useTransforms();
 import useScrolling from '@/composables/useScrolling';
 const { handleRowMouseover, handleRowMouseleave } = useScrolling();
 
 const loadingData = computed(() => NearbyActivityStore.loadingData );
 
 const timeIntervalSelected = ref(30);
-
 const timeIntervals = reactive(
   {
     30: 'the last 30 days',
@@ -27,7 +25,6 @@ const timeIntervals = reactive(
     365: '1 year',
   }
 )
-
 const setTimeInterval = (e) => timeIntervalSelected.value = e;
 
 const nearbyImminentlyDangerous = computed(() => {
@@ -48,12 +45,21 @@ const nearbyImminentlyDangerousGeojson = computed(() => {
   if (!nearbyImminentlyDangerous.value) return [point([0,0])];
   return nearbyImminentlyDangerous.value.map(item => point([item.lng, item.lat], { id: item.casenumber, type: 'nearbyImminentlyDangerous' }));
 })
-watch (() => nearbyImminentlyDangerousGeojson.value, (newGeojson) => { map.getSource('nearby').setData(featureCollection(newGeojson)) });
+watch (() => nearbyImminentlyDangerousGeojson.value, (newGeojson) => {
+  const map = MapStore.map;
+  map.getSource('nearby').setData(featureCollection(newGeojson));
+});
 
 const hoveredStateId = computed(() => { return MainStore.hoveredStateId; });
 
-onMounted(() => { if (!NearbyActivityStore.loadingData && nearbyImminentlyDangerousGeojson.value.length > 0) { map.getSource('nearby').setData(featureCollection(nearbyImminentlyDangerousGeojson.value)) }});
-onBeforeUnmount(() => { if (map.getSource('nearby')) { map.getSource('nearby').setData(featureCollection([point([0,0])])) }});
+onMounted(() => {
+  const map = MapStore.map;
+  if (!NearbyActivityStore.loadingData && nearbyImminentlyDangerousGeojson.value.length > 0) { map.getSource('nearby').setData(featureCollection(nearbyImminentlyDangerousGeojson.value)) };
+});
+onBeforeUnmount(() => {
+  const map = MapStore.map;
+  if (map.getSource('nearby')) { map.getSource('nearby').setData(featureCollection([point([0,0])])) };
+});
 
 const nearbyImminentlyDangerousTableData = computed(() => {
   return {
@@ -83,22 +89,6 @@ const nearbyImminentlyDangerousTableData = computed(() => {
   }
 });
 
-{/* <table class="table is-fullwidth is-striped">
-v-for="item in nearbyImminentlyDangerous"
-:key="item.casenumber"
-:id="item.casenumber"
-@mouseover="handleRowMouseover"
-@mouseleave="handleRowMouseleave"
-:class="hoveredStateId == item.casenumber ? 'active-hover' : 'inactive'"
->
-<td>{{ date(item.casecreateddate) }}</td>
-<td>{{ item.address }}</td>
-<td v-html="`<a target='_blank' href='https://li.phila.gov/property-history/search/violation-detail?address=${item.address}&Id=${item.casenumber}'>${item.casestatus}</a>`"></td>
-<td>{{ (item.distance * 3.28084).toFixed(0) }} ft</td>
-</tr>
-</tbody>
-</table> */}
-
 </script>
 
 <template>
@@ -120,11 +110,11 @@ v-for="item in nearbyImminentlyDangerous"
         @row-mouseleave="handleRowMouseleave"
       >
         <template #emptystate>
-          <div v-if="NearbyActivityStore.loadingData">
+          <div v-if="loadingData">
             Loading nearby imminently dangerous properties... <font-awesome-icon icon='fa-solid fa-spinner' spin></font-awesome-icon>
           </div>
           <div v-else>
-            No nearby imminently dangerous properties found
+            No nearby imminently dangerous properties found for the selected time interval
           </div>
         </template>
       </vue-good-table>
