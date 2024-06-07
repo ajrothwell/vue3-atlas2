@@ -13,6 +13,7 @@ export const useLiStore = defineStore('LiStore', {
       liBuildingCertSummary: {},
       liBuildingCerts: {},
       liPermits: {},
+      loadingLiPermits: false,
       liAisZoningDocs: {},
       liEclipseZoningDocs: {},
       liInspections: {},
@@ -152,6 +153,7 @@ export const useLiStore = defineStore('LiStore', {
     async fillLiPermits() {
       try {
         console.log('fillLiPermits is running');
+        this.loadingLiPermits = true;
         const GeocodeStore = useGeocodeStore();
         const feature = GeocodeStore.aisData.features[0];
         let baseUrl = 'https://phl.carto.com/api/v2/sql?q=';
@@ -174,6 +176,7 @@ export const useLiStore = defineStore('LiStore', {
             permit.link = `<a target='_blank' href='https://li.phila.gov/Property-History/search/Permit-Detail?address="${encodeURIComponent(permit.address)}"&Id="${permit.permitnumber}"'>${permit.permitnumber} <i class='fa fa-external-link-alt'></i></a>`;
           });
           this.liPermits = data;
+          this.loadingLiPermits = false;
         } else {
           console.warn('permits - await resolved but HTTP status was not successful')
         }

@@ -362,7 +362,7 @@ const businessLicensesTableData = computed(() => {
 
     <!-- Li Permits Table -->
     <div class="data-section">
-      <h5 class="subtitle is-5 table-title">Permits ({{ permitsLength }})</h5>
+      <h5 class="subtitle is-5 table-title">Permits (<font-awesome-icon v-if="LiStore.loadingLiPermits" icon='fa-solid fa-spinner' spin></font-awesome-icon>{{ permitsLength }})</h5>
       <div v-if="permitsTableData.rows" class="horizontal-table">
         <vue-good-table
           id="permits"
@@ -372,7 +372,7 @@ const businessLicensesTableData = computed(() => {
           style-class="table"
         >
           <template #emptystate>
-            <div v-if="LiStore.loadingLiData">
+            <div v-if="LiStore.loadingLiPermits">
               Loading permits... <font-awesome-icon icon='fa-solid fa-spinner' spin></font-awesome-icon>
             </div>
             <div v-else>
