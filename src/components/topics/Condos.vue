@@ -3,10 +3,10 @@
 import { ref, computed, watch, onMounted } from 'vue';
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 const route = useRoute();
-const router = useRouter();
+// const router = useRouter();
 
-import { useGeocodeStore } from '@/stores/GeocodeStore';
-const GeocodeStore = useGeocodeStore();
+// import { useGeocodeStore } from '@/stores/GeocodeStore';
+// const GeocodeStore = useGeocodeStore();
 import { useCondosStore } from '@/stores/CondosStore';
 const CondosStore = useCondosStore();
 
@@ -14,7 +14,7 @@ import CustomPagination from '@/components/pagination/CustomPagination.vue';
 
 const totalSize = computed(() => CondosStore.condosData.total_size);
 
-const totalPages = computed(() => Math.ceil(totalSize.value / 10));
+// const totalPages = computed(() => Math.ceil(totalSize.value / 10));
 
 const paginationOptions = ref({
   enabled: true,
@@ -28,12 +28,12 @@ const paginationOptions = ref({
   ofLabel: 'of',
   pageLabel: 'page', // for 'pages' mode
   allLabel: 'All',
-  infoFn: (params) => {
-    return `${params.firstRecordOnPage} - ${params.lastRecordOnPage} of ${totalSize.value}`
-  }
+  // infoFn: (params) => {
+  //   return `${params.firstRecordOnPage} - ${params.lastRecordOnPage} of ${totalSize.value}`
+  // }
 });
 
-let currentPage = computed(() => parseInt(route.params.data));
+// let currentPage = computed(() => parseInt(route.params.data));
 
 watch (
   () => route.params.data,
@@ -47,45 +47,53 @@ onMounted( () => {
   console.log('Condos.vue onMounted, CondosStore.lastPageUsed:', CondosStore.lastPageUsed);
 });
 
-let currentPages = computed(() => {
-  let multiple = Math.floor(currentPage.value/3.0001);
-  let bottom = multiple * 3;
-  let pages = [];
-  for (let i = 1; i < 4; i++) {
-    if (bottom + i <= totalPages.value) {
-      pages.push(bottom + i);
-    }
-  }
-  return pages;
-});
+// let currentPages = computed(() => {
+//   let multiple = Math.floor(currentPage.value/3.0001);
+//   let bottom = multiple * 3;
+//   let pages = [];
+//   for (let i = 1; i < 4; i++) {
+//     if (bottom + i <= totalPages.value) {
+//       pages.push(bottom + i);
+//     }
+//   }
+//   return pages;
+// });
 
-let startingCondo = computed(() => {
-  let multiple = Math.floor(currentPage.value/10.0001);
-  let currentPageReduced = currentPage.value - (multiple * 10);
-  return (currentPageReduced - 1) * 10
-});
+// let startingCondo = computed(() => {
+//   let multiple = Math.floor(currentPage.value/10.0001);
+//   let currentPageReduced = currentPage.value - (multiple * 10);
+//   return (currentPageReduced - 1) * 10
+// });
 
 const condos = computed(() => {
-  return CondosStore.condosData.features;
-  // return CondosStore.condosData.features.slice(startingCondo.value, startingCondo.value + 10);
+  // if (condosLoading.value) {
+  if (CondosStore.loadingCondosData) {
+    return [];
+  }
+  let features = [];
+  console.log('Object.keys(CondosStore.condosData.pages).sort():', Object.keys(CondosStore.condosData.pages).sort());
+  for (let dataPage of Object.keys(CondosStore.condosData.pages).sort()) {
+    features = features.concat(CondosStore.condosData.pages[dataPage].features);
+  }
+  return features;
 });
 
-const currentDataPage = computed(() => {
-  return Math.floor(currentPage.value/10.0001) + 1
-})
+// const currentDataPage = computed(() => {
+//   return Math.floor(currentPage.value/10.0001) + 1
+// })
 
-let condosLoading = ref(false);
+// let condosLoading = ref(CondosStore.loadingCondosData);
 
-watch(
-  () => currentDataPage.value,
-  async (newPage) => {
-    condosLoading.value = true;
-    console.log('watch currentDataPage, newPage:', newPage);
-    const address = GeocodeStore.aisData.features[0].properties.street_address;
-    await CondosStore.fillCondoData(address, newPage);
-    condosLoading.value = false;
-  }
-)
+// watch(
+//   () => currentDataPage.value,
+//   async (newPage) => {
+//     condosLoading.value = true;
+//     console.log('watch currentDataPage, newPage:', newPage);
+//     const address = GeocodeStore.aisData.features[0].properties.street_address;
+//     await CondosStore.fillCondoData(address, newPage);
+//     condosLoading.value = false;
+//   }
+// )
 
 // const getPreviousPage = () => {
 //   if (currentPage.value > 1) {
@@ -108,7 +116,8 @@ const condosTableData = computed(() => {
     columns: [
       {
         label: 'Address',
-        field: 'properties.opa_address',
+        field: 'properties.link',
+        html: true,
       },
       {
         label: 'OPA Account #',
@@ -118,11 +127,6 @@ const condosTableData = computed(() => {
     rows: condos.value || [],
   }
 });
-
-const pageChanged = (currentPage) => {
-  console.log('pageChanged, currentPage:', currentPage);
-  // router.push({ name: 'address-topic-and-data', params: { data: currentPage } });
-}
 
 </script>
 
@@ -143,15 +147,19 @@ const pageChanged = (currentPage) => {
         style-class="table"
         :pagination-options="paginationOptions"
         :sort-options="{ enabled: false }"
-        @page-changed="pageChanged"
       >
+        <template #table-row="props">
+          <span v-if="props.column.label == 'Address'">
+            <router-link :to="{ name: 'address-and-topic', params: { address: props.row.properties.opa_address, topic: 'Property'} }">{{props.row.properties.opa_address}}</router-link>
+          </span>
+        </template>
         <template #emptystate>
-          <!-- <div v-if="DorStore.loadingDorData">
-            Loading Condos... <font-awesome-icon icon='fa-solid fa-spinner' spin></font-awesome-icon>
+          <div v-if="CondosStore.loadingCondosData">
+            Loading more condos... <font-awesome-icon icon='fa-solid fa-spinner' spin></font-awesome-icon>
           </div>
           <div v-else>
             No Condos found
-          </div> -->
+          </div>
         </template>
         <template #pagination-top="props">
           <custom-pagination

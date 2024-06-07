@@ -5,14 +5,21 @@ import axios from 'axios';
 export const useCondosStore = defineStore('CondosStore', {
   state: () => {
     return {
-      condosData: {},
+      condosData: {
+        page_count: 0,
+        total_size: 0,
+        pages: {
+          page_1: { features: [] },
+        },
+      },
       dataPageFilled: null,
       lastPageUsed: 1,
+      loadingCondosData: false,
     };
   },
   actions: {
     async fillCondoData(address, page = 1) {
-      console.log('fillCondoData is runnning, address', address);
+      console.log('fillCondoData is runnning, address', address, 'page:', page);
       try {
         const GeocodeStore = useGeocodeStore();
         const AddressLoaded = GeocodeStore.aisData.features
@@ -30,8 +37,8 @@ export const useCondosStore = defineStore('CondosStore', {
           this.dataPageFilled = page;
           if (response.data.features.length > 0) {
             let newData = {
-              page_count: response.data.page_count,
-              total_size: response.data.total_size,
+              // page_count: response.data.page_count,
+              // total_size: response.data.total_size,
               features: [],
             }
             // console.log('in condo-list, data:', data, 'state:', state);
@@ -44,8 +51,11 @@ export const useCondosStore = defineStore('CondosStore', {
                 newData.features.push(feature);
               }
             }
-            this.condosData = newData;
-            // this.condosData = dataFeatures;
+            if (page === 1) {
+              this.condosData.page_count = response.data.page_count;
+              this.condosData.total_size = response.data.total_size;
+            }
+            this.condosData.pages['page_'+page] = newData;
           }
         } else {
           console.log('Condos - await resolved but no data features')

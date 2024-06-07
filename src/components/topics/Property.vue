@@ -51,20 +51,20 @@ const vertTableData = computed(() => [
 
 const shouldShowTable = computed(() => {
   if (OpaStore.opaData.rows) {
-    if (!CondosStore.condosData.features) {
+    if (!CondosStore.condosData.pages.page_1.features) {
       return OpaStore.opaData.rows.length;
     } else {
-      return OpaStore.opaData.rows.length && !CondosStore.condosData.features.length;
+      return OpaStore.opaData.rows.length && !CondosStore.condosData.pages.page_1.features.length;
     }
   }
 });
 
 const shouldShowCondosMessage = computed(() => {
   if (OpaStore.opaData.rows) {
-    if (!CondosStore.condosData.features) {
+    if (!CondosStore.condosData.pages.page_1.features) {
       return false;
     } else {
-      return !OpaStore.opaData.rows.length && CondosStore.condosData.features.length;
+      return !OpaStore.opaData.rows.length && CondosStore.condosData.pages.page_1.features.length;
     }
   }
 });
@@ -73,7 +73,7 @@ const shouldShowCondosMessage = computed(() => {
 
 <template>
   <section>
-    <div id="Property-description" class="box">
+    <div v-if="!shouldShowCondosMessage" id="Property-description" class="box">
       Property assessment and sale information for this address. Source: Office of Property Assessments (OPA). OPA was formerly a part of the Bureau of Revision of Taxes (BRT) and some City records may still use that name.
     </div>
 
@@ -90,7 +90,7 @@ const shouldShowCondosMessage = computed(() => {
       <p>There is no property assessment record for this address.</p>
     </div>
     <div>
-      <a target='_blank' :href="`https://property.phila.gov/?p=${GeocodeStore.aisData.features[0].properties.opa_account_num}`">See more at Property Search <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
+      <a v-if="!shouldShowCondosMessage" target='_blank' :href="`https://property.phila.gov/?p=${GeocodeStore.aisData.features[0].properties.opa_account_num}`">See more at Property Search <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
     </div>
 
   </section>

@@ -64,19 +64,19 @@ const zipCode = computed(() => {
   </div>
 
   <!-- IF AN ADDRESS IS LOADED, SHOW THE TOPICS  -->
-  <div v-if="address" class="address-holder">
+  <div v-if="route.name !== 'home' && route.name !== 'not-found' && address" class="address-holder">
     <div>
       <h1 class="subtitle is-3"><font-awesome-icon :icon="['fas', 'map-marker-alt']" /><div class="address">{{ address }}</div></h1>
     </div>
     <div>PHILADELPHIA, PA {{ zipCode }}</div>
   </div>
 
-  <div v-if="address" id="topic-panel-content" class="topics">
+  <div v-if="route.name !== 'home' && route.name !== 'not-found' && address" id="topic-panel-content" class="topics">
     <topic :topic-name="'Property'" :topic-icon="'fa-solid fa-home'" :loading="!dataSourcesLoadedArray.includes('Property')">
       <Property />
     </topic>
 
-    <topic v-show="CondosStore.condosData.features && CondosStore.condosData.features.length" :topic-name="'Condominiums'" :topic-icon="'fa-solid fa-building'" :loading="!dataSourcesLoadedArray.includes('Condominiums')">
+    <topic v-show="CondosStore.condosData.pages.page_1.features && CondosStore.condosData.pages.page_1.features.length" :topic-name="'Condominiums'" :topic-icon="'fa-solid fa-building'" :loading="!dataSourcesLoadedArray.includes('Condominiums')">
       <Condos v-if="dataSourcesLoadedArray.includes('Condominiums')"></Condos>
     </topic>
 

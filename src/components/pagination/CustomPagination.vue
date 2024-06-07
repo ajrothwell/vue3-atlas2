@@ -62,6 +62,9 @@ import {
   DEFAULT_ROWS_PER_PAGE_DROPDOWN
 } from './constants';
 
+import { useGeocodeStore } from '@/stores/GeocodeStore';
+import { useCondosStore } from '@/stores/CondosStore';
+
 export default {
   name: 'CustomPagination',
   props: {
@@ -148,47 +151,66 @@ export default {
     getId() {
       return `vgt-select-rpp-${Math.floor(Math.random() * Date.now())}`;
     },
+    async getDataForPageChange(currentPage) {
+      const GeocodeStore = useGeocodeStore();
+      const CondosStore = useCondosStore();
+      console.log('pageChanged, currentPage:', currentPage, '10 % 10:', 10 % 10, '((currentPage-1)/10)+1', ((currentPage-1)/10)+1, 'currentPage-1 % 10:', (currentPage-1) % 10);
+      const address = GeocodeStore.aisData.features[0].properties.street_address;
+      const newDataPage = Math.floor(((currentPage-1)/10)+1);
+      console.log('pageChanged, currentPage:', currentPage, 'newDataPage:', newDataPage, 'address:', address);
+      if (!CondosStore.condosData.pages['page_'+newDataPage]) {
+        CondosStore.loadingCondosData = true;
+        for (let i = 2; i <= newDataPage; i++) {
+          if (!CondosStore.condosData.pages['page_'+i]) {
+            await CondosStore.fillCondoData(address, i);
+          }
+        }
+        CondosStore.loadingCondosData = false;
+      }
+    },
+
     // Change current page
-    changePage(pageNumber, emit = true) {
+    async changePage(pageNumber, emit = true) {
+      console.log('CustomPagination.vue changePage, pageNumber:', pageNumber);
       if (pageNumber > 0 && this.total > this.currentPerPage * (pageNumber - 1)) {
+        await this.getDataForPageChange(pageNumber);
         this.prevPage = this.currentPage;
         this.currentPage = pageNumber;
         // this.pageChanged(emit);
         this.pageChanged({currentPage: pageNumber});
-        this.customPageChanged();
       }
     },
 
     // Go to next page
-    nextPage() {
+    async nextPage() {
       if (this.nextIsPossible) {
         this.prevPage = this.currentPage;
         ++this.currentPage;
+        await this.getDataForPageChange(this.currentPage);
         this.pageChanged({currentPage: this.currentPage});
-        this.customPageChanged();
       }
     },
 
     // Go to previous page
-    previousPage() {
+    async previousPage() {
       if (this.prevIsPossible) {
         this.prevPage = this.currentPage;
         --this.currentPage;
+        await this.getDataForPageChange(this.currentPage);
         this.pageChanged({currentPage: this.currentPage});
-        this.customPageChanged();
       }
     },
 
     // Indicate page changing
-    customPageChanged(emit = true) {
-      const payload = {
-        currentPage: this.currentPage,
-        prevPage: this.prevPage,
-      };
-      if (!emit) payload.noEmit = true;
-      console.log('pageChanged is running, emit:', emit, 'payload:', payload);
-      this.$emit('page-changed', payload);
-    },
+    // customPageChanged(emit = true) {
+    //   const payload = {
+    //     currentPage: this.currentPage,
+    //     prevPage: this.prevPage,
+    //   };
+    //   if (!emit) payload.noEmit = true;
+    //   console.log('pageChanged is running, emit:', emit, 'payload:', payload);
+    //   this.$emit('page-changed', payload.currentPage);
+    // },
 
     // Indicate per page changing
     // perPageChanged(oldValue) {

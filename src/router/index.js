@@ -38,7 +38,7 @@ const getGeocodeAndPutInStore = async(address) => {
 
   const CondosStore = useCondosStore();
   CondosStore.lastPageUsed = 1;
-  CondosStore.condosData = {};
+  CondosStore.condosData.pages = { page_1: { features: [] } };
   const GeocodeStore = useGeocodeStore();
   await GeocodeStore.fillaisData(address);
   if (!GeocodeStore.aisData.features) {
@@ -108,16 +108,18 @@ const dataFetch = async(to, from) => {
     return;
   }
   
-  console.log('dataFetch is still going after address');
-  if (!MainStore.initialDatafetchComplete && aisNeeded || to.params.data === from.params.data && aisNeeded) {
+  console.log('dataFetch is still going after address, aisNeeded:', aisNeeded);
+  if (!MainStore.initialDatafetchComplete && aisNeeded || to.params.data === from.params.data && aisNeeded || to.params.topic === 'Condominiums' && aisNeeded) {
     // GET PARCELS AND DATA FOR TOPIC
     if (MainStore.lastSearchMethod === 'address') { 
       await ParcelsStore.fillPwdParcelData();
       await ParcelsStore.fillDorParcelData();
     } 
     const CondosStore = useCondosStore();
-    await CondosStore.fillCondoData(address);  
-    if (to.params.topic == "Condominiums" && !CondosStore.condosData.features.length) {
+    CondosStore.loadingCondosData = true;
+    await CondosStore.fillCondoData(address);
+    CondosStore.loadingCondosData = false;
+    if (to.params.topic == "Condominiums" && !CondosStore.condosData.pages.page_1.features.length) {
       MainStore.currentTopic = "Property";
       router.push({ name: 'address-and-topic', params: { address: to.params.address, topic: 'Property' } });
       return
