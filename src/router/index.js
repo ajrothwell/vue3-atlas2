@@ -84,6 +84,11 @@ const dataFetch = async(to, from) => {
   if (to.name === 'not-found') {
     return;
   }
+
+  if (to.name === 'address') {
+    MainStore.currentTopic = '';
+  }
+  
   // GET PARAMS
   let address, topic;
   if (to.params.address) { address = to.params.address } else if (to.query.address) { address = to.query.address }
