@@ -55,6 +55,10 @@ const selectedCondos = computed(() => {
   }
 });
 
+const selectedCondosLength = computed(() => {
+  return selectedCondos.value ? selectedCondos.value.length : 0;
+});
+
 const regmaps = computed(() => {
   if (!DorStore.regmaps.data) {
     return [];
@@ -220,7 +224,7 @@ const dorDocsTableData = computed(() => {
       <vertical-table v-if="selectedParcel" tableId="dorTable" :data="parcelData"></vertical-table>
 
       <div v-if="deededCondosExist" class="mt-6 mb-4">
-        <h5 class="subtitle is-5">Deeded Condominiums</h5>
+        <h5 class="subtitle is-5">Deeded Condominiums ({{ selectedCondosLength }})</h5>
         <vue-good-table
           :columns="condosTableData.columns"
           :rows="condosTableData.rows"
@@ -270,7 +274,7 @@ const dorDocsTableData = computed(() => {
     <div class="columns is-multiline is-mobile">
       <div
         v-for="regmap in regmaps"
-        class="column is-2-desktop is-3-mobile add-borders has-text-centered regmap-div p-1 mr-1 ml-1"
+        class="column is-2-desktop is-3-mobile add-borders has-text-centered regmap-div p-1 mr-1 ml-1 mb-1"
         :class="{ 'is-selected': regmap.properties.RECMAP === selectedRegmap }"
         @click="addRegmapLayer(regmap.properties.RECMAP)"
       >

@@ -1,26 +1,5 @@
 <template>
   <div class="vgt-wrap__footer vgt-clearfix">
-    <!-- <div v-if="perPageDropdownEnabled" class="footer__row-count vgt-pull-left">
-      <form>
-        <label :for="id" class="footer__row-count__label">{{rowsPerPageText}}:</label>
-        <select
-          :id="id"
-          autocomplete="off"
-          name="perPageSelect"
-          class="footer__row-count__select"
-          v-model="currentPerPage"
-          @change="perPageChanged"
-          aria-controls="vgt-table">
-          <option
-            v-for="(option, idx) in rowsPerPageOptions"
-            :key="idx"
-            :value="option">
-            {{ option }}
-          </option>
-          <option v-if="paginateDropdownAllowAll" :value="total">{{allText}}</option>
-        </select>
-      </form>
-    </div> -->
     <div class="footer__navigation vgt-pull-right">
       <pagination-page-info
         @page-changed="changePage"
@@ -200,27 +179,6 @@ export default {
         this.pageChanged({currentPage: this.currentPage});
       }
     },
-
-    // Indicate page changing
-    // customPageChanged(emit = true) {
-    //   const payload = {
-    //     currentPage: this.currentPage,
-    //     prevPage: this.prevPage,
-    //   };
-    //   if (!emit) payload.noEmit = true;
-    //   console.log('pageChanged is running, emit:', emit, 'payload:', payload);
-    //   this.$emit('page-changed', payload.currentPage);
-    // },
-
-    // Indicate per page changing
-    // perPageChanged(oldValue) {
-    //   // go back to first page
-    //   if (oldValue) {
-    //     //* only emit if this isn't first initialization
-    //     this.$emit('per-page-changed', { currentPerPage: this.currentPerPage });
-    //   }
-    //   this.changePage(1, false);
-    // },
 
     // Handle per page changing
     handlePerPage() {
