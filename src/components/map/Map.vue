@@ -151,9 +151,27 @@ onMounted(async () => {
 
   // if a nearby circle marker is clicked or hovered on, set its id in the MainStore as the hoveredStateId
   map.on('click', 'nearby', (e) => {
-    // console.log('nearby click, e:', e);
+    const properties = e.features[0].properties;
+    const idField = NearbyActivityStore.dataFields[properties.type].id_field;
+    const infoField = NearbyActivityStore.dataFields[properties.type].info_field;
+    const type = NearbyActivityStore[properties.type].rows;
+    const row = NearbyActivityStore[properties.type].rows.filter(row => row[idField] === properties.id)[0];
+    console.log('nearby click, e:', e, 'properties:', properties, 'idField:', idField, 'e.features[0]:', e.features[0], 'type:', type, 'row:', row);
     e.clickOnLayer = true;
     MainStore.hoveredStateId = e.features[0].properties.id;
+    if (row.properties) {
+      row[infoField] = row.properties[infoField];
+    }
+
+    const popup = document.getElementsByClassName('maplibregl-popup');
+    if (popup.length) {
+      popup[0].remove();
+    }
+    let nearbyPopup = new maplibregl.Popup({ className: 'my-class' })
+      .setLngLat(e.lngLat)
+      .setHTML(row[infoField])
+      .setMaxWidth("300px")
+      .addTo(map);
   });
 
   map.on('mouseenter', 'nearby', (e) => {
@@ -219,6 +237,11 @@ watch(
       map.setZoom(17);
     }
     MapStore.currentAddressCoords = newCoords;
+
+    const popup = document.getElementsByClassName('maplibregl-popup');
+    if (popup.length) {
+      popup[0].remove();
+    }
   }
 )
 
@@ -279,6 +302,10 @@ watch(
   async newTopic => {
     // console.log('Map route.params.topic watch, newTopic:', newTopic);
     if (newTopic) {
+      const popup = document.getElementsByClassName('maplibregl-popup');
+      if (popup.length) {
+        popup[0].remove();
+      }
       // setMapStyleForTopic(newTopic);
       map.setStyle($config[$config.topicStyles[newTopic]]);
       if (MapStore.imageryOn) {
@@ -500,14 +527,32 @@ watchEffect(() => {
   }
 });
 
-const clickedRowLngLat = computed(() => { return MainStore.clickedRowLngLat; })
+const clickedRow = computed(() => { return MainStore.clickedRow; })
 watch(
-  () => clickedRowLngLat.value,
-  newClickedRowLngLat => {
-    // console.log('Map.vue clickedRowLngLat watch, newClickedRowLngLat:', newClickedRowLngLat);
-    if (newClickedRowLngLat) {
-      map.flyTo({ center: newClickedRowLngLat });
+  () => clickedRow.value,
+  newClickedRow => {
+    console.log('Map.vue clickedRow watch, newClickedRow:', newClickedRow);
+    if (newClickedRow) {
+      map.flyTo({ center: newClickedRow.lngLat });
     }
+    const idField = NearbyActivityStore.dataFields[newClickedRow.type].id_field;
+    const infoField = NearbyActivityStore.dataFields[newClickedRow.type].info_field;
+    const row = NearbyActivityStore[newClickedRow.type].rows.filter(row => {
+      return row[idField] === newClickedRow.id;
+    })[0];
+    console.log('nearby click, idField:', idField, 'row:', row);
+    if (row.properties) {
+      row[infoField] = row.properties[infoField];
+    }
+    const popup = document.getElementsByClassName('maplibregl-popup');
+    if (popup.length) {
+      popup[0].remove();
+    }
+    let nearbyPopup = new maplibregl.Popup({ className: 'my-class' })
+      .setLngLat(newClickedRow.lngLat)
+      .setHTML(row[infoField] || row.properties[infoField])
+      .setMaxWidth("300px")
+      .addTo(map);
   }
 );
 

@@ -1,12 +1,23 @@
 import { useMainStore } from '@/stores/MainStore';
+import { useNearbyActivityStore } from '@/stores/NearbyActivityStore';
 
 export default function useScrolling() {
 
-  const handleRowClick = (e, id) => {
-    // console.log('handleRowClick, e:', e, 'e.row.lat:', e.row.lat, 'id:', id);
+  const handleRowClick = (e, id, type) => {
+    const NearbyActivityStore = useNearbyActivityStore();
+    console.log('handleRowClick, e:', e, 'e.row.lat:', e.row.lat, 'id:', id);
+    let clickedRow = {
+      type: type,
+      id: e.row[id],
+      lngLat: [],
+    };
+    if (e.row.lat) {
+      clickedRow.lngLat = [e.row.lng, e.row.lat];
+    } else if (e.row.geometry) {
+      clickedRow.lngLat = e.row.geometry.coordinates;
+    }
     const MainStore = useMainStore();
-    let clickedRowLngLat = ([e.row.lng, e.row.lat]);
-    MainStore.clickedRowLngLat = clickedRowLngLat;
+    MainStore.clickedRow = clickedRow;
   }
 
   const handleRowMouseover = (e, id) => {

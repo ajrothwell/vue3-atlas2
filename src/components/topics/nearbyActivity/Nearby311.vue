@@ -105,7 +105,7 @@ const nearby311TableData = computed(() => {
         style-class="table"
         @row-mouseenter="handleRowMouseover($event, 'service_request_id')"
         @row-mouseleave="handleRowMouseleave"
-        @row-click="handleRowClick($event, 'service_request_id')"
+        @row-click="handleRowClick($event, 'service_request_id', 'nearby311')"
       >
         <template #emptystate>
           <div v-if="loadingData">

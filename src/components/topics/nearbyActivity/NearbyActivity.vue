@@ -45,6 +45,10 @@ watch(() => selectedDataType.value, (newDataType) => {
   console.log('watch selectedDataType.value, newDataType:', newDataType);
   setDataTypeInRouter(newDataType);
   MainStore.currentNearbyDataType = newDataType;
+  const popup = document.getElementsByClassName('maplibregl-popup');
+  if (popup.length) {
+    popup[0].remove();
+  }
 })
 
 const hoveredStateId = computed(() => { return MainStore.hoveredStateId; });

@@ -10,13 +10,13 @@ import { useMapStore } from '@/stores/MapStore';
 const MapStore = useMapStore();
 
 import useScrolling from '@/composables/useScrolling';
-const { handleRowMouseover, handleRowMouseleave } = useScrolling();
+const { handleRowClick, handleRowMouseover, handleRowMouseleave } = useScrolling();
 
 const loadingData = computed(() => NearbyActivityStore.loadingData );
 
 const nearbyVacantIndicatorPoints = computed(() => {
-  if (NearbyActivityStore.nearbyVacantIndicatorPoints) {
-    let data = [ ...NearbyActivityStore.nearbyVacantIndicatorPoints];
+  if (NearbyActivityStore.nearbyVacantIndicatorPoints.rows) {
+    let data = [ ...NearbyActivityStore.nearbyVacantIndicatorPoints.rows];
     data.sort((a, b) => a.distance_ft - b.distance_ft)
     return data;
   }
@@ -77,6 +77,7 @@ const nearbyVacantIndicatorsTableData = computed(() => {
         style-class="table"
         @row-mouseenter="handleRowMouseover($event, 'id')"
         @row-mouseleave="handleRowMouseleave"
+        @row-click="handleRowClick($event, 'id', 'nearbyVacantIndicatorPoints')"
       >
         <template #emptystate>
           <div v-if="loadingData">

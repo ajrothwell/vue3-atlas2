@@ -118,10 +118,47 @@ export const useNearbyActivityStore = defineStore('NearbyActivityStore', {
       nearby311: {},
       nearbyCrimeIncidents: null,
       nearbyZoningAppeals: null,
-      nearbyVacantIndicatorPoints: null,
+      nearbyVacantIndicatorPoints: { rows: null },
       nearbyConstructionPermits: null,
       nearbyDemolitionPermits: null,
       nearbyImminentlyDangerous: null,
+      dataFields: {
+        nearby311: {
+          title: '311 Requests',
+          id_field: 'service_request_id',
+          info_field: 'service_name',
+        },
+        nearbyCrimeIncidents: {
+          title: 'Crime Incidents',
+          id_field: 'objectid',
+          info_field: 'text_general_code',
+        },
+        nearbyZoningAppeals: {
+          title: 'Zoning Appeals',
+          id_field: 'objectid',
+          info_field: 'appealgrounds',
+        },
+        nearbyVacantIndicatorPoints: {
+          title: 'Vacant Properties',
+          id_field: 'id',
+          info_field: 'ADDRESS',
+        },
+        nearbyConstructionPermits: {
+          title: 'Construction Permits',
+          id_field: 'objectid',
+          info_field: 'typeofwork',
+        },
+        nearbyDemolitionPermits: {
+          title: 'Demolition Permits',
+          id_field: 'objectid',
+          info_field: 'typeofwork',
+        },
+        nearbyImminentlyDangerous: {
+          title: 'Imminently Dangerous',
+          id_field: 'casenumber',
+          info_field: 'address',
+        },
+      },
     };
   },
 
@@ -138,7 +175,7 @@ export const useNearbyActivityStore = defineStore('NearbyActivityStore', {
       this.nearby311 = {};
       this.nearbyCrimeIncidents = null;
       this.nearbyZoningAppeals = null;
-      this.nearbyVacantIndicatorPoints = null;
+      this.nearbyVacantIndicatorPoints = { rows: null };
       this.nearbyConstructionPermits = null;
       this.nearbyDemolitionPermits = null;
       this.nearbyImminentlyDangerous = null;
@@ -320,7 +357,7 @@ export const useNearbyActivityStore = defineStore('NearbyActivityStore', {
             return feature;
           });
 
-          this.nearbyVacantIndicatorPoints = features;
+          this.nearbyVacantIndicatorPoints.rows = features;
           this.setLoadingData(false);
         } else {
           console.warn('nearbyVacantIndicatorPoints - await resolved but HTTP status was not successful');
