@@ -348,3 +348,15 @@ only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
   // background-color: #FFFF00 !important;
   background-color: #F3D661 !important;
 }
+
+@media only screen and (min-width: 1024px) {
+  .title-col {
+    margin-left: 1rem;
+  }
+  .level-left {
+    margin-left: 1rem;
+  }
+  .level-right {
+    margin-right: 1rem;
+  }
+}
