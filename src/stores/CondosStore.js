@@ -19,7 +19,7 @@ export const useCondosStore = defineStore('CondosStore', {
   },
   actions: {
     async fillCondoData(address, page = 1) {
-      console.log('fillCondoData is runnning, address', address, 'page:', page);
+      console.log('fillCondoData is running, address', address, 'page:', page);
       try {
         const GeocodeStore = useGeocodeStore();
         const AddressLoaded = GeocodeStore.aisData.features

@@ -64,7 +64,7 @@ const shouldShowCondosMessage = computed(() => {
     if (!CondosStore.condosData.pages.page_1.features) {
       return false;
     } else {
-      return !OpaStore.opaData.rows.length && CondosStore.condosData.pages.page_1.features.length;
+      return CondosStore.condosData.pages.page_1.features.length;
     }
   }
 });
@@ -80,7 +80,7 @@ const shouldShowCondosMessage = computed(() => {
     <vertical-table v-if="shouldShowTable" tableId="opaTable" :data="vertTableData"></vertical-table>
 
     <div v-if="shouldShowCondosMessage">
-      <h5 class="title is-5">There are {{ CondosStore.condosData.total_size }} condominium units at this address.</h5>
+      <h5 class="title is-5">There {{ CondosStore.condosData.total_size > 1 ? 'are':'is' }} {{ CondosStore.condosData.total_size }} condominium {{ CondosStore.condosData.total_size > 1 ? 'units':'unit' }} at this address.</h5>
       <p>You can use the Condominiums tab below to see information for an individual unit.</p>
     </div>
     <div v-else-if="OpaStore.loadingOpaData">

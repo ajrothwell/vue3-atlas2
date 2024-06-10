@@ -30,10 +30,10 @@ export const useParcelsStore = defineStore('ParcelsStore', {
         if (response.ok) {
           this.pwd = await response.json()
         } else {
-          console.error('Failed to fetch pwd parcel data')
+          console.warn('fillPwdParcelData - await resolved but HTTP status was not successful');
         }
       } catch {
-        console.error('Failed to fetch pwd parcel data')
+        console.error('fillPwdParcelData - await never resolved, failed to fetch parcel data');
       }
     },
 
@@ -50,9 +50,6 @@ export const useParcelsStore = defineStore('ParcelsStore', {
       }
 
       const url = 'https://services.arcgis.com/fLeGjb7u4uXqeF9q/ArcGIS/rest/services/DOR_Parcel/FeatureServer/0/query';
-      // const configForParcelLayer = this.config.parcels[parcelLayer];
-      // const geocodeField = configForParcelLayer.geocodeField;
-      // console.log('url:', url);
       let parcelQuery;
 
       if (dorParcelId.includes('|')) {
@@ -91,10 +88,10 @@ export const useParcelsStore = defineStore('ParcelsStore', {
           MainStore.selectedParcelId = processedData.features[0].properties.OBJECTID;
           this.dor = processedData;
         } else {
-          console.error('Failed to fetch dor parcel data 1')
+          console.warn('fillDorParcelData - await resolved but HTTP status was not successful');
         }
       } catch {
-        console.error('Failed to fetch dor parcel data 2')
+        console.error('fillDorParcelData - await never resolved, failed to fetch parcel data');
       }
     },
 
@@ -113,7 +110,9 @@ export const useParcelsStore = defineStore('ParcelsStore', {
       };
       try {
         const response = await axios(`https://services.arcgis.com/fLeGjb7u4uXqeF9q/ArcGIS/rest/services/${ESRILayer}/FeatureServer/0/query`, { params });
-        console.log('response', response);
+        if (response.status !== 200) {
+          console.warn('fillParcelDataByLngLat - await resolved but HTTP status was not successful')
+        }
         if (response.data.features.length > 0) {
           let data = await response.data;
           let processedData;
@@ -122,15 +121,12 @@ export const useParcelsStore = defineStore('ParcelsStore', {
           } else {
             processedData = data;
           }
-          console.log('processedData:', processedData);
           const MainStore = useMainStore();
           MainStore.selectedParcelId = processedData.features[0].properties.OBJECTID;
           this[parcelLayer] = processedData;
-        } //else {
-          // this[parcelLayer] = {};
-        // }
+        }
       } catch {
-        console.error(`Failed to fetch ${parcelLayer} parcel data by lng/lat`)
+        console.error(`fillParcelDataByLngLat await never resolved, failed to fetch ${parcelLayer} parcel data by lng/lat`)
       }
     },
 
