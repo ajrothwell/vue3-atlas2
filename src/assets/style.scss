@@ -360,3 +360,8 @@ only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
     margin-right: 1rem;
   }
 }
+
+.filter-div {
+  display: flex;
+  align-items: center;
+}

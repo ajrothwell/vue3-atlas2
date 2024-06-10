@@ -27,6 +27,8 @@ const timeIntervals = reactive(
 )
 const setTimeInterval = (e) => timeIntervalSelected.value = e;
 
+const textSearch = ref('');
+
 const nearby311 = computed(() => {
   if (NearbyActivityStore.nearby311.rows) {
     let data = [ ...NearbyActivityStore.nearby311.rows]
@@ -34,6 +36,9 @@ const nearby311 = computed(() => {
       let timeDiff = new Date() - new Date(item.requested_datetime);
       let daysDiff = timeDiff / (1000 * 60 * 60 * 24);
       return daysDiff <= timeIntervalSelected.value;
+    }).filter(item => {
+      // console.log('item.address:', item.address, 'textSearch.value:', textSearch.value);
+      return item.address.toLowerCase().includes(textSearch.value.toLowerCase()) || item.service_name.toLowerCase().includes(textSearch.value.toLowerCase());
     })
     data.sort((a, b) => timeReverseFn(a, b, 'requested_datetime'))
     return data;
@@ -86,6 +91,8 @@ const nearby311TableData = computed(() => {
   }
 });
 
+const clearText = () => textSearch.value = '';
+
 </script>
 
 <template>
@@ -94,6 +101,31 @@ const nearby311TableData = computed(() => {
     :timeIntervals="timeIntervals"
     @setTimeInterval="setTimeInterval"
   ></IntervalDropdown>
+  
+  <div class="filter-div columns is-mobile">
+    <div class="filter-label column is-3 small-is-4">Search by text:</div>
+    <div class="column is-7 small-is-6 pr-0">
+      <textbox
+        placeholder="text"
+        v-model="textSearch"
+        class="search-box"
+        id="searchBar"
+      >
+      </textbox>
+    </div>
+    <div class="column is-2 small-is-2 pl-0">
+      <button
+        v-if="textSearch !== null && textSearch !== ''"
+        type="submit"
+        class="button clear-button"
+        @click="clearText"
+      >
+        <span v-if="!MainStore.isMobileDevice">CLEAR</span>
+        <i class="fas fa-times-circle"></i>
+      </button>
+    </div>
+  </div>
+
   <div class="mt-5">
     <h5 class="subtitle is-5">311 Requests ({{ nearby311TableData.rows.length }})</h5>
     <div class="horizontal-table">
@@ -103,6 +135,10 @@ const nearby311TableData = computed(() => {
         :rows="nearby311TableData.rows"
         :row-style-class="row => hoveredStateId === row.service_request_id ? 'active-hover ' + row.service_request_id : 'inactive ' + row.service_request_id"
         style-class="table"
+        :search-options="{
+          enabled: false,
+          // searchFn: onSearch,
+        }"
         @row-mouseenter="handleRowMouseover($event, 'service_request_id')"
         @row-mouseleave="handleRowMouseleave"
         @row-click="handleRowClick($event, 'service_request_id', 'nearby311')"
@@ -125,9 +161,40 @@ const nearby311TableData = computed(() => {
 
 <style>
 
+.search-input {
+  /* width: 350px !important; */
+}
+
+button.button.clear-button {
+  /* position: relative;
+  right: -240px;
+  top: -50px; */
+  width: 80px;
+  font-size: 12px !important;
+  border: none;
+  background: #96c9ff;
+  color: #444444;
+  border-radius: 40px !important;
+  padding: 3px;
+  padding-left: 10px;
+  height: 15px;
+  i {
+    margin-left: 5px;
+  }
+  &:focus {
+    box-shadow: none !important;
+  }
+}
+
 @media 
 only screen and (max-width: 760px),
 (min-device-width: 768px) and (max-device-width: 1024px)  {
+
+  button.button.clear-button {
+    width: 40px;
+    padding: 8px;
+  }
+
 	/*Label the data*/
 
   #nearby311 {

@@ -86,20 +86,18 @@ onMounted( () => {
     </div>
 
     <!-- DATA DROPDOWN-->
-    <!-- @click="toggleDataDropdown" -->
-    <span>What nearby activity would you like to see?</span>
-    <div
-      class="dropdown"
-    > 
-      <dropdown
-        v-model="selectedDataType"
-        :options="dataTypes"
-      >
-      </dropdown>
 
+    <div class="filter-div columns is-mobile">
+      <div class="filter-label column is-3 small-is-4">Select activity:</div>
+      <div class="dropdown column is-9 small-is-8"> 
+        <dropdown
+          v-model="selectedDataType"
+          :options="dataTypes"
+        >
+        </dropdown>
+      </div>
     </div>
-    <br>
-    
+
     <Nearby311 v-if="currentNearbyDataType == 'nearby311'"></Nearby311>
     <NearbyCrimeIncidents v-if="currentNearbyDataType == 'nearbyCrimeIncidents'"></NearbyCrimeIncidents>
     <NearbyZoningAppeals v-if="currentNearbyDataType == 'nearbyZoningAppeals'"></NearbyZoningAppeals>
@@ -116,5 +114,10 @@ onMounted( () => {
 .active {
   background-color: #FFFF00 !important;
 }
+
+/* .filter-div {
+  display: flex;
+  align-items: center;
+} */
 
 </style>
