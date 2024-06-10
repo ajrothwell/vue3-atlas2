@@ -129,17 +129,19 @@ const nearbyZoningAppealsTableData = computed(() => {
   </div>
 </template>
 
-<style scoped>
+<style>
 
 @media 
 only screen and (max-width: 760px),
 (min-device-width: 768px) and (max-device-width: 1024px)  {
 	/*Label the data*/
 
-	td:nth-of-type(1):before { content: "Date"; }
-	td:nth-of-type(2):before { content: "Location"; }
-	td:nth-of-type(3):before { content: "Description"; }
-	td:nth-of-type(4):before { content: "Distance"; }
+  #nearbyZoningAppeals {
+    td:nth-of-type(1):before { content: "Date"; }
+    td:nth-of-type(2):before { content: "Location"; }
+    td:nth-of-type(3):before { content: "Description"; }
+    td:nth-of-type(4):before { content: "Distance"; }
+  }
 }
 
 </style>

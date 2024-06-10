@@ -92,18 +92,20 @@ const nearbyVacantIndicatorsTableData = computed(() => {
     </div>
 </template>
 
-<style scoped>
+<style>
 
 @media 
 only screen and (max-width: 760px),
 (min-device-width: 768px) and (max-device-width: 1024px)  {
 
-  td:nth-of-type(2) { min-height: 60px; }
+  #nearbyVacantIndicators {
+    td:nth-of-type(2) { min-height: 60px; }
 
-	/*Label the data*/
-	td:nth-of-type(1):before { content: "Address"; }
-	td:nth-of-type(2):before { content: "Property Type"; }
-	td:nth-of-type(3):before { content: "Distance"; }
+    /*Label the data*/
+    td:nth-of-type(1):before { content: "Address"; }
+    td:nth-of-type(2):before { content: "Property Type"; }
+    td:nth-of-type(3):before { content: "Distance"; }
+  }
 }
 
 </style>
