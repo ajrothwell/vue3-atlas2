@@ -2,22 +2,21 @@ import { useMainStore } from '@/stores/MainStore';
 
 export default function useScrolling() {
 
-  const handleRowMouseover = (e, id) => {
-    console.log('handleRowMouseover, e:', e, 'id:', id);//, 'e.target.parentElement.id:', e.target.parentElement.id);
+  const handleRowClick = (e, id) => {
+    // console.log('handleRowClick, e:', e, 'e.row.lat:', e.row.lat, 'id:', id);
     const MainStore = useMainStore();
-    // let hoveredStateId = parseInt(e.target.parentElement.id);
+    let clickedRowLngLat = ([e.row.lng, e.row.lat]);
+    MainStore.clickedRowLngLat = clickedRowLngLat;
+  }
+
+  const handleRowMouseover = (e, id) => {
+    // console.log('handleRowMouseover, e:', e, 'id:', id);
+    const MainStore = useMainStore();
     let hoveredStateId = parseInt(e.row[id]);
     if (isNaN(hoveredStateId)) {
       hoveredStateId = e.row[id];
-      // hoveredStateId = e.target.parentElement.id;
     }
     MainStore.hoveredStateId = hoveredStateId;
-    // if (typeof e.target.parentElement.id === 'number') {
-      // console.log('if, hovered state id', e.target.parentElement.id, 'typeof e.target.parentElement.id:', typeof e.target.parentElement.id);
-      // MainStore.hoveredStateId = parseInt(e.target.parentElement.id);
-    // } else {
-    //   console.log('else, hovered state id', e.target.parentElement.id, 'typeof e.target.parentElement.id:', typeof e.target.parentElement.id);
-    // }
   }
   const handleRowMouseleave = (e) => {
     const MainStore = useMainStore();
@@ -25,7 +24,7 @@ export default function useScrolling() {
   }
 
   const isElementInViewport = (el) => {
-    console.log('isElementInViewport, el:', el);
+    // console.log('isElementInViewport, el:', el);
     const rect = el.getBoundingClientRect();
     // console.log('bounding box', rect);
     const visibility = {
@@ -46,6 +45,7 @@ export default function useScrolling() {
   }
 
   return {
+    handleRowClick,
     handleRowMouseover,
     handleRowMouseleave,
     isElementInViewport,

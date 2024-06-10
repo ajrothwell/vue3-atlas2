@@ -13,7 +13,7 @@ import IntervalDropdown from '@/components/topics/nearbyActivity/IntervalDropdow
 import useTransforms from '@/composables/useTransforms';
 const { timeReverseFn } = useTransforms();
 import useScrolling from '@/composables/useScrolling';
-const { handleRowMouseover, handleRowMouseleave } = useScrolling();
+const { handleRowClick, handleRowMouseover, handleRowMouseleave } = useScrolling();
 
 const loadingData = computed(() => NearbyActivityStore.loadingData );
 
@@ -105,6 +105,7 @@ const nearby311TableData = computed(() => {
         style-class="table"
         @row-mouseenter="handleRowMouseover($event, 'service_request_id')"
         @row-mouseleave="handleRowMouseleave"
+        @row-click="handleRowClick($event, 'service_request_id')"
       >
         <template #emptystate>
           <div v-if="loadingData">

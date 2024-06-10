@@ -500,6 +500,17 @@ watchEffect(() => {
   }
 });
 
+const clickedRowLngLat = computed(() => { return MainStore.clickedRowLngLat; })
+watch(
+  () => clickedRowLngLat.value,
+  newClickedRowLngLat => {
+    // console.log('Map.vue clickedRowLngLat watch, newClickedRowLngLat:', newClickedRowLngLat);
+    if (newClickedRowLngLat) {
+      map.flyTo({ center: newClickedRowLngLat });
+    }
+  }
+);
+
 // for Nearby topic, watch the id of the circle marker that is hovered on to change the color of the circle
 const hoveredStateId = computed(() => { return MainStore.hoveredStateId; })
 watch(
@@ -507,10 +518,10 @@ watch(
   newHoveredStateId => {
     // console.log('Map.vue hoveredStateId watch, newHoveredStateId:', newHoveredStateId, 'map.getStyle().sources.nearby.data.features:', map.getStyle().sources.nearby.data.features);
     if (newHoveredStateId) {
-      console.log('map.getStyle().sources.nearby.data.features', map.getStyle().sources.nearby.data.features, 'newHoveredStateId:', newHoveredStateId);
+      // console.log('map.getStyle().sources.nearby.data.features', map.getStyle().sources.nearby.data.features, 'newHoveredStateId:', newHoveredStateId);
       const feature = map.getStyle().sources.nearby.data.features.filter(feature => feature.properties.id === newHoveredStateId)[0];
       const index = map.getStyle().sources.nearby.data.features.indexOf(feature);
-      console.log('feature:', feature, 'index:', index, 'map.getStyle().sources.nearby.data.features:', map.getStyle().sources.nearby.data.features.filter(feature => feature.properties.id === newHoveredStateId)[0]);
+      // console.log('feature:', feature, 'index:', index, 'map.getStyle().sources.nearby.data.features:', map.getStyle().sources.nearby.data.features.filter(feature => feature.properties.id === newHoveredStateId)[0]);
       map.getStyle().sources.nearby.data.features.splice(index, 1);
       map.getStyle().sources.nearby.data.features.push(feature);
       map.getSource('nearby').setData(map.getStyle().sources.nearby.data);
