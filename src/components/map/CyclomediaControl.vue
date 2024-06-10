@@ -12,10 +12,14 @@ const imgSrc = computed(() => {
   return MainStore.publicPath + 'images/cyclomedia.png';
 });
 
+const cyclomediaOn = computed(() => {
+  return MapStore.cyclomediaOn;
+});
+
 </script>
 
 <template>
-  <div class="cyclomedia-toggle" :class="MapStore.cyclomediaOn ? 'active' : 'inactive'">
+  <div class="cyclomedia-toggle" :class="cyclomediaOn ? 'active' : 'inactive'" :title="cyclomediaOn ? 'Turn off street view' : 'Turn on street view'">
     <button type="button" @click="$emit('toggleCyclomedia')">
       <img class='img-src' alt="street-view" :src="imgSrc" />
     </button>

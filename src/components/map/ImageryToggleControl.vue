@@ -19,11 +19,15 @@ const imgSrc = computed(() => {
   }
 });
 
+const imageryOn = computed(() => {
+  return MapStore.imageryOn;
+});
+
 </script>
 
 <template>
   <div class="imagery-toggle">
-    <button type="button" @click="$emit('toggleImagery')">
+    <button type="button" @click="$emit('toggleImagery')" :title="imageryOn ? 'Turn off imagery' : 'Show imagery'">
       <img class='img-src' alt="imagery-or-basemap" :src="imgSrc" />
     </button>
   </div>

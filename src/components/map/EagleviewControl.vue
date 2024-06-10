@@ -9,14 +9,16 @@ defineEmits(['toggleEagleview']);
 
 const imgSrc = computed(() => {
   return MainStore.publicPath + 'images/eagleview.png';
-  // return import.meta.env.VITE_PUBLICPATH + 'images/eagleview.png';
-  // return 'images/eagleview.png';
+});
+
+const eagleviewOn = computed(() => {
+  return MapStore.eagleviewOn;
 });
 
 </script>
 
 <template>
-  <div class="eagleview-toggle" :class="MapStore.eagleviewOn ? 'active' : 'inactive'">
+  <div class="eagleview-toggle" :class="eagleviewOn ? 'active' : 'inactive'" :title="eagleviewOn ? 'Turn off oblique view' : 'Turn on oblique view'">
     <button type="button" @click="$emit('toggleEagleview')">
       <img class='img-src' alt="oblique-view" :src="imgSrc" />
     </button>
