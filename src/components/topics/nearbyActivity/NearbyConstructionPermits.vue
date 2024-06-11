@@ -8,8 +8,8 @@ import { useMainStore } from '@/stores/MainStore';
 const MainStore = useMainStore();
 import { useMapStore } from '@/stores/MapStore';
 const MapStore = useMapStore();
-const map = MapStore.map;
 
+import TextFilter from '@/components/topics/nearbyActivity/TextFilter.vue';
 import IntervalDropdown from '@/components/topics/nearbyActivity/IntervalDropdown.vue';
 import useTransforms from '@/composables/useTransforms';
 const { timeReverseFn } = useTransforms();
@@ -30,6 +30,8 @@ const timeIntervals = reactive(
 
 const setTimeInterval = (e) => timeIntervalSelected.value = e;
 
+const textSearch = ref('');
+
 const nearbyConstructionPermits = computed(() => {
   if (NearbyActivityStore.nearbyConstructionPermits) {
     let data = [ ...NearbyActivityStore.nearbyConstructionPermits.rows]
@@ -39,6 +41,8 @@ const nearbyConstructionPermits = computed(() => {
       let timeDiff = now - itemDate;
       let daysDiff = timeDiff / (1000 * 60 * 60 * 24);
       return daysDiff <= timeIntervalSelected.value;
+    }).filter(item => {
+      return item.address.toLowerCase().includes(textSearch.value.toLowerCase()) || item.typeofwork.toLowerCase().includes(textSearch.value.toLowerCase());
     })
     data.sort((a, b) => timeReverseFn(a, b, 'permitissuedate'))
     return data;
@@ -99,6 +103,11 @@ const nearbyConstructionPermitsTableData = computed(() => {
     :timeIntervals="timeIntervals"
     @setTimeInterval="setTimeInterval"
   ></IntervalDropdown>
+
+  <TextFilter
+    v-model="textSearch"
+  ></TextFilter>
+
   <div class="mt-5">
     <h5 class="subtitle is-5">Construction Permits ({{ nearbyConstructionPermitsTableData.rows.length }})</h5>
     <div class="horizontal-table">
