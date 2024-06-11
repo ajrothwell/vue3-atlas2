@@ -85,6 +85,14 @@ const handleWindowResize = () => {
   MainStore.windowDimensions = dim;
 }
 
+const fullScreenTopicsEnabled = computed(() => {
+  return MainStore.fullScreenTopicsEnabled;
+});
+
+const fullScreenMapEnabled = computed(() => {
+  return MainStore.fullScreenMapEnabled;
+});
+
 </script>
 
 <template>
@@ -105,12 +113,12 @@ const handleWindowResize = () => {
   <main id="main" class="main invisible-scrollbar">
 
     <!-- TOPIC PANEL ON LEFT -->
-    <div v-if="!isMobileDevice()" class="topics-holder">
+    <div v-if="!isMobileDevice()" class="topics-holder" :class="fullScreenTopicsEnabled ? 'topics-holder-full' : ''">
       <topic-panel></topic-panel>
     </div>
 
     <!-- MAP PANEL ON RIGHT - right now only contains the address input -->
-    <div class="map-panel-holder">
+    <div v-show="!fullScreenTopicsEnabled" class="map-panel-holder">
       <map-panel></map-panel>
     </div>
 

@@ -38,6 +38,10 @@ body {
   height: calc(100vh - 110px);
 }
 
+.topics-holder-full {
+  width: 100% !important;
+}
+
 #topic-panel-set-content {
   overflow-x: hidden;
   overflow-y: auto;
