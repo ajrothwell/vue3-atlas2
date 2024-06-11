@@ -92,6 +92,7 @@ onMounted( () => {
       </div> -->
       <div class="dropdown column is-10 small-is-9 pt-0 pb-0"> 
         <dropdown
+          id="data-dropdown"
           label="Select activity"
           v-model="selectedDataType"
           :options="dataTypes"

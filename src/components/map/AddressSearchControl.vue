@@ -35,7 +35,10 @@ const inputAddress = ref('');
 <style scoped>
 
 .search-label {
-  display: none !important
+  /* display: none !important */
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
 }
 
 .holder {

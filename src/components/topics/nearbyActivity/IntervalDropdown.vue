@@ -22,6 +22,7 @@ watch (() => currentTimeInterval.value, (newTimeInterval) => {
   <!-- <div class="filter-label column is-3 small-is-4">Select time inverval:</div> -->
   <div class="dropdown column is-10 small-is-9 pt-0 pb-0">
     <dropdown
+      id="time-interval-dropdown"
       label="Select time interval"
       v-model="currentTimeInterval"
       :options="timeIntervals"
