@@ -103,8 +103,8 @@ const clearText = () => textSearch.value = '';
   ></IntervalDropdown>
   
   <div class="filter-div columns is-mobile">
-    <div class="filter-label column is-3 small-is-4">Search by text:</div>
-    <div class="column is-7 small-is-6 pr-0">
+    <div class="filter-label column is-3 small-is-4 pt-0 pb-0">Search by text:</div>
+    <div class="column is-7 small-is-6 pr-0 pt-0 pb-0">
       <textbox
         placeholder="text"
         v-model="textSearch"
@@ -120,7 +120,7 @@ const clearText = () => textSearch.value = '';
         class="button clear-button"
         @click="clearText"
       >
-        <span v-if="!MainStore.isMobileDevice">CLEAR</span>
+        <span class="clear-span pl-0" v-if="!MainStore.isMobileDevice">CLEAR</span>
         <i class="fas fa-times-circle"></i>
       </button>
     </div>
@@ -135,10 +135,6 @@ const clearText = () => textSearch.value = '';
         :rows="nearby311TableData.rows"
         :row-style-class="row => hoveredStateId === row.service_request_id ? 'active-hover ' + row.service_request_id : 'inactive ' + row.service_request_id"
         style-class="table"
-        :search-options="{
-          enabled: false,
-          // searchFn: onSearch,
-        }"
         @row-mouseenter="handleRowMouseover($event, 'service_request_id')"
         @row-mouseleave="handleRowMouseleave"
         @row-click="handleRowClick($event, 'service_request_id', 'nearby311')"
@@ -161,22 +157,22 @@ const clearText = () => textSearch.value = '';
 
 <style>
 
-.search-input {
-  /* width: 350px !important; */
+.clear-span {
+  padding-left: 0px !important;
 }
 
 button.button.clear-button {
   /* position: relative;
   right: -240px;
   top: -50px; */
-  width: 80px;
+  width: 86px;
   font-size: 12px !important;
   border: none;
   background: #96c9ff;
   color: #444444;
   border-radius: 40px !important;
   padding: 3px;
-  padding-left: 10px;
+  padding-left: 0px;
   height: 15px;
   i {
     margin-left: 5px;

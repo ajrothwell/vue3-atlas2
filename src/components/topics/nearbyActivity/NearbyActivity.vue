@@ -88,8 +88,8 @@ onMounted( () => {
     <!-- DATA DROPDOWN-->
 
     <div class="filter-div columns is-mobile">
-      <div class="filter-label column is-3 small-is-4">Select activity:</div>
-      <div class="dropdown column is-9 small-is-8"> 
+      <div class="filter-label column is-3 small-is-4 pt-0 pb-0">Select activity:</div>
+      <div class="dropdown column is-9 small-is-8 pt-0 pb-0"> 
         <dropdown
           v-model="selectedDataType"
           :options="dataTypes"
