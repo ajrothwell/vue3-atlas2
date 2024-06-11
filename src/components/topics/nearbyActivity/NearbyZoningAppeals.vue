@@ -39,19 +39,22 @@ const nearbyZoningAppeals = computed(() => {
         let timeDiff = new Date() - new Date(item.scheduleddate);
         let daysDiff = timeDiff / (1000 * 60 * 60 * 24);
         return daysDiff >= timeIntervalSelected.value;
-      }).filter(item => {
-      return item.address.toLowerCase().includes(textSearch.value.toLowerCase()) || item.appealgrounds.toLowerCase().includes(textSearch.value.toLowerCase());
-    })
+      })
     } else if (timeIntervalSelected.value > 0) {
       data = data.filter(item => {
         let timeDiff = new Date() - new Date(item.scheduleddate);
         let daysDiff = timeDiff / (1000 * 60 * 60 * 24);
         return daysDiff <= timeIntervalSelected.value;
-      }).filter(item => {
-      return item.address.toLowerCase().includes(textSearch.value.toLowerCase()) || item.appealgrounds.toLowerCase().includes(textSearch.value.toLowerCase());
-    })
+      })
     }
-    data.sort((a, b) => timeReverseFn(a, b, 'dispatch_date'))
+    console.log('data 1:', data);
+    data = data.filter(item => {
+      console.log('item.address:', item.address, 'item.appealgrounds', item.appealgrounds, 'textSearch.value:', textSearch.value, 'item.address.toLowerCase().includes(textSearch.value.toLowerCase()) || item.appealgrounds.toLowerCase().includes(textSearch.value.toLowerCase()):', item.address.toLowerCase().includes(textSearch.value.toLowerCase()) || item.appealgrounds.toLowerCase().includes(textSearch.value.toLowerCase()));
+      return item.address.toLowerCase().includes(textSearch.value.toLowerCase()) || item.appealgrounds.toLowerCase().includes(textSearch.value.toLowerCase());
+      // return false;
+    })
+    console.log('data 2:', data);
+    data.sort((a, b) => timeReverseFn(a, b, 'scheduleddate'))
     return data;
   }
 });
