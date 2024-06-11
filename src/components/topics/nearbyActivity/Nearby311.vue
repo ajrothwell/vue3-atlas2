@@ -9,8 +9,8 @@ const MainStore = useMainStore();
 import { useMapStore } from '@/stores/MapStore';
 const MapStore = useMapStore();
 
-import IntervalDropdown from '@/components/topics/nearbyActivity/IntervalDropdown.vue';
 import TextFilter from '@/components/topics/nearbyActivity/TextFilter.vue';
+import IntervalDropdown from '@/components/topics/nearbyActivity/IntervalDropdown.vue';
 import useTransforms from '@/composables/useTransforms';
 const { timeReverseFn } = useTransforms();
 import useScrolling from '@/composables/useScrolling';

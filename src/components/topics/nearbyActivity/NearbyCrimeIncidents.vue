@@ -8,8 +8,8 @@ import { useMainStore } from '@/stores/MainStore';
 const MainStore = useMainStore();
 import { useMapStore } from '@/stores/MapStore';
 const MapStore = useMapStore();
-const map = MapStore.map;
 
+import TextFilter from '@/components/topics/nearbyActivity/TextFilter.vue';
 import IntervalDropdown from '@/components/topics/nearbyActivity/IntervalDropdown.vue';
 import useTransforms from '@/composables/useTransforms';
 const { timeReverseFn } = useTransforms();
@@ -27,6 +27,8 @@ const timeIntervals = reactive(
 )
 const setTimeInterval = (e) => timeIntervalSelected.value = e;
 
+const textSearch = ref('');
+
 const nearbyCrimeIncidents = computed(() => {
   if (NearbyActivityStore.nearbyCrimeIncidents && NearbyActivityStore.nearbyCrimeIncidents.rows) {
     let data = [ ...NearbyActivityStore.nearbyCrimeIncidents.rows]
@@ -34,6 +36,9 @@ const nearbyCrimeIncidents = computed(() => {
       let timeDiff = new Date() - new Date(item.dispatch_date);
       let daysDiff = timeDiff / (1000 * 60 * 60 * 24);
       return daysDiff <= timeIntervalSelected.value;
+    }).filter(item => {
+      // console.log('item.address:', item.address, 'textSearch.value:', textSearch.value);
+      return item.location_block.toLowerCase().includes(textSearch.value.toLowerCase()) || item.text_general_code.toLowerCase().includes(textSearch.value.toLowerCase());
     })
     data.sort((a, b) => timeReverseFn(a, b, 'dispatch_date'))
     return data;
@@ -94,6 +99,11 @@ const nearbyCrimeIncidentsTableData = computed(() => {
     :timeIntervals="timeIntervals"
     @setTimeInterval="setTimeInterval"
   ></IntervalDropdown>
+
+  <TextFilter
+    v-model="textSearch"
+  ></TextFilter>
+
   <div class='mt-5'>
     <h5 class="subtitle is-5">Crime Incidents ({{ nearbyCrimeIncidentsTableData.rows.length }})</h5>
     <div class="horizontal-table">
@@ -123,8 +133,7 @@ const nearbyCrimeIncidentsTableData = computed(() => {
 <style>
 
 @media 
-only screen and (max-width: 760px),
-(min-device-width: 768px) and (max-device-width: 1024px)  {
+only screen and (max-width: 760px) {
 	/*Label the data*/
 
   #nearbyCrimeIncidents {
