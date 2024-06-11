@@ -9,14 +9,21 @@ const MainStore = useMainStore();
 import { useMapStore } from '@/stores/MapStore';
 const MapStore = useMapStore();
 
+import TextFilter from '@/components/topics/nearbyActivity/TextFilter.vue';
+
 import useScrolling from '@/composables/useScrolling';
 const { handleRowClick, handleRowMouseover, handleRowMouseleave } = useScrolling();
 
 const loadingData = computed(() => NearbyActivityStore.loadingData );
 
+const textSearch = ref('');
+
 const nearbyVacantIndicatorPoints = computed(() => {
   if (NearbyActivityStore.nearbyVacantIndicatorPoints.rows) {
-    let data = [ ...NearbyActivityStore.nearbyVacantIndicatorPoints.rows];
+    let data = [ ...NearbyActivityStore.nearbyVacantIndicatorPoints.rows].filter(item => {
+      // console.log('item.properties.ADDRESS:', item.properties.ADDRESS, 'textSearch.value:', textSearch.value);
+      return item.properties.ADDRESS.toLowerCase().includes(textSearch.value.toLowerCase()) || item.properties.VACANT_FLAG.toLowerCase().includes(textSearch.value.toLowerCase());
+    });
     data.sort((a, b) => a.distance_ft - b.distance_ft)
     return data;
   }
@@ -64,7 +71,11 @@ const nearbyVacantIndicatorsTableData = computed(() => {
 </script>
 
 <template>
-  
+
+  <TextFilter
+    v-model="textSearch"
+  ></TextFilter>
+
   <div class='mt-5'>
       <h5 class="subtitle is-5">Likely Vacant Properties ({{ nearbyVacantIndicatorsTableData.rows.length }})</h5>
       <!-- <div v-if="loadingData">Loading...</div> -->
