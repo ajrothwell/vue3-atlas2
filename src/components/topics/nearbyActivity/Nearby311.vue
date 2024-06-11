@@ -40,7 +40,7 @@ const nearby311 = computed(() => {
     }).filter(item => {
       // console.log('item.address:', item.address, 'textSearch.value:', textSearch.value);
       return item.address.toLowerCase().includes(textSearch.value.toLowerCase()) || item.service_name.toLowerCase().includes(textSearch.value.toLowerCase());
-    })
+    });
     data.sort((a, b) => timeReverseFn(a, b, 'requested_datetime'))
     return data;
   }
