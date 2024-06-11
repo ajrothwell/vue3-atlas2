@@ -9,6 +9,7 @@ const MainStore = useMainStore();
 import { useMapStore } from '@/stores/MapStore';
 const MapStore = useMapStore();
 
+import TextFilter from '@/components/topics/nearbyActivity/TextFilter.vue';
 import IntervalDropdown from '@/components/topics/nearbyActivity/IntervalDropdown.vue';
 import useTransforms from '@/composables/useTransforms';
 const { timeReverseFn } = useTransforms();
@@ -27,6 +28,8 @@ const timeIntervals = reactive(
 )
 const setTimeInterval = (e) => timeIntervalSelected.value = e;
 
+const textSearch = ref('');
+
 const nearbyZoningAppeals = computed(() => {
   if (NearbyActivityStore.nearbyZoningAppeals) {
     let data = [ ...NearbyActivityStore.nearbyZoningAppeals.rows]
@@ -36,13 +39,17 @@ const nearbyZoningAppeals = computed(() => {
         let timeDiff = new Date() - new Date(item.scheduleddate);
         let daysDiff = timeDiff / (1000 * 60 * 60 * 24);
         return daysDiff >= timeIntervalSelected.value;
-      })
+      }).filter(item => {
+      return item.address.toLowerCase().includes(textSearch.value.toLowerCase()) || item.appealgrounds.toLowerCase().includes(textSearch.value.toLowerCase());
+    })
     } else if (timeIntervalSelected.value > 0) {
       data = data.filter(item => {
         let timeDiff = new Date() - new Date(item.scheduleddate);
         let daysDiff = timeDiff / (1000 * 60 * 60 * 24);
         return daysDiff <= timeIntervalSelected.value;
-      })
+      }).filter(item => {
+      return item.address.toLowerCase().includes(textSearch.value.toLowerCase()) || item.appealgrounds.toLowerCase().includes(textSearch.value.toLowerCase());
+    })
     }
     data.sort((a, b) => timeReverseFn(a, b, 'dispatch_date'))
     return data;
@@ -103,8 +110,13 @@ const nearbyZoningAppealsTableData = computed(() => {
     :timeIntervals="timeIntervals"
     @setTimeInterval="setTimeInterval"
   ></IntervalDropdown>
+
+  <TextFilter
+    v-model="textSearch"
+  ></TextFilter>
+
   <div class='mt-5'>
-    <h5 class="subtitle is-5">Zoning Appeals</h5>
+    <h5 class="subtitle is-5">Zoning Appeals ({{ nearbyZoningAppealsTableData.rows.length }})</h5>
     <div class="horizontal-table">
       <vue-good-table
         id="nearbyZoningAppeals"
@@ -132,8 +144,7 @@ const nearbyZoningAppealsTableData = computed(() => {
 <style>
 
 @media 
-only screen and (max-width: 760px),
-(min-device-width: 768px) and (max-device-width: 1024px)  {
+only screen and (max-width: 760px){
 	/*Label the data*/
 
   #nearbyZoningAppeals {
