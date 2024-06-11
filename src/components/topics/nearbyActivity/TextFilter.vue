@@ -1,7 +1,6 @@
 
 <script setup>
 
-import { ref } from 'vue';
 import { useMainStore } from '@/stores/MainStore';
 const MainStore = useMainStore();
 
@@ -14,10 +13,12 @@ const clearText = () => model.value = '';
 
 <template>
   <div class="filter-div columns is-mobile">
-    <div class="filter-label column is-3 small-is-4 pt-0 pb-0">Search by text:</div>
-    <div class="column is-7 small-is-6 pr-0 pt-0 pb-0">
+    <!-- <div class="filter-label column is-3 small-is-4 pt-0 pb-0">Search by text:</div> -->
+    <div class="column is-10 small-is-9 pr-0 pt-0 pb-0">
       <textbox
         placeholder="text"
+        label="Search by text"
+        :innerLabel="false"
         v-model="model"
         class="search-box"
         id="searchBar"
@@ -40,7 +41,7 @@ const clearText = () => model.value = '';
 
 <style scoped>
   
-  .clear-span {
+.clear-span {
   padding-left: 0px !important;
 }
 
@@ -56,6 +57,7 @@ button.button.clear-button {
   border-radius: 40px !important;
   padding: 3px;
   padding-left: 0px;
+  margin-top: 30px;
   height: 15px;
   i {
     margin-left: 5px;

@@ -1,8 +1,8 @@
 <script setup>
 import { ref, computed, reactive, watch, onMounted } from 'vue';
 
-import { useNearbyActivityStore } from '@/stores/NearbyActivityStore';
-const NearbyActivityStore = useNearbyActivityStore();
+// import { useNearbyActivityStore } from '@/stores/NearbyActivityStore';
+// const NearbyActivityStore = useNearbyActivityStore();
 import { useMainStore } from '@/stores/MainStore';
 const MainStore = useMainStore();
 
@@ -51,30 +51,17 @@ watch(() => selectedDataType.value, (newDataType) => {
   }
 })
 
-const hoveredStateId = computed(() => { return MainStore.hoveredStateId; });
 const clickedMarkerId = computed(() => { return MainStore.clickedMarkerId; });
 
 watch(() => clickedMarkerId.value, (newClickedMarkerId) => {
   if (newClickedMarkerId) {
     const el = document.getElementsByClassName(newClickedMarkerId)[0];
-    // const el = document.getElementById(newHoveredStateId);
     const visible = isElementInViewport(el);
     if (!visible && !MainStore.isMobileDevice) {
       el.scrollIntoView({ block: 'center' });
     }
   }
 });
-
-// watch(() => hoveredStateId.value, (newHoveredStateId) => {
-//   if (newHoveredStateId) {
-//     const el = document.getElementsByClassName(newHoveredStateId)[0];
-//     // const el = document.getElementById(newHoveredStateId);
-//     const visible = isElementInViewport(el);
-//     if (!visible && !MainStore.isMobileDevice) {
-//       el.scrollIntoView({ block: 'center' });
-//     }
-//   }
-// });
 
 onMounted( () => {
   // console.log('NearbyActivity.vue onMounted is running, route.params.data:', route.params.data);
@@ -100,9 +87,12 @@ onMounted( () => {
     <!-- DATA DROPDOWN-->
 
     <div class="filter-div columns is-mobile">
-      <div class="filter-label column is-3 small-is-4 pt-0 pb-0">Select activity:</div>
-      <div class="dropdown column is-9 small-is-8 pt-0 pb-0"> 
+      <!-- <div class="column is-3 small-is-4 pt-0 pb-0">
+        <label class="filter-label" for="data-dropdown">Select activity:</label>
+      </div> -->
+      <div class="dropdown column is-10 small-is-9 pt-0 pb-0"> 
         <dropdown
+          label="Select activity"
           v-model="selectedDataType"
           :options="dataTypes"
         >
@@ -122,14 +112,5 @@ onMounted( () => {
 </template>
 
 <style scoped>
-
-.active {
-  background-color: #FFFF00 !important;
-}
-
-/* .filter-div {
-  display: flex;
-  align-items: center;
-} */
 
 </style>

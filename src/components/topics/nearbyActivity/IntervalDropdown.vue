@@ -19,9 +19,10 @@ watch (() => currentTimeInterval.value, (newTimeInterval) => {
 <template>
 
 <div class="filter-div columns is-mobile">
-  <div class="filter-label column is-3 small-is-4">Select time inverval:</div>
-  <div class="dropdown column is-9 small-is-8 pt-0 pb-0">
+  <!-- <div class="filter-label column is-3 small-is-4">Select time inverval:</div> -->
+  <div class="dropdown column is-10 small-is-9 pt-0 pb-0">
     <dropdown
+      label="Select time interval"
       v-model="currentTimeInterval"
       :options="timeIntervals"
     >
@@ -32,10 +33,5 @@ watch (() => currentTimeInterval.value, (newTimeInterval) => {
 </template>
 
 <style scoped>
-
-/* .filter-div {
-  display: flex;
-  align-items: center;
-} */
 
 </style>
