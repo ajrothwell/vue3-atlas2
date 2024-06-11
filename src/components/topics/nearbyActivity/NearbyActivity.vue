@@ -52,10 +52,11 @@ watch(() => selectedDataType.value, (newDataType) => {
 })
 
 const hoveredStateId = computed(() => { return MainStore.hoveredStateId; });
+const clickedMarkerId = computed(() => { return MainStore.clickedMarkerId; });
 
-watch(() => hoveredStateId.value, (newHoveredStateId) => {
-  if (newHoveredStateId) {
-    const el = document.getElementsByClassName(newHoveredStateId)[0];
+watch(() => clickedMarkerId.value, (newClickedMarkerId) => {
+  if (newClickedMarkerId) {
+    const el = document.getElementsByClassName(newClickedMarkerId)[0];
     // const el = document.getElementById(newHoveredStateId);
     const visible = isElementInViewport(el);
     if (!visible && !MainStore.isMobileDevice) {
@@ -63,6 +64,17 @@ watch(() => hoveredStateId.value, (newHoveredStateId) => {
     }
   }
 });
+
+// watch(() => hoveredStateId.value, (newHoveredStateId) => {
+//   if (newHoveredStateId) {
+//     const el = document.getElementsByClassName(newHoveredStateId)[0];
+//     // const el = document.getElementById(newHoveredStateId);
+//     const visible = isElementInViewport(el);
+//     if (!visible && !MainStore.isMobileDevice) {
+//       el.scrollIntoView({ block: 'center' });
+//     }
+//   }
+// });
 
 onMounted( () => {
   // console.log('NearbyActivity.vue onMounted is running, route.params.data:', route.params.data);

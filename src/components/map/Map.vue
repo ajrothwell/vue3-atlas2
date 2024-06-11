@@ -158,7 +158,8 @@ onMounted(async () => {
     const row = NearbyActivityStore[properties.type].rows.filter(row => row[idField] === properties.id)[0];
     console.log('nearby click, e:', e, 'properties:', properties, 'idField:', idField, 'e.features[0]:', e.features[0], 'type:', type, 'row:', row);
     e.clickOnLayer = true;
-    MainStore.hoveredStateId = e.features[0].properties.id;
+    MainStore.clickedMarkerId = e.features[0].properties.id;
+    // MainStore.hoveredStateId = e.features[0].properties.id;
     if (row.properties) {
       row[infoField] = row.properties[infoField];
     }

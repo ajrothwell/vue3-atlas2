@@ -15,6 +15,7 @@ export const useMainStore = defineStore("MainStore", {
       currentNearbyDataType: null,
       dataSourcesLoadedArray: [],
       clickedRow: [],
+      clickedMarkerId: null,
       hoveredStateId: null,
       selectedParcelId: null,
     };
