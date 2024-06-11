@@ -18,6 +18,11 @@ export const useMainStore = defineStore("MainStore", {
       clickedMarkerId: null,
       hoveredStateId: null,
       selectedParcelId: null,
+      fullScreenTopicsOnly: false,
+      fullScreenMapEnabled: false,
+      fullScreenTopicsEnabled: false,
+      windowDimensions: {},
+      windowHeight: null,
     };
   },
 

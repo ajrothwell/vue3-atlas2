@@ -10,24 +10,24 @@ const inputAddress = ref('');
 
 <template>
   <!-- <div class="columns"> -->
-    <div class="holder">
-      <label for="search-input" class="search-label">Search an address or OPA number</label>
-      <input
-        id="search-input"
-        class="input address-input"
-        type="text"
-        placeholder="Search an address or OPA number"
-        v-model="inputAddress"
-        @keydown.enter="router.replace({ name: 'search', query: { address: inputAddress }})"
-      />
-      <button
-        class="button address-input-button"
-        title="Address Search Button"
-        @click="router.replace({ name: 'search', query: { address: inputAddress }})"
-      >
-        <font-awesome-icon :icon="['fas', 'search']" size="xl"/>
-      </button>
-    </div>
+  <div class="holder">
+    <label for="search-input" class="search-label">Search an address or OPA number</label>
+    <input
+      id="search-input"
+      class="input address-input"
+      type="text"
+      placeholder="Search an address or OPA number"
+      v-model="inputAddress"
+      @keydown.enter="router.replace({ name: 'search', query: { address: inputAddress }})"
+    />
+    <button
+      class="button address-input-button"
+      title="Address Search Button"
+      @click="router.replace({ name: 'search', query: { address: inputAddress }})"
+    >
+      <font-awesome-icon :icon="['fas', 'search']" size="xl"/>
+    </button>
+  </div>
   <!-- </div> -->
 
 </template>

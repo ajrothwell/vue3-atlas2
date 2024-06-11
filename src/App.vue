@@ -45,6 +45,9 @@ onMounted(async () => {
 
   const main = document.getElementById('main');
   main.scrollTop = -main.scrollHeight;
+
+  window.addEventListener('resize', handleWindowResize);
+  handleWindowResize();
 });
 
 const applink = {
@@ -65,6 +68,22 @@ const links = [
     },
   },
 ];
+
+const handleWindowResize = () => {
+  const rootElement = document.getElementById('app');
+  const rootStyle = window.getComputedStyle(rootElement);
+  const rootWidth = rootStyle.getPropertyValue('width');
+  const rootHeight = rootStyle.getPropertyValue('height');
+  const rootWidthNum = parseInt(rootWidth.replace('px', ''));
+  const rootHeightNum = parseInt(rootHeight.replace('px', ''));
+
+  const dim = {
+    width: rootWidthNum,
+    height: rootHeightNum,
+  };
+  MainStore.windowHeight = rootHeightNum;
+  MainStore.windowDimensions = dim;
+}
 
 </script>
 

@@ -8,6 +8,8 @@ const MainStore = useMainStore();
 import { useCondosStore } from '@/stores/CondosStore.js'
 const CondosStore = useCondosStore();
 
+import FullScreenTopicsToggleTab from '@/components/FullScreenTopicsToggleTab.vue';
+
 import Topic from '@/components/Topic.vue';
 import Property from '@/components/topics/Property.vue';
 import Condos from '@/components/topics/Condos.vue';
@@ -30,9 +32,16 @@ const zipCode = computed(() => {
   return '';
 });
 
+const fullScreenTopicsOnly = computed(() => MainStore.fullScreenTopicsOnly);
+
 </script>
 
 <template>
+
+  <full-screen-topics-toggle-tab
+    v-if="!fullScreenTopicsOnly"
+  />
+  <!-- v-once -->
       
   <!-- FRONT PAGE CONTENT -->
   <div id="topic-panel-set-content" v-if="route.name == 'home'">
@@ -106,9 +115,5 @@ const zipCode = computed(() => {
 </template>
 
 <style>
-
-
-
-
 
 </style>
