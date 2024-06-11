@@ -1,5 +1,5 @@
 <script setup>
-import { nextTick, ref, reactive, computed, watch, onMounted, onBeforeUnmount } from 'vue';
+import { ref, reactive, computed, watch, onMounted, onBeforeUnmount } from 'vue';
 import { point, featureCollection } from '@turf/helpers';
 
 import { useNearbyActivityStore } from '@/stores/NearbyActivityStore';
@@ -10,6 +10,7 @@ import { useMapStore } from '@/stores/MapStore';
 const MapStore = useMapStore();
 
 import IntervalDropdown from '@/components/topics/nearbyActivity/IntervalDropdown.vue';
+import TextFilter from '@/components/topics/nearbyActivity/TextFilter.vue';
 import useTransforms from '@/composables/useTransforms';
 const { timeReverseFn } = useTransforms();
 import useScrolling from '@/composables/useScrolling';
@@ -91,8 +92,6 @@ const nearby311TableData = computed(() => {
   }
 });
 
-const clearText = () => textSearch.value = '';
-
 </script>
 
 <template>
@@ -101,30 +100,10 @@ const clearText = () => textSearch.value = '';
     :timeIntervals="timeIntervals"
     @setTimeInterval="setTimeInterval"
   ></IntervalDropdown>
-  
-  <div class="filter-div columns is-mobile">
-    <div class="filter-label column is-3 small-is-4 pt-0 pb-0">Search by text:</div>
-    <div class="column is-7 small-is-6 pr-0 pt-0 pb-0">
-      <textbox
-        placeholder="text"
-        v-model="textSearch"
-        class="search-box"
-        id="searchBar"
-      >
-      </textbox>
-    </div>
-    <div class="column is-2 small-is-2 pl-0">
-      <button
-        v-if="textSearch !== null && textSearch !== ''"
-        type="submit"
-        class="button clear-button"
-        @click="clearText"
-      >
-        <span class="clear-span pl-0" v-if="!MainStore.isMobileDevice">CLEAR</span>
-        <i class="fas fa-times-circle"></i>
-      </button>
-    </div>
-  </div>
+
+  <TextFilter
+    v-model="textSearch"
+  ></TextFilter>
 
   <div class="mt-5">
     <h5 class="subtitle is-5">311 Requests ({{ nearby311TableData.rows.length }})</h5>
@@ -157,39 +136,8 @@ const clearText = () => textSearch.value = '';
 
 <style>
 
-.clear-span {
-  padding-left: 0px !important;
-}
-
-button.button.clear-button {
-  /* position: relative;
-  right: -240px;
-  top: -50px; */
-  width: 86px;
-  font-size: 12px !important;
-  border: none;
-  background: #96c9ff;
-  color: #444444;
-  border-radius: 40px !important;
-  padding: 3px;
-  padding-left: 0px;
-  height: 15px;
-  i {
-    margin-left: 5px;
-  }
-  &:focus {
-    box-shadow: none !important;
-  }
-}
-
-@media 
-only screen and (max-width: 760px),
-(min-device-width: 768px) and (max-device-width: 1024px)  {
-
-  button.button.clear-button {
-    width: 40px;
-    padding: 8px;
-  }
+@media
+only screen and (max-width: 760px) {
 
 	/*Label the data*/
 
