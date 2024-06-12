@@ -121,7 +121,7 @@ const handleFullScreenMapToggleButtonClick = (e) => {
     margin-left: 6px;
   }
 
-  @media screen and (min-width: 46.875em) {
+  @media screen and (min-width: 761px) {
     .toggle-tab {
       position: absolute;
       left: 0px;

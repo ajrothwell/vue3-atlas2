@@ -81,7 +81,6 @@ const handleWindowResize = () => {
     width: rootWidthNum,
     height: rootHeightNum,
   };
-  MainStore.windowHeight = rootHeightNum;
   MainStore.windowDimensions = dim;
 }
 
@@ -113,7 +112,7 @@ const fullScreenMapEnabled = computed(() => {
   <main id="main" class="main invisible-scrollbar">
 
     <!-- TOPIC PANEL ON LEFT -->
-    <div v-if="!isMobileDevice() && !fullScreenMapEnabled" class="topics-holder" :class="fullScreenTopicsEnabled ? 'topics-holder-full' : ''">
+    <div v-if="!isMobileDevice() && MainStore.windowDimensions.width > 760 && !fullScreenMapEnabled" class="topics-holder" :class="fullScreenTopicsEnabled ? 'topics-holder-full' : ''">
       <topic-panel></topic-panel>
     </div>
 
@@ -122,7 +121,7 @@ const fullScreenMapEnabled = computed(() => {
       <map-panel></map-panel>
     </div>
 
-    <div v-if="isMobileDevice()" class="topics-holder">
+    <div v-if="isMobileDevice() || MainStore.windowDimensions.width <= 760" class="topics-holder">
       <topic-panel></topic-panel>
     </div>
       

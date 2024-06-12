@@ -121,7 +121,7 @@ const handleFullScreenTopicsToggleButtonClick = async(e) => {
     margin-top: 30px;
   }
 
-  @media screen and (min-width: 46.875em) {
+  @media screen and (min-width: 761px) {
     .toggle-tab {
       position: absolute;
       /* right: 0px; */
