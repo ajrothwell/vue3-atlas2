@@ -54,6 +54,15 @@ const picOrCycloActive = computed(() => {
   return false;
 });
 
+watch (
+  () => picOrCycloActive.value,
+  newPicOrCycloActive => {
+    console.log('newPicOrCycloActive:', newPicOrCycloActive);
+    setYPosition(MainStore.windowDimensions.height);
+    setXPosition(MainStore.windowDimensions.width);
+  }
+)
+
 const currentIcon = computed(() => {
   if (fullScreenTopicsEnabled.value) {
     return 'caret-left';

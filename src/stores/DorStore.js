@@ -101,10 +101,10 @@ export const useDorStore = defineStore("DorStore", {
       this.fillDorCondos();
     },
     async clearAllDorData() {
+      this.loadingDorData = true;
       this.dorDocuments = {};
       this.regmaps = {};
       this.dorCondos = {};
-      this.loadingDorData = true;
     },
     async fillDorCondos() {
       this.dorCondos = {};
