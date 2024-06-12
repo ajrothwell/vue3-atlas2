@@ -10,7 +10,6 @@ import { set } from 'date-fns';
 const MapStore = useMapStore();
 
 onMounted(() => {
-  console.log('FullScreenMapToggleTab.vue onMounted');
   setYPosition(MainStore.windowDimensions.height);
   setXPosition(MainStore.windowDimensions.width);
 });
@@ -74,8 +73,7 @@ const setYPosition = (dim) => {
 
 const setXPosition = async (dim) => {
   console.log('setXPosition dim:', dim, typeof dim);
-  // await nextTick();
-  if (fullScreenTopicsEnabled.value) {
+  if (fullScreenMapEnabled.value) {
     buttonX.value = '0px';
   } else {
     buttonX.value = dim/2 + 'px';
