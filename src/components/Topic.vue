@@ -35,6 +35,12 @@ const handleTopicClick = () => {
   }
   console.log('topic clicked:', props.topicName);
   routeApp(router);
+
+  setTimeout(() => {
+    const element = document.getElementById(props.topicName+'-topic');
+    console.log('element:', element);
+    element.scrollIntoView();//{behavior: 'smooth'});
+  }, '100');
 }
 
 </script>
