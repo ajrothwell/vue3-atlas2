@@ -1,8 +1,105 @@
+
+<script setup>
+
+import { ref, computed, onMounted, watch } from 'vue';
+
+import { useMainStore } from '@/stores/MainStore';
+const MainStore = useMainStore();
+import { useMapStore } from '@/stores/MapStore';
+import { set } from 'date-fns';
+const MapStore = useMapStore();
+
+onMounted(() => {
+  console.log('FullScreenMapToggleTab.vue onMounted');
+  setYPosition(MainStore.windowDimensions.height);
+  setXPosition(MainStore.windowDimensions.width);
+});
+
+const buttonY = ref(0);
+const buttonX = ref(0);
+
+watch(
+  () => MainStore.windowDimensions,
+  newWindowDimensions => {
+    console.log('newWindowDimensions.height:', newWindowDimensions.height);
+    setYPosition(newWindowDimensions.height);
+    setXPosition(newWindowDimensions.width);
+  }
+)
+
+const fullScreenMapEnabled = computed(() => {
+  return MainStore.fullScreenMapEnabled;
+});
+
+const fullScreenTopicsEnabled = computed(() => {
+  // console.log('this.$store.state.fullScreenTopicsEnabled:', this.$store.state.fullScreenTopicsEnabled);
+  return MainStore.fullScreenTopicsEnabled;
+});
+
+const isMobileOrTablet = computed(() =>{
+  return MainStore.isMobileDevice;
+});
+
+const cyclomediaActive = computed(() => {
+  return MapStore.cyclomediaOn;
+});
+
+const eagleviewActive = computed(() => {
+  return MapStore.eagleviewOn;
+});
+
+const picOrCycloActive = computed(() => {
+  console.log('cyclomediaActive:', cyclomediaActive, 'eagleviewActive:', eagleviewActive);
+  if (cyclomediaActive.value || eagleviewActive.value) {
+    return true;
+  }
+  return false;
+});
+
+const currentIcon = computed(() => {
+  if (fullScreenMapEnabled.value) {
+    return 'caret-right';
+  }
+  return 'caret-left';
+});
+  
+const setYPosition = (dim) => {
+  console.log('setYPosition dim:', dim, typeof dim);
+  if (!picOrCycloActive.value) {
+    buttonY.value = (dim-48)/2 + 'px';
+  } else {
+    buttonY.value = (dim-48)/4 + 'px';
+  }
+}
+
+const setXPosition = async (dim) => {
+  console.log('setXPosition dim:', dim, typeof dim);
+  // await nextTick();
+  if (fullScreenTopicsEnabled.value) {
+    buttonX.value = '0px';
+  } else {
+    buttonX.value = dim/2 + 'px';
+  }
+}
+
+const handleFullScreenMapToggleButtonClick = (e) => {
+  const prevFullScreenMapEnabled = MainStore.fullScreenMapEnabled;
+  const nextFullScreenMapEnabled = !prevFullScreenMapEnabled;
+  MainStore.fullScreenMapEnabled = nextFullScreenMapEnabled;
+  if (nextFullScreenMapEnabled) {
+    buttonX.value = '0px';
+  } else {
+    buttonX.value = MainStore.windowDimensions.width/2 + 'px';
+  }
+}
+
+</script>
+
 <template>
   <div
     v-if="!isMobileOrTablet"
     id="toggle-tab"
-    :style="{ top: buttonPosition }"
+    :style="{ top: buttonY, left: buttonX }"
     class="toggle-tab"
     @click="handleFullScreenMapToggleButtonClick"
   >
@@ -14,85 +111,6 @@
     </span>
   </div>
 </template>
-
-<script>
-export default {
-  name: 'FullScreenMapToggleTab',
-  data() {
-    return {
-      'buttonPosition': 0,
-    };
-  },
-  computed: {
-    windowDim() {
-      return this.$store.state.windowDimensions;
-    },
-    fullScreenMapEnabled() {
-      return this.$store.state.fullScreenMapEnabled;
-    },
-    fullScreenTopicsEnabled() {
-      return this.$store.state.fullScreenTopicsEnabled;
-    },
-    isMobileOrTablet() {
-      return this.$store.state.isMobileOrTablet;
-    },
-    cyclomediaActive() {
-      return this.$store.state.cyclomedia.active;
-    },
-    pictometryActive() {
-      return this.$store.state.pictometry.active;
-    },
-    picOrCycloActive() {
-      if (this.cyclomediaActive || this.pictometryActive) {
-        return true;
-      }
-      return false;
-
-    },
-    currentIcon() {
-      if (this.fullScreenMapEnabled) {
-        return 'caret-right';
-      }
-      return 'caret-left';
-
-    },
-  },
-  watch: {
-    picOrCycloActive(value) {
-      this.setDivHeight(this.windowDim);
-    },
-    fullScreenTopicsEnabled() {
-      this.setDivHeight(this.windowDim);
-    },
-    windowDim(nextDim) {
-      this.setDivHeight(nextDim);
-    },
-  },
-  mounted() {
-    this.setDivHeight(this.windowDim);
-  },
-  methods: {
-    setDivHeight(dim) {
-      if (this.$config.plugin) {
-        if (this.$config.plugin.enabled === true) {
-          this.buttonPosition = (this.$config.plugin.height-48)/2 + 'px';
-          return;
-        }
-      }
-      if (!this.picOrCycloActive) {
-        this.buttonPosition = (dim.height-48)/2 + 'px';
-      } else {
-        this.buttonPosition = (dim.height-48)/4 + 'px';
-      }
-    },
-    handleFullScreenMapToggleButtonClick(e) {
-      const prevFullScreenMapEnabled = this.$store.state.fullScreenMapEnabled;
-      const nextFullScreenMapEnabled = !prevFullScreenMapEnabled;
-      this.$store.commit('setFullScreenMapEnabled', nextFullScreenMapEnabled);
-    },
-  },
-};
-</script>
 
 <style scoped>
 

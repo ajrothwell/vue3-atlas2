@@ -113,12 +113,12 @@ const fullScreenMapEnabled = computed(() => {
   <main id="main" class="main invisible-scrollbar">
 
     <!-- TOPIC PANEL ON LEFT -->
-    <div v-if="!isMobileDevice()" class="topics-holder" :class="fullScreenTopicsEnabled ? 'topics-holder-full' : ''">
+    <div v-if="!isMobileDevice() && !fullScreenMapEnabled" class="topics-holder" :class="fullScreenTopicsEnabled ? 'topics-holder-full' : ''">
       <topic-panel></topic-panel>
     </div>
 
     <!-- MAP PANEL ON RIGHT - right now only contains the address input -->
-    <div v-show="!fullScreenTopicsEnabled" class="map-panel-holder">
+    <div v-if="!fullScreenTopicsEnabled" class="map-panel-holder" :class="fullScreenMapEnabled ? 'topics-holder-full' : ''">
       <map-panel></map-panel>
     </div>
 

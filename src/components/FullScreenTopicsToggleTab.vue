@@ -1,7 +1,7 @@
 
 <script setup>
 
-import { ref, computed, onMounted, watch, nextTick } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 
 import { useMainStore } from '@/stores/MainStore';
 const MainStore = useMainStore();
@@ -9,7 +9,8 @@ import { useMapStore } from '@/stores/MapStore';
 const MapStore = useMapStore();
 
 onMounted(() => {
-  console.log('FullScreenTopicsToggleTab.vue onMounted');
+  setYPosition(MainStore.windowDimensions.height);
+  setXPosition(MainStore.windowDimensions.width);
 })
 
 const buttonY = ref(0);
@@ -71,7 +72,6 @@ const setYPosition = (dim) => {
 
 const setXPosition = async (dim) => {
   console.log('setXPosition dim:', dim, typeof dim);
-  // await nextTick();
   if (fullScreenTopicsEnabled.value) {
     buttonX.value = '0px';
   } else {
@@ -82,7 +82,6 @@ const setXPosition = async (dim) => {
 const handleFullScreenTopicsToggleButtonClick = async(e) => {
   const prevFullScreenTopicsEnabled = MainStore.fullScreenTopicsEnabled;
   const nextFullScreenTopicsEnabled = !prevFullScreenTopicsEnabled;
-  // await nextTick();
   MainStore.fullScreenTopicsEnabled = nextFullScreenTopicsEnabled;
   if (nextFullScreenTopicsEnabled) {
     buttonX.value = '0px';

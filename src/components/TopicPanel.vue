@@ -39,7 +39,7 @@ const fullScreenTopicsOnly = computed(() => MainStore.fullScreenTopicsOnly);
 <template>
 
   <full-screen-topics-toggle-tab
-    v-if="!fullScreenTopicsOnly"
+    v-show="!MainStore.fullScreenMapEnabled"
   />
   <!-- v-once -->
       
