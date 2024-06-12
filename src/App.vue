@@ -117,7 +117,7 @@ const fullScreenMapEnabled = computed(() => {
     </div>
 
     <!-- MAP PANEL ON RIGHT - right now only contains the address input -->
-    <div v-if="!fullScreenTopicsEnabled" class="map-panel-holder" :class="fullScreenMapEnabled ? 'topics-holder-full' : ''">
+    <div v-show="!fullScreenTopicsEnabled" class="map-panel-holder" :class="fullScreenMapEnabled ? 'topics-holder-full' : ''">
       <map-panel></map-panel>
     </div>
 
