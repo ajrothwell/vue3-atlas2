@@ -223,6 +223,8 @@ onMounted(async () => {
   map.on('draw.finish', drawFinish);
   map.on('draw.modechange', drawModeChange);
 
+  map.resize();
+
   // map is added as Mapstore.map
   MapStore.setMap(map);
 });
