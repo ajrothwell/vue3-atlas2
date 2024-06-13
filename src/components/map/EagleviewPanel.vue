@@ -5,10 +5,8 @@ import { onMounted, computed, watch } from 'vue';
 import { point } from '@turf/helpers';
 import axios from 'axios';
 
-import { useMainStore } from '@/stores/MainStore';
-const MainStore = useMainStore();
 import { useMapStore } from '@/stores/MapStore';
-import { config } from 'maplibre-gl';
+// import { config } from 'maplibre-gl';
 const MapStore = useMapStore();
 
 const clientId = import.meta.env.VITE_EAGLEVIEW_CLIENT_ID;
