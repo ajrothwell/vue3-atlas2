@@ -679,11 +679,29 @@ const drawModeChange = (e) => {
   distanceMeasureControlRef.value.handleDrawModeChange(e);
 }
 
+const removeAllCyclomediaMapLayers = () => {
+  let recordingsGeojson = {
+    type: 'FeatureCollection',
+    features: []
+  }
+  map.getSource('cyclomediaRecordings').setData(recordingsGeojson);
+  $config.dorDrawnMapStyle.sources.cyclomediaRecordings.data.features = [];
+
+  let cameraGeojson = point([0,0]);
+  map.getSource('cyclomediaCamera').setData(cameraGeojson);
+  $config.dorDrawnMapStyle.sources.cyclomediaCamera.data = cameraGeojson;
+  let viewConeGeojson = polygon([[[0,0], [0,0], [0,0], [0,0]]]);
+  map.getSource('cyclomediaViewcone').setData(viewConeGeojson);
+  $config.dorDrawnMapStyle.sources.cyclomediaViewcone.data = viewConeGeojson;
+  MapStore.setCyclomediaCameraLngLat(MapStore.cyclomediaCameraLngLat, null);
+}
+
 // toggle cyclomedia on and off
 const toggleCyclomedia = async() => {
   console.log('toggleCyclomedia, map.getStyle().sources:', map.getStyle().sources, 'map.getStyle().layers:', map.getStyle().layers);
   MapStore.cyclomediaOn = !MapStore.cyclomediaOn;
   if (MapStore.cyclomediaOn) {
+    MapStore.eagleviewOn = false;
     const zoom = map.getZoom();
     if (zoom > 16.5) {
       await updateCyclomediaRecordings();
@@ -697,20 +715,7 @@ const toggleCyclomedia = async() => {
       }
     }
   } else {
-    let recordingsGeojson = {
-      type: 'FeatureCollection',
-      features: []
-    }
-    map.getSource('cyclomediaRecordings').setData(recordingsGeojson);
-    $config.dorDrawnMapStyle.sources.cyclomediaRecordings.data.features = [];
-
-    let cameraGeojson = point([0,0]);
-    map.getSource('cyclomediaCamera').setData(cameraGeojson);
-    $config.dorDrawnMapStyle.sources.cyclomediaCamera.data = cameraGeojson;
-    let viewConeGeojson = polygon([[[0,0], [0,0], [0,0], [0,0]]]);
-    map.getSource('cyclomediaViewcone').setData(viewConeGeojson);
-    $config.dorDrawnMapStyle.sources.cyclomediaViewcone.data = viewConeGeojson;
-    MapStore.setCyclomediaCameraLngLat(MapStore.cyclomediaCameraLngLat, null);
+    removeAllCyclomediaMapLayers();
   }
 }
 
@@ -841,6 +846,10 @@ const updateCyclomediaCameraViewcone = (cycloHFov, cycloYaw) => {
 const toggleEagleview = () => {
   console.log('toggleEagleview');
   MapStore.eagleviewOn = !MapStore.eagleviewOn;
+  if (MapStore.eagleviewOn) {
+    MapStore.cyclomediaOn = false;
+    removeAllCyclomediaMapLayers();
+  }
 }
 
 const legendData = ref({

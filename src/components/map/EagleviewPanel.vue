@@ -1,7 +1,13 @@
 <script setup>
 
-import { ref, onMounted } from 'vue';
+import { onMounted, computed, watch } from 'vue';
 import axios from 'axios';
+
+import { useMainStore } from '@/stores/MainStore';
+const MainStore = useMainStore();
+import { useMapStore } from '@/stores/MapStore';
+const MapStore = useMapStore();
+
 const clientId = import.meta.env.VITE_EAGLEVIEW_CLIENT_ID;
 const clientSecret = import.meta.env.VITE_EAGLEVIEW_CLIENT_SECRET;
 const options = {
@@ -15,13 +21,33 @@ const options = {
   url: 'https://api.eagleview.com/auth-service/v1/token',
 };
 
+const currentAddressCoords = computed(() => {
+  if (MapStore.currentAddressCoords) {
+    return { lat: MapStore.currentAddressCoords[1], lon: MapStore.currentAddressCoords[0] }
+  } else {
+    return { lat: 39.926305, lon: -75.162278 };
+  }
+});
+
+let map;
+
+watch(
+  () => currentAddressCoords.value,
+  newValue => {
+    if (newValue) {
+      console.log('currentAddressCoords changed:', newValue);
+      map.setView({ lonLat: currentAddressCoords.value });
+    }
+  }
+);
+
 onMounted( async() => {
   const response = await axios(options);
   localStorage.clear();
-  const map = new window.ev.EmbeddedExplorer().mount('eagleview', { authToken: response.data.access_token });
+  map = new window.ev.EmbeddedExplorer().mount('eagleview', { authToken: response.data.access_token });
   map.enableMeasurementPanel(false);
   map.enableSearchBar(false);
-  map.setView({ lonLat: {lat: 39.953338, lon: -75.163471}, zoom: 17, pitch: 0, rotation: 0 }, (value) => {
+  map.setView({ lonLat: currentAddressCoords.value, zoom: 17, pitch: 0, rotation: 0 }, (value) => {
     console.log('View has been set, value:', value)
   });
   // map.setView({ lonLat: {lat: 39.926305, lon: -75.162278}, zoom: 16, pitch: 0, rotation: 0 }, (value) => console.log('View has been set, value:', value));
