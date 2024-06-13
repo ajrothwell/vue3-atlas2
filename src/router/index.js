@@ -65,10 +65,12 @@ const getParcelsAndPutInStore = async(lng, lat) => {
   }
   const addressField = parcelLayer === 'pwd' ? 'ADDRESS' : 'ADDR_SOURCE';
   console.log('ParcelsStore[parcelLayer].features:', ParcelsStore[parcelLayer].features);
-  for (let i = 0; i < ParcelsStore[parcelLayer].features.length; i++) {
-    if (ParcelsStore[parcelLayer].features[i].properties[addressField] !== ' ') {
-      currentAddress = ParcelsStore[parcelLayer].features[i].properties[addressField];
-      break;
+  if (ParcelsStore[parcelLayer].features) {
+    for (let i = 0; i < ParcelsStore[parcelLayer].features.length; i++) {
+      if (ParcelsStore[parcelLayer].features[i].properties[addressField] !== ' ') {
+        currentAddress = ParcelsStore[parcelLayer].features[i].properties[addressField];
+        break;
+      }
     }
   }
   console.log('getParcelAndPutInStore, currentAddress:', currentAddress, 'parcelLayer:', parcelLayer, 'addressField', addressField, 'ParcelsStore[parcelLayer].features[0].properties:', ParcelsStore[parcelLayer].features[0].properties, 'ParcelsStore[parcelLayer].features[0].properties[addressField]:', ParcelsStore[parcelLayer].features[0].properties[addressField]);

@@ -19,7 +19,7 @@ const buttonX = ref(0);
 watch(
   () => MainStore.windowDimensions,
   newWindowDimensions => {
-    console.log('newWindowDimensions.height:', newWindowDimensions.height);
+    // console.log('newWindowDimensions.height:', newWindowDimensions.height);
     setYPosition(newWindowDimensions.height);
     setXPosition(newWindowDimensions.width);
   }
@@ -47,7 +47,7 @@ const eagleviewActive = computed(() => {
 });
 
 const picOrCycloActive = computed(() => {
-  console.log('cyclomediaActive:', cyclomediaActive, 'eagleviewActive:', eagleviewActive);
+  // console.log('cyclomediaActive:', cyclomediaActive, 'eagleviewActive:', eagleviewActive);
   if (cyclomediaActive.value || eagleviewActive.value) {
     return true;
   }
@@ -57,7 +57,7 @@ const picOrCycloActive = computed(() => {
 watch (
   () => picOrCycloActive.value,
   newPicOrCycloActive => {
-    console.log('newPicOrCycloActive:', newPicOrCycloActive);
+    // console.log('newPicOrCycloActive:', newPicOrCycloActive);
     setYPosition(MainStore.windowDimensions.height);
     setXPosition(MainStore.windowDimensions.width);
   }

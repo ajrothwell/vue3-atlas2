@@ -59,6 +59,12 @@ const shouldShowTable = computed(() => {
   }
 });
 
+const opaAccountNumber = computed(() => {
+  if (GeocodeStore.aisData.features) {
+    return GeocodeStore.aisData.features[0].properties.opa_account_num;
+  }
+});
+
 const shouldShowCondosMessage = computed(() => {
   if (OpaStore.opaData.rows) {
     if (!CondosStore.condosData.pages.page_1.features) {
@@ -69,10 +75,8 @@ const shouldShowCondosMessage = computed(() => {
   }
 });
 
-const opaAccountNumber = computed(() => {
-  if (GeocodeStore.aisData.features) {
-    return GeocodeStore.aisData.features[0].properties.opa_account_num;
-  }
+const hasNoData = computed(() => {
+  return !OpaStore.opaData.rows || !OpaStore.opaData.rows.length;
 });
 
 </script>
@@ -92,11 +96,11 @@ const opaAccountNumber = computed(() => {
     <div v-else-if="OpaStore.loadingOpaData">
       <p>Loading property assessment data... <font-awesome-icon icon="fa-solid fa-spinner" spin/></p>
     </div>
-    <div v-else-if="!OpaStore.opaData.rows">
+    <div v-else-if="hasNoData">
       <p>There is no property assessment record for this address.</p>
     </div>
     <div>
-      <a v-if="!shouldShowCondosMessage" target='_blank' :href="`https://property.phila.gov/?p=${opaAccountNumber}`">See more at Property Search <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
+      <a v-if="!shouldShowCondosMessage && !hasNoData" target='_blank' :href="`https://property.phila.gov/?p=${opaAccountNumber}`">See more at Property Search <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
     </div>
 
   </section>

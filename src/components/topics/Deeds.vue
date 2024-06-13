@@ -269,7 +269,7 @@ const dorDocsTableData = computed(() => {
   <div class="box">Use the buttons below to view images of hard-copy deed maps, some of which have handwritten information that may be useful for historical deed research.</div>
 
   <!-- Registry Maps -->
-  <div class="mb-4">
+  <div v-if="selectedParcel" class="mb-4">
     <h5 class="subtitle is-5">Registry Maps</h5>
     <div class="columns is-multiline is-mobile">
       <div
