@@ -9,6 +9,7 @@ import { useCondosStore } from '@/stores/CondosStore.js'
 const CondosStore = useCondosStore();
 
 import FullScreenTopicsToggleTab from '@/components/FullScreenTopicsToggleTab.vue';
+import AddressSearchControl from '@/components/map/AddressSearchControl.vue';
 
 import Topic from '@/components/Topic.vue';
 import Property from '@/components/topics/Property.vue';
@@ -31,8 +32,6 @@ const zipCode = computed(() => {
   }
   return '';
 });
-
-const fullScreenTopicsOnly = computed(() => MainStore.fullScreenTopicsOnly);
 
 </script>
 
@@ -78,6 +77,11 @@ const fullScreenTopicsOnly = computed(() => MainStore.fullScreenTopicsOnly);
       <h1 class="subtitle is-3"><font-awesome-icon :icon="['fas', 'map-marker-alt']" /><div class="address">{{ address }}</div></h1>
     </div>
     <div>PHILADELPHIA, PA {{ zipCode }}</div>
+
+    <div v-if="MainStore.fullScreenTopicsEnabled">
+      <address-search-control />
+    </div>
+
   </div>
 
   <div v-if="route.name !== 'home' && route.name !== 'not-found' && address" id="topic-panel-content" class="topics">

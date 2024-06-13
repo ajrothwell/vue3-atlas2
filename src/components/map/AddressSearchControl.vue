@@ -1,16 +1,51 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+
+import { useMainStore } from '@/stores/MainStore.js'
+const MainStore = useMainStore();
 
 const router = useRouter();
 
 const inputAddress = ref('');
 
+const holderY = ref(0);
+
+const fullScreenTopicsEnabled = computed(() => {
+  return MainStore.fullScreenTopicsEnabled;
+});
+  
+const fullScreenMapEnabled = computed(() => {
+  return MainStore.fullScreenMapEnabled;
+});
+    
+const holderWidth = computed(() => {
+  if (fullScreenTopicsEnabled.value || fullScreenMapEnabled.value) {
+    return '40%';
+  } else {
+    return '70%';
+  }
+});
+
+const setYPosition = async (dim) => {
+  if (fullScreenTopicsEnabled.value) {
+    holderY.value = '88px';
+  } else {
+    holderY.value = '10px';
+  }
+}
+
+onMounted(() => {
+  setYPosition(MainStore.windowDimensions.width);
+})
+
 </script>
 
 <template>
-  <!-- <div class="columns"> -->
-  <div class="holder">
+  <div
+    :class="fullScreenTopicsEnabled ? 'holder holder-topics' : 'holder holder-map'"
+    :style="{ top: holderY, width: holderWidth }"
+  >
     <label for="search-input" class="search-label">Search an address or OPA number</label>
     <input
       id="search-input"
@@ -28,7 +63,6 @@ const inputAddress = ref('');
       <font-awesome-icon :icon="['fas', 'search']" size="xl"/>
     </button>
   </div>
-  <!-- </div> -->
 
 </template>
 
@@ -43,11 +77,16 @@ const inputAddress = ref('');
 
 .holder {
   position: absolute;
-  top: 10px;
-  left: 10px;
-  width: 70%;
   display: flex;
   flex-direction: row;
+}
+
+.holder-map {
+  left: 10px;
+}
+
+.holder-topics {
+  right: 10px;
 }
 
 .address-input {

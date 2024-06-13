@@ -25,9 +25,9 @@ watch(
   }
 )
 
-const fullScreenMapEnabled = computed(() => {
-  return MainStore.fullScreenMapEnabled;
-});
+// const fullScreenMapEnabled = computed(() => {
+//   return MainStore.fullScreenMapEnabled;
+// });
 
 const fullScreenTopicsEnabled = computed(() => {
   // console.log('this.$store.state.fullScreenTopicsEnabled:', this.$store.state.fullScreenTopicsEnabled);
@@ -71,7 +71,7 @@ const currentIcon = computed(() => {
 });
   
 const setYPosition = (dim) => {
-  console.log('setYPosition dim:', dim, typeof dim);
+  // console.log('setYPosition dim:', dim, typeof dim);
   if (!picOrCycloActive.value) {
     buttonY.value = (dim-48)/2 + 'px';
   } else {
@@ -80,7 +80,7 @@ const setYPosition = (dim) => {
 }
 
 const setXPosition = async (dim) => {
-  console.log('setXPosition dim:', dim, typeof dim);
+  // console.log('setXPosition dim:', dim, typeof dim);
   if (fullScreenTopicsEnabled.value) {
     buttonX.value = '0px';
   } else {
