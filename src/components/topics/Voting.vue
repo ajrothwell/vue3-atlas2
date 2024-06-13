@@ -54,6 +54,31 @@ const term = computed(() => {
   }
 });
 
+const accessibility = computed(() => {
+  if (VotingStore.pollingPlaces.rows && VotingStore.pollingPlaces.rows.length) {
+    const code = VotingStore.pollingPlaces.rows[0].accessibility_code;
+    const answer = code== "F" ? 'Building Fully Accessible' :
+      code== "B" ? 'Building Substantially Accessible' :
+      code== "M" ? 'Building Accessibility Modified' :
+      code== "A" ? 'Alternate Entrance' :
+      code== "R" ? 'Building Accessible With Ramp' :
+      code== "N" ? 'Building Not Accessible' :
+      'Information Not Available';
+    return answer;
+  }
+});
+
+const parking = computed(() => {
+  if (VotingStore.pollingPlaces.rows && VotingStore.pollingPlaces.rows.length) {
+    const code = VotingStore.pollingPlaces.rows[0].parking_info;
+    const parking = code == "N" ? 'No Parking' :
+      code == "G" ? 'General Parking' :
+      code == "L" ? 'Loading Zone' :
+      'Information Not Available';
+    return parking;
+  }
+});
+
 const pollingPlaceData = computed(() => {
   if (VotingStore.pollingPlaces.rows && VotingStore.pollingPlaces.rows.length) {
     return [
@@ -69,11 +94,11 @@ const pollingPlaceData = computed(() => {
       },
       {
         label: 'Accessibility',
-        value: ''
+        value: `<a target="_blank" href="https://vote.phila.gov/voting/voting-at-the-polls/polling-place-accessibility/">${accessibility.value}</a>`,
       },
       {
         label: 'Parking',
-        value: ''
+        value: parking.value,
       },
     ];
   }
