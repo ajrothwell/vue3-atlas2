@@ -69,6 +69,12 @@ const shouldShowCondosMessage = computed(() => {
   }
 });
 
+const opaAccountNumber = computed(() => {
+  if (GeocodeStore.aisData.features) {
+    return GeocodeStore.aisData.features[0].properties.opa_account_num;
+  }
+});
+
 </script>
 
 <template>
@@ -90,7 +96,7 @@ const shouldShowCondosMessage = computed(() => {
       <p>There is no property assessment record for this address.</p>
     </div>
     <div>
-      <a v-if="!shouldShowCondosMessage" target='_blank' :href="`https://property.phila.gov/?p=${GeocodeStore.aisData.features[0].properties.opa_account_num}`">See more at Property Search <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
+      <a v-if="!shouldShowCondosMessage" target='_blank' :href="`https://property.phila.gov/?p=${opaAccountNumber}`">See more at Property Search <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
     </div>
 
   </section>
