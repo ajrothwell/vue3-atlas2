@@ -136,7 +136,7 @@ export const useNearbyActivityStore = defineStore('NearbyActivityStore', {
         nearbyZoningAppeals: {
           title: 'Zoning Appeals',
           id_field: 'objectid',
-          info_field: 'appealgrounds',
+          info_field: 'address',
         },
         nearbyVacantIndicatorPoints: {
           title: 'Vacant Properties',
@@ -146,12 +146,12 @@ export const useNearbyActivityStore = defineStore('NearbyActivityStore', {
         nearbyConstructionPermits: {
           title: 'Construction Permits',
           id_field: 'objectid',
-          info_field: 'typeofwork',
+          info_field: 'address',
         },
         nearbyDemolitionPermits: {
           title: 'Demolition Permits',
           id_field: 'objectid',
-          info_field: 'typeofwork',
+          info_field: 'address',
         },
         nearbyImminentlyDangerous: {
           title: 'Imminently Dangerous',
