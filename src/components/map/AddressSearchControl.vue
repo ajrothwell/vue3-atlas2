@@ -9,8 +9,6 @@ const router = useRouter();
 
 const inputAddress = ref('');
 
-const holderY = ref(0);
-
 const fullScreenTopicsEnabled = computed(() => {
   return MainStore.fullScreenTopicsEnabled;
 });
@@ -27,24 +25,20 @@ const holderWidth = computed(() => {
   }
 });
 
-const setYPosition = async (dim) => {
+const yPosition = computed(() => {
   if (fullScreenTopicsEnabled.value) {
-    holderY.value = '88px';
+    return '88px';
   } else {
-    holderY.value = '10px';
+    return '10px';
   }
-}
-
-onMounted(() => {
-  setYPosition(MainStore.windowDimensions.width);
-})
+});
 
 </script>
 
 <template>
   <div
     :class="fullScreenTopicsEnabled ? 'holder holder-topics' : 'holder holder-map'"
-    :style="{ top: holderY, width: holderWidth }"
+    :style="{ top: yPosition, width: holderWidth }"
   >
     <label for="search-input" class="search-label">Search an address or OPA number</label>
     <input
