@@ -34,14 +34,31 @@ const currentAddressCoords = computed(() => {
 
 let map;
 
+const eagleviewProperties = {
+  "eagleview": {
+    "subType": "Marker",
+    "icon": "FaMapMarkerAlt",
+    "style": {
+      "color": "#2c63c7",
+      "size": 34,
+    }
+  }
+};
+
 watch(
   () => currentAddressCoords.value,
   newValue => {
     if (newValue) {
       console.log('currentAddressCoords changed:', newValue);
       map.setView({ lonLat: newValue });
+      map.removeFeatures();
       map.addFeatures({
-        geoJson: [point([newValue.lon, newValue.lat])]
+        geoJson: [
+          point(
+            [newValue.lon, newValue.lat],
+            eagleviewProperties
+          )
+        ]
       });
     }
   }
@@ -58,18 +75,23 @@ onMounted( async() => {
   });
   if (MapStore.currentAddressCoords.length) {
     map.addFeatures({
-      geoJson: [point([currentAddressCoords.value.lon, currentAddressCoords.value.lat])]
+      geoJson: [
+        point(
+          [currentAddressCoords.value.lon, currentAddressCoords.value.lat],
+          eagleviewProperties
+        )
+      ]
     });
   }
 
-  // map.setView({ lonLat: {lat: 39.926305, lon: -75.162278}, zoom: 16, pitch: 0, rotation: 0 }, (value) => console.log('View has been set, value:', value));
-  map.on('onViewUpdate', (value) => {
-    console.log('eagleview view has been updated, value:', value);
+  // map.on('onViewUpdate', (value) => {
+    // console.log('eagleview view has been updated, value:', value);
     // if (value.zoom < 18) {
       // map.setView({ zoom: 18, lonLat: value.lonLat, pitch: value.pitch, rotation: value.rotation });
     // }
-  });
+  // });
 });
+
 </script>
 
 <template>
