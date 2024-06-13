@@ -2,6 +2,48 @@ import mergeDeep from './util/merge-deep.js';
 
 const cityCenterCoords = [-75.163471, 39.953338];
 
+const zoningColors = {
+  'CA1': '#FCD1CC',
+  'CA2': '#FCD1CC',
+  'CMX1': '#FF7070',
+  'CMX2': '#FF7070',
+  'CMX2.5': '#FF7070',
+  'CMX3': '#EB0000',
+  'CMX4': '#850000',
+  'CMX5': '#850000',
+  'I1': '#C37FF0',
+  'I2': '#9B27D9',
+  'I3': '#41009C',
+  'ICMX': '#C300E6',
+  'IP': '#7C7AC4',
+  'IRMX': '#EC8EF5',
+  'RM1': '#FFA72B',
+  'RM2': '#FFA72B',
+  'RM3': '#FFA72B',
+  'RM4': '#FFA72B',
+  'RMX1': '#FF8138',
+  'RMX2': '#FF8138',
+  'RMX3': '#FF8138',
+  'RSA1': '#FFFF0F',
+  'RSA2': '#FFFF0F',
+  'RSA3': '#FFFF0F',
+  'RSA4': '#FFFF0F',
+  'RSA5': '#FFFF0F',
+  'RSD1': '#FFF4C4',
+  'RSD2': '#FFF4C4',
+  'RSD3': '#FFF4C4',
+  'RTA1': '#D4D40D',
+  'SPAIR': '#B1B3B5',
+  'SPENT': '#805624',
+  'SPINS': '#63BEFF',
+  'SPPOA': '#138C00',
+  'SPPOP': '#118E00',
+  'SPSTA': '#8ACC66',
+  'RSA6': '#FFFF0F',
+  'SPCIV': '#63BEFF',
+  'null': '#828282',
+}
+
 const imageryInfo = {
   sources: {
     imageryLabels: {
@@ -1151,6 +1193,7 @@ const ZONING_CODE_MAP = {
 };
 
 $config['cityCenterCoords'] = cityCenterCoords;
+$config['zoningColors'] = zoningColors;
 $config['pwdDrawnMapStyle'] = pwdDrawnMapStyle;
 $config['dorDrawnMapStyle'] = dorDrawnMapStyle;
 $config['liDrawnMapStyle'] = liDrawnMapStyle;

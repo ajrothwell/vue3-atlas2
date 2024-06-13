@@ -62,6 +62,13 @@ const longCode = computed(() => {
   }
 });
 
+const hexForLongCode = computed(() => {
+  if (ZoningStore.zoningBase[selectedParcelId.value] && ZoningStore.zoningBase[selectedParcelId.value].rows) {
+    const longCode = ZoningStore.zoningBase[selectedParcelId.value].rows[0].long_code.replace('-', '');
+    return $config.zoningColors[longCode];
+  }
+});
+
 const description = computed(() => {
   if (ZoningStore.zoningBase[selectedParcelId.value] && ZoningStore.zoningBase[selectedParcelId.value].rows) {
     return $config.ZONING_CODE_MAP[ZoningStore.zoningBase[selectedParcelId.value].rows[0].long_code]
@@ -196,8 +203,11 @@ const rcosTableData = computed(() => {
         <div class="columns mt-3" v-if="selectedParcel">
           <div class="columns is-multiline is-mobile column is-8 is-offset-2 has-text-centered badge">
             <div class="column is-12 badge-title"><b>Base District</b></div>
+            <div class="column is-2 code">
+              <div :style="{ 'height': '36px', 'width': '36px', 'background-color': hexForLongCode }"></div>
+            </div>
             <div class="column is-3 code" v-html="longCode"></div>
-            <div class="column is-9 description" v-html="description"></div>
+            <div class="column is-7 description" v-html="description"></div>
           </div>
         </div>
       </div>
