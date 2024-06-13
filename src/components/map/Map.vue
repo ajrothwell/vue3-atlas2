@@ -75,7 +75,8 @@ onMounted(async () => {
   map = new maplibregl.Map({
     container: 'map',
     style: $config[currentTopicMapStyle],
-    center: [-75.163471, 39.953338],
+    center: $config.cityCenterCoords,
+    // center: [-75.163471, 39.953338],
     zoom: zoom,
     minZoom: 6,
     maxZoom: 22,

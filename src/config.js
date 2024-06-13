@@ -1,5 +1,7 @@
 import mergeDeep from './util/merge-deep.js';
 
+const cityCenterCoords = [-75.163471, 39.953338];
+
 const imageryInfo = {
   sources: {
     imageryLabels: {
@@ -1148,6 +1150,7 @@ const ZONING_CODE_MAP = {
   'SP-CIV': 'SP-CIV, Civic, Educational, and Medical (Special Purpose) District',
 };
 
+$config['cityCenterCoords'] = cityCenterCoords;
 $config['pwdDrawnMapStyle'] = pwdDrawnMapStyle;
 $config['dorDrawnMapStyle'] = dorDrawnMapStyle;
 $config['liDrawnMapStyle'] = liDrawnMapStyle;

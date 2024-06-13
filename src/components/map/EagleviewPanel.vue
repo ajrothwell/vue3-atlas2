@@ -1,11 +1,14 @@
 <script setup>
 
+import $config from '@/config';
 import { onMounted, computed, watch } from 'vue';
+import { point } from '@turf/helpers';
 import axios from 'axios';
 
 import { useMainStore } from '@/stores/MainStore';
 const MainStore = useMainStore();
 import { useMapStore } from '@/stores/MapStore';
+import { config } from 'maplibre-gl';
 const MapStore = useMapStore();
 
 const clientId = import.meta.env.VITE_EAGLEVIEW_CLIENT_ID;
@@ -22,10 +25,10 @@ const options = {
 };
 
 const currentAddressCoords = computed(() => {
-  if (MapStore.currentAddressCoords) {
+  if (MapStore.currentAddressCoords.length) {
     return { lat: MapStore.currentAddressCoords[1], lon: MapStore.currentAddressCoords[0] }
   } else {
-    return { lat: 39.926305, lon: -75.162278 };
+    return { lat: $config.cityCenterCoords[1], lon: $config.cityCenterCoords[0] };
   }
 });
 
@@ -36,7 +39,10 @@ watch(
   newValue => {
     if (newValue) {
       console.log('currentAddressCoords changed:', newValue);
-      map.setView({ lonLat: currentAddressCoords.value });
+      map.setView({ lonLat: newValue });
+      map.addFeatures({
+        geoJson: [point([newValue.lon, newValue.lat])]
+      });
     }
   }
 );
@@ -48,11 +54,17 @@ onMounted( async() => {
   map.enableMeasurementPanel(false);
   map.enableSearchBar(false);
   map.setView({ lonLat: currentAddressCoords.value, zoom: 17, pitch: 0, rotation: 0 }, (value) => {
-    console.log('View has been set, value:', value)
+    console.log('eagleview view has been set, value:', value)
   });
+  if (MapStore.currentAddressCoords.length) {
+    map.addFeatures({
+      geoJson: [point([currentAddressCoords.value.lon, currentAddressCoords.value.lat])]
+    });
+  }
+
   // map.setView({ lonLat: {lat: 39.926305, lon: -75.162278}, zoom: 16, pitch: 0, rotation: 0 }, (value) => console.log('View has been set, value:', value));
   map.on('onViewUpdate', (value) => {
-    console.log('View has been updated, value:', value);
+    console.log('eagleview view has been updated, value:', value);
     // if (value.zoom < 18) {
       // map.setView({ zoom: 18, lonLat: value.lonLat, pitch: value.pitch, rotation: value.rotation });
     // }
