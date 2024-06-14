@@ -80,7 +80,7 @@ const zipCode = computed(() => {
   <!-- IF AN ADDRESS IS LOADED, SHOW THE TOPICS  -->
   <div v-if="route.name !== 'home' && route.name !== 'not-found' && address" class="address-holder">
     <div>
-      <h1 class="subtitle is-3"><font-awesome-icon :icon="['fas', 'map-marker-alt']" /><div class="address">{{ address }}</div></h1>
+      <h1 class="address-and-marker subtitle is-3"><font-awesome-icon :icon="['fas', 'map-marker-alt']" /><div class="address">{{ address }}</div></h1>
     </div>
     <div>PHILADELPHIA, PA {{ zipCode }}</div>
 
@@ -125,5 +125,10 @@ const zipCode = computed(() => {
 </template>
 
 <style>
+
+.address-and-marker {
+  margin-top: .5rem !important;
+  margin-bottom: 0px !important;
+}
 
 </style>
