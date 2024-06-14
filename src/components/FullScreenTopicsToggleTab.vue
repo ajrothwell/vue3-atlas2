@@ -102,23 +102,22 @@ const handleFullScreenTopicsToggleButtonClick = async(e) => {
 </script>
 
 <template>
-  <div
+  <button
     v-if="!isMobileOrTablet"
-    id="toggle-tab"
+    id="topics-toggle-tab"
     :title="fullScreenTopicsEnabled ? 'Reduce Topics Panel' : 'Expand Topics Panel'"
     :style="{ top: buttonY, right: buttonX }"
     class="toggle-tab"
     @click="handleFullScreenTopicsToggleButtonClick"
-    @keydown.enter="handleFullScreenTopicsToggleButtonClick"
     tabindex="0"
   >
-    <span class="align-span">
+    <!-- <span class="align-span"> -->
       <font-awesome-icon
         :icon="currentIcon"
         class="fa-2x"
       />
-    </span>
-  </div>
+    <!-- </span> -->
+  </button>
 </template>
 
 <style scoped>
@@ -148,6 +147,7 @@ const handleFullScreenTopicsToggleButtonClick = async(e) => {
       display: inline-block;
       z-index: 500;
       opacity: 0.7;
+      padding-top: 2px;
     }
   }
 
