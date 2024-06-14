@@ -307,6 +307,10 @@ const dorDocsTableData = computed(() => {
   color: #444444;
 }
 
+.dor-parcel-select:hover {
+  background-color: #f0f0f0;
+}
+
 #parcel-div {
   padding: 0px !important;
   margin-bottom: 1.5rem;

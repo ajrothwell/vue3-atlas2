@@ -490,6 +490,10 @@ const businessLicensesTableData = computed(() => {
   color: #444444;
 }
 
+.li-building-select:hover {
+  background-color: #f0f0f0;
+}
+
 #li-building-div {
   padding: 0px !important;
   margin-bottom: 1.5rem;

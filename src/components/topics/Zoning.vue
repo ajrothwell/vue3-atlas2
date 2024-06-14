@@ -188,15 +188,16 @@ const rcosTableData = computed(() => {
   <div v-if="selectedParcel" id="parcel-div" class="section add-borders p-3">
     <div class="column is-12">
       <div class="columns is-multiline is-mobile">
-        <div
+        <a
           v-for="parcel in ParcelsStore.dor.features"
           :key="parcel.properties.OBJECTID"
           @click="MainStore.selectedParcelId = parcel.properties.OBJECTID"
-          class="column is-3 add-borders has-text-centered p-2"
+          class="dor-parcel-select column is-3 add-borders has-text-centered p-2"
           :class="{ 'is-selected': parcel.properties.OBJECTID === selectedParcelId }"
+          href="#"
         >
           {{ parcel.properties.MAPREG }}
-        </div>
+        </a>
       </div>
 
       <div class="data-section">
