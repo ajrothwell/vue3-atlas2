@@ -5,6 +5,8 @@ import { ref, computed, onBeforeMount } from 'vue';
 import useTransforms from '@/composables/useTransforms';
 const { date, integer, prettyNumber, timeReverseFn } = useTransforms();
 
+import VgtPaginationLabels from '@/components/pagination/VgtPaginationLabels.vue';
+
 import useTables from '@/composables/useTables';
 const { paginationOptions } = useTables();
 
@@ -261,6 +263,18 @@ const dorDocsTableData = computed(() => {
               No DOR Documents found
             </div>
           </template>
+          <!-- <template #pagination-top="props">
+            <vgt-pagination-labels
+              :mode="'pages'"
+              :total="props.total"
+              :pageChanged="props.pageChanged"
+              :perPageChanged="props.perPageChanged"
+              :nextText="''"
+              :prevText="''"
+              :perPage="5"
+            >
+          </vgt-pagination-labels>
+        </template> -->
         </vue-good-table>
         </div>
       </div>
@@ -298,14 +312,18 @@ const dorDocsTableData = computed(() => {
   margin-bottom: 1.5rem;
 }
 
+.regmap-div {
+  font-weight: bold;
+}
+
 .regmap-div.is-selected {
-  background-color: orange;
+  background-color: #0f4d90;
   color: white !important;
 }
 
 .add-borders.regmap-div {
-  color: orange;
-  border-color: orange;
+  color: #0f4d90;
+  border-color: #0f4d90;
   cursor: pointer;
 }
 

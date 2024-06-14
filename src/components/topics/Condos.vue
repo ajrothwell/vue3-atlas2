@@ -10,7 +10,7 @@ const route = useRoute();
 import { useCondosStore } from '@/stores/CondosStore';
 const CondosStore = useCondosStore();
 
-import CustomPagination from '@/components/pagination/CustomPagination.vue';
+import CustomPaginationCondos from '@/components/pagination/CustomPaginationCondos.vue';
 
 const totalSize = computed(() => CondosStore.condosData.total_size);
 
@@ -162,13 +162,13 @@ const condosTableData = computed(() => {
           </div>
         </template>
         <template #pagination-top="props">
-          <custom-pagination
+          <custom-pagination-condos
             :mode="'pages'"
             :total="props.total"
             :pageChanged="props.pageChanged"
             :perPageChanged="props.perPageChanged"
           >
-          </custom-pagination>
+          </custom-pagination-condos>
         </template>
       </vue-good-table>
     </div>

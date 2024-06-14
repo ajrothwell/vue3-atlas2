@@ -1,5 +1,26 @@
 <template>
   <div class="vgt-wrap__footer vgt-clearfix">
+    <div v-if="perPageDropdownEnabled" class="footer__row-count vgt-pull-left">
+      <form>
+        <label :for="id" class="footer__row-count__label">{{rowsPerPageText}}:</label>
+        <select
+          :id="id"
+          autocomplete="off"
+          name="perPageSelect"
+          class="footer__row-count__select"
+          v-model="currentPerPage"
+          @change="perPageChanged"
+          aria-controls="vgt-table">
+          <option
+            v-for="(option, idx) in rowsPerPageOptions"
+            :key="idx"
+            :value="option">
+            {{ option }}
+          </option>
+          <option v-if="paginateDropdownAllowAll" :value="total">{{allText}}</option>
+        </select>
+      </form>
+    </div>
     <div class="footer__navigation vgt-pull-right">
       <pagination-page-info
         @page-changed="changePage"
@@ -13,6 +34,7 @@
         :mode="mode" />
       <button
         type="button"
+        title="previous page"
         aria-controls="vgt-table"
         class="footer__navigation__page-btn"
         :class="{ disabled: !prevIsPossible }"
@@ -23,6 +45,7 @@
 
       <button
         type="button"
+        title="next page"
         aria-controls="vgt-table"
         class="footer__navigation__page-btn"
         :class="{ disabled: !nextIsPossible }"
@@ -41,11 +64,8 @@ import {
   DEFAULT_ROWS_PER_PAGE_DROPDOWN
 } from './constants';
 
-import { useGeocodeStore } from '@/stores/GeocodeStore';
-import { useCondosStore } from '@/stores/CondosStore';
-
 export default {
-  name: 'CustomPagination',
+  name: 'VgtPagination',
   props: {
     styleClass: { default: 'table table-bordered' },
     total: { default: null },
@@ -57,19 +77,13 @@ export default {
     mode: { default: PAGINATION_MODES.Records },
 
     // text options
-    nextText: { default: '' },
-    prevText: { default: '' },
+    nextText: { default: 'Next' },
+    prevText: { default: 'Prev' },
     rowsPerPageText: { default: 'Rows per page:' },
     ofText: { default: 'of' },
     pageText: { default: 'page' },
     allText: { default: 'All' },
     infoFn: { default: null },
-    pageChanged: {
-      type: Function,
-    },
-    perPageChanged: {
-      type: Function,
-    },
   },
 
   data() {
@@ -85,7 +99,7 @@ export default {
     perPage: {
       handler(newValue, oldValue) {
         this.handlePerPage();
-        // this.perPageChanged(oldValue);
+        this.perPageChanged(oldValue);
       },
       immediate: true,
     },
@@ -130,54 +144,51 @@ export default {
     getId() {
       return `vgt-select-rpp-${Math.floor(Math.random() * Date.now())}`;
     },
-    async getDataForPageChange(currentPage) {
-      const GeocodeStore = useGeocodeStore();
-      const CondosStore = useCondosStore();
-      console.log('pageChanged, currentPage:', currentPage, '10 % 10:', 10 % 10, '((currentPage-1)/10)+1', ((currentPage-1)/10)+1, 'currentPage-1 % 10:', (currentPage-1) % 10);
-      const address = GeocodeStore.aisData.features[0].properties.street_address;
-      const newDataPage = Math.floor(((currentPage-1)/10)+1);
-      console.log('pageChanged, currentPage:', currentPage, 'newDataPage:', newDataPage, 'address:', address);
-      if (!CondosStore.condosData.pages['page_'+newDataPage]) {
-        CondosStore.loadingCondosData = true;
-        for (let i = 2; i <= newDataPage; i++) {
-          if (!CondosStore.condosData.pages['page_'+i]) {
-            await CondosStore.fillCondoData(address, i);
-          }
-        }
-        CondosStore.loadingCondosData = false;
-      }
-    },
-
     // Change current page
-    async changePage(pageNumber, emit = true) {
-      console.log('CustomPagination.vue changePage, pageNumber:', pageNumber);
+    changePage(pageNumber, emit = true) {
       if (pageNumber > 0 && this.total > this.currentPerPage * (pageNumber - 1)) {
-        await this.getDataForPageChange(pageNumber);
         this.prevPage = this.currentPage;
         this.currentPage = pageNumber;
-        // this.pageChanged(emit);
-        this.pageChanged({currentPage: pageNumber});
+        this.pageChanged(emit);
       }
     },
 
     // Go to next page
-    async nextPage() {
+    nextPage() {
       if (this.nextIsPossible) {
         this.prevPage = this.currentPage;
         ++this.currentPage;
-        await this.getDataForPageChange(this.currentPage);
-        this.pageChanged({currentPage: this.currentPage});
+        this.pageChanged();
       }
     },
 
     // Go to previous page
-    async previousPage() {
+    previousPage() {
       if (this.prevIsPossible) {
         this.prevPage = this.currentPage;
         --this.currentPage;
-        await this.getDataForPageChange(this.currentPage);
-        this.pageChanged({currentPage: this.currentPage});
+        this.pageChanged();
       }
+    },
+
+    // Indicate page changing
+    pageChanged(emit = true) {
+      const payload = {
+        currentPage: this.currentPage,
+        prevPage: this.prevPage,
+      };
+      if (!emit) payload.noEmit = true;
+      this.$emit('page-changed', payload);
+    },
+
+    // Indicate per page changing
+    perPageChanged(oldValue) {
+      // go back to first page
+      if (oldValue) {
+        //* only emit if this isn't first initialization
+        this.$emit('per-page-changed', { currentPerPage: this.currentPerPage });
+      }
+      this.changePage(1, false);
     },
 
     // Handle per page changing

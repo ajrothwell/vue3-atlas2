@@ -36,6 +36,7 @@ export default {
       <!-- <label>{{ value }}</label> -->
       <input
         id="slider"
+        title="opacity slider"
         class="opacity-slider"
         type="range"
         min="0"
