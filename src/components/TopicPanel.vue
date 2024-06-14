@@ -44,6 +44,9 @@ const zipCode = computed(() => {
       
   <!-- FRONT PAGE CONTENT -->
   <div id="topic-panel-set-content" v-if="route.name == 'home'">
+    <div v-if="MainStore.fullScreenTopicsEnabled">
+      <address-search-control :input-id="'address-bar-search-input'" />
+    </div>
     <h1 class="subtitle is-3">Atlas is your front door to the City of Philadelphia.</h1>
     <p class="subtitle is-4">Here are some things you can do with Atlas:</p>
     <ul class="bullet-list">
@@ -60,6 +63,9 @@ const zipCode = computed(() => {
 
   <!-- ADDRESS NOT FOUND CONTENT -->
   <div id="topic-panel-set-content" v-if="route.name == 'not-found'">
+    <div v-if="MainStore.fullScreenTopicsEnabled">
+      <address-search-control :input-id="'address-bar-search-input'" />
+    </div>
     <p>We couldn't find that address. Are you sure everything was spelled correctly?</p>
     <p>Here are some examples of things you can search for:</p>
     <ul>
