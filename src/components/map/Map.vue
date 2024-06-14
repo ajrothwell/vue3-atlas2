@@ -358,7 +358,9 @@ watch(
         updateCyclomediaCameraAngle();
       }
     } else {
-      map.setStyle($config.pwdDrawnMapStyle);
+      if (!MapStore.imageryOn) {
+        map.setStyle($config.pwdDrawnMapStyle);
+      }
       const addressMarker = map.getSource('addressMarker');
       const dorParcel = map.getSource('dorParcel');
       if (addressMarker && dorParcel) {
@@ -398,6 +400,9 @@ const toggleImagery = () => {
     MapStore.imageryOn = false;
     map.removeLayer(imagerySelected.value);
     map.removeLayer('imageryLabels');
+    let currentTopicMapStyle = route.params.topic ? $config.topicStyles[route.params.topic] : 'pwdDrawnMapStyle';
+    console.log('currentTopicMapStyle:', currentTopicMapStyle);
+    map.setStyle($config[currentTopicMapStyle]);
   }
 }
 
