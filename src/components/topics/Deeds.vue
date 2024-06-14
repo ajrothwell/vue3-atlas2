@@ -288,7 +288,7 @@ const dorDocsTableData = computed(() => {
     <div class="columns is-multiline is-mobile">
       <button
         v-for="regmap in regmaps"
-        class="column is-2-desktop is-3-mobile add-borders has-text-centered regmap-div p-1 mr-1 ml-1 mb-1"
+        class="regmap-button column is-2-desktop is-3-mobile add-borders has-text-centered p-1 mr-1 ml-1 mb-1"
         :class="{ 'is-selected': regmap.properties.RECMAP === selectedRegmap }"
         @click="addRegmapLayer(regmap.properties.RECMAP)"
       >
@@ -315,20 +315,21 @@ const dorDocsTableData = computed(() => {
   margin-bottom: 1.5rem;
 }
 
-.regmap-div {
-  /* font-weight: bold; */
+.regmap-button {
+  background-color: white !important;
+  border-color: #0f4d90 !important;
   font-size: 1rem;
+  color: #0f4d90;
+  cursor: pointer;
 }
 
-.regmap-div.is-selected {
+.regmap-button:hover {
+  background-color: #f0f0f0 !important;
+}
+
+.regmap-button.is-selected {
   background-color: #0f4d90 !important;
   color: white !important;
-}
-
-.add-borders.regmap-div {
-  color: #0f4d90;
-  border-color: #0f4d90;
-  cursor: pointer;
 }
 
 @media 
