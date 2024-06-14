@@ -54,7 +54,7 @@ const getParcelsAndPutInStore = async(lng, lat) => {
   let currentAddress;
   const MainStore = useMainStore();
   let currentTopic = MainStore.currentTopic;
-  const parcelLayer = $config.parcelLayerForTopic[currentTopic];
+  const parcelLayer = $config.parcelLayerForTopic[currentTopic] || 'pwd';
   const ParcelsStore = useParcelsStore();
   await ParcelsStore.fillParcelDataByLngLat(lng, lat, 'pwd');
   await ParcelsStore.fillParcelDataByLngLat(lng, lat, 'dor');
@@ -64,7 +64,8 @@ const getParcelsAndPutInStore = async(lng, lat) => {
     return;
   }
   const addressField = parcelLayer === 'pwd' ? 'ADDRESS' : 'ADDR_SOURCE';
-  console.log('ParcelsStore[parcelLayer].features:', ParcelsStore[parcelLayer].features);
+  console.log('parcelLayer:', parcelLayer);
+  // console.log('ParcelsStore[parcelLayer].features:', ParcelsStore[parcelLayer].features);
   if (ParcelsStore[parcelLayer].features) {
     for (let i = 0; i < ParcelsStore[parcelLayer].features.length; i++) {
       if (ParcelsStore[parcelLayer].features[i].properties[addressField] !== ' ') {
