@@ -200,7 +200,7 @@ const rcosTableData = computed(() => {
         </a>
       </div>
 
-      <div class="data-section">
+      <div class="data-section has-text-centered">
         <div class="columns mt-3" v-if="selectedParcel">
           <div class="columns is-multiline is-mobile column is-8 is-offset-2 has-text-centered badge">
             <div class="column is-12 badge-title"><b>Base District</b></div>
@@ -211,6 +211,7 @@ const rcosTableData = computed(() => {
             <div class="column is-7 description" v-html="description"></div>
           </div>
         </div>
+        <a target="_blank" href="https://www.phila.gov/media/20220909084529/ZONING-QUICK-GUIDE_PCPC_9_9_22.pdf">See more info about zoning codes<font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
       </div>
 
       <div class="data-section">
