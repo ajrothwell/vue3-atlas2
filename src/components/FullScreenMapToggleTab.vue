@@ -105,9 +105,12 @@ const handleFullScreenMapToggleButtonClick = (e) => {
   <div
     v-if="!isMobileOrTablet"
     id="toggle-tab"
+    :title="fullScreenMapEnabled ? 'Reduce Map Panel' : 'Expand Map Panel'"
     :style="{ top: buttonY, left: buttonX }"
     class="toggle-tab"
     @click="handleFullScreenMapToggleButtonClick"
+    @keydown.enter="handleFullScreenMapToggleButtonClick"
+    tabindex="0"
   >
     <span class="align-span">
       <font-awesome-icon

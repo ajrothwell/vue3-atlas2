@@ -105,9 +105,12 @@ const handleFullScreenTopicsToggleButtonClick = async(e) => {
   <div
     v-if="!isMobileOrTablet"
     id="toggle-tab"
+    :title="fullScreenTopicsEnabled ? 'Reduce Topics Panel' : 'Expand Topics Panel'"
     :style="{ top: buttonY, right: buttonX }"
     class="toggle-tab"
     @click="handleFullScreenTopicsToggleButtonClick"
+    @keydown.enter="handleFullScreenTopicsToggleButtonClick"
+    tabindex="0"
   >
     <span class="align-span">
       <font-awesome-icon
@@ -123,6 +126,7 @@ const handleFullScreenTopicsToggleButtonClick = async(e) => {
   .toggle-tab {
     display: none;
     padding-top: 9px;
+    cursor: pointer;
   }
 
   .align-span {
