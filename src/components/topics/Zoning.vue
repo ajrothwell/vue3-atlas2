@@ -188,16 +188,15 @@ const rcosTableData = computed(() => {
   <div v-if="selectedParcel" id="parcel-div" class="section add-borders p-3">
     <div class="column is-12">
       <div class="columns is-multiline is-mobile">
-        <a
+        <button
           v-for="parcel in ParcelsStore.dor.features"
           :key="parcel.properties.OBJECTID"
           @click="MainStore.selectedParcelId = parcel.properties.OBJECTID"
           class="dor-parcel-select column is-3 add-borders has-text-centered p-2"
           :class="{ 'is-selected': parcel.properties.OBJECTID === selectedParcelId }"
-          href="#"
         >
           {{ parcel.properties.MAPREG }}
-        </a>
+        </button>
       </div>
 
       <div class="data-section has-text-centered">
@@ -211,7 +210,7 @@ const rcosTableData = computed(() => {
             <div class="column is-7 description" v-html="description"></div>
           </div>
         </div>
-        <a target="_blank" href="https://www.phila.gov/media/20220909084529/ZONING-QUICK-GUIDE_PCPC_9_9_22.pdf">See more info about zoning codes<font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
+        <a target="_blank" href="https://www.phila.gov/media/20220909084529/ZONING-QUICK-GUIDE_PCPC_9_9_22.pdf">See more info about zoning codes <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
       </div>
 
       <div class="data-section">

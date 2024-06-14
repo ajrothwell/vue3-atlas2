@@ -317,16 +317,15 @@ const businessLicensesTableData = computed(() => {
       <div class="column is-12">
         <div v-if="selectedLiBuilding">
           <div class="columns is-multiline is-mobile">
-            <a
+            <button
               v-for="footprint in LiStore.liBuildingFootprints.features"
               :key="footprint.attributes.BIN"
               @click="handleBinClick(footprint.attributes.BIN)"
               class="li-building-select column is-2-desktop is-3-mobile has-text-centered add-borders"
               :class="{ 'is-selected': footprint.attributes.BIN === selectedLiBuildingNumber }"
-              href="#"
             >
               {{ footprint.attributes.BIN }}
-          </a>
+            </button>
           </div>
 
           <!-- Li Building info-->
@@ -488,6 +487,7 @@ const businessLicensesTableData = computed(() => {
 
 .li-building-select {
   color: #444444;
+  font-size: 1rem;
 }
 
 .li-building-select:hover {
