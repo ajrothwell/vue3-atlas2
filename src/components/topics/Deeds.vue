@@ -209,15 +209,16 @@ const dorDocsTableData = computed(() => {
   <div v-if="selectedParcel" id="parcel-div" class="columns add-borders p-2">
     <div class="column is-12">
       <div class="columns is-multiline is-mobile">
-        <div
+        <a
           v-for="parcel in ParcelsStore.dor.features"
           :key="parcel.properties.OBJECTID"
           @click="MainStore.selectedParcelId = parcel.properties.OBJECTID"
-          class="column is-one-quarter-desktop is-half-mobile has-text-centered add-borders p-2"
+          class="dor-parcel-select column is-one-quarter-desktop is-half-mobile has-text-centered add-borders p-2"
           :class="{ 'is-selected': parcel.properties.OBJECTID === selectedParcelId }"
+          href="#"
         >
           {{ parcel.properties.MAPREG }}
-        </div>
+      </a>
       </div>
 
       <h5 class="title is-5">Parcel Details</h5>
@@ -272,20 +273,25 @@ const dorDocsTableData = computed(() => {
   <div v-if="selectedParcel" class="mb-4">
     <h5 class="subtitle is-5">Registry Maps</h5>
     <div class="columns is-multiline is-mobile">
-      <div
+      <a
         v-for="regmap in regmaps"
         class="column is-2-desktop is-3-mobile add-borders has-text-centered regmap-div p-1 mr-1 ml-1 mb-1"
         :class="{ 'is-selected': regmap.properties.RECMAP === selectedRegmap }"
         @click="addRegmapLayer(regmap.properties.RECMAP)"
+        href="#"
       >
         {{ regmap.properties.RECMAP }}
-      </div>
+      </a>
     </div>
   </div>
     
 </template>
 
 <style>
+
+.dor-parcel-select {
+  color: #444444;
+}
 
 #parcel-div {
   padding: 0px !important;
