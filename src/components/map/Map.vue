@@ -400,9 +400,14 @@ const toggleImagery = () => {
     MapStore.imageryOn = false;
     map.removeLayer(imagerySelected.value);
     map.removeLayer('imageryLabels');
-    let currentTopicMapStyle = route.params.topic ? $config.topicStyles[route.params.topic] : 'pwdDrawnMapStyle';
-    console.log('currentTopicMapStyle:', currentTopicMapStyle);
-    map.setStyle($config[currentTopicMapStyle]);
+    if (!route.params.topic) {
+      map.setStyle($config['pwdDrawnMapStyle']);
+      if (pwdCoordinates.value.length) {
+        map.getSource('addressMarker').setData(point(pwdCoordinates.value));
+      }
+    }
+    // let currentTopicMapStyle = route.params.topic ? $config.topicStyles[route.params.topic] : 'pwdDrawnMapStyle';
+    // console.log('currentTopicMapStyle:', currentTopicMapStyle);
   }
 }
 
