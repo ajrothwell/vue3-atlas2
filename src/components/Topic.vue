@@ -48,8 +48,9 @@ const handleTopicClick = () => {
 <template>
   <section :id="topicName+'-topic'">
 
-    <div
+    <a
       class="topic is-vcentered"
+      href="#"
       @click="handleTopicClick"
     >
       <div class="topic-name">
@@ -57,7 +58,7 @@ const handleTopicClick = () => {
         <div class="name-holder">{{ topicName }}</div>
         <div class="mr-2 is-pulled-right" v-if="open && loading"><font-awesome-icon icon="fa-solid fa-spinner" spin/></div>
       </div>
-    </div>
+    </a>
     <div
       v-if="open"
     >
@@ -102,7 +103,7 @@ const handleTopicClick = () => {
   cursor: pointer;
 }
 
-.topic:hover .topic:active {
+.topic:hover, .topic:active {
   background-color: #fff;
   color: #000
 }
@@ -114,8 +115,6 @@ const handleTopicClick = () => {
 
 .inside-topic {
   background-color: #ffffff;
-  /* border: 1px solid #929292;
-  border-radius: 4px; */
   font-size: 1em;
   padding: 1em;
   left: 0 !important;

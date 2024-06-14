@@ -75,13 +75,6 @@ body {
   width: 100% !important;
 }
 
-.topic {
-  height: 2em;
-  background-color: #f0f0f0;
-  border: 1px solid #ccc;
-  font-size: 2em;
-}
-
 .address-holder {
   color: #0f4d90 !important;
   background-color: #DAEDFe;
@@ -225,13 +218,6 @@ only screen and (max-width: 760px),
     width: 100%;
     flex-grow: 1;
     margin-bottom: 0px;
-  }
-
-  .topic {
-    height: 2em;
-    background-color: #f0f0f0;
-    border: 1px solid #ccc;
-    font-size: 2em;
   }
 
   .address-holder {
@@ -378,4 +364,25 @@ only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
 .filter-div {
   display: flex;
   align-items: center;
+}
+
+.skip-to-main-content-link {
+  position: absolute;
+  left: -9999px;
+  z-index: 999;
+  padding: .5em;
+  background-color: #0f4d90;
+  color: white;
+  opacity: 0;
+  text-decoration: underline;
+}
+
+.skip-to-main-content-link:focus {
+  left: 0px;
+  top: 0px;
+  opacity: 1;
+}
+
+.skip-to-main-content-link:hover {
+  color: white;
 }

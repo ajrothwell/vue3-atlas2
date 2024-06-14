@@ -79,7 +79,7 @@ const zipCode = computed(() => {
     <div>PHILADELPHIA, PA {{ zipCode }}</div>
 
     <div v-if="MainStore.fullScreenTopicsEnabled">
-      <address-search-control />
+      <address-search-control :input-id="'address-bar-search-input'" />
     </div>
 
   </div>

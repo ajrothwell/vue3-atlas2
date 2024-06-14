@@ -1,11 +1,15 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { useMainStore } from '@/stores/MainStore.js'
 const MainStore = useMainStore();
 
 const router = useRouter();
+
+const props = defineProps({
+  inputId: String,
+});
 
 const inputAddress = ref('');
 
@@ -40,9 +44,9 @@ const yPosition = computed(() => {
     :class="fullScreenTopicsEnabled ? 'holder holder-topics' : 'holder holder-map'"
     :style="{ top: yPosition, width: holderWidth }"
   >
-    <label for="search-input" class="search-label">Search an address or OPA number</label>
+    <label :for="inputId" class="search-label">Search an address or OPA number</label>
     <input
-      id="search-input"
+      :id="inputId"
       class="input address-input"
       type="text"
       placeholder="Search an address or OPA number"

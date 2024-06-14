@@ -95,7 +95,8 @@ const fullScreenMapEnabled = computed(() => {
 </script>
 
 <template>
-  <!-- class="header" -->
+  <a href="#main" class="skip-to-main-content-link">Skip to main content</a>
+
   <app-header
     app-title="Atlas"
     app-link="/"

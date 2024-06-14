@@ -83,6 +83,11 @@ onMounted(async () => {
     attributionControl: false,
   });
 
+  map.on('load', () => {
+    let canvas = document.querySelector(".maplibregl-canvas");
+    canvas.setAttribute('tabindex', -1);
+  })
+
   // add the address marker and camera icon sources
   const markerImage = await map.loadImage(markerSrc.value)
   map.addImage('marker-blue', markerImage.data);
@@ -885,7 +890,7 @@ const legendData = ref({
 
 <template>
   <div id="map" class="map map-class">
-    <AddressSearchControl></AddressSearchControl>
+    <AddressSearchControl :input-id="'map-search-input'"></AddressSearchControl>
     <ImageryToggleControl @toggleImagery="toggleImagery"></ImageryToggleControl>
     <ImageryDropdownControl v-if="MapStore.imageryOn" @setImagery="setImagery"></ImageryDropdownControl>
     <EagleviewControl @toggleEagleview="toggleEagleview"></EagleviewControl>
