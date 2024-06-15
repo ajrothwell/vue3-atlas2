@@ -61,11 +61,11 @@ const hoveredStateId = computed(() => { return MainStore.hoveredStateId; });
 
 onMounted(() => {
   const map = MapStore.map;
-  if (!NearbyActivityStore.loadingData && nearbyConstructionPermitsGeojson.value.length > 0) { map.getSource('nearby').setData(featureCollection(nearbyConstructionPermitsGeojson.value)) };
+  if (!NearbyActivityStore.loadingData && nearbyConstructionPermitsGeojson.value.length > 0) { map.getSource('nearby').setData(featureCollection(nearbyConstructionPermitsGeojson.value)) }
 });
 onBeforeUnmount(() => {
   const map = MapStore.map;
-  if (map.getSource('nearby')) { map.getSource('nearby').setData(featureCollection([point([0,0])])) };
+  if (map.getSource('nearby')) { map.getSource('nearby').setData(featureCollection([point([0,0])])) }
 });
 
 const nearbyConstructionPermitsTableData = computed(() => {
@@ -98,18 +98,19 @@ const nearbyConstructionPermitsTableData = computed(() => {
 </script>
 
 <template>
-  
   <IntervalDropdown
-    :timeIntervals="timeIntervals"
-    @setTimeInterval="setTimeInterval"
-  ></IntervalDropdown>
+    :time-intervals="timeIntervals"
+    @set-time-interval="setTimeInterval"
+  />
 
   <TextFilter
     v-model="textSearch"
-  ></TextFilter>
+  />
 
   <div class="mt-5">
-    <h5 class="subtitle is-5">Construction Permits ({{ nearbyConstructionPermitsTableData.rows.length }})</h5>
+    <h5 class="subtitle is-5">
+      Construction Permits ({{ nearbyConstructionPermitsTableData.rows.length }})
+    </h5>
     <div class="horizontal-table">
       <vue-good-table
         id="nearbyConstructionPermits"
@@ -123,7 +124,10 @@ const nearbyConstructionPermitsTableData = computed(() => {
       >
         <template #emptystate>
           <div v-if="loadingData">
-            Loading nearby construction permits... <font-awesome-icon icon='fa-solid fa-spinner' spin></font-awesome-icon>
+            Loading nearby construction permits... <font-awesome-icon
+              icon="fa-solid fa-spinner"
+              spin
+            />
           </div>
           <div v-else>
             No nearby construction permits found for the selected time interval

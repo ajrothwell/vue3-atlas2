@@ -36,19 +36,25 @@ const zipCode = computed(() => {
 </script>
 
 <template>
-
   <full-screen-topics-toggle-tab
     v-show="!MainStore.fullScreenMapEnabled"
   />
   <!-- v-once -->
       
   <!-- FRONT PAGE CONTENT -->
-  <div id="topic-panel-set-content" v-if="route.name == 'home'">
+  <div
+    v-if="route.name == 'home'"
+    id="topic-panel-set-content"
+  >
     <div v-if="MainStore.fullScreenTopicsEnabled">
       <address-search-control :input-id="'address-bar-search-input'" />
     </div>
-    <h1 class="subtitle is-3">Atlas is your front door to the City of Philadelphia.</h1>
-    <p class="subtitle is-4">Here are some things you can do with Atlas:</p>
+    <h1 class="subtitle is-3">
+      Atlas is your front door to the City of Philadelphia.
+    </h1>
+    <p class="subtitle is-4">
+      Here are some things you can do with Atlas:
+    </p>
     <ul class="bullet-list">
       <li>Find your polling place</li>
       <li>Get the history of permits, licenses, and inspections at any address</li>
@@ -62,7 +68,10 @@ const zipCode = computed(() => {
   </div>
 
   <!-- ADDRESS NOT FOUND CONTENT -->
-  <div id="topic-panel-set-content" v-if="route.name == 'not-found'">
+  <div
+    v-if="route.name == 'not-found'"
+    id="topic-panel-set-content"
+  >
     <div v-if="MainStore.fullScreenTopicsEnabled">
       <address-search-control :input-id="'address-bar-search-input'" />
     </div>
@@ -78,50 +87,88 @@ const zipCode = computed(() => {
   </div>
 
   <!-- IF AN ADDRESS IS LOADED, SHOW THE TOPICS  -->
-  <div v-if="route.name !== 'home' && route.name !== 'not-found' && address" class="address-holder">
+  <div
+    v-if="route.name !== 'home' && route.name !== 'not-found' && address"
+    class="address-holder"
+  >
     <div>
-      <h1 class="address-and-marker subtitle is-3"><font-awesome-icon :icon="['fas', 'map-marker-alt']" /><div class="address">{{ address }}</div></h1>
+      <h1 class="address-and-marker subtitle is-3">
+        <font-awesome-icon :icon="['fas', 'map-marker-alt']" /><div class="address">
+          {{ address }}
+        </div>
+      </h1>
     </div>
     <div>PHILADELPHIA, PA {{ zipCode }}</div>
 
     <div v-if="MainStore.fullScreenTopicsEnabled">
       <address-search-control :input-id="'address-bar-search-input'" />
     </div>
-
   </div>
 
-  <div v-if="route.name !== 'home' && route.name !== 'not-found' && address" id="topic-panel-content" class="topics">
-    <topic :topic-name="'Property'" :topic-icon="'fa-solid fa-home'" :loading="!dataSourcesLoadedArray.includes('Property')">
+  <div
+    v-if="route.name !== 'home' && route.name !== 'not-found' && address"
+    id="topic-panel-content"
+    class="topics"
+  >
+    <topic
+      :topic-name="'Property'"
+      :topic-icon="'fa-solid fa-home'"
+      :loading="!dataSourcesLoadedArray.includes('Property')"
+    >
       <Property />
     </topic>
 
-    <topic v-show="CondosStore.condosData.pages.page_1.features && CondosStore.condosData.pages.page_1.features.length" :topic-name="'Condominiums'" :topic-icon="'fa-solid fa-building'" :loading="!dataSourcesLoadedArray.includes('Condominiums')">
-      <Condos v-if="dataSourcesLoadedArray.includes('Condominiums')"></Condos>
+    <topic
+      v-show="CondosStore.condosData.pages.page_1.features && CondosStore.condosData.pages.page_1.features.length"
+      :topic-name="'Condominiums'"
+      :topic-icon="'fa-solid fa-building'"
+      :loading="!dataSourcesLoadedArray.includes('Condominiums')"
+    >
+      <Condos v-if="dataSourcesLoadedArray.includes('Condominiums')" />
     </topic>
 
-    <topic :topic-name="'Deeds'" :topic-icon="'fa-solid fa-book'" :loading="!dataSourcesLoadedArray.includes('Deeds')">
+    <topic
+      :topic-name="'Deeds'"
+      :topic-icon="'fa-solid fa-book'"
+      :loading="!dataSourcesLoadedArray.includes('Deeds')"
+    >
       <Deeds />
     </topic>
 
-    <topic :topic-name="'Licenses & Inspections'" :topic-icon="'fa-solid fa-wrench'" :loading="!dataSourcesLoadedArray.includes('Licenses & Inspections')">
+    <topic
+      :topic-name="'Licenses & Inspections'"
+      :topic-icon="'fa-solid fa-wrench'"
+      :loading="!dataSourcesLoadedArray.includes('Licenses & Inspections')"
+    >
       <LI />
     </topic>
 
-    <topic :topic-name="'Zoning'" :topic-icon="'fa-solid fa-university'" :loading="!dataSourcesLoadedArray.includes('Zoning')">
+    <topic
+      :topic-name="'Zoning'"
+      :topic-icon="'fa-solid fa-university'"
+      :loading="!dataSourcesLoadedArray.includes('Zoning')"
+    >
       <Zoning />
     </topic>
 
-    <topic :topic-name="'Voting'" :topic-icon="'fa-solid fa-gavel'" :loading="!dataSourcesLoadedArray.includes('Voting')">
+    <topic
+      :topic-name="'Voting'"
+      :topic-icon="'fa-solid fa-gavel'"
+      :loading="!dataSourcesLoadedArray.includes('Voting')"
+    >
       <Voting />
     </topic>
 
-    <topic :topic-name="'Nearby Activity'" :topic-icon="'fa-solid fa-map-marker-alt'" :loading="!dataSourcesLoadedArray.includes('Nearby Activity')">
+    <topic
+      :topic-name="'Nearby Activity'"
+      :topic-icon="'fa-solid fa-map-marker-alt'"
+      :loading="!dataSourcesLoadedArray.includes('Nearby Activity')"
+    >
       <KeepAlive>
         <NearbyActivity />
       </KeepAlive>
     </topic>
   </div>
-
 </template>
 
 <style>

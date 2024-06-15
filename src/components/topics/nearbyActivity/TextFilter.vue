@@ -16,14 +16,13 @@ const clearText = () => model.value = '';
     <!-- <div class="filter-label column is-3 small-is-4 pt-0 pb-0">Search by text:</div> -->
     <div class="column is-10 small-is-9 pr-0 pt-0 pb-0">
       <textbox
+        id="searchBar"
+        v-model="model"
         placeholder="text"
         label="Search by text"
-        :innerLabel="false"
-        v-model="model"
+        :inner-label="false"
         class="search-box"
-        id="searchBar"
-      >
-      </textbox>
+      />
     </div>
     <div class="column is-2 small-is-2 pl-0">
       <button
@@ -32,8 +31,11 @@ const clearText = () => model.value = '';
         class="button clear-button"
         @click="clearText"
       >
-        <span class="clear-span pl-0" v-if="!MainStore.isMobileDevice">CLEAR</span>
-        <i class="fas fa-times-circle"></i>
+        <span
+          v-if="!MainStore.isMobileDevice"
+          class="clear-span pl-0"
+        >CLEAR</span>
+        <i class="fas fa-times-circle" />
       </button>
     </div>
   </div>

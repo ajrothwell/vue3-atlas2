@@ -108,14 +108,14 @@ const handleFullScreenTopicsToggleButtonClick = async(e) => {
     :title="fullScreenTopicsEnabled ? 'Reduce Topics Panel' : 'Expand Topics Panel'"
     :style="{ top: buttonY, right: buttonX }"
     class="toggle-tab"
-    @click="handleFullScreenTopicsToggleButtonClick"
     tabindex="0"
+    @click="handleFullScreenTopicsToggleButtonClick"
   >
     <!-- <span class="align-span"> -->
-      <font-awesome-icon
-        :icon="currentIcon"
-        class="fa-2x"
-      />
+    <font-awesome-icon
+      :icon="currentIcon"
+      class="fa-2x"
+    />
     <!-- </span> -->
   </button>
 </template>

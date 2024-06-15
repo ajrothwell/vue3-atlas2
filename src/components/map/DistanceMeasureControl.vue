@@ -491,8 +491,8 @@ export default {
           v-if="mode === 'simple_select'"
           class="drawn-shape-actions"
         >
-        <!-- :src="'images/trash.png'" -->
-        <img
+          <!-- :src="'images/trash.png'" -->
+          <img
             :src="publicPath + 'images/trash.png'"
             class="img-class"
             alt="trash"
@@ -510,8 +510,8 @@ export default {
           v-if="mode !== 'simple_select'"
           class="draw-actions"
         >
-        <!-- :src="'images/cancel.png'" -->
-        <img
+          <!-- :src="'images/cancel.png'" -->
+          <img
             :src="publicPath + 'images/cancel.png'"
             class="img-class"
             alt="cancel"

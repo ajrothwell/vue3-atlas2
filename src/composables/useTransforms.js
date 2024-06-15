@@ -180,4 +180,4 @@ export default function useTransforms() {
   //     return voting.topic.accessibilityCodes.informationNotAvailable;
   //   },
   // },
-};
+}

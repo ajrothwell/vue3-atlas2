@@ -58,11 +58,11 @@ const hoveredStateId = computed(() => { return MainStore.hoveredStateId; });
 
 onMounted(() => {
   const map = MapStore.map;
-  if (!NearbyActivityStore.loadingData && nearby311Geojson.value.length > 0) { map.getSource('nearby').setData(featureCollection(nearby311Geojson.value)) };
+  if (!NearbyActivityStore.loadingData && nearby311Geojson.value.length > 0) { map.getSource('nearby').setData(featureCollection(nearby311Geojson.value)) }
 });
 onBeforeUnmount(() => {
   const map = MapStore.map;
-  if (map.getSource('nearby')) { map.getSource('nearby').setData(featureCollection([point([0,0])])) };
+  if (map.getSource('nearby')) { map.getSource('nearby').setData(featureCollection([point([0,0])])) }
 });
 
 const nearby311TableData = computed(() => {
@@ -95,18 +95,19 @@ const nearby311TableData = computed(() => {
 </script>
 
 <template>
-  
   <IntervalDropdown
-    :timeIntervals="timeIntervals"
-    @setTimeInterval="setTimeInterval"
-  ></IntervalDropdown>
+    :time-intervals="timeIntervals"
+    @set-time-interval="setTimeInterval"
+  />
 
   <TextFilter
     v-model="textSearch"
-  ></TextFilter>
+  />
 
   <div class="mt-5">
-    <h5 class="subtitle is-5">311 Requests ({{ nearby311TableData.rows.length }})</h5>
+    <h5 class="subtitle is-5">
+      311 Requests ({{ nearby311TableData.rows.length }})
+    </h5>
     <div class="horizontal-table">
       <vue-good-table
         id="nearby311"
@@ -120,7 +121,10 @@ const nearby311TableData = computed(() => {
       >
         <template #emptystate>
           <div v-if="loadingData">
-            Loading nearby 311... <font-awesome-icon icon='fa-solid fa-spinner' spin></font-awesome-icon>
+            Loading nearby 311... <font-awesome-icon
+              icon="fa-solid fa-spinner"
+              spin
+            />
           </div>
           <div v-else-if="NearbyActivityStore.dataError">
             Data loading error - try refreshing the page

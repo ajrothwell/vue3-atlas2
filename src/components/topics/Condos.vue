@@ -132,11 +132,16 @@ const condosTableData = computed(() => {
 
 <template>
   <section>
-    <div id="Condominiums-description" class="box">
+    <div
+      id="Condominiums-description"
+      class="box"
+    >
       Condominium units at your search address, as recorded for property assessment purposes. Click one of the addresses below to see information for that unit. Use the back button to return to this list. Source: Office of Property Assessment
     </div>
 
-    <h5 class="subtitle is-5">Condominiums ({{ totalSize }})</h5>
+    <h5 class="subtitle is-5">
+      Condominiums ({{ totalSize }})
+    </h5>
 
     <div class="horizontal-table">
       <vue-good-table
@@ -150,12 +155,15 @@ const condosTableData = computed(() => {
       >
         <template #table-row="props">
           <span v-if="props.column.label == 'Address'">
-            <router-link :to="{ name: 'address-and-topic', params: { address: props.row.properties.opa_address, topic: 'Property'} }">{{props.row.properties.opa_address}}</router-link>
+            <router-link :to="{ name: 'address-and-topic', params: { address: props.row.properties.opa_address, topic: 'Property'} }">{{ props.row.properties.opa_address }}</router-link>
           </span>
         </template>
         <template #emptystate>
           <div v-if="CondosStore.loadingCondosData">
-            Loading more condos... <font-awesome-icon icon='fa-solid fa-spinner' spin></font-awesome-icon>
+            Loading more condos... <font-awesome-icon
+              icon="fa-solid fa-spinner"
+              spin
+            />
           </div>
           <div v-else>
             No Condos found
@@ -165,14 +173,12 @@ const condosTableData = computed(() => {
           <custom-pagination-condos
             :mode="'pages'"
             :total="props.total"
-            :pageChanged="props.pageChanged"
-            :perPageChanged="props.perPageChanged"
-          >
-          </custom-pagination-condos>
+            :page-changed="props.pageChanged"
+            :per-page-changed="props.perPageChanged"
+          />
         </template>
       </vue-good-table>
     </div>
-
   </section>
 </template>
 

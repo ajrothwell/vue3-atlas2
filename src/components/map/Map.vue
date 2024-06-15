@@ -190,7 +190,7 @@ onMounted(async () => {
   });
 
   map.on('mouseleave', 'nearby', () => {
-    if (hoveredStateId) {
+    if (hoveredStateId.value) {
       map.getCanvas().style.cursor = ''
       MainStore.hoveredStateId = null;
     }
@@ -406,8 +406,6 @@ const toggleImagery = () => {
         map.getSource('addressMarker').setData(point(pwdCoordinates.value));
       }
     }
-    // let currentTopicMapStyle = route.params.topic ? $config.topicStyles[route.params.topic] : 'pwdDrawnMapStyle';
-    // console.log('currentTopicMapStyle:', currentTopicMapStyle);
   }
 }
 
@@ -682,7 +680,7 @@ const drawSelectionChange = (e) => {
 }
 const drawFinish = () => {
   console.log('drawFinish is running');
-  drawInfo.mode = 'simple_select';
+  drawInfo.value.mode = 'simple_select';
 }
 const drawModeChange = (e) => {
   console.log('drawModeChange is running, e', e);
@@ -691,7 +689,7 @@ const drawModeChange = (e) => {
   } else {
     map.getCanvas().style.cursor = ''
   }
-  drawInfo.mode = e.mode;
+  drawInfo.value.mode = e.mode;
   distanceMeasureControlRef.value.handleDrawModeChange(e);
 }
 
@@ -899,30 +897,48 @@ const legendData = ref({
 </script>
 
 <template>
-  <div id="map" class="map map-class">
-    <AddressSearchControl :input-id="'map-search-input'"></AddressSearchControl>
-    <ImageryToggleControl @toggleImagery="toggleImagery"></ImageryToggleControl>
-    <ImageryDropdownControl v-if="MapStore.imageryOn" @setImagery="setImagery"></ImageryDropdownControl>
-    <EagleviewControl @toggleEagleview="toggleEagleview"></EagleviewControl>
-    <CyclomediaControl @toggleCyclomedia="toggleCyclomedia"></CyclomediaControl>
-    <OpacitySlider v-if="MainStore.currentTopic == 'Deeds' && selectedRegmap" :initialOpacity="MapStore.regmapOpacity"@opacityChange="handleRegmapOpacityChange"></OpacitySlider>
-    <OpacitySlider v-if="MainStore.currentTopic == 'Zoning'" :initialOpacity="MapStore.zoningOpacity"@opacityChange="handleZoningOpacityChange"></OpacitySlider>
+  <div
+    id="map"
+    class="map map-class"
+  >
+    <AddressSearchControl :input-id="'map-search-input'" />
+    <ImageryToggleControl @toggle-imagery="toggleImagery" />
+    <ImageryDropdownControl
+      v-if="MapStore.imageryOn"
+      @set-imagery="setImagery"
+    />
+    <EagleviewControl @toggle-eagleview="toggleEagleview" />
+    <CyclomediaControl @toggle-cyclomedia="toggleCyclomedia" />
+    <OpacitySlider
+      v-if="MainStore.currentTopic == 'Deeds' && selectedRegmap"
+      :initial-opacity="MapStore.regmapOpacity"
+      @opacity-change="handleRegmapOpacityChange"
+    />
+    <OpacitySlider
+      v-if="MainStore.currentTopic == 'Zoning'"
+      :initial-opacity="MapStore.zoningOpacity"
+      @opacity-change="handleZoningOpacityChange"
+    />
     <!-- the distance measure control uses a ref, so that functions within the component can be called from this file -->
-    <DistanceMeasureControl ref="distanceMeasureControlRef"></DistanceMeasureControl>
-    <OverlayLegend v-show="!MapStore.imageryOn && ['Deeds', 'Zoning'].includes(MainStore.currentTopic)" :items="legendData" :options="{ shape: 'square' }"></OverlayLegend>
+    <DistanceMeasureControl ref="distanceMeasureControlRef" />
+    <OverlayLegend
+      v-show="!MapStore.imageryOn && ['Deeds', 'Zoning'].includes(MainStore.currentTopic)"
+      :items="legendData"
+      :options="{ shape: 'square' }"
+    />
   </div>
   <KeepAlive>
     <CyclomediaPanel
       v-if="MapStore.cyclomediaOn"
-      @updateCameraYaw="updateCyclomediaCameraAngle"
-      @updateCameraHFov="updateCyclomediaCameraViewcone"
-      @updateCameraLngLat="updateCyclomediaCameraLngLat"
-    ></CyclomediaPanel>
+      @update-camera-yaw="updateCyclomediaCameraAngle"
+      @update-camera-h-fov="updateCyclomediaCameraViewcone"
+      @update-camera-lng-lat="updateCyclomediaCameraLngLat"
+    />
   </KeepAlive>
   <KeepAlive>
     <EagleviewPanel
       v-if="MapStore.eagleviewOn"
-    ></EagleviewPanel>
+    />
   </KeepAlive>
 </template>
 

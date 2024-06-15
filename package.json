@@ -10,7 +10,8 @@
     "build-git": "vite build --base=/vue3-atlas --mode=build-git",
     "github-pages": "vite build --base=/vue3-atlas --mode=github-pages",
     "preview": "vite preview",
-    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --ignore-path .eslintignore",
+    "lint:fix": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .eslintignore"
   },
   "dependencies": {
     "@fortawesome/fontawesome-pro": "^5.15.4",

@@ -179,42 +179,66 @@ const rcosTableData = computed(() => {
 </script>
 
 <template>
-  <div id="Zoning-description" class="box">Base district zoning maps, associated zoning overlays, and Registered Community Organizations applicable to your search address. If you notice a discrepancy, please contact <a href="mailto:planning@phila.gov">planning@phila.gov</a>. Source: Department of Planning and Development</div>
+  <div
+    id="Zoning-description"
+    class="box"
+  >
+    Base district zoning maps, associated zoning overlays, and Registered Community Organizations applicable to your search address. If you notice a discrepancy, please contact <a href="mailto:planning@phila.gov">planning@phila.gov</a>. Source: Department of Planning and Development
+  </div>
   <collection-summary
     :value="'STATUS'"
     :descriptor="'parcel'"
+  />
+  <div
+    v-if="selectedParcel"
+    id="parcel-div"
+    class="section add-borders p-3"
   >
-  </collection-summary>
-  <div v-if="selectedParcel" id="parcel-div" class="section add-borders p-3">
     <div class="column is-12">
       <div class="columns is-multiline is-mobile">
         <button
           v-for="parcel in ParcelsStore.dor.features"
           :key="parcel.properties.OBJECTID"
-          @click="MainStore.selectedParcelId = parcel.properties.OBJECTID"
           class="dor-parcel-select column is-3 add-borders has-text-centered p-2"
           :class="{ 'is-selected': parcel.properties.OBJECTID === selectedParcelId }"
+          @click="MainStore.selectedParcelId = parcel.properties.OBJECTID"
         >
           {{ parcel.properties.MAPREG }}
         </button>
       </div>
 
       <div class="data-section has-text-centered">
-        <div class="columns mt-3" v-if="selectedParcel">
+        <div
+          v-if="selectedParcel"
+          class="columns mt-3"
+        >
           <div class="columns is-multiline is-mobile column is-8 is-offset-2 has-text-centered badge">
-            <div class="column is-12 badge-title"><b>Base District</b></div>
-            <div class="column is-2 code">
-              <div :style="{ 'height': '36px', 'width': '36px', 'background-color': hexForLongCode }"></div>
+            <div class="column is-12 badge-title">
+              <b>Base District</b>
             </div>
-            <div class="column is-3 code" v-html="longCode"></div>
-            <div class="column is-7 description" v-html="description"></div>
+            <div class="column is-2 code">
+              <div :style="{ 'height': '36px', 'width': '36px', 'background-color': hexForLongCode }" />
+            </div>
+            <div
+              class="column is-3 code"
+              v-html="longCode"
+            />
+            <div
+              class="column is-7 description"
+              v-html="description"
+            />
           </div>
         </div>
-        <a target="_blank" href="https://www.phila.gov/media/20220909084529/ZONING-QUICK-GUIDE_PCPC_9_9_22.pdf">See more info about zoning codes <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
+        <a
+          target="_blank"
+          href="https://www.phila.gov/media/20220909084529/ZONING-QUICK-GUIDE_PCPC_9_9_22.pdf"
+        >See more info about zoning codes <font-awesome-icon icon="fa-solid fa-external-link-alt" /></a>
       </div>
 
       <div class="data-section">
-        <h5 class="subtitle is-5 table-title">Pending Bills ({{ pendingBillsTableData.rows.length }})</h5>
+        <h5 class="subtitle is-5 table-title">
+          Pending Bills ({{ pendingBillsTableData.rows.length }})
+        </h5>
         <div class="horizontal-table">
           <vue-good-table
             id="pending-bills"
@@ -225,7 +249,10 @@ const rcosTableData = computed(() => {
           >
             <template #emptystate>
               <div v-if="ZoningStore.loadingZoningData">
-                Loading pending bills... <font-awesome-icon icon='fa-solid fa-spinner' spin></font-awesome-icon>
+                Loading pending bills... <font-awesome-icon
+                  icon="fa-solid fa-spinner"
+                  spin
+                />
               </div>
               <div v-else>
                 No pending bills found
@@ -236,7 +263,9 @@ const rcosTableData = computed(() => {
       </div>
 
       <div class="data-section">
-        <h5 class="subtitle is-5 table-title">Overlays ({{ overlaysTableData.rows.length }})</h5>
+        <h5 class="subtitle is-5 table-title">
+          Overlays ({{ overlaysTableData.rows.length }})
+        </h5>
         <vue-good-table
           id="overlays"
           :columns="overlaysTableData.columns"
@@ -246,7 +275,10 @@ const rcosTableData = computed(() => {
         >
           <template #emptystate>
             <div v-if="ZoningStore.loadingZoningData">
-              Loading overlays... <font-awesome-icon icon='fa-solid fa-spinner' spin></font-awesome-icon>
+              Loading overlays... <font-awesome-icon
+                icon="fa-solid fa-spinner"
+                spin
+              />
             </div>
             <div v-else>
               No overlays found
@@ -257,7 +289,9 @@ const rcosTableData = computed(() => {
     </div>
   </div>
 
-  <h5 class="subtitle is-5 table-title">Appeals ({{ zoningAppeals.length }})</h5>
+  <h5 class="subtitle is-5 table-title">
+    Appeals ({{ zoningAppeals.length }})
+  </h5>
   <div class="horizontal-table">
     <vue-good-table
       id="appeals"
@@ -268,7 +302,10 @@ const rcosTableData = computed(() => {
     >
       <template #emptystate>
         <div v-if="ZoningStore.loadingZoningData">
-          Loading appeals... <font-awesome-icon icon='fa-solid fa-spinner' spin></font-awesome-icon>
+          Loading appeals... <font-awesome-icon
+            icon="fa-solid fa-spinner"
+            spin
+          />
         </div>
         <div v-else>
           No appeals found
@@ -277,10 +314,17 @@ const rcosTableData = computed(() => {
     </vue-good-table>
   </div>
 
-  <div class="box">Looking for zoning documents? They are now located in the Licenses & Inspections tab under "Zoning Permit Documents".</div>
+  <div class="box">
+    Looking for zoning documents? They are now located in the Licenses & Inspections tab under "Zoning Permit Documents".
+  </div>
 
-  <h5 class="subtitle is-5 table-title">Registered Community Organizations (RCOs) ({{ rcosTableData.rows.length }})</h5>
-  <div id="rcos" class="horizontal-table">
+  <h5 class="subtitle is-5 table-title">
+    Registered Community Organizations (RCOs) ({{ rcosTableData.rows.length }})
+  </h5>
+  <div
+    id="rcos"
+    class="horizontal-table"
+  >
     <vue-good-table
       id="rcos"
       :columns="rcosTableData.columns"
@@ -290,7 +334,10 @@ const rcosTableData = computed(() => {
     >
       <template #emptystate>
         <div v-if="ZoningStore.loadingZoningData">
-          Loading RCOs... <font-awesome-icon icon='fa-solid fa-spinner' spin></font-awesome-icon>
+          Loading RCOs... <font-awesome-icon
+            icon="fa-solid fa-spinner"
+            spin
+          />
         </div>
         <div v-else>
           No RCOs found
@@ -298,8 +345,10 @@ const rcosTableData = computed(() => {
       </template>
     </vue-good-table>
   </div>
-  <a target="_blank" href="//www.phila.gov/documents/registered-community-organization-rco-materials/">See a list of all RCOs in the city [PDF] <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
-
+  <a
+    target="_blank"
+    href="//www.phila.gov/documents/registered-community-organization-rco-materials/"
+  >See a list of all RCOs in the city [PDF] <font-awesome-icon icon="fa-solid fa-external-link-alt" /></a>
 </template>
 
 <style>

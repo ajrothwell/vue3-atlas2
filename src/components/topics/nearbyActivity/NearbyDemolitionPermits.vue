@@ -60,11 +60,11 @@ const hoveredStateId = computed(() => { return MainStore.hoveredStateId; });
 
 onMounted(() => {
   const map = MapStore.map;
-  if (!NearbyActivityStore.loadingData && nearbyDemolitionPermitsGeojson.value.length > 0) { map.getSource('nearby').setData(featureCollection(nearbyDemolitionPermitsGeojson.value)) };
+  if (!NearbyActivityStore.loadingData && nearbyDemolitionPermitsGeojson.value.length > 0) { map.getSource('nearby').setData(featureCollection(nearbyDemolitionPermitsGeojson.value)) }
 });
 onBeforeUnmount(() => {
   const map = MapStore.map;
-  if (map.getSource('nearby')) { map.getSource('nearby').setData(featureCollection([point([0,0])])) };
+  if (map.getSource('nearby')) { map.getSource('nearby').setData(featureCollection([point([0,0])])) }
 });
 
 const nearbyDemolitionPermitsTableData = computed(() => {
@@ -97,18 +97,19 @@ const nearbyDemolitionPermitsTableData = computed(() => {
 </script>
 
 <template>
-  
   <IntervalDropdown
-    :timeIntervals="timeIntervals"
-    @setTimeInterval="setTimeInterval"
-  ></IntervalDropdown>
+    :time-intervals="timeIntervals"
+    @set-time-interval="setTimeInterval"
+  />
 
   <TextFilter
     v-model="textSearch"
-  ></TextFilter>
+  />
 
   <div class="mt-5">
-    <h5 class="subtitle is-5">Demolition Permits ({{ nearbyDemolitionPermitsTableData.rows.length }})</h5>
+    <h5 class="subtitle is-5">
+      Demolition Permits ({{ nearbyDemolitionPermitsTableData.rows.length }})
+    </h5>
     <div class="horizontal-table">
       <vue-good-table
         id="nearbyDemolitionPermits"
@@ -122,7 +123,10 @@ const nearbyDemolitionPermitsTableData = computed(() => {
       >
         <template #emptystate>
           <div v-if="loadingData">
-            Loading nearby demolition permits... <font-awesome-icon icon='fa-solid fa-spinner' spin></font-awesome-icon>
+            Loading nearby demolition permits... <font-awesome-icon
+              icon="fa-solid fa-spinner"
+              spin
+            />
           </div>
           <div v-else>
             No nearby demolition permits found for the selected time interval

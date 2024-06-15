@@ -19,9 +19,12 @@ const mapPanelClass = computed(() => {
 </script>
 
 <template>
-  <div id="map-panel" :class="mapPanelClass">
+  <div
+    id="map-panel"
+    :class="mapPanelClass"
+  >
     <full-screen-map-toggle-tab />
-    <Map></Map>
+    <Map />
   </div>
 </template>
 

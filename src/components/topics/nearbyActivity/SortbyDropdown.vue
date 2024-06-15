@@ -18,8 +18,6 @@ watch(() => sortby.value, (newSortby) => {
     <dropdown
       v-model="sortby"
       :options="['distance', 'time']"
-    >
-    </dropdown>
+    />
   </div>
-
 </template>

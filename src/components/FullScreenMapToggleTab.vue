@@ -108,14 +108,14 @@ const handleFullScreenMapToggleButtonClick = (e) => {
     :title="fullScreenMapEnabled ? 'Reduce Map Panel' : 'Expand Map Panel'"
     :style="{ top: buttonY, left: buttonX }"
     class="toggle-tab"
-    @click="handleFullScreenMapToggleButtonClick"
     tabindex="0"
+    @click="handleFullScreenMapToggleButtonClick"
   >
     <!-- <span class="align-span"> -->
-      <font-awesome-icon
-        :icon="currentIcon"
-        class="fa-2x"
-      />
+    <font-awesome-icon
+      :icon="currentIcon"
+      class="fa-2x"
+    />
     <!-- </span> -->
   </button>
 </template>

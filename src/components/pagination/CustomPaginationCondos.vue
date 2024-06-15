@@ -2,7 +2,6 @@
   <div class="vgt-wrap__footer vgt-clearfix">
     <div class="footer__navigation vgt-pull-right">
       <pagination-page-info
-        @page-changed="changePage"
         :total-records="total"
         :last-page="pagesCount"
         :current-page="currentPage"
@@ -10,16 +9,23 @@
         :of-text="ofText"
         :page-text="pageText"
         :info-fn="infoFn"
-        :mode="mode" />
+        :mode="mode"
+        @page-changed="changePage"
+      />
       <button
         type="button"
         title="previous page"
         aria-controls="vgt-table"
         class="footer__navigation__page-btn"
         :class="{ disabled: !prevIsPossible }"
-        @click.prevent.stop="previousPage">
-        <span aria-hidden="true" class="chevron" v-bind:class="{ 'left': !rtl, 'right': rtl }"></span>
-        <span>{{prevText}}</span>
+        @click.prevent.stop="previousPage"
+      >
+        <span
+          aria-hidden="true"
+          class="chevron"
+          :class="{ 'left': !rtl, 'right': rtl }"
+        />
+        <span>{{ prevText }}</span>
       </button>
 
       <button
@@ -28,9 +34,14 @@
         aria-controls="vgt-table"
         class="footer__navigation__page-btn"
         :class="{ disabled: !nextIsPossible }"
-        @click.prevent.stop="nextPage">
-        <span>{{nextText}}</span>
-        <span aria-hidden="true" class="chevron" v-bind:class="{ 'right': !rtl, 'left': rtl }"></span>
+        @click.prevent.stop="nextPage"
+      >
+        <span>{{ nextText }}</span>
+        <span
+          aria-hidden="true"
+          class="chevron"
+          :class="{ 'right': !rtl, 'left': rtl }"
+        />
       </button>
     </div>
   </div>
@@ -48,6 +59,10 @@ import { useCondosStore } from '@/stores/CondosStore';
 
 export default {
   name: 'CustomPagination',
+
+  components: {
+    'pagination-page-info': VgtPaginationPageInfo,
+  },
   props: {
     styleClass: { default: 'table table-bordered' },
     total: { default: null },
@@ -83,6 +98,26 @@ export default {
       rowsPerPageOptions: [],
     };
   },
+
+  computed: {
+    // Number of pages
+    pagesCount() {
+      const quotient = Math.floor(this.total / this.currentPerPage);
+      const remainder = this.total % this.currentPerPage;
+
+      return remainder === 0 ? quotient : quotient + 1;
+    },
+
+    // Can go to next page
+    nextIsPossible() {
+      return this.currentPage < this.pagesCount;
+    },
+
+    // Can go to previous page
+    prevIsPossible() {
+      return this.currentPage > 1;
+    },
+  },
   watch: {
     perPage: {
       handler(newValue, oldValue) {
@@ -108,24 +143,7 @@ export default {
     }
   },
 
-  computed: {
-    // Number of pages
-    pagesCount() {
-      const quotient = Math.floor(this.total / this.currentPerPage);
-      const remainder = this.total % this.currentPerPage;
-
-      return remainder === 0 ? quotient : quotient + 1;
-    },
-
-    // Can go to next page
-    nextIsPossible() {
-      return this.currentPage < this.pagesCount;
-    },
-
-    // Can go to previous page
-    prevIsPossible() {
-      return this.currentPage > 1;
-    },
+  mounted() {
   },
 
   methods: {
@@ -211,13 +229,6 @@ export default {
         this.currentPerPage = 10;
       }
     },
-  },
-
-  mounted() {
-  },
-
-  components: {
-    'pagination-page-info': VgtPaginationPageInfo,
   },
 };
 </script>

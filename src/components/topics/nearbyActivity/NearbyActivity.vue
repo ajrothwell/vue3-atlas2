@@ -80,7 +80,10 @@ onMounted( () => {
 
 <template>
   <section>
-    <div id="Nearby Activity-description" class="box">
+    <div
+      id="Nearby Activity-description"
+      class="box"
+    >
       See recent activity near your search address including 311 service requests, crimes, zoning appeals, and more. Hover over a record below to highlight it on the map.
     </div>
 
@@ -93,22 +96,20 @@ onMounted( () => {
       <div class="dropdown column is-10 small-is-9 pt-0 pb-0"> 
         <dropdown
           id="data-dropdown"
-          label="Select activity"
           v-model="selectedDataType"
+          label="Select activity"
           :options="dataTypes"
-        >
-        </dropdown>
+        />
       </div>
     </div>
 
-    <Nearby311 v-if="currentNearbyDataType == 'nearby311'"></Nearby311>
-    <NearbyCrimeIncidents v-if="currentNearbyDataType == 'nearbyCrimeIncidents'"></NearbyCrimeIncidents>
-    <NearbyZoningAppeals v-if="currentNearbyDataType == 'nearbyZoningAppeals'"></NearbyZoningAppeals>
-    <NearbyVacantIndicatorPoints v-if="currentNearbyDataType == 'nearbyVacantIndicatorPoints'"></NearbyVacantIndicatorPoints>
-    <NearbyConstructionPermits v-if="currentNearbyDataType == 'nearbyConstructionPermits'"></NearbyConstructionPermits>
-    <NearbyDemolitionPermits v-if="currentNearbyDataType == 'nearbyDemolitionPermits'"></NearbyDemolitionPermits>
-    <NearbyImminentlyDangerous v-if="currentNearbyDataType == 'nearbyImminentlyDangerous'"></NearbyImminentlyDangerous>
-    
+    <Nearby311 v-if="currentNearbyDataType == 'nearby311'" />
+    <NearbyCrimeIncidents v-if="currentNearbyDataType == 'nearbyCrimeIncidents'" />
+    <NearbyZoningAppeals v-if="currentNearbyDataType == 'nearbyZoningAppeals'" />
+    <NearbyVacantIndicatorPoints v-if="currentNearbyDataType == 'nearbyVacantIndicatorPoints'" />
+    <NearbyConstructionPermits v-if="currentNearbyDataType == 'nearbyConstructionPermits'" />
+    <NearbyDemolitionPermits v-if="currentNearbyDataType == 'nearbyDemolitionPermits'" />
+    <NearbyImminentlyDangerous v-if="currentNearbyDataType == 'nearbyImminentlyDangerous'" />
   </section>
 </template>
 

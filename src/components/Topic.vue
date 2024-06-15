@@ -47,27 +47,36 @@ const handleTopicClick = () => {
 
 <template>
   <section :id="topicName+'-topic'">
-
     <button
       class="topic is-vcentered"
       @click="handleTopicClick"
     >
       <div class="topic-name">
-        <div class="icon-holder"><font-awesome-icon :icon="props.topicIcon"/></div>
-        <div class="name-holder">{{ topicName }}</div>
-        <div class="mr-2 is-pulled-right" v-if="open && loading"><font-awesome-icon icon="fa-solid fa-spinner" spin/></div>
+        <div class="icon-holder">
+          <font-awesome-icon :icon="props.topicIcon" />
+        </div>
+        <div class="name-holder">
+          {{ topicName }}
+        </div>
+        <div
+          v-if="open && loading"
+          class="mr-2 is-pulled-right"
+        >
+          <font-awesome-icon
+            icon="fa-solid fa-spinner"
+            spin
+          />
+        </div>
       </div>
     </button>
     <div
       v-if="open"
     >
       <div class="inside-topic">
-        <slot></slot>
+        <slot />
       </div>
     </div>
-
   </section>
-
 </template>
 
 <style scoped>

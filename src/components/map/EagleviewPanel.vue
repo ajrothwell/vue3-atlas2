@@ -93,7 +93,10 @@ onMounted( async() => {
 </script>
 
 <template>
-  <div id='eagleview' class="eagleview-div"></div>
+  <div
+    id="eagleview"
+    class="eagleview-div"
+  />
 </template>
 
 <style>

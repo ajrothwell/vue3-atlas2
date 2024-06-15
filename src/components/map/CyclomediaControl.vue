@@ -19,9 +19,20 @@ const cyclomediaOn = computed(() => {
 </script>
 
 <template>
-  <div class="cyclomedia-toggle" :class="cyclomediaOn ? 'active' : 'inactive'" :title="cyclomediaOn ? 'Turn off street view' : 'Turn on street view'">
-    <button type="button" @click="$emit('toggleCyclomedia')">
-      <img class='img-src' alt="street-view" :src="imgSrc" />
+  <div
+    class="cyclomedia-toggle"
+    :class="cyclomediaOn ? 'active' : 'inactive'"
+    :title="cyclomediaOn ? 'Turn off street view' : 'Turn on street view'"
+  >
+    <button
+      type="button"
+      @click="$emit('toggleCyclomedia')"
+    >
+      <img
+        class="img-src"
+        alt="street-view"
+        :src="imgSrc"
+      >
     </button>
   </div>
 </template>

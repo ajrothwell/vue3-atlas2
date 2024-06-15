@@ -202,31 +202,50 @@ const dorDocsTableData = computed(() => {
 </script>
 
 <template>
-  <div id="Deeds-description" class="box">Deed information and document transactions for this address. The map faithfully reflects property boundaries as described in recorded deeds including multiple types of easements. The property boundaries displayed on the map are for reference only and should not be used in place of the recorded deeds or land surveys. Source: Department of Records</div>
+  <div
+    id="Deeds-description"
+    class="box"
+  >
+    Deed information and document transactions for this address. The map faithfully reflects property boundaries as described in recorded deeds including multiple types of easements. The property boundaries displayed on the map are for reference only and should not be used in place of the recorded deeds or land surveys. Source: Department of Records
+  </div>
   <collection-summary
     :value="'STATUS'"
     :descriptor="'parcel'"
+  />
+  <div
+    v-if="selectedParcel"
+    id="parcel-div"
+    class="columns add-borders p-2"
   >
-  </collection-summary>
-  <div v-if="selectedParcel" id="parcel-div" class="columns add-borders p-2">
     <div class="column is-12">
       <div class="columns is-multiline is-mobile">
         <button
           v-for="parcel in ParcelsStore.dor.features"
           :key="parcel.properties.OBJECTID"
-          @click="MainStore.selectedParcelId = parcel.properties.OBJECTID"
           class="dor-parcel-select column is-one-quarter-desktop is-half-mobile has-text-centered add-borders p-2"
           :class="{ 'is-selected': parcel.properties.OBJECTID === selectedParcelId }"
+          @click="MainStore.selectedParcelId = parcel.properties.OBJECTID"
         >
           {{ parcel.properties.MAPREG }}
         </button>
       </div>
 
-      <h5 class="title is-5">Parcel Details</h5>
-      <vertical-table v-if="selectedParcel" tableId="dorTable" :data="parcelData"></vertical-table>
+      <h5 class="title is-5">
+        Parcel Details
+      </h5>
+      <vertical-table
+        v-if="selectedParcel"
+        table-id="dorTable"
+        :data="parcelData"
+      />
 
-      <div v-if="deededCondosExist" class="mt-6 mb-4">
-        <h5 class="subtitle is-5">Deeded Condominiums ({{ selectedCondosLength }})</h5>
+      <div
+        v-if="deededCondosExist"
+        class="mt-6 mb-4"
+      >
+        <h5 class="subtitle is-5">
+          Deeded Condominiums ({{ selectedCondosLength }})
+        </h5>
         <vue-good-table
           :columns="condosTableData.columns"
           :rows="condosTableData.rows"
@@ -235,33 +254,42 @@ const dorDocsTableData = computed(() => {
         />
       </div>
 
-      <div class="box mt-4 mb-6">You can access a view-only, watermarked unofficial copy of the deeds below at
+      <div class="box mt-4 mb-6">
+        You can access a view-only, watermarked unofficial copy of the deeds below at
         no cost by clicking on the deeds below. In order to view and print non-watermarked 
         copies of the deeds below, you must purchase a subscription to 
-        <a target="_blank" href="https://epay.phila-records.com/phillyepay/web/">PhilaDox</a>.
+        <a
+          target="_blank"
+          href="https://epay.phila-records.com/phillyepay/web/"
+        >PhilaDox</a>.
         Please note that the following list shows documents recorded from December 1999 forward,
         and may not be a complete history of title for the parcel.
       </div>
 
       <!-- DOR Docs Table -->
       <div class="mt-4">
-        <h5 class="subtitle is-5">Documents ({{ selectedDocsLength }})</h5>
+        <h5 class="subtitle is-5">
+          Documents ({{ selectedDocsLength }})
+        </h5>
         <div class="horizontal-table">
           <vue-good-table
-          id="dor-documents"
-          :columns="dorDocsTableData.columns"
-          :rows="dorDocsTableData.rows"
-          :pagination-options="paginationOptions"
-          style-class="table"
-        >
-          <template #emptystate>
-            <div v-if="DorStore.loadingDorData">
-              Loading DOR Documents... <font-awesome-icon icon='fa-solid fa-spinner' spin></font-awesome-icon>
-            </div>
-            <div v-else>
-              No DOR Documents found
-            </div>
-          </template>
+            id="dor-documents"
+            :columns="dorDocsTableData.columns"
+            :rows="dorDocsTableData.rows"
+            :pagination-options="paginationOptions"
+            style-class="table"
+          >
+            <template #emptystate>
+              <div v-if="DorStore.loadingDorData">
+                Loading DOR Documents... <font-awesome-icon
+                  icon="fa-solid fa-spinner"
+                  spin
+                />
+              </div>
+              <div v-else>
+                No DOR Documents found
+              </div>
+            </template>
           <!-- <template #pagination-top="props">
             <vgt-pagination-labels
               :mode="'pages'"
@@ -274,17 +302,24 @@ const dorDocsTableData = computed(() => {
             >
           </vgt-pagination-labels>
         </template> -->
-        </vue-good-table>
+          </vue-good-table>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="box">Use the buttons below to view images of hard-copy deed maps, some of which have handwritten information that may be useful for historical deed research.</div>
+  <div class="box">
+    Use the buttons below to view images of hard-copy deed maps, some of which have handwritten information that may be useful for historical deed research.
+  </div>
 
   <!-- Registry Maps -->
-  <div v-if="selectedParcel" class="mb-4">
-    <h5 class="subtitle is-5">Registry Maps</h5>
+  <div
+    v-if="selectedParcel"
+    class="mb-4"
+  >
+    <h5 class="subtitle is-5">
+      Registry Maps
+    </h5>
     <div class="columns is-multiline is-mobile">
       <button
         v-for="regmap in regmaps"
@@ -296,7 +331,6 @@ const dorDocsTableData = computed(() => {
       </button>
     </div>
   </div>
-    
 </template>
 
 <style>

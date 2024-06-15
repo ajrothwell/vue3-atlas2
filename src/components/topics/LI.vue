@@ -156,7 +156,7 @@ const buildingCertsTableData = ref({
       dateOutputFormat: 'MM/dd/yyyy',
     }
   ],
-  rows: selectedBuildingCerts || [],
+  rows: selectedBuildingCerts.value || [],
 })
 
 const permitsTableData = computed(() => {
@@ -307,35 +307,51 @@ const businessLicensesTableData = computed(() => {
 
 <template>
   <section>
-    <div id="Licenses & Inspections-description" class="box">
+    <div
+      id="Licenses & Inspections-description"
+      class="box"
+    >
       Licenses, inspections, permits, property maintenance violations, and zoning permit documents at your search address. Source: Department of Licenses & Inspections
     </div>
 
-    <h5 class="subtitle is-5">There {{ liBuildingFootprintsLength > 1 ? 'are' : 'is' }} {{ liBuildingFootprintsLength }} {{ liBuildingFootprintsLength > 1 ? 'buildings' : 'building' }} at this address</h5>
+    <h5 class="subtitle is-5">
+      There {{ liBuildingFootprintsLength > 1 ? 'are' : 'is' }} {{ liBuildingFootprintsLength }} {{ liBuildingFootprintsLength > 1 ? 'buildings' : 'building' }} at this address
+    </h5>
     <!-- Li Building Footprints Section -->
-    <div v-if="selectedLiBuilding" id="li-building-div" class="columns add-borders p-2">
+    <div
+      v-if="selectedLiBuilding"
+      id="li-building-div"
+      class="columns add-borders p-2"
+    >
       <div class="column is-12">
         <div v-if="selectedLiBuilding">
           <div class="columns is-multiline is-mobile">
             <button
               v-for="footprint in LiStore.liBuildingFootprints.features"
               :key="footprint.attributes.BIN"
-              @click="handleBinClick(footprint.attributes.BIN)"
               class="li-building-select column is-2-desktop is-3-mobile has-text-centered add-borders"
               :class="{ 'is-selected': footprint.attributes.BIN === selectedLiBuildingNumber }"
+              @click="handleBinClick(footprint.attributes.BIN)"
             >
               {{ footprint.attributes.BIN }}
             </button>
           </div>
 
           <!-- Li Building info-->
-          <vertical-table tableId="buildingTable" :data="buildingData"></vertical-table>
+          <vertical-table
+            table-id="buildingTable"
+            :data="buildingData"
+          />
           <br>
 
           <!-- Building Certs Table -->
-          <h5 class="subtitle is-5 table-title">Building Certifications ({{ buildingCertsTableData.rows.length }})</h5>
-          <div v-if="selectedBuildingCerts" class="horizontal-table">
-
+          <h5 class="subtitle is-5 table-title">
+            Building Certifications ({{ buildingCertsTableData.rows.length }})
+          </h5>
+          <div
+            v-if="selectedBuildingCerts"
+            class="horizontal-table"
+          >
             <vue-good-table
               id="building-certs"
               :columns="buildingCertsTableData.columns"
@@ -345,7 +361,10 @@ const businessLicensesTableData = computed(() => {
             >
               <template #emptystate>
                 <div v-if="LiStore.loadingLiData">
-                  Loading building certifications... <font-awesome-icon icon='fa-solid fa-spinner' spin></font-awesome-icon>
+                  Loading building certifications... <font-awesome-icon
+                    icon="fa-solid fa-spinner"
+                    spin
+                  />
                 </div>
                 <div v-else>
                   No building certifications found
@@ -353,8 +372,14 @@ const businessLicensesTableData = computed(() => {
               </template>
             </vue-good-table>
           </div>
-          <div class="table-link" v-if="selectedBuildingCerts.length">
-            <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See all {{ LiStore.liBuildingCerts.rows.length || '' }} building certifications for this property at L&I Property History <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
+          <div
+            v-if="selectedBuildingCerts.length"
+            class="table-link"
+          >
+            <a
+              target="_blank"
+              :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`"
+            >See all {{ LiStore.liBuildingCerts.rows.length || '' }} building certifications for this property at L&I Property History <font-awesome-icon icon="fa-solid fa-external-link-alt" /></a>
           </div>
         </div>
       </div>
@@ -362,8 +387,17 @@ const businessLicensesTableData = computed(() => {
 
     <!-- Li Permits Table -->
     <div class="data-section">
-      <h5 class="subtitle is-5 table-title">Permits (<font-awesome-icon v-if="LiStore.loadingLiPermits" icon='fa-solid fa-spinner' spin></font-awesome-icon>{{ permitsLength }})</h5>
-      <div v-if="permitsTableData.rows" class="horizontal-table">
+      <h5 class="subtitle is-5 table-title">
+        Permits (<font-awesome-icon
+          v-if="LiStore.loadingLiPermits"
+          icon="fa-solid fa-spinner"
+          spin
+        />{{ permitsLength }})
+      </h5>
+      <div
+        v-if="permitsTableData.rows"
+        class="horizontal-table"
+      >
         <vue-good-table
           id="permits"
           :columns="permitsTableData.columns"
@@ -373,7 +407,10 @@ const businessLicensesTableData = computed(() => {
         >
           <template #emptystate>
             <div v-if="LiStore.loadingLiPermits">
-              Loading permits... <font-awesome-icon icon='fa-solid fa-spinner' spin></font-awesome-icon>
+              Loading permits... <font-awesome-icon
+                icon="fa-solid fa-spinner"
+                spin
+              />
             </div>
             <div v-else>
               No permits found
@@ -381,14 +418,24 @@ const businessLicensesTableData = computed(() => {
           </template>
         </vue-good-table>
       </div>
-      <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See all {{ permitsLength }} permits at L&I Property History <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
+      <a
+        target="_blank"
+        :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`"
+      >See all {{ permitsLength }} permits at L&I Property History <font-awesome-icon icon="fa-solid fa-external-link-alt" /></a>
     </div>
     
     <!-- liAisZoningDocs and liEclipseZoningDocs Table-->
     <div class="data-section">
-      <h5 class="subtitle is-5 table-title">Zoning Permit Documents ({{ zoningDocsTableData.rows.length }})</h5>
-      <h6 class="subtitle is-6 table-subtitle">Formerly "Zoning Archive"</h6>
-      <div v-if="zoningDocsTableData.rows" class="horizontal-table">
+      <h5 class="subtitle is-5 table-title">
+        Zoning Permit Documents ({{ zoningDocsTableData.rows.length }})
+      </h5>
+      <h6 class="subtitle is-6 table-subtitle">
+        Formerly "Zoning Archive"
+      </h6>
+      <div
+        v-if="zoningDocsTableData.rows"
+        class="horizontal-table"
+      >
         <vue-good-table
           id="zoning-permit-docs"
           :columns="zoningDocsTableData.columns"
@@ -398,7 +445,10 @@ const businessLicensesTableData = computed(() => {
         >
           <template #emptystate>
             <div v-if="LiStore.loadingLiData">
-              Loading zoning permit documents... <font-awesome-icon icon='fa-solid fa-spinner' spin></font-awesome-icon>
+              Loading zoning permit documents... <font-awesome-icon
+                icon="fa-solid fa-spinner"
+                spin
+              />
             </div>
             <div v-else>
               No zoning permit documents found
@@ -410,8 +460,13 @@ const businessLicensesTableData = computed(() => {
 
     <!-- Li Inspections Table -->
     <div class="data-section">
-      <h5 class="subtitle is-5 table-title">Inspections ({{ inspectionsLength }})</h5>
-      <div v-if="inspectionsTableData.rows" class="horizontal-table">
+      <h5 class="subtitle is-5 table-title">
+        Inspections ({{ inspectionsLength }})
+      </h5>
+      <div
+        v-if="inspectionsTableData.rows"
+        class="horizontal-table"
+      >
         <vue-good-table
           id="inspections"
           :columns="inspectionsTableData.columns"
@@ -421,7 +476,10 @@ const businessLicensesTableData = computed(() => {
         >
           <template #emptystate>
             <div v-if="LiStore.loadingLiData">
-              Loading inspections... <font-awesome-icon icon='fa-solid fa-spinner' spin></font-awesome-icon>
+              Loading inspections... <font-awesome-icon
+                icon="fa-solid fa-spinner"
+                spin
+              />
             </div>
             <div v-else>
               No inspections found
@@ -429,13 +487,21 @@ const businessLicensesTableData = computed(() => {
           </template>
         </vue-good-table>
       </div>
-      <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See all {{ inspectionsLength }} inspections at L&I Property History <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
+      <a
+        target="_blank"
+        :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`"
+      >See all {{ inspectionsLength }} inspections at L&I Property History <font-awesome-icon icon="fa-solid fa-external-link-alt" /></a>
     </div>
     
     <!-- Li Violations Table -->
     <div class="data-section">
-      <h5 class="subtitle is-5 table-title">Violations ({{ violationsLength }})</h5>
-      <div v-if="violationsTableData.rows" class="horizontal-table">
+      <h5 class="subtitle is-5 table-title">
+        Violations ({{ violationsLength }})
+      </h5>
+      <div
+        v-if="violationsTableData.rows"
+        class="horizontal-table"
+      >
         <vue-good-table
           id="violations"
           :columns="violationsTableData.columns"
@@ -445,7 +511,10 @@ const businessLicensesTableData = computed(() => {
         >
           <template #emptystate>
             <div v-if="LiStore.loadingLiData">
-              Loading violations... <font-awesome-icon icon='fa-solid fa-spinner' spin></font-awesome-icon>
+              Loading violations... <font-awesome-icon
+                icon="fa-solid fa-spinner"
+                spin
+              />
             </div>
             <div v-else>
               No violations found
@@ -453,13 +522,21 @@ const businessLicensesTableData = computed(() => {
           </template>
         </vue-good-table>
       </div>
-      <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See all {{ violationsLength }} violations at L&I Property History <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
+      <a
+        target="_blank"
+        :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`"
+      >See all {{ violationsLength }} violations at L&I Property History <font-awesome-icon icon="fa-solid fa-external-link-alt" /></a>
     </div>
 
     <!-- Li Business Licenses Table -->
     <div class="data-section">
-      <h5 class="subtitle is-5 table-title">Business Licenses ({{ businessLicensesLength }})</h5>
-      <div v-if="businessLicensesTableData" class="horizontal-table">
+      <h5 class="subtitle is-5 table-title">
+        Business Licenses ({{ businessLicensesLength }})
+      </h5>
+      <div
+        v-if="businessLicensesTableData"
+        class="horizontal-table"
+      >
         <vue-good-table
           id="business-licenses"
           :columns="businessLicensesTableData.columns"
@@ -469,7 +546,10 @@ const businessLicensesTableData = computed(() => {
         >
           <template #emptystate>
             <div v-if="LiStore.loadingLiData">
-              Loading business licenses... <font-awesome-icon icon='fa-solid fa-spinner' spin></font-awesome-icon>
+              Loading business licenses... <font-awesome-icon
+                icon="fa-solid fa-spinner"
+                spin
+              />
             </div>
             <div v-else>
               No business licenses found
@@ -477,9 +557,11 @@ const businessLicensesTableData = computed(() => {
           </template>
         </vue-good-table>
       </div>
-      <a target="_blank" :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`">See all {{ businessLicensesLength }} business licenses at L&I Property History <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
+      <a
+        target="_blank"
+        :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`"
+      >See all {{ businessLicensesLength }} business licenses at L&I Property History <font-awesome-icon icon="fa-solid fa-external-link-alt" /></a>
     </div>
-    
   </section>
 </template>
 
