@@ -156,7 +156,7 @@ const buildingCertsTableData = ref({
       dateOutputFormat: 'MM/dd/yyyy',
     }
   ],
-  rows: selectedBuildingCerts.value || [],
+  rows: selectedBuildingCerts || [],
 })
 
 const permitsTableData = computed(() => {
