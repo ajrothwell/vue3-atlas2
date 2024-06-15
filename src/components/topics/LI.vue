@@ -570,6 +570,7 @@ const businessLicensesTableData = computed(() => {
 .li-building-select {
   color: #444444;
   font-size: 1rem;
+  background-color: white;
 }
 
 .li-building-select:hover {
