@@ -12,23 +12,25 @@ const VotingStore = useVotingStore();
 import VerticalTable from '@/components/VerticalTable.vue';
 
 const electedOfficials = computed(() => {
-  if (VotingStore.electedOfficials.rows && VotingStore.electedOfficials.rows.length) {
-    return VotingStore.electedOfficials.rows;
-  }
+  if (!VotingStore.electedOfficials.rows || !VotingStore.electedOfficials.rows.length) return null;
+  return VotingStore.electedOfficials.rows;
 });
 
 const council = computed(() => {
-  console.log('electedOfficials.value:', electedOfficials.value);
   if (electedOfficials.value) {
     return electedOfficials.value.filter((item) => {
       return item.office_label == "City Council";
     });
+  } else {
+    return null;
   }
 });
 
 const ballotFileId = computed(() => {
   if (electedOfficials.value) {
     return electedOfficials.value[0].ballot_file_id;
+  } else {
+    return null;
   }
 });
 
