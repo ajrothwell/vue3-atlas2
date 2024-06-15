@@ -6,7 +6,7 @@ import useTransforms from '@/composables/useTransforms';
 const { nth, phoneNumber, titleCase } = useTransforms();
 
 import { useVotingStore } from '@/stores/VotingStore';
-import { onMounted, computed } from 'vue';
+import { computed } from 'vue';
 const VotingStore = useVotingStore();
 
 import VerticalTable from '@/components/VerticalTable.vue';
@@ -19,7 +19,7 @@ const electedOfficials = computed(() => {
 
 const council = computed(() => {
   console.log('electedOfficials.value:', electedOfficials.value);
-  if (electedOfficials.value && electedOfficials.value) {
+  if (electedOfficials.value) {
     return electedOfficials.value.filter((item) => {
       return item.office_label == "City Council";
     });

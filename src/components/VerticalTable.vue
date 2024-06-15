@@ -2,9 +2,15 @@
 
 import { defineProps } from 'vue';
 
-const props = defineProps({
-  tableId: String,
-  data: Array
+defineProps({
+  tableId: {
+    type: String,
+    default: 'vertical-table'
+  },
+  data: {
+    type: Array,
+    default: () => []
+  },
 });
 
 </script>
@@ -16,8 +22,8 @@ const props = defineProps({
   >
     <tbody>
       <tr
-        v-for="(field, index) in data"
-        :key="field"
+        v-for="(field) in data"
+        :key="field.label"
       >
         <th>{{ field.label }}</th>
         <td v-html="field.value" />

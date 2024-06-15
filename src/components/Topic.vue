@@ -1,20 +1,24 @@
 <script setup>
 
-import { storeToRefs } from 'pinia';
-import { ref, reactive, computed } from 'vue';
+import { computed } from 'vue';
 import { useMainStore } from '@/stores/MainStore.js';
 
 const MainStore = useMainStore();
 
 const props = defineProps({
-  topicName: String,
-  topicIcon: String,
-  loading: Boolean
+  topicName: {
+    type: String,
+    default: '',
+  },
+  topicIcon: {
+    type: String,
+    default: '',
+  },
+  loading: {
+    type: Boolean,
+    default: false,
+  },
 });
-
-// both of these methods seem to work to get the reactive current address
-// const { currentAddress } = storeToRefs(MainStore);
-// const currentAddress = computed(() => route.params.address);
 
 import { useRoute, useRouter } from 'vue-router';
 const route = useRoute();

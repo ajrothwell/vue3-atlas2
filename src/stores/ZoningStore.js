@@ -3,10 +3,9 @@ import axios from 'axios';
 import { defineStore } from 'pinia';
 import { useParcelsStore } from './ParcelsStore';
 import { useGeocodeStore } from '@/stores/GeocodeStore.js'
-import { useMainStore } from '@/stores/MainStore.js'
 
 import useTransforms from '@/composables/useTransforms';
-const { currency, date, rcoPrimaryContact, phoneNumber } = useTransforms();
+const { rcoPrimaryContact, phoneNumber } = useTransforms();
 
 export const useZoningStore = defineStore('ZoningStore', {
   state: () => {

@@ -4,7 +4,14 @@
 import { useMainStore } from '@/stores/MainStore';
 const MainStore = useMainStore();
 
-const $emit = defineEmits(['setTextFilter', 'clearTextFilter']);
+defineEmits(['setTextFilter', 'clearTextFilter']);
+
+defineProps({
+  modelValue: {
+    type: String,
+    default: '',
+  },
+})
 
 const model = defineModel();
 const clearText = () => model.value = '';
@@ -13,7 +20,6 @@ const clearText = () => model.value = '';
 
 <template>
   <div class="filter-div columns is-mobile">
-    <!-- <div class="filter-label column is-3 small-is-4 pt-0 pb-0">Search by text:</div> -->
     <div class="column is-10 small-is-9 pr-0 pt-0 pb-0">
       <textbox
         id="searchBar"

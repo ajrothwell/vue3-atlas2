@@ -13,7 +13,6 @@ const mapPanelClass = computed(() => {
   } else {
     return 'map-panel';
   }
-  return 
 });
 
 </script>

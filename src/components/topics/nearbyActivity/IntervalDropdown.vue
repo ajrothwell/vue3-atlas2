@@ -5,7 +5,10 @@ import { ref, watch } from 'vue';
 const $emit = defineEmits(['setTimeInterval']);
 
 const props = defineProps({
-  timeIntervals: Object,
+  timeIntervals: {
+    type: Object,
+    default: () => ({}),
+  },
 })
 
 const currentTimeInterval = ref(Object.keys(props.timeIntervals)[0]);

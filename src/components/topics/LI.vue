@@ -1,6 +1,6 @@
 <script setup>
 console.log('LI.vue setup');
-import { ref, computed, watch, onMounted, onBeforeMount } from 'vue';
+import { ref, computed, watch, onMounted } from 'vue';
 import { polygon, featureCollection } from '@turf/helpers';
 
 import useTables from '@/composables/useTables';
@@ -12,12 +12,10 @@ import { useLiStore } from '@/stores/LiStore';
 const LiStore = useLiStore();
 import { useMapStore } from '@/stores/MapStore';
 const MapStore = useMapStore();
-const map = MapStore.map;
 
 import VerticalTable from '../VerticalTable.vue';
 
 import useTransforms from '@/composables/useTransforms';
-import { set } from 'date-fns';
 const { integer, prettyNumber } = useTransforms();
 
 onMounted(async () => {
@@ -32,6 +30,8 @@ const liBuildingFootprints = computed(() => LiStore.liBuildingFootprints);
 const liBuildingFootprintsLength = computed(() => {
   if (LiStore.liBuildingFootprints.features){
     return LiStore.liBuildingFootprints.features.length;
+  } else {
+    return 0;
   }
 });
 
@@ -71,12 +71,12 @@ const handleBinClick = (bin) => {
 const buildingCertsCompareFn = (a, b) => new Date(b.expirationdate) - new Date(a.expirationdate);
 const selectedBuildingCerts = computed(() => {
   if (!LiStore.liBuildingCerts.rows || !selectedLiBuildingNumber.value) return [];
-  return LiStore.liBuildingCerts.rows.filter(building => building.bin == selectedLiBuildingNumber.value).sort(buildingCertsCompareFn)
+  return LiStore.liBuildingCerts.rows.filter(building => building.bin == selectedLiBuildingNumber.value).sort(buildingCertsCompareFn);
 });
 
 // PERMITS
 const permitsCompareFn = (a, b) => new Date(b.permitissuedate) - new Date(a.permitissuedate);
-const permits = computed(() => { if (LiStore.liPermits.rows) return LiStore.liPermits.rows.sort(permitsCompareFn) });
+const permits = computed(() => { if (LiStore.liPermits.rows) return [ ...LiStore.liPermits.rows ].sort(permitsCompareFn) });
 const permitsLength = computed(() => { if (LiStore.liPermits.rows) return LiStore.liPermits.rows.length });
 
 // ZONING DOCS
@@ -90,17 +90,17 @@ const liAllZoningDocs = computed(() => {
 
 // INSPECTIONS
 const inspectionsCompareFn = (a, b) => new Date(b.investigationcompleted) - new Date(a.investigationcompleted);
-const inspections = computed(() => { if (LiStore.liInspections.rows) return LiStore.liInspections.rows.sort(inspectionsCompareFn) });
+const inspections = computed(() => { if (LiStore.liInspections.rows) return [ ...LiStore.liInspections.rows ].sort(inspectionsCompareFn) });
 const inspectionsLength = computed(() => { if (LiStore.liInspections.rows) return LiStore.liInspections.rows.length});
 
 // VIOLATIONS
 const violationsCompareFn = (a, b) => new Date(b.casecreateddate) - new Date(a.casecreateddate);
-const violations = computed(() => { if (LiStore.liViolations.rows) return LiStore.liViolations.rows.sort(violationsCompareFn) });
+const violations = computed(() => { if (LiStore.liViolations.rows) return [ ...LiStore.liViolations.rows ].sort(violationsCompareFn) });
 const violationsLength = computed(() => { if (LiStore.liViolations.rows) return LiStore.liViolations.rows.length });
 
 // BUSINESS LICENSES
 const businessLicensesCompareFn = (a, b) => new Date(b.initialissuedate) - new Date(a.initialissuedate);
-const businessLicenses = computed(() => { if (LiStore.liBusinessLicenses.rows) return LiStore.liBusinessLicenses.rows.sort(businessLicensesCompareFn) });
+const businessLicenses = computed(() => { if (LiStore.liBusinessLicenses.rows) return [ ...LiStore.liBusinessLicenses.rows ].sort(businessLicensesCompareFn) });
 const businessLicensesLength = computed(() => { if (LiStore.liBusinessLicenses.rows) return LiStore.liBusinessLicenses.rows.length });
 
 // TABLES

@@ -36,7 +36,6 @@ class RecordingsClient {
     const url = (this.proxy || '') + this.baseUrl;
     // TEMP
     // const url = ((this.proxy || '') + this.baseUrl).replace('//', 'https://');
-    const self = this;
 
     const headers = {
       'Content-Type': 'text/xml',

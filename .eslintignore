@@ -19,9 +19,8 @@ coverage
 
 src/assets/*
 src/util/*
-
-/cypress/videos/
-/cypress/screenshots/
+VgtPaginationLabels.vue
+VgtPaginationPageInfo.vue
 
 # Editor directories and files
 .vscode/*

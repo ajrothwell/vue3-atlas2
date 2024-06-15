@@ -11,7 +11,6 @@ export default function useParcels() {
     }
     const features = featureCollection.features;
     const featuresSorted = sortDorParcelFeatures(features);
-    let feature = featuresSorted[0];
 
     // use turf to get area and perimeter of all parcels returned
     console.log('featuresSorted:', featuresSorted);

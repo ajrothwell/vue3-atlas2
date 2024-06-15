@@ -3,16 +3,13 @@
 import { ref, computed, onBeforeMount } from 'vue';
 
 import useTransforms from '@/composables/useTransforms';
-const { date, integer, prettyNumber, timeReverseFn } = useTransforms();
+const { date, integer, prettyNumber } = useTransforms();
 
-import VgtPaginationLabels from '@/components/pagination/VgtPaginationLabels.vue';
+// import VgtPaginationLabels from '@/components/pagination/VgtPaginationLabels.vue';
 
 import useTables from '@/composables/useTables';
 const { paginationOptions } = useTables();
 
-// import the GeocodeStore and DorParcels
-import { useGeocodeStore } from '@/stores/GeocodeStore';
-const GeocodeStore = useGeocodeStore();
 import { useParcelsStore } from '@/stores/ParcelsStore';
 const ParcelsStore = useParcelsStore();
 import { useDorStore } from '@/stores/DorStore';
@@ -28,6 +25,8 @@ let selectedParcelId = computed(() => { return MainStore.selectedParcelId });
 const selectedParcel = computed(() => {
   if (ParcelsStore.dor.features && ParcelsStore.dor.features.length > 0) {
     return ParcelsStore.dor.features.filter(feature => feature.id === selectedParcelId.value)[0];
+  } else {
+    return null;
   }
 });
 const selectedDocs = computed(() => {
@@ -323,6 +322,7 @@ const dorDocsTableData = computed(() => {
     <div class="columns is-multiline is-mobile">
       <button
         v-for="regmap in regmaps"
+        :key="regmap.properties.RECMAP"
         class="regmap-button column is-2-desktop is-3-mobile add-borders has-text-centered p-1 mr-1 ml-1 mb-1"
         :class="{ 'is-selected': regmap.properties.RECMAP === selectedRegmap }"
         @click="addRegmapLayer(regmap.properties.RECMAP)"

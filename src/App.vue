@@ -23,13 +23,11 @@ import { useRouter, useRoute } from 'vue-router';
 const route = useRoute();
 const router = useRouter();
 
-import { ref, onMounted, provide, computed } from 'vue';
+import { onMounted, computed } from 'vue';
 
 // COMPONENTS
 import TopicPanel from '@/components/TopicPanel.vue';
 import MapPanel from '@/components/MapPanel.vue';
-
-const inputAddress = ref('');
 
 onMounted(async () => {
   MainStore.isMobileDevice = isMobileDevice();
@@ -49,14 +47,6 @@ onMounted(async () => {
   window.addEventListener('resize', handleWindowResize);
   handleWindowResize();
 });
-
-const applink = {
-  type: 'native',
-  href: 'https://phila.gov',
-  attrs: {
-    target: '_blank',
-  },
-}
 
 const links = [
   {

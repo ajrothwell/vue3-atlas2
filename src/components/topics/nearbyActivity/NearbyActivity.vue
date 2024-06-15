@@ -1,8 +1,6 @@
 <script setup>
-import { ref, computed, reactive, watch, onMounted } from 'vue';
+import { ref, computed, watch, onMounted } from 'vue';
 
-// import { useNearbyActivityStore } from '@/stores/NearbyActivityStore';
-// const NearbyActivityStore = useNearbyActivityStore();
 import { useMainStore } from '@/stores/MainStore';
 const MainStore = useMainStore();
 

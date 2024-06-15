@@ -7,8 +7,11 @@ const MainStore = useMainStore();
 
 const router = useRouter();
 
-const props = defineProps({
-  inputId: String,
+defineProps({
+  inputId: {
+    type: String,
+    default: 'address-search-input',
+  },
 });
 
 const inputAddress = ref('');

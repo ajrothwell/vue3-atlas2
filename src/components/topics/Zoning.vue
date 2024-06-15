@@ -1,10 +1,7 @@
 <script setup>
 import $config from '@/config';
-import { ref, computed, onMounted, onBeforeMount } from 'vue';
+import { computed, onBeforeMount } from 'vue';
 
-  // import the GeocodeStore and DorParcels
-import { useGeocodeStore } from '@/stores/GeocodeStore';
-const GeocodeStore = useGeocodeStore();
 import { useParcelsStore } from '@/stores/ParcelsStore';
 const ParcelsStore = useParcelsStore();
 import { useZoningStore } from '@/stores/ZoningStore';
@@ -12,9 +9,6 @@ const ZoningStore = useZoningStore();
 import { useMainStore } from '@/stores/MainStore';
 const MainStore = useMainStore();
 import CollectionSummary from '@/components/CollectionSummary.vue';
-
-import useTransforms from '@/composables/useTransforms';
-const { date, rcoPrimaryContact } = useTransforms();
 
 import useTables from '@/composables/useTables';
 const { paginationOptions } = useTables();
@@ -36,16 +30,8 @@ const zoningOverlays = computed(() => {
 const zoningAppealsCompareFn = (a, b) => new Date(b.scheduleddate) - new Date(a.scheduleddate);
 const zoningAppeals = computed(() => {
   if (!ZoningStore.zoningAppeals.rows) return [];
-  return ZoningStore.zoningAppeals.rows.sort(zoningAppealsCompareFn);
+  return [ ...ZoningStore.zoningAppeals.rows ].sort(zoningAppealsCompareFn);
 });
-
-const getLinkAppeals = (item) => {
-  let address = item.address;
-  if (item.unit_num && item.unit_num != null) {
-    address += ' Unit ' + item.unit_num;
-  }
-  return "<a target='_blank' href='https://li.phila.gov/Property-History/search/Appeal-Detail?address="+encodeURIComponent(address)+"&Id="+item.appealnumber+"'>"+item.appealnumber+"<i class='fa fa-external-link-alt'></i></a>";
-};
 
 onBeforeMount(() => {
   console.log('Zoning.vue onBeforeMount');
@@ -56,9 +42,7 @@ onBeforeMount(() => {
 
 const longCode = computed(() => {
   if (ZoningStore.zoningBase[selectedParcelId.value] && ZoningStore.zoningBase[selectedParcelId.value].rows) {
-    return '<b>'+ZoningStore.zoningBase[selectedParcelId.value].rows[0].long_code+'</b>';
-  } else {
-    return '<i class="fa fa-spinner fa-spin"></i>'
+    return ZoningStore.zoningBase[selectedParcelId.value].rows[0].long_code;
   }
 });
 
@@ -72,8 +56,6 @@ const hexForLongCode = computed(() => {
 const description = computed(() => {
   if (ZoningStore.zoningBase[selectedParcelId.value] && ZoningStore.zoningBase[selectedParcelId.value].rows) {
     return $config.ZONING_CODE_MAP[ZoningStore.zoningBase[selectedParcelId.value].rows[0].long_code]
-  } else {
-    return '<i class="fa fa-spinner fa-spin"></i>'
   }
 })
 
@@ -216,17 +198,51 @@ const rcosTableData = computed(() => {
             <div class="column is-12 badge-title">
               <b>Base District</b>
             </div>
-            <div class="column is-2 code">
+            <div
+              v-if="hexForLongCode"
+              class="column is-2 code"
+            >
               <div :style="{ 'height': '36px', 'width': '36px', 'background-color': hexForLongCode }" />
             </div>
             <div
-              class="column is-3 code"
-              v-html="longCode"
-            />
+              v-else
+              class="column is-2 code"
+            >
+              <font-awesome-icon
+                icon="fa-solid fa-spinner"
+                spin
+              />
+            </div>
             <div
+              v-if="longCode"
+              class="column is-3 code"
+            >
+              <b>{{ longCode }}</b>
+            </div>
+            <div
+              v-else
+              class="column is-3 code"
+            >
+              <font-awesome-icon
+                icon="fa-solid fa-spinner"
+                spin
+              />
+            </div>
+            <div
+              v-if="description"
               class="column is-7 description"
-              v-html="description"
-            />
+            >
+              {{ description }}
+            </div>
+            <div
+              v-else
+              class="column is-7 description"
+            >
+              <font-awesome-icon
+                icon="fa-solid fa-spinner"
+                spin
+              />
+            </div>
           </div>
         </div>
         <a

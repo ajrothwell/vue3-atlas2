@@ -1,10 +1,8 @@
 import { useMainStore } from '@/stores/MainStore';
-import { useNearbyActivityStore } from '@/stores/NearbyActivityStore';
 
 export default function useScrolling() {
 
   const handleRowClick = (e, id, type) => {
-    const NearbyActivityStore = useNearbyActivityStore();
     console.log('handleRowClick, e:', e, 'e.row.lat:', e.row.lat, 'id:', id);
     let clickedRow = {
       type: type,
@@ -29,7 +27,7 @@ export default function useScrolling() {
     }
     MainStore.hoveredStateId = hoveredStateId;
   }
-  const handleRowMouseleave = (e) => {
+  const handleRowMouseleave = () => {
     const MainStore = useMainStore();
     MainStore.hoveredStateId = '';
   }

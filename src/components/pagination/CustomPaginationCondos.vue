@@ -64,28 +64,29 @@ export default {
     'pagination-page-info': VgtPaginationPageInfo,
   },
   props: {
-    styleClass: { default: 'table table-bordered' },
-    total: { default: null },
-    perPage: {},
-    rtl: { default: false },
-    perPageDropdownEnabled: { default: true },
-    customRowsPerPageDropdown: { default() { return []; } },
-    paginateDropdownAllowAll: { default: true },
-    mode: { default: PAGINATION_MODES.Records },
-
+    styleClass: { type: String, default: 'table table-bordered' },
+    total: { type: Number, default: null },
+    perPage: { type: Number, default: 10 },
+    rtl: { type: Boolean, default: false },
+    perPageDropdownEnabled: { type: Boolean, default: true },
+    customRowsPerPageDropdown: { type: Function, default() { return []; } },
+    paginateDropdownAllowAll: { type: Boolean, default: true },
+    mode: { type: String, default: PAGINATION_MODES.Records },
     // text options
-    nextText: { default: '' },
-    prevText: { default: '' },
-    rowsPerPageText: { default: 'Rows per page:' },
-    ofText: { default: 'of' },
-    pageText: { default: 'page' },
-    allText: { default: 'All' },
-    infoFn: { default: null },
+    nextText: { type: String, default: '' },
+    prevText: { type: String, default: '' },
+    rowsPerPageText: { type: String, default: 'Rows per page:' },
+    ofText: { type: String, default: 'of' },
+    pageText: { type: String, default: 'page' },
+    allText: { type: String, default: 'All' },
+    infoFn: { type: Function, default: null },
     pageChanged: {
       type: Function,
+      default: () => ({}),
     },
     perPageChanged: {
       type: Function,
+      default: () => ({}),
     },
   },
 
@@ -120,9 +121,8 @@ export default {
   },
   watch: {
     perPage: {
-      handler(newValue, oldValue) {
+      handler() {
         this.handlePerPage();
-        // this.perPageChanged(oldValue);
       },
       immediate: true,
     },
@@ -135,7 +135,7 @@ export default {
     },
 
     total: {
-      handler(newValue, oldValue) {
+      handler(newValue) {
         if(this.rowsPerPageOptions.indexOf(this.currentPerPage) === -1) {
           this.currentPerPage = newValue;
         }
@@ -169,7 +169,7 @@ export default {
     },
 
     // Change current page
-    async changePage(pageNumber, emit = true) {
+    async changePage(pageNumber) {
       console.log('CustomPagination.vue changePage, pageNumber:', pageNumber);
       if (pageNumber > 0 && this.total > this.currentPerPage * (pageNumber - 1)) {
         await this.getDataForPageChange(pageNumber);

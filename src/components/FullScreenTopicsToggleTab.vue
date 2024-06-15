@@ -56,7 +56,7 @@ const picOrCycloActive = computed(() => {
 
 watch (
   () => picOrCycloActive.value,
-  newPicOrCycloActive => {
+  () => {
     // console.log('newPicOrCycloActive:', newPicOrCycloActive);
     setYPosition(MainStore.windowDimensions.height);
     setXPosition(MainStore.windowDimensions.width);
@@ -88,7 +88,7 @@ const setXPosition = async (dim) => {
   }
 }
 
-const handleFullScreenTopicsToggleButtonClick = async(e) => {
+const handleFullScreenTopicsToggleButtonClick = () => {
   const prevFullScreenTopicsEnabled = MainStore.fullScreenTopicsEnabled;
   const nextFullScreenTopicsEnabled = !prevFullScreenTopicsEnabled;
   MainStore.fullScreenTopicsEnabled = nextFullScreenTopicsEnabled;
