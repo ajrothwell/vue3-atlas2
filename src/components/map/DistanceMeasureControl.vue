@@ -13,7 +13,7 @@ import destination from '@turf/destination';
 import distance from '@turf/distance';
 import midpoint from '@turf/midpoint';
 import area from '@turf/area';
-import { point, polygon, multiPolygon, convertArea, featureCollection } from '@turf/helpers';
+import { polygon, convertArea } from '@turf/helpers';
 
 export default {
   name: 'DistanceMeasureControl',
@@ -91,7 +91,7 @@ export default {
     },
   },
   methods: {
-    handleDeleteClick(e) {
+    handleDeleteClick() {
       const MapStore = useMapStore();
       let index = this.labelLayers.indexOf(this.labelLayers.filter(set => set.id === this.currentShape)[0]);
       this.labelLayers.splice(index, 1);
@@ -318,15 +318,15 @@ export default {
       //   this.$data.toggledOn = false;
       // }
       // const MapStore = useMapStore();
-      let currentShape = this.currentShape;
+      // let currentShape = this.currentShape;
 
       // if (e.mode === 'simple_select' && this.$data.currentShape) {
       //   this.handleDrawFinish();
       // }
     },
 
-    handleDrawCancel(e){
-      console.log('handleDrawCancel is running, e:', e, 'this.currentShape:', this.$data.currentShape);
+    handleDrawCancel(){
+      // console.log('handleDrawCancel is running, e:', e, 'this.currentShape:', this.$data.currentShape);
       const MapStore = useMapStore();
       // draw.mode = 'simple_select';
       let shapeId = this.currentShape;
@@ -342,7 +342,7 @@ export default {
       this.$data.toggledOn = false;
     },
 
-    handleDrawFinish(e){
+    handleDrawFinish(){
       const MapStore = useMapStore();
       let currentShape = this.$data.currentShape;
       // let currentPoints = [];
@@ -491,8 +491,8 @@ export default {
           v-if="mode === 'simple_select'"
           class="drawn-shape-actions"
         >
-        <!-- :src="'images/trash.png'" -->
-        <img
+          <!-- :src="'images/trash.png'" -->
+          <img
             :src="publicPath + 'images/trash.png'"
             class="img-class"
             alt="trash"
@@ -510,8 +510,8 @@ export default {
           v-if="mode !== 'simple_select'"
           class="draw-actions"
         >
-        <!-- :src="'images/cancel.png'" -->
-        <img
+          <!-- :src="'images/cancel.png'" -->
+          <img
             :src="publicPath + 'images/cancel.png'"
             class="img-class"
             alt="cancel"

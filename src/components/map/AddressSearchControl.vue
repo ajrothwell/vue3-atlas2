@@ -7,8 +7,11 @@ const MainStore = useMainStore();
 
 const router = useRouter();
 
-const props = defineProps({
-  inputId: String,
+defineProps({
+  inputId: {
+    type: String,
+    default: 'address-search-input',
+  },
 });
 
 const inputAddress = ref('');
@@ -44,24 +47,29 @@ const yPosition = computed(() => {
     :class="fullScreenTopicsEnabled ? 'holder holder-topics' : 'holder holder-map'"
     :style="{ top: yPosition, width: holderWidth }"
   >
-    <label :for="inputId" class="search-label">Search an address or OPA number</label>
+    <label
+      :for="inputId"
+      class="search-label"
+    >Search an address or OPA number</label>
     <input
       :id="inputId"
+      v-model="inputAddress"
       class="input address-input"
       type="text"
       placeholder="Search an address or OPA number"
-      v-model="inputAddress"
       @keydown.enter="router.replace({ name: 'search', query: { address: inputAddress }})"
-    />
+    >
     <button
       class="button address-input-button"
       title="Address Search Button"
       @click="router.replace({ name: 'search', query: { address: inputAddress }})"
     >
-      <font-awesome-icon :icon="['fas', 'search']" size="xl"/>
+      <font-awesome-icon
+        :icon="['fas', 'search']"
+        size="xl"
+      />
     </button>
   </div>
-
 </template>
 
 <style scoped>

@@ -56,7 +56,7 @@ const picOrCycloActive = computed(() => {
 
 watch (
   () => picOrCycloActive.value,
-  newPicOrCycloActive => {
+  () => {
     // console.log('newPicOrCycloActive:', newPicOrCycloActive);
     setYPosition(MainStore.windowDimensions.height);
     setXPosition(MainStore.windowDimensions.width);
@@ -88,7 +88,7 @@ const setXPosition = async (dim) => {
   }
 }
 
-const handleFullScreenTopicsToggleButtonClick = async(e) => {
+const handleFullScreenTopicsToggleButtonClick = () => {
   const prevFullScreenTopicsEnabled = MainStore.fullScreenTopicsEnabled;
   const nextFullScreenTopicsEnabled = !prevFullScreenTopicsEnabled;
   MainStore.fullScreenTopicsEnabled = nextFullScreenTopicsEnabled;
@@ -108,14 +108,14 @@ const handleFullScreenTopicsToggleButtonClick = async(e) => {
     :title="fullScreenTopicsEnabled ? 'Reduce Topics Panel' : 'Expand Topics Panel'"
     :style="{ top: buttonY, right: buttonX }"
     class="toggle-tab"
-    @click="handleFullScreenTopicsToggleButtonClick"
     tabindex="0"
+    @click="handleFullScreenTopicsToggleButtonClick"
   >
     <!-- <span class="align-span"> -->
-      <font-awesome-icon
-        :icon="currentIcon"
-        class="fa-2x"
-      />
+    <font-awesome-icon
+      :icon="currentIcon"
+      class="fa-2x"
+    />
     <!-- </span> -->
   </button>
 </template>

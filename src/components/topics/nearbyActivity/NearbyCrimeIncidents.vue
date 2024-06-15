@@ -57,11 +57,11 @@ const hoveredStateId = computed(() => { return MainStore.hoveredStateId; });
 
 onMounted(() => {
   const map = MapStore.map;
-  if (!NearbyActivityStore.loadingData && nearbyCrimeIncidentsGeojson.value.length > 0) { map.getSource('nearby').setData(featureCollection(nearbyCrimeIncidentsGeojson.value)) };
+  if (!NearbyActivityStore.loadingData && nearbyCrimeIncidentsGeojson.value.length > 0) { map.getSource('nearby').setData(featureCollection(nearbyCrimeIncidentsGeojson.value)) }
 });
 onBeforeUnmount(() => {
   const map = MapStore.map;
-  if (map.getSource('nearby')) { map.getSource('nearby').setData(featureCollection([point([0,0])])) };
+  if (map.getSource('nearby')) { map.getSource('nearby').setData(featureCollection([point([0,0])])) }
 });
 
 const nearbyCrimeIncidentsTableData = computed(() => {
@@ -94,18 +94,19 @@ const nearbyCrimeIncidentsTableData = computed(() => {
 </script>
 
 <template>
-  
   <IntervalDropdown
-    :timeIntervals="timeIntervals"
-    @setTimeInterval="setTimeInterval"
-  ></IntervalDropdown>
+    :time-intervals="timeIntervals"
+    @set-time-interval="setTimeInterval"
+  />
 
   <TextFilter
     v-model="textSearch"
-  ></TextFilter>
+  />
 
-  <div class='mt-5'>
-    <h5 class="subtitle is-5">Crime Incidents ({{ nearbyCrimeIncidentsTableData.rows.length }})</h5>
+  <div class="mt-5">
+    <h5 class="subtitle is-5">
+      Crime Incidents ({{ nearbyCrimeIncidentsTableData.rows.length }})
+    </h5>
     <div class="horizontal-table">
       <vue-good-table
         id="nearbyCrimeIncidents"
@@ -119,7 +120,10 @@ const nearbyCrimeIncidentsTableData = computed(() => {
       >
         <template #emptystate>
           <div v-if="loadingData">
-            Loading nearby crime incidents... <font-awesome-icon icon='fa-solid fa-spinner' spin></font-awesome-icon>
+            Loading nearby crime incidents... <font-awesome-icon
+              icon="fa-solid fa-spinner"
+              spin
+            />
           </div>
           <div v-else>
             No nearby crime incidents found for the selected time interval

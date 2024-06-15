@@ -23,13 +23,11 @@ import { useRouter, useRoute } from 'vue-router';
 const route = useRoute();
 const router = useRouter();
 
-import { ref, onMounted, provide, computed } from 'vue';
+import { onMounted, computed } from 'vue';
 
 // COMPONENTS
 import TopicPanel from '@/components/TopicPanel.vue';
 import MapPanel from '@/components/MapPanel.vue';
-
-const inputAddress = ref('');
 
 onMounted(async () => {
   MainStore.isMobileDevice = isMobileDevice();
@@ -49,14 +47,6 @@ onMounted(async () => {
   window.addEventListener('resize', handleWindowResize);
   handleWindowResize();
 });
-
-const applink = {
-  type: 'native',
-  href: 'https://phila.gov',
-  attrs: {
-    target: '_blank',
-  },
-}
 
 const links = [
   {
@@ -95,7 +85,10 @@ const fullScreenMapEnabled = computed(() => {
 </script>
 
 <template>
-  <a href="#main" class="skip-to-main-content-link">Skip to main content</a>
+  <a
+    href="#main"
+    class="skip-to-main-content-link"
+  >Skip to main content</a>
 
   <app-header
     app-title="Atlas"
@@ -104,28 +97,39 @@ const fullScreenMapEnabled = computed(() => {
     :is-fluid="true"
   >
     <template #mobile-nav>
-      <mobile-nav :links="links"></mobile-nav>
+      <mobile-nav :links="links" />
     </template>
-      
   </app-header>
 
   <!-- MAIN CONTENT -->
-  <main id="main" class="main invisible-scrollbar">
-
+  <main
+    id="main"
+    class="main invisible-scrollbar"
+  >
     <!-- TOPIC PANEL ON LEFT -->
-    <div v-if="!isMobileDevice() && MainStore.windowDimensions.width > 760 && !fullScreenMapEnabled" class="topics-holder" :class="fullScreenTopicsEnabled ? 'topics-holder-full' : ''">
-      <topic-panel></topic-panel>
+    <div
+      v-if="!isMobileDevice() && MainStore.windowDimensions.width > 760 && !fullScreenMapEnabled"
+      class="topics-holder"
+      :class="fullScreenTopicsEnabled ? 'topics-holder-full' : ''"
+    >
+      <topic-panel />
     </div>
 
     <!-- MAP PANEL ON RIGHT - right now only contains the address input -->
-    <div v-show="!fullScreenTopicsEnabled" class="map-panel-holder" :class="fullScreenMapEnabled ? 'topics-holder-full' : ''">
-      <map-panel></map-panel>
+    <div
+      v-show="!fullScreenTopicsEnabled"
+      class="map-panel-holder"
+      :class="fullScreenMapEnabled ? 'topics-holder-full' : ''"
+    >
+      <map-panel />
     </div>
 
-    <div v-if="isMobileDevice() || MainStore.windowDimensions.width <= 760" class="topics-holder">
-      <topic-panel></topic-panel>
+    <div
+      v-if="isMobileDevice() || MainStore.windowDimensions.width <= 760"
+      class="topics-holder"
+    >
+      <topic-panel />
     </div>
-      
   </main>
 
   <!-- FOOTER -->
@@ -133,7 +137,7 @@ const fullScreenMapEnabled = computed(() => {
     :is-sticky="true"
     :is-hidden-mobile="true"
     :links="links"
-  ></app-footer>
+  />
 </template>
 
 <style>

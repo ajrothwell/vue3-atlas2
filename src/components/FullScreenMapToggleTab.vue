@@ -29,11 +29,6 @@ const fullScreenMapEnabled = computed(() => {
   return MainStore.fullScreenMapEnabled;
 });
 
-const fullScreenTopicsEnabled = computed(() => {
-  // console.log('this.$store.state.fullScreenTopicsEnabled:', this.$store.state.fullScreenTopicsEnabled);
-  return MainStore.fullScreenTopicsEnabled;
-});
-
 const isMobileOrTablet = computed(() =>{
   return MainStore.isMobileDevice;
 });
@@ -56,7 +51,7 @@ const picOrCycloActive = computed(() => {
 
 watch (
   () => picOrCycloActive.value,
-  newPicOrCycloActive => {
+  () => {
     // console.log('newPicOrCycloActive:', newPicOrCycloActive);
     setYPosition(MainStore.windowDimensions.height);
     setXPosition(MainStore.windowDimensions.width);
@@ -88,7 +83,7 @@ const setXPosition = async (dim) => {
   }
 }
 
-const handleFullScreenMapToggleButtonClick = (e) => {
+const handleFullScreenMapToggleButtonClick = () => {
   const prevFullScreenMapEnabled = MainStore.fullScreenMapEnabled;
   const nextFullScreenMapEnabled = !prevFullScreenMapEnabled;
   MainStore.fullScreenMapEnabled = nextFullScreenMapEnabled;
@@ -108,14 +103,14 @@ const handleFullScreenMapToggleButtonClick = (e) => {
     :title="fullScreenMapEnabled ? 'Reduce Map Panel' : 'Expand Map Panel'"
     :style="{ top: buttonY, left: buttonX }"
     class="toggle-tab"
-    @click="handleFullScreenMapToggleButtonClick"
     tabindex="0"
+    @click="handleFullScreenMapToggleButtonClick"
   >
     <!-- <span class="align-span"> -->
-      <font-awesome-icon
-        :icon="currentIcon"
-        class="fa-2x"
-      />
+    <font-awesome-icon
+      :icon="currentIcon"
+      class="fa-2x"
+    />
     <!-- </span> -->
   </button>
 </template>

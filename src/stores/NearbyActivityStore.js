@@ -3,7 +3,7 @@ import { useGeocodeStore } from '@/stores/GeocodeStore.js'
 import { useMapStore } from '@/stores/MapStore.js'
 
 import axios from 'axios';
-import { format, subHours, addHours, subDays, addDays, subWeeks, addWeeks, subMonths, addMonths, subYears, addYears, set } from 'date-fns';
+import { format, subHours, subDays, subWeeks, subMonths, subYears } from 'date-fns';
 import { point, polygon, lineString } from '@turf/helpers';
 import distance from '@turf/distance';
 import explode from '@turf/explode';
@@ -16,7 +16,6 @@ const evaluateParams = (feature, dataSource) => {
   }
   // console.log("dataSource: ", dataSource);
   const paramEntries = Object.entries(dataSource.options.params);
-  const state = this.store.state;
 
   for (let [ key, valOrGetter ] of paramEntries) {
     let val;
@@ -35,7 +34,6 @@ const evaluateParams = (feature, dataSource) => {
 // this was the fetch function from @phila/vue-datafetch http-client.js
 const fetchNearby = (feature, dataSource) => {
   const params = evaluateParams(feature, dataSource);
-  const url = dataSource.url;
   const options = dataSource.options;
   // const srid = options.srid || 4326;
   const table = options.table;
@@ -45,7 +43,6 @@ const fetchNearby = (feature, dataSource) => {
   const dateMinType = options.dateMinType || null;
   // console.log('dateMinType:', dateMinType);
   const dateField = options.dateField || null;
-  const successFn = options.success;
   const distances = options.distances || 250;
   // console.log('fetchNearby distances:', distances);
   const extraWhere = options.where || null;

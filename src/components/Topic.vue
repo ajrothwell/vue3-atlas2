@@ -1,20 +1,24 @@
 <script setup>
 
-import { storeToRefs } from 'pinia';
-import { ref, reactive, computed } from 'vue';
+import { computed } from 'vue';
 import { useMainStore } from '@/stores/MainStore.js';
 
 const MainStore = useMainStore();
 
 const props = defineProps({
-  topicName: String,
-  topicIcon: String,
-  loading: Boolean
+  topicName: {
+    type: String,
+    default: '',
+  },
+  topicIcon: {
+    type: String,
+    default: '',
+  },
+  loading: {
+    type: Boolean,
+    default: false,
+  },
 });
-
-// both of these methods seem to work to get the reactive current address
-// const { currentAddress } = storeToRefs(MainStore);
-// const currentAddress = computed(() => route.params.address);
 
 import { useRoute, useRouter } from 'vue-router';
 const route = useRoute();
@@ -47,27 +51,36 @@ const handleTopicClick = () => {
 
 <template>
   <section :id="topicName+'-topic'">
-
     <button
       class="topic is-vcentered"
       @click="handleTopicClick"
     >
       <div class="topic-name">
-        <div class="icon-holder"><font-awesome-icon :icon="props.topicIcon"/></div>
-        <div class="name-holder">{{ topicName }}</div>
-        <div class="mr-2 is-pulled-right" v-if="open && loading"><font-awesome-icon icon="fa-solid fa-spinner" spin/></div>
+        <div class="icon-holder">
+          <font-awesome-icon :icon="props.topicIcon" />
+        </div>
+        <div class="name-holder">
+          {{ topicName }}
+        </div>
+        <div
+          v-if="open && loading"
+          class="mr-2 is-pulled-right"
+        >
+          <font-awesome-icon
+            icon="fa-solid fa-spinner"
+            spin
+          />
+        </div>
       </div>
     </button>
     <div
       v-if="open"
     >
       <div class="inside-topic">
-        <slot></slot>
+        <slot />
       </div>
     </div>
-
   </section>
-
 </template>
 
 <style scoped>

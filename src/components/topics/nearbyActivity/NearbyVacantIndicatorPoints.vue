@@ -41,11 +41,11 @@ const hoveredStateId = computed(() => { return MainStore.hoveredStateId; });
 
 onMounted(() => {
   const map = MapStore.map;
-  if (!NearbyActivityStore.loadingData && nearbyVacantIndicatorPointsGeojson.value.length > 0) { map.getSource('nearby').setData(featureCollection(nearbyVacantIndicatorPointsGeojson.value)) };
+  if (!NearbyActivityStore.loadingData && nearbyVacantIndicatorPointsGeojson.value.length > 0) { map.getSource('nearby').setData(featureCollection(nearbyVacantIndicatorPointsGeojson.value)) }
 });
 onBeforeUnmount(() => {
   const map = MapStore.map;
-  if (map.getSource('nearby')) { map.getSource('nearby').setData(featureCollection([point([0,0])])) };
+  if (map.getSource('nearby')) { map.getSource('nearby').setData(featureCollection([point([0,0])])) }
 });
 
 const nearbyVacantIndicatorsTableData = computed(() => {
@@ -71,16 +71,17 @@ const nearbyVacantIndicatorsTableData = computed(() => {
 </script>
 
 <template>
-
   <TextFilter
     v-model="textSearch"
-  ></TextFilter>
+  />
 
-  <div class='mt-5'>
-      <h5 class="subtitle is-5">Likely Vacant Properties ({{ nearbyVacantIndicatorsTableData.rows.length }})</h5>
-      <!-- <div v-if="loadingData">Loading...</div> -->
-      <div class="horizontal-table">
-        <vue-good-table
+  <div class="mt-5">
+    <h5 class="subtitle is-5">
+      Likely Vacant Properties ({{ nearbyVacantIndicatorsTableData.rows.length }})
+    </h5>
+    <!-- <div v-if="loadingData">Loading...</div> -->
+    <div class="horizontal-table">
+      <vue-good-table
         id="nearbyVacantIndicators"
         :columns="nearbyVacantIndicatorsTableData.columns"
         :rows="nearbyVacantIndicatorsTableData.rows"
@@ -92,15 +93,18 @@ const nearbyVacantIndicatorsTableData = computed(() => {
       >
         <template #emptystate>
           <div v-if="loadingData">
-            Loading nearby vacant indicators... <font-awesome-icon icon='fa-solid fa-spinner' spin></font-awesome-icon>
+            Loading nearby vacant indicators... <font-awesome-icon
+              icon="fa-solid fa-spinner"
+              spin
+            />
           </div>
           <div v-else>
             No nearby vacant indicators found
           </div>
         </template>
       </vue-good-table>
-      </div>
     </div>
+  </div>
 </template>
 
 <style>

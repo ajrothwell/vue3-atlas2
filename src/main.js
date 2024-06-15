@@ -72,7 +72,7 @@ library.add(
 );
 
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-app.component('font-awesome-icon', FontAwesomeIcon)
+app.component('FontAwesomeIcon', FontAwesomeIcon)
 
 import VueGoodTablePlugin from 'vue-good-table-next';
 app.use(VueGoodTablePlugin);

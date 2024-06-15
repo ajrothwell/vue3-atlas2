@@ -1,14 +1,14 @@
 
 
 <script>
-import { useMapStore } from '@/stores/MapStore.js'
-
 export default {
   name: 'OpacitySlider',
-  props: [
-    'position',
-    'initialOpacity',
-  ],
+  props: {
+    'initialOpacity': {
+      type: Number,
+      default: 1,
+    },
+  },
   data() {
     let data = {
       value: 100,
@@ -17,7 +17,6 @@ export default {
   },
   mounted() {
     // console.log('OpacitySlider mounted is running, this.$props.initialOpacity:', this.$props.initialOpacity);
-    const MapStore = useMapStore();
     this.$data.value = this.$props.initialOpacity * 100;
   },
   methods: {

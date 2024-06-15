@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory, createWebHashHistory } from 'vue-router';
+import { createRouter, createWebHistory } from 'vue-router';
 import App from '@/App.vue';
 import $config from '@/config';
 
@@ -11,7 +11,6 @@ import { useDorStore } from '@/stores/DorStore.js'
 import { useZoningStore } from '@/stores/ZoningStore.js'
 import { useVotingStore } from '@/stores/VotingStore.js'
 import { useNearbyActivityStore } from '@/stores/NearbyActivityStore.js'
-import { useMapStore } from '@/stores/MapStore.js'
 import { useMainStore } from '@/stores/MainStore.js'
 
 import useRouting from '@/composables/useRouting';

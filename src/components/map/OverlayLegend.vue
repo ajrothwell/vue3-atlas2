@@ -2,11 +2,20 @@
 
 import { computed, defineProps } from 'vue';
 
-const props = defineProps([
-  'position',
-  'options',
-  'items',
-]);
+const props = defineProps({
+  'position': {
+    type: String,
+    default: 'bottom-right',
+  },
+  'options': {
+    type: Object,
+    default: () => ({}),
+  },
+  'items': {
+    type: Object,
+    default: () => ({}),
+  },
+});
 
 const keys = computed(() => {
   return Object.keys(props.items);

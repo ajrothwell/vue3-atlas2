@@ -50,7 +50,6 @@ import OverlayLegend from '@/components/map/OverlayLegend.vue';
 import EagleviewPanel from '@/components/map/EagleviewPanel.vue';
 import CyclomediaPanel from '@/components/map/CyclomediaPanel.vue';
 import CyclomediaRecordingsClient from '@/components/map/recordings-client.js';
-import NearbyActivity from '../topics/nearbyActivity/NearbyActivity.vue';
 
 let map;
 
@@ -101,7 +100,7 @@ onMounted(async () => {
   map.addControl(new maplibregl.GeolocateControl(), 'bottom-left');
 
   // whenever the map moves, check whether the cyclomedia recording circles are on and update them if so
-  map.on('moveend', (e) => {
+  map.on('moveend', () => {
     // console.log('map moveend event, e:', e, 'map.getZoom()', map.getZoom(), 'map.getStyle().layers:', map.getStyle().layers, 'map.getStyle().sources:', map.getStyle().sources);
     if (MapStore.cyclomediaOn) {
       map.getZoom() > 16.5 ? MapStore.cyclomediaRecordingsOn = true : MapStore.cyclomediaRecordingsOn = false;
@@ -115,7 +114,7 @@ onMounted(async () => {
     }
   });
 
-  map.on('zoomend', (e) => {
+  map.on('zoomend', () => {
     if (MapStore.cyclomediaOn) {
       updateCyclomediaCameraViewcone(MapStore.cyclomediaCameraHFov, MapStore.cyclomediaCameraYaw);
     }
@@ -174,7 +173,7 @@ onMounted(async () => {
     if (popup.length) {
       popup[0].remove();
     }
-    let nearbyPopup = new maplibregl.Popup({ className: 'my-class' })
+    new maplibregl.Popup({ className: 'my-class' })
       .setLngLat(e.lngLat)
       .setHTML(row[infoField])
       .setMaxWidth("300px")
@@ -190,14 +189,14 @@ onMounted(async () => {
   });
 
   map.on('mouseleave', 'nearby', () => {
-    if (hoveredStateId) {
+    if (hoveredStateId.value) {
       map.getCanvas().style.cursor = ''
       MainStore.hoveredStateId = null;
     }
   });
 
   // if the map is clicked (not on the layers above), if in draw mode, a polygon is drawn, otherwise, the lngLat is pushed to the app route
-  map.on('click', (e, data) => {
+  map.on('click', (e) => {
     if (e.clickOnLayer) {
       return;
     }
@@ -274,17 +273,15 @@ watch(
 // watch dor parcel coordinates for moving dor parcel
 const selectedParcelId = computed(() => { return MainStore.selectedParcelId; });
 const dorCoordinates = computed(() => {
-  console.log('computed dorCoordinates, selectedParcelId.value:', selectedParcelId.value, 'ParcelsStore.dor', ParcelsStore.dor);
+  // console.log('computed dorCoordinates, selectedParcelId.value:', selectedParcelId.value, 'ParcelsStore.dor', ParcelsStore.dor);
   if (selectedParcelId.value && ParcelsStore.dor.features && ParcelsStore.dor.features.filter(parcel => parcel.id === selectedParcelId.value)[0]) {
     const parcel = ParcelsStore.dor.features.filter(parcel => parcel.id === selectedParcelId.value)[0];
-  // if (selectedParcelId.value) {
-    console.log('computed, not watch, selectedParcelId.value:', selectedParcelId.value, 'ParcelsStore.dor.features.filter(parcel => parcel.id === selectedParcelId.value)[0]:', ParcelsStore.dor.features.filter(parcel => parcel.id === selectedParcelId.value)[0]);
+    // console.log('computed, not watch, selectedParcelId.value:', selectedParcelId.value, 'ParcelsStore.dor.features.filter(parcel => parcel.id === selectedParcelId.value)[0]:', ParcelsStore.dor.features.filter(parcel => parcel.id === selectedParcelId.value)[0]);
     if (parcel.geometry.type === 'Polygon') {
       return parcel.geometry.coordinates[0];
     } else if (parcel.geometry.type === 'MultiPolygon') {
       return parcel.geometry.coordinates;
     }
-    // return ParcelsStore.dor.features.filter(parcel => parcel.id === selectedParcelId.value)[0].geometry.coordinates[0];
   } else {
     return [[0,0], [0,1], [1,1], [1,0], [0,0]];
   }
@@ -390,7 +387,6 @@ const imagerySelected = computed(() => {
 
 const toggleImagery = () => {
   // console.log('toggleImagery, map.getStyle:', map.getStyle());
-  const style = map.getStyle();
   if (!MapStore.imageryOn) {
     MapStore.imageryOn = true;
     map.addLayer($config.mapLayers[imagerySelected.value], 'cyclomediaRecordings')
@@ -406,8 +402,6 @@ const toggleImagery = () => {
         map.getSource('addressMarker').setData(point(pwdCoordinates.value));
       }
     }
-    // let currentTopicMapStyle = route.params.topic ? $config.topicStyles[route.params.topic] : 'pwdDrawnMapStyle';
-    // console.log('currentTopicMapStyle:', currentTopicMapStyle);
   }
 }
 
@@ -437,7 +431,7 @@ watch(
         map.removeSource('regmap');
       }
       console.log('add newRegmap:', newRegmap);
-      const tiles =  `https://ags-regmaps.phila.gov/arcgis/rest/services/RegMaps/MapServer/export?dpi=96&layerDefs=0:NAME=\'g${newRegmap.toLowerCase()}.tif\'&transparent=true&format=png24&bbox={bbox-epsg-3857}&bboxSR=3857&imageSR=3857&size=700,700&f=image&layers=show%3A0`;
+      const tiles =  `https://ags-regmaps.phila.gov/arcgis/rest/services/RegMaps/MapServer/export?dpi=96&layerDefs=0:NAME='g${newRegmap.toLowerCase()}.tif'&transparent=true&format=png24&bbox={bbox-epsg-3857}&bboxSR=3857&imageSR=3857&size=700,700&f=image&layers=show%3A0`;
       $config.dorDrawnMapStyle.sources.regmap = {
         type: 'raster',
         tiles: [tiles],
@@ -454,7 +448,7 @@ watch(
     } else {
       map.removeLayer('regmap');
       map.removeSource('regmap');
-      const tiles =  `https://ags-regmaps.phila.gov/arcgis/rest/services/RegMaps/MapServer/export?dpi=96&layerDefs=0:NAME=\'g${newRegmap.toLowerCase()}.tif\'&transparent=true&format=png24&bbox={bbox-epsg-3857}&bboxSR=3857&imageSR=3857&size=700,700&f=image&layers=show%3A0`;
+      const tiles =  `https://ags-regmaps.phila.gov/arcgis/rest/services/RegMaps/MapServer/export?dpi=96&layerDefs=0:NAME='g${newRegmap.toLowerCase()}.tif'&transparent=true&format=png24&bbox={bbox-epsg-3857}&bboxSR=3857&imageSR=3857&size=700,700&f=image&layers=show%3A0`;
       $config.dorDrawnMapStyle.sources.regmap = {
         type: 'raster',
         tiles: [tiles],
@@ -567,7 +561,7 @@ watch(
     if (popup.length) {
       popup[0].remove();
     }
-    let nearbyPopup = new maplibregl.Popup({ className: 'my-class' })
+    new maplibregl.Popup({ className: 'my-class' })
       .setLngLat(newClickedRow.lngLat)
       .setHTML(row[infoField] || row.properties[infoField])
       .setMaxWidth("300px")
@@ -682,7 +676,7 @@ const drawSelectionChange = (e) => {
 }
 const drawFinish = () => {
   console.log('drawFinish is running');
-  drawInfo.mode = 'simple_select';
+  drawInfo.value.mode = 'simple_select';
 }
 const drawModeChange = (e) => {
   console.log('drawModeChange is running, e', e);
@@ -691,7 +685,7 @@ const drawModeChange = (e) => {
   } else {
     map.getCanvas().style.cursor = ''
   }
-  drawInfo.mode = e.mode;
+  drawInfo.value.mode = e.mode;
   distanceMeasureControlRef.value.handleDrawModeChange(e);
 }
 
@@ -778,8 +772,7 @@ const updateCyclomediaRecordings = async () => {
 
 // everything for adding, moving, and orienting the cyclomedia camera icon and viewcone
 const updateCyclomediaCameraLngLat = (lngLat) => {
-  console.log('updateCyclomediaCameraLngLat is running, lngLat:', lngLat);
-  const zoom = map.getZoom();
+  // console.log('updateCyclomediaCameraLngLat is running, lngLat:', lngLat);
   if (!MapStore.cyclomediaOn) {
     return;
   } else {
@@ -794,7 +787,6 @@ const updateCyclomediaCameraAngle = (newOrientation) => {
   if (!newOrientation) {
     newOrientation = MapStore.cyclomediaCameraYaw;
   }
-  const layer = map.getLayer('cyclomediaCamera');
   map.setLayoutProperty('cyclomediaCamera', 'icon-rotate', newOrientation);
 }
 
@@ -899,30 +891,48 @@ const legendData = ref({
 </script>
 
 <template>
-  <div id="map" class="map map-class">
-    <AddressSearchControl :input-id="'map-search-input'"></AddressSearchControl>
-    <ImageryToggleControl @toggleImagery="toggleImagery"></ImageryToggleControl>
-    <ImageryDropdownControl v-if="MapStore.imageryOn" @setImagery="setImagery"></ImageryDropdownControl>
-    <EagleviewControl @toggleEagleview="toggleEagleview"></EagleviewControl>
-    <CyclomediaControl @toggleCyclomedia="toggleCyclomedia"></CyclomediaControl>
-    <OpacitySlider v-if="MainStore.currentTopic == 'Deeds' && selectedRegmap" :initialOpacity="MapStore.regmapOpacity"@opacityChange="handleRegmapOpacityChange"></OpacitySlider>
-    <OpacitySlider v-if="MainStore.currentTopic == 'Zoning'" :initialOpacity="MapStore.zoningOpacity"@opacityChange="handleZoningOpacityChange"></OpacitySlider>
+  <div
+    id="map"
+    class="map map-class"
+  >
+    <AddressSearchControl :input-id="'map-search-input'" />
+    <ImageryToggleControl @toggle-imagery="toggleImagery" />
+    <ImageryDropdownControl
+      v-if="MapStore.imageryOn"
+      @set-imagery="setImagery"
+    />
+    <EagleviewControl @toggle-eagleview="toggleEagleview" />
+    <CyclomediaControl @toggle-cyclomedia="toggleCyclomedia" />
+    <OpacitySlider
+      v-if="MainStore.currentTopic == 'Deeds' && selectedRegmap"
+      :initial-opacity="MapStore.regmapOpacity"
+      @opacity-change="handleRegmapOpacityChange"
+    />
+    <OpacitySlider
+      v-if="MainStore.currentTopic == 'Zoning'"
+      :initial-opacity="MapStore.zoningOpacity"
+      @opacity-change="handleZoningOpacityChange"
+    />
     <!-- the distance measure control uses a ref, so that functions within the component can be called from this file -->
-    <DistanceMeasureControl ref="distanceMeasureControlRef"></DistanceMeasureControl>
-    <OverlayLegend v-show="!MapStore.imageryOn && ['Deeds', 'Zoning'].includes(MainStore.currentTopic)" :items="legendData" :options="{ shape: 'square' }"></OverlayLegend>
+    <DistanceMeasureControl ref="distanceMeasureControlRef" />
+    <OverlayLegend
+      v-show="!MapStore.imageryOn && ['Deeds', 'Zoning'].includes(MainStore.currentTopic)"
+      :items="legendData"
+      :options="{ shape: 'square' }"
+    />
   </div>
   <KeepAlive>
     <CyclomediaPanel
       v-if="MapStore.cyclomediaOn"
-      @updateCameraYaw="updateCyclomediaCameraAngle"
-      @updateCameraHFov="updateCyclomediaCameraViewcone"
-      @updateCameraLngLat="updateCyclomediaCameraLngLat"
-    ></CyclomediaPanel>
+      @update-camera-yaw="updateCyclomediaCameraAngle"
+      @update-camera-h-fov="updateCyclomediaCameraViewcone"
+      @update-camera-lng-lat="updateCyclomediaCameraLngLat"
+    />
   </KeepAlive>
   <KeepAlive>
     <EagleviewPanel
       v-if="MapStore.eagleviewOn"
-    ></EagleviewPanel>
+    />
   </KeepAlive>
 </template>
 

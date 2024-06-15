@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import { useGeocodeStore } from '@/stores/GeocodeStore.js'
 
 import useTransforms from '@/composables/useTransforms';
-const { currency, date } = useTransforms();
+const { date } = useTransforms();
 import axios from 'axios';
 
 export const useLiStore = defineStore('LiStore', {

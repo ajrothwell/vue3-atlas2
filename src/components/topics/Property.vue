@@ -83,26 +83,44 @@ const hasNoData = computed(() => {
 
 <template>
   <section>
-    <div v-if="!shouldShowCondosMessage" id="Property-description" class="box">
+    <div
+      v-if="!shouldShowCondosMessage"
+      id="Property-description"
+      class="box"
+    >
       Property assessment and sale information for this address. Source: Office of Property Assessments (OPA). OPA was formerly a part of the Bureau of Revision of Taxes (BRT) and some City records may still use that name.
     </div>
 
-    <vertical-table v-if="shouldShowTable" tableId="opaTable" :data="vertTableData"></vertical-table>
+    <vertical-table
+      v-if="shouldShowTable"
+      table-id="opaTable"
+      :data="vertTableData"
+    />
 
     <div v-if="shouldShowCondosMessage">
-      <h5 class="title is-5">There {{ CondosStore.condosData.total_size > 1 ? 'are':'is' }} {{ CondosStore.condosData.total_size }} condominium {{ CondosStore.condosData.total_size > 1 ? 'units':'unit' }} at this address.</h5>
+      <h5 class="title is-5">
+        There {{ CondosStore.condosData.total_size > 1 ? 'are':'is' }} {{ CondosStore.condosData.total_size }} condominium {{ CondosStore.condosData.total_size > 1 ? 'units':'unit' }} at this address.
+      </h5>
       <p>You can use the Condominiums tab below to see information for an individual unit.</p>
     </div>
     <div v-else-if="OpaStore.loadingOpaData">
-      <p>Loading property assessment data... <font-awesome-icon icon="fa-solid fa-spinner" spin/></p>
+      <p>
+        Loading property assessment data... <font-awesome-icon
+          icon="fa-solid fa-spinner"
+          spin
+        />
+      </p>
     </div>
     <div v-else-if="hasNoData">
       <p>There is no property assessment record for this address.</p>
     </div>
     <div>
-      <a v-if="!shouldShowCondosMessage && !hasNoData" target='_blank' :href="`https://property.phila.gov/?p=${opaAccountNumber}`">See more at Property Search <font-awesome-icon icon='fa-solid fa-external-link-alt'></font-awesome-icon></a>
+      <a
+        v-if="!shouldShowCondosMessage && !hasNoData"
+        target="_blank"
+        :href="`https://property.phila.gov/?p=${opaAccountNumber}`"
+      >See more at Property Search <font-awesome-icon icon="fa-solid fa-external-link-alt" /></a>
     </div>
-
   </section>
 </template>
 

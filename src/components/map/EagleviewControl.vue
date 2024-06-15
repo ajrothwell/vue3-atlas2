@@ -18,9 +18,20 @@ const eagleviewOn = computed(() => {
 </script>
 
 <template>
-  <div class="eagleview-toggle" :class="eagleviewOn ? 'active' : 'inactive'" :title="eagleviewOn ? 'Turn off oblique view' : 'Turn on oblique view'">
-    <button type="button" @click="$emit('toggleEagleview')">
-      <img class='img-src' alt="oblique-view" :src="imgSrc" />
+  <div
+    class="eagleview-toggle"
+    :class="eagleviewOn ? 'active' : 'inactive'"
+    :title="eagleviewOn ? 'Turn off oblique view' : 'Turn on oblique view'"
+  >
+    <button
+      type="button"
+      @click="$emit('toggleEagleview')"
+    >
+      <img
+        class="img-src"
+        alt="oblique-view"
+        :src="imgSrc"
+      >
     </button>
   </div>
 </template>

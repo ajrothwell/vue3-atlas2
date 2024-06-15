@@ -58,11 +58,6 @@ const setNewLocation = async (coords) => {
     }
   }
 
-  // if (!this.$config.cyclomedia.measurementAllowed || this.$config.cyclomedia.measurementAllowed === 'false') {
-  //   StreetSmartApi.removeOverlay('measurementLayer');
-  //   viewer.toggleButtonEnabled('panorama.measure', false);
-  // }
-
   viewer.on('VIEW_CHANGE', function(e) {
     console.log('on VIEW_CHANGE fired, type:', e.type, 'detail:', e.detail, 'viewer.props.orientation.xyz:', viewer.props.orientation.xyz, 'MapStore.cyclomediaCameraXyz:', MapStore.cyclomediaCameraXyz);
     if (MapStore.cyclomediaOn) {

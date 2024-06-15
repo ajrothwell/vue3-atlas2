@@ -27,8 +27,16 @@ const imageryOn = computed(() => {
 
 <template>
   <div class="imagery-toggle">
-    <button type="button" @click="$emit('toggleImagery')" :title="imageryOn ? 'Turn off imagery' : 'Show imagery'">
-      <img class='img-src' alt="imagery-or-basemap" :src="imgSrc" />
+    <button
+      type="button"
+      :title="imageryOn ? 'Turn off imagery' : 'Show imagery'"
+      @click="$emit('toggleImagery')"
+    >
+      <img
+        class="img-src"
+        alt="imagery-or-basemap"
+        :src="imgSrc"
+      >
     </button>
   </div>
 </template>

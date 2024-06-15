@@ -4,6 +4,16 @@
 import { useParcelsStore } from '@/stores/ParcelsStore';
 
 export default {
+  props: {
+    'value': {
+      type: String,
+      default: '',
+    },
+    'descriptor': {
+      type: String,
+      default: 'parcel',
+    },
+  },
   data() {
     return {
       context: {
@@ -30,10 +40,6 @@ export default {
       ],
     }
   },
-  props: [
-    'value',
-    'descriptor',
-  ],
   computed: {
     // the final stringified output
     summary() {
