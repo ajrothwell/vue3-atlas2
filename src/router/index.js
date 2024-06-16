@@ -164,7 +164,7 @@ const topicDataFetch = async (topic, data) => {
     // await DorStore.fillAllDorData();
     await Promise.all([DorStore.fillDorDocuments(),
       DorStore.fillRegmaps(),
-      // this.fillDorCondos()
+      DorStore.fillDorCondos()
     ]);
     DorStore.loadingDorData = false;
   }

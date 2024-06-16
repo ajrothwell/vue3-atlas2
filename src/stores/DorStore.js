@@ -107,31 +107,38 @@ export const useDorStore = defineStore("DorStore", {
       this.dorCondos = {};
     },
     async fillDorCondos() {
-      this.dorCondos = {};
-      console.log('fillRegmaps is running');
-      const ParcelsStore = useParcelsStore();
-      const parcels = ParcelsStore.dor.features;
-      if (!parcels) return;
-      let baseUrl = 'https://phl.carto.com/api/v2/sql?q=';
-      parcels.forEach(async(feature) => {
-        try {
-          console.log('feature:', feature);
-          const url = baseUrl + `select * from condominium where mapref = '${ feature.properties.MAPREG }' and status in (1,3)`;
-          const response = await fetch(url);
-          if (response.ok) {
-            const data = await response.json();
-            console.log('fillDorCondos data:', data);
-            for (let row of data.rows) {
-              row.condo_parcel = row.recmap + '-' + row.condoparcel;
-              row.unit_number = 'Unit #' + row.condounit;
+      return new Promise((resolve, reject) => {
+        (async () => {
+          this.dorCondos = {};
+          console.log('fillRegmaps is running');
+          const ParcelsStore = useParcelsStore();
+          const parcels = ParcelsStore.dor.features;
+          if (!parcels) return;
+          let baseUrl = 'https://phl.carto.com/api/v2/sql?q=';
+          parcels.forEach(async(feature) => {
+            try {
+              console.log('feature:', feature);
+              const url = baseUrl + `select * from condominium where mapref = '${ feature.properties.MAPREG }' and status in (1,3)`;
+              const response = await fetch(url);
+              if (response.ok) {
+                const data = await response.json();
+                console.log('fillDorCondos data:', data);
+                for (let row of data.rows) {
+                  row.condo_parcel = row.recmap + '-' + row.condoparcel;
+                  row.unit_number = 'Unit #' + row.condounit;
+                }
+                this.dorCondos[feature.properties.OBJECTID] = data;
+                return resolve();
+              } else {
+                console.warn('fillDorCondos - await resolved but HTTP status was not successful');
+                return resolve();
+              }
+            } catch {
+              console.error('fillDorCondos - await never resolved, failed to fetch data');
+              return resolve();
             }
-            this.dorCondos[feature.properties.OBJECTID] = data;
-          } else {
-            console.warn('fillDorCondos - await resolved but HTTP status was not successful');
-          }
-        } catch {
-          console.error('fillDorCondos - await never resolved, failed to fetch data');
-        }
+          });
+        })();
       });
     },
     async fillRegmaps() {
