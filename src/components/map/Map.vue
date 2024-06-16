@@ -238,17 +238,19 @@ onMounted(async () => {
 watch(
   () => GeocodeStore.aisData,
   async newAddress => {
-    // console.log('MapStore route.params.address watch, newAddress:', newAddress);
-    const newCoords = newAddress.features[0].geometry.coordinates;
-    if (MainStore.lastSearchMethod === 'address') {
-      map.setCenter(newCoords);
-      map.setZoom(17);
-    }
-    MapStore.currentAddressCoords = newCoords;
-
-    const popup = document.getElementsByClassName('maplibregl-popup');
-    if (popup.length) {
-      popup[0].remove();
+    console.log('MapStore aisData watch, newAddress:', newAddress);
+    if (newAddress.features && newAddress.features[0].geometry.coordinates.length) {
+      const newCoords = newAddress.features[0].geometry.coordinates;
+      if (MainStore.lastSearchMethod === 'address') {
+        map.setCenter(newCoords);
+        map.setZoom(17);
+      }
+      MapStore.currentAddressCoords = newCoords;
+  
+      const popup = document.getElementsByClassName('maplibregl-popup');
+      if (popup.length) {
+        popup[0].remove();
+      }
     }
   }
 )
@@ -265,9 +267,11 @@ const pwdCoordinates = computed(() => {
 watch(
   () => pwdCoordinates.value,
   newCoords => {
-  // console.log('Map pwdCoordinates watch, newCoords:', newCoords, 'MapStore.addressMarker:', MapStore.addressMarker);
-  const address = point(newCoords);
-  map.getSource('addressMarker').setData(address);
+  console.log('Map pwdCoordinates watch, newCoords:', newCoords, 'MapStore.addressMarker:', MapStore.addressMarker);
+  if (newCoords.length) {
+    const address = point(newCoords);
+    map.getSource('addressMarker').setData(address);
+  }
 });
 
 // watch dor parcel coordinates for moving dor parcel
@@ -362,7 +366,9 @@ watch(
       const dorParcel = map.getSource('dorParcel');
       if (addressMarker && dorParcel) {
         // console.log('1 map.layers:', map.getStyle().layers, map.getStyle().sources);
-        addressMarker.setData(point(pwdCoordinates.value));
+        if (pwdCoordinates.value.length) {
+          addressMarker.setData(point(pwdCoordinates.value));
+        }
         console.log('dorCoordinates.value:', dorCoordinates.value);
         let newParcel;
         if ($config.parcelLayerForTopic[newTopic] == 'dor') {

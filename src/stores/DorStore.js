@@ -107,231 +107,252 @@ export const useDorStore = defineStore("DorStore", {
       this.dorCondos = {};
     },
     async fillDorCondos() {
-      this.dorCondos = {};
-      console.log('fillRegmaps is running');
-      const ParcelsStore = useParcelsStore();
-      const parcels = ParcelsStore.dor.features;
-      if (!parcels) return;
-      let baseUrl = 'https://phl.carto.com/api/v2/sql?q=';
-      parcels.forEach(async(feature) => {
-        try {
-          console.log('feature:', feature);
-          const url = baseUrl + `select * from condominium where mapref = '${ feature.properties.MAPREG }' and status in (1,3)`;
-          const response = await fetch(url);
-          if (response.ok) {
-            const data = await response.json();
-            console.log('fillDorCondos data:', data);
-            for (let row of data.rows) {
-              row.condo_parcel = row.recmap + '-' + row.condoparcel;
-              row.unit_number = 'Unit #' + row.condounit;
+      return new Promise((resolve, reject) => {
+        (async () => {
+          this.dorCondos = {};
+          console.log('fillRegmaps is running');
+          const ParcelsStore = useParcelsStore();
+          const parcels = ParcelsStore.dor.features;
+          if (!parcels) return;
+          let baseUrl = 'https://phl.carto.com/api/v2/sql?q=';
+          parcels.forEach(async(feature) => {
+            try {
+              console.log('feature:', feature);
+              const url = baseUrl + `select * from condominium where mapref = '${ feature.properties.MAPREG }' and status in (1,3)`;
+              const response = await fetch(url);
+              if (response.ok) {
+                const data = await response.json();
+                console.log('fillDorCondos data:', data);
+                for (let row of data.rows) {
+                  row.condo_parcel = row.recmap + '-' + row.condoparcel;
+                  row.unit_number = 'Unit #' + row.condounit;
+                }
+                this.dorCondos[feature.properties.OBJECTID] = data;
+                return resolve();
+              } else {
+                console.warn('fillDorCondos - await resolved but HTTP status was not successful');
+                return resolve();
+              }
+            } catch {
+              console.error('fillDorCondos - await never resolved, failed to fetch data');
+              return resolve();
             }
-            this.dorCondos[feature.properties.OBJECTID] = data;
-          } else {
-            console.warn('fillDorCondos - await resolved but HTTP status was not successful');
-          }
-        } catch {
-          console.error('fillDorCondos - await never resolved, failed to fetch data');
-        }
+          });
+        })();
       });
     },
     async fillRegmaps() {
-      console.log('fillRegmaps is running');
-      this.regmaps = {};
-      const ParcelsStore = useParcelsStore();
-      const parcels = ParcelsStore.dor.features;
-      var xVals = [], yVals = [];
+      return new Promise((resolve, reject) => {
+        (async () => {
+          console.log('fillRegmaps is running');
+          this.regmaps = {};
+          const ParcelsStore = useParcelsStore();
+          const parcels = ParcelsStore.dor.features;
+          var xVals = [], yVals = [];
 
-      // loop over parcels
-      if (!parcels) return;
-      parcels.forEach(function (parcel) {
-        var geom = parcel.geometry,
-          parts = geom.coordinates;
+          // loop over parcels
+          if (!parcels) return;
+          parcels.forEach(function (parcel) {
+            var geom = parcel.geometry,
+              parts = geom.coordinates;
 
-        // loop over parts (whether it's simple or multipart)
-        parts.forEach(function (coordPairs) {
-          coordPairs.forEach(function (coordPair) {
-            // if the polygon has a hole, it has another level of coord
-            // pairs, presumably one for the outer coords and another for
-            // inner. for simplicity, add them all.
-            var hasHole = Array.isArray(coordPair[0]);
+            // loop over parts (whether it's simple or multipart)
+            parts.forEach(function (coordPairs) {
+              coordPairs.forEach(function (coordPair) {
+                // if the polygon has a hole, it has another level of coord
+                // pairs, presumably one for the outer coords and another for
+                // inner. for simplicity, add them all.
+                var hasHole = Array.isArray(coordPair[0]);
 
-            if (hasHole) {
-              // loop through inner pairs
-              coordPair.forEach(function (innerCoordPair) {
-                var x = innerCoordPair[0],
-                  y = innerCoordPair[1];
+                if (hasHole) {
+                  // loop through inner pairs
+                  coordPair.forEach(function (innerCoordPair) {
+                    var x = innerCoordPair[0],
+                      y = innerCoordPair[1];
 
-                xVals.push(x);
-                yVals.push(y);
+                    xVals.push(x);
+                    yVals.push(y);
+                  });
+                // for all other polys
+                } else {
+                  var x = coordPair[0],
+                    y = coordPair[1];
+
+                  xVals.push(x);
+                  yVals.push(y);
+                }
               });
-            // for all other polys
-            } else {
-              var x = coordPair[0],
-                y = coordPair[1];
-
-              xVals.push(x);
-              yVals.push(y);
-            }
+            });
           });
-        });
+
+          // take max/min
+          var xMin = Math.min.apply(null, xVals);
+          var xMax = Math.max.apply(null, xVals);
+          var yMin = Math.min.apply(null, yVals);
+          var yMax = Math.max.apply(null, yVals);
+
+          // make sure all coords are defined. no NaNs allowed.
+          var coordsAreDefined = [ xMin, xMax, yMin, yMax ].every(
+            function (coord) {
+              return coord;
+            },
+          );
+
+          // if they aren't
+          if (!coordsAreDefined) {
+            //  exit with null to avoid an error calling lat lng bounds constructor
+            return null;
+          }
+
+          // construct geometry
+          var bbox = [ xMin, yMin, xMax, yMax ];
+          var bounds = bboxPolygon(bbox).geometry;
+
+          console.log('regmaps.js, bounds:', bounds);
+
+          let url = '//services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/MASTERMAPINDEX/FeatureServer/0/query'; //+ [relationship](targetGeom);
+          let params = {
+            'returnGeometry': true,
+            'where': '1=1',
+            'outSR': 4326,
+            'outFields': '*',
+            'inSr': 4326,
+            'geometryType': 'esriGeometryEnvelope',
+            'spatialRel': 'esriSpatialRelIntersects',
+            'f': 'geojson',
+            'geometry': `{ "xmin": ${bounds.coordinates[0][0][0]}, "ymin": ${bounds.coordinates[0][0][1]}, "xmax": ${bounds.coordinates[0][2][0]}, "ymax": ${bounds.coordinates[0][2][1]}, "spatialReference": { "wkid":4326 }}`,
+          };
+
+          try {
+            const response = await axios.get(url, { params })
+            if (response.status === 200) {
+              this.regmaps = response;
+              return resolve();
+            } else {
+              console.warn('fillRegmaps - await resolved but HTTP status was not successful');
+              return resolve();
+            }
+          } catch {
+            console.error('fillRegmaps - await never resolved, failed to fetch data');
+            return resolve();
+          }
+        })();
       });
-
-      // take max/min
-      var xMin = Math.min.apply(null, xVals);
-      var xMax = Math.max.apply(null, xVals);
-      var yMin = Math.min.apply(null, yVals);
-      var yMax = Math.max.apply(null, yVals);
-
-      // make sure all coords are defined. no NaNs allowed.
-      var coordsAreDefined = [ xMin, xMax, yMin, yMax ].every(
-        function (coord) {
-          return coord;
-        },
-      );
-
-      // if they aren't
-      if (!coordsAreDefined) {
-        //  exit with null to avoid an error calling lat lng bounds constructor
-        return null;
-      }
-
-      // construct geometry
-      var bbox = [ xMin, yMin, xMax, yMax ];
-      var bounds = bboxPolygon(bbox).geometry;
-
-      console.log('regmaps.js, bounds:', bounds);
-
-      let url = '//services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/MASTERMAPINDEX/FeatureServer/0/query'; //+ [relationship](targetGeom);
-      let params = {
-        'returnGeometry': true,
-        'where': '1=1',
-        'outSR': 4326,
-        'outFields': '*',
-        'inSr': 4326,
-        'geometryType': 'esriGeometryEnvelope',
-        'spatialRel': 'esriSpatialRelIntersects',
-        'f': 'geojson',
-        'geometry': `{ "xmin": ${bounds.coordinates[0][0][0]}, "ymin": ${bounds.coordinates[0][0][1]}, "xmax": ${bounds.coordinates[0][2][0]}, "ymax": ${bounds.coordinates[0][2][1]}, "spatialReference": { "wkid":4326 }}`,
-      };
-
-      try {
-        const response = await axios.get(url, { params })
-        if (response.status === 200) {
-          this.regmaps = response;
-        } else {
-          console.warn('fillRegmaps - await resolved but HTTP status was not successful');
-        }
-      } catch {
-        console.error('fillRegmaps - await never resolved, failed to fetch data');
-      }
     },
     async fillDorDocuments() {
-      console.log('fillDorDocuments is running');
+      return new Promise((resolve, reject) => {
+        (async () => {
+          console.log('fillDorDocuments is running');
 
-      this.dorDocuments = {};
-      const ParcelsStore = useParcelsStore();
-      const GeocodeStore = useGeocodeStore();
-      const url = `//services.arcgis.com/fLeGjb7u4uXqeF9q/ArcGIS/rest/services/RTT_SUMMARY/FeatureServer/0/query`;
-      
-      const where = function(feature) {
-        console.log('where function is running, feature:', feature);
-        // METHOD 1: via address
-        var parcelBaseAddress = concatDorAddress(feature);
-        var geocode = GeocodeStore.aisData.features[0].properties;
-        var where;
-      
-        // REVIEW if the parcel has no address, we don't want to query
-        // WHERE ADDRESS = 'null' (doesn't make sense), so use this for now
-        if (!parcelBaseAddress || parcelBaseAddress === 'null'){
-          where = "MATCHED_REGMAP = '" + ParcelsStore.dor.features[0].properties.BASEREG + "'";
-        } else {
-          // TODO make these all camel case
-          var props = GeocodeStore.aisData.features[0].properties,
-            address_low = props.address_low,
-            address_floor = Math.floor(address_low / 100, 1) * 100,
-            address_remainder = address_low - address_floor,
-            addressHigh = props.address_high,
-            addressCeil = addressHigh || address_low;
-      
-          // form where clause
-          where = "(((ADDRESS_LOW >= " + address_low + " AND ADDRESS_LOW <= " + addressCeil + ")"
-                    + " OR (ADDRESS_LOW >= " + address_floor + " AND ADDRESS_LOW <= " + addressCeil + " AND ADDRESS_HIGH >= " + address_remainder + " ))"
-                    + " AND STREET_NAME = '" + geocode.street_name
-                    + "' AND STREET_SUFFIX = '" + geocode.street_suffix
-                    + "' AND (MOD(ADDRESS_LOW,2) = MOD( " + address_low + ",2))";
-      
-      
-      
-          if (geocode.street_predir != '') {
-            where += " AND STREET_PREDIR = '" + geocode.street_predir + "'";
-          }
-      
-          if (geocode.address_low_suffix != '') {
-            where += " AND ADDRESS_LOW_SUFFIX = '" + geocode.address_low_suffix + "'";
-          }
-      
-          if (geocode.address_low_suffix == '') {
-            where += " AND ADDRESS_LOW_SUFFIX = ''";
-          }
-      
-          // this is hardcoded right now to handle dor address suffixes that are actually fractions
-          if (geocode.address_low_frac === '1/2') {
-            where += " AND ADDRESS_LOW_SUFFIX = '2'"; //+ geocode.address_low_frac + "'";
-          }
-      
-          if (geocode.street_postdir != '') {
-            where += " AND STREET_POSTDIR = '" + geocode.street_postdir + "'";
-          }
-      
-          // check for unit num
-          var unitNum = cleanDorAttribute(feature.properties.UNIT),
-            unitNum2 = geocode.unit_num;
-      
-          if (unitNum) {
-            where += " AND UNIT_NUM = '" + unitNum + "'";
-          } else if (unitNum2 !== '') {
-            where += " AND UNIT_NUM = '" + unitNum2 + "'";
-          }
-      
-          where += ") or MATCHED_REGMAP = '" + ParcelsStore.dor.features[0].properties.BASEREG + "'";
-          where += " or REG_MAP_ID = '" + ParcelsStore.dor.features[0].properties.BASEREG + "'";
-        }
-      
-        return where;
-      }
-
-      if (!ParcelsStore.dor.features) {
-        return;
-      }
-      for (let feature of ParcelsStore.dor.features) {
-        try {
-          let theWhere = where(feature);
-            
-          const params = {
-            where: theWhere,
-            outFields: "DOCUMENT_ID, DISPLAY_DATE, DOCUMENT_TYPE, GRANTORS, GRANTEES",
-            returnDistinctValues: 'true',
-            returnGeometry: 'false',
-            f: 'json',
-            sqlFormat: 'standard',
+          this.dorDocuments = {};
+          const ParcelsStore = useParcelsStore();
+          const GeocodeStore = useGeocodeStore();
+          const url = `//services.arcgis.com/fLeGjb7u4uXqeF9q/ArcGIS/rest/services/RTT_SUMMARY/FeatureServer/0/query`;
+          
+          const where = function(feature) {
+            console.log('where function is running, feature:', feature);
+            // METHOD 1: via address
+            var parcelBaseAddress = concatDorAddress(feature);
+            var geocode = GeocodeStore.aisData.features[0].properties;
+            var where;
+          
+            // REVIEW if the parcel has no address, we don't want to query
+            // WHERE ADDRESS = 'null' (doesn't make sense), so use this for now
+            if (!parcelBaseAddress || parcelBaseAddress === 'null'){
+              where = "MATCHED_REGMAP = '" + ParcelsStore.dor.features[0].properties.BASEREG + "'";
+            } else {
+              // TODO make these all camel case
+              var props = GeocodeStore.aisData.features[0].properties,
+                address_low = props.address_low,
+                address_floor = Math.floor(address_low / 100, 1) * 100,
+                address_remainder = address_low - address_floor,
+                addressHigh = props.address_high,
+                addressCeil = addressHigh || address_low;
+          
+              // form where clause
+              where = "(((ADDRESS_LOW >= " + address_low + " AND ADDRESS_LOW <= " + addressCeil + ")"
+                        + " OR (ADDRESS_LOW >= " + address_floor + " AND ADDRESS_LOW <= " + addressCeil + " AND ADDRESS_HIGH >= " + address_remainder + " ))"
+                        + " AND STREET_NAME = '" + geocode.street_name
+                        + "' AND STREET_SUFFIX = '" + geocode.street_suffix
+                        + "' AND (MOD(ADDRESS_LOW,2) = MOD( " + address_low + ",2))";
+          
+          
+          
+              if (geocode.street_predir != '') {
+                where += " AND STREET_PREDIR = '" + geocode.street_predir + "'";
+              }
+          
+              if (geocode.address_low_suffix != '') {
+                where += " AND ADDRESS_LOW_SUFFIX = '" + geocode.address_low_suffix + "'";
+              }
+          
+              if (geocode.address_low_suffix == '') {
+                where += " AND ADDRESS_LOW_SUFFIX = ''";
+              }
+          
+              // this is hardcoded right now to handle dor address suffixes that are actually fractions
+              if (geocode.address_low_frac === '1/2') {
+                where += " AND ADDRESS_LOW_SUFFIX = '2'"; //+ geocode.address_low_frac + "'";
+              }
+          
+              if (geocode.street_postdir != '') {
+                where += " AND STREET_POSTDIR = '" + geocode.street_postdir + "'";
+              }
+          
+              // check for unit num
+              var unitNum = cleanDorAttribute(feature.properties.UNIT),
+                unitNum2 = geocode.unit_num;
+          
+              if (unitNum) {
+                where += " AND UNIT_NUM = '" + unitNum + "'";
+              } else if (unitNum2 !== '') {
+                where += " AND UNIT_NUM = '" + unitNum2 + "'";
+              }
+          
+              where += ") or MATCHED_REGMAP = '" + ParcelsStore.dor.features[0].properties.BASEREG + "'";
+              where += " or REG_MAP_ID = '" + ParcelsStore.dor.features[0].properties.BASEREG + "'";
+            }
+          
+            return where;
           }
 
-          // console.log('params:', params);
-          const response = await axios(url, { params });
-          if (response.status === 200) {
-            const data = response.data;
-            data.features.forEach((doc) => {
-              doc.attributes.date = date(doc.attributes.DISPLAY_DATE);
-              doc.attributes.link = `<a target='_blank' href='http://epay.phila-records.com/phillyepay/web/integration/document/InstrumentID=${doc.attributes.DOCUMENT_ID}&Guest=true'>${doc.attributes.DOCUMENT_ID}<i class='fa fa-external-link-alt'></i></a>`;
-            })
-            this.dorDocuments[feature.properties.OBJECTID] = data;
-          } else {
-            console.warn('dorDocs - await resolved but HTTP status was not successful')
+          if (!ParcelsStore.dor.features) {
+            return;
           }
-        } catch {
-          console.error('dorDocs - await never resolved, failed to fetch data')
-        }
-      }
-    } 
-  },
+          for (let feature of ParcelsStore.dor.features) {
+            try {
+              let theWhere = where(feature);
+                
+              const params = {
+                where: theWhere,
+                outFields: "DOCUMENT_ID, DISPLAY_DATE, DOCUMENT_TYPE, GRANTORS, GRANTEES",
+                returnDistinctValues: 'true',
+                returnGeometry: 'false',
+                f: 'json',
+                sqlFormat: 'standard',
+              }
+
+              // console.log('params:', params);
+              const response = await axios(url, { params });
+              if (response.status === 200) {
+                const data = response.data;
+                data.features.forEach((doc) => {
+                  doc.attributes.date = date(doc.attributes.DISPLAY_DATE);
+                  doc.attributes.link = `<a target='_blank' href='http://epay.phila-records.com/phillyepay/web/integration/document/InstrumentID=${doc.attributes.DOCUMENT_ID}&Guest=true'>${doc.attributes.DOCUMENT_ID}<i class='fa fa-external-link-alt'></i></a>`;
+                })
+                this.dorDocuments[feature.properties.OBJECTID] = data;
+                return resolve();
+              } else {
+                console.warn('dorDocs - await resolved but HTTP status was not successful')
+                return resolve();
+              }
+            } catch {
+              console.error('dorDocs - await never resolved, failed to fetch data')
+              return resolve();
+            }
+          }
+        })();
+      });
+    },
+  }
 })

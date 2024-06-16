@@ -161,7 +161,11 @@ const topicDataFetch = async (topic, data) => {
 
   if (topic === 'Deeds') {
     const DorStore = useDorStore();
-    await DorStore.fillAllDorData();
+    // await DorStore.fillAllDorData();
+    await Promise.all([DorStore.fillDorDocuments(),
+      DorStore.fillRegmaps(),
+      DorStore.fillDorCondos()
+    ]);
     DorStore.loadingDorData = false;
   }
 
