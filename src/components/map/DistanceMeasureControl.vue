@@ -1,6 +1,5 @@
 <script>
 
-import { useMainStore } from '@/stores/MainStore.js'
 import { useMapStore} from '@/stores/MapStore.js';
 
 // import mapbox-gl-draw-min.js, cloned from https://gist.github.com/godismyjudge95/a4ea43263db53b90b05511c911cd0034
@@ -52,7 +51,7 @@ export default {
     },
     newArea() {
       let shape = this.$data.labelLayers.filter(layer => layer.id === this.currentOrSelectedShape);
-      console.log('newArea is recalculating, shape:', shape, 'this.currentOrSelectedShape:', this.currentOrSelectedShape);
+      if (import.meta.env.VITE_DEBUG == 'true') console.log('newArea is recalculating, shape:', shape, 'this.currentOrSelectedShape:', this.currentOrSelectedShape);
       let set;
       if (shape[0]) {
         set = shape[0].area;
@@ -60,7 +59,7 @@ export default {
       return set;
     },
     currentDistances() {
-      console.log('currentDistances is recalculating');
+      if (import.meta.env.VITE_DEBUG == 'true') console.log('currentDistances is recalculating');
       let shape = this.$data.labelLayers.filter(layer => layer.id === this.currentOrSelectedShape);
       let set;
       if (shape[0]) {
@@ -86,7 +85,7 @@ export default {
       } else {
         booleanTotal = false;
       }
-      // console.log('booleanMode:', booleanMode, 'booleanSelected:', booleanSelected, 'booleanToggledOn:', booleanToggledOn, 'booleanTotal:', booleanTotal);
+      // if (import.meta.env.VITE_DEBUG == 'true') console.log('booleanMode:', booleanMode, 'booleanSelected:', booleanSelected, 'booleanToggledOn:', booleanToggledOn, 'booleanTotal:', booleanTotal);
       return booleanTotal;
     },
   },
@@ -99,26 +98,26 @@ export default {
       this.$data.selected = null;
     },
     // handleCancelClick(e) {
-    //   console.log('handleCancelClick is running');
+    //   if (import.meta.env.VITE_DEBUG == 'true') console.log('handleCancelClick is running');
     //   this.$data.toggledOn = false;
     //   this.$emit('drawCancel', e);
     // },
     // handleFinishClick(e) {
-    //   console.log('handleFinishClick is running e:', e);
+    //   if (import.meta.env.VITE_DEBUG == 'true') console.log('handleFinishClick is running e:', e);
     //   this.$emit('drawFinish', e);
     //   this.$data.mode = 'simple_select';
     // },
     deleteDrawDistances(shapeId){
-      // console.log('deleteDrawDistances is running, shapeId:', shapeId);
+      // if (import.meta.env.VITE_DEBUG == 'true') console.log('deleteDrawDistances is running, shapeId:', shapeId);
       // let shapeId = e.features[0].id;
       let index = this.currentShape.indexOf(this.currentShape.filter(set => set.id === shapeId)[0]);
-      // console.log('deleteDrawDistances is running, index:', index);
+      // if (import.meta.env.VITE_DEBUG == 'true') console.log('deleteDrawDistances is running, index:', index);
       this.currentShape.splice(index, 1);
       this.$data.selected = null;
     },
 
     getDrawDistances(e){
-      console.log('start of getDrawDistances, e:', e);
+      if (import.meta.env.VITE_DEBUG == 'true') console.log('start of getDrawDistances, e:', e);
       const MapStore = useMapStore();
       let draw = MapStore.draw;
       let data = draw.getAll();
@@ -129,56 +128,56 @@ export default {
         if (!shapeId) {
           shapeId = data.features[data.features.length-1].id;
         }
-        // console.log('in if e.point, shapeId:', shapeId);
+        // if (import.meta.env.VITE_DEBUG == 'true') console.log('in if e.point, shapeId:', shapeId);
       } else if (e && e.features && e.features.length) { // if getDrawDistances was called a draw event firing
         shapeId = e.features[0].id;
-        // console.log('in else if, shapeId:', shapeId);
+        // if (import.meta.env.VITE_DEBUG == 'true') console.log('in else if, shapeId:', shapeId);
       }
 
       this.currentShape = shapeId;
       let feature;
       let currentArea;
-      console.log('shapeId:', shapeId, 'draw.getSelectedIds():', draw.getSelectedIds());
+      if (import.meta.env.VITE_DEBUG == 'true') console.log('shapeId:', shapeId, 'draw.getSelectedIds():', draw.getSelectedIds());
       if (shapeId) {
         feature = data.features.filter(feature => feature.id === shapeId)[0];
-        console.log('if shapeId:', shapeId, 'feature:', feature, 'feature,geometry.coordinates.length:', feature.geometry.coordinates.length);
+        if (import.meta.env.VITE_DEBUG == 'true') console.log('if shapeId:', shapeId, 'feature:', feature, 'feature,geometry.coordinates.length:', feature.geometry.coordinates.length);
         if (feature.geometry.type === 'LineString') {
           coordinates = feature.geometry.coordinates;
-          console.log('its a linestring, coordinates.length:', coordinates.length);
+          if (import.meta.env.VITE_DEBUG == 'true') console.log('its a linestring, coordinates.length:', coordinates.length);
         } else {
-          console.log('its not a linestring')
+          if (import.meta.env.VITE_DEBUG == 'true') console.log('its not a linestring')
           coordinates = feature.geometry.coordinates[0];
         }
       } else {
         feature = data.features[data.features.length-1];
-        // console.log('else (no shapeId), feature.id:', feature.id, 'feature:', feature);
+        // if (import.meta.env.VITE_DEBUG == 'true') console.log('else (no shapeId), feature.id:', feature.id, 'feature:', feature);
         if (feature && feature.geometry && feature.geometry.type === 'LineString') {
-          console.log('its a linestring')
+          if (import.meta.env.VITE_DEBUG == 'true') console.log('its a linestring')
           coordinates = feature.geometry.coordinates;
         } else if (feature && feature.geometry) {
-          console.log('its not a linestring')
+          if (import.meta.env.VITE_DEBUG == 'true') console.log('its not a linestring')
           coordinates = feature.geometry.coordinates[0];
         }
       }
-      console.log('middle of getDrawDistances, draw:', draw, 'shapeId:', shapeId, 'e:', e, 'mode is draw_polygon, data:', data, 'coordinates:', coordinates);
+      if (import.meta.env.VITE_DEBUG == 'true') console.log('middle of getDrawDistances, draw:', draw, 'shapeId:', shapeId, 'e:', e, 'mode is draw_polygon, data:', data, 'coordinates:', coordinates);
 
       // mapbox-gl-draw duplicates the points of a polygon in a way that has to be accounted for;
       if (e && e.point) {
       // if (feature && feature.geometry && feature.geometry.type === 'Polygon') {
-        console.log('if e.point is running');
+        if (import.meta.env.VITE_DEBUG == 'true') console.log('if e.point is running');
         coordinates.splice(coordinates.length-2, 1);
       }
       if (feature && feature.geometry && feature.geometry.type === 'LineString') {
-        console.log('if feature.geometry.type === LineString is running');
+        if (import.meta.env.VITE_DEBUG == 'true') console.log('if feature.geometry.type === LineString is running');
         // coordinates.pop();
         coordinates.splice(0, 1);
       }
 
-      // console.log('coordinates:', coordinates);
+      // if (import.meta.env.VITE_DEBUG == 'true') console.log('coordinates:', coordinates);
       if (coordinates && coordinates.length >=4) {
         const thePolygon = polygon([ coordinates ]);
         const theArea = convertArea(area(thePolygon), 'meters', 'feet');
-        console.log('calculating the area:', theArea);
+        if (import.meta.env.VITE_DEBUG == 'true') console.log('calculating the area:', theArea);
         currentArea = theArea.toFixed(2) + ' Sq Feet';
       }
 
@@ -187,7 +186,7 @@ export default {
       let features = [];
       if (coordinates) {
         for (i=0; i<coordinates.length; i++) {
-          // console.log('loop, i:', i, 'coordinates[i][0]', coordinates[i][0], 'i+1:', i+1, 'coordinates.length:', coordinates.length, 'coordinates:', coordinates);
+          // if (import.meta.env.VITE_DEBUG == 'true') console.log('loop, i:', i, 'coordinates[i][0]', coordinates[i][0], 'i+1:', i+1, 'coordinates.length:', coordinates.length, 'coordinates:', coordinates);
           let distVal = 0;
           let lastDistVal = null;
           let midPoint = [];
@@ -200,7 +199,7 @@ export default {
             coord2 = coordinates[0];
           }
 
-          // console.log('MapPanel.vue in getDrawDistances, coordinates:', coordinates, 'coord2:', coord2);
+          // if (import.meta.env.VITE_DEBUG == 'true') console.log('MapPanel.vue in getDrawDistances, coordinates:', coordinates, 'coord2:', coord2);
           distVal = parseFloat((distance(coordinates[i], coord2, { units: 'miles' }) * 5280).toFixed(2));
           // distVal = distance(coordinates[i], coord2, { units: 'miles' }) * 5280;
 
@@ -208,7 +207,7 @@ export default {
             lastDistVal = parseFloat((distance(coordinates[i-1], coordinates[i], { units: 'miles' }) * 5280).toFixed(2));
             // lastDistVal = distance(coordinates[i-1], coordinates[i], { units: 'miles' }) * 5280;
           }
-          // console.log('distVal:', distVal, 'lastDistVal:', lastDistVal);
+          // if (import.meta.env.VITE_DEBUG == 'true') console.log('distVal:', distVal, 'lastDistVal:', lastDistVal);
 
           allVal = {
             firstPoint: [ parseFloat(coordinates[i][0].toFixed(5)), parseFloat(coordinates[i][1].toFixed(5)) ],
@@ -216,7 +215,7 @@ export default {
             distance: lastDistVal,
           };
           distancesArray.push(allVal);
-          // console.log('allVal:', allVal, 'distancesArray:', distancesArray);
+          // if (import.meta.env.VITE_DEBUG == 'true') console.log('allVal:', allVal, 'distancesArray:', distancesArray);
 
           if (e.point && coordinates[i][0] !== coord2[0] && i < coordinates.length-2) {
             midPoint = midpoint(coordinates[i], coord2).geometry.coordinates;
@@ -250,18 +249,18 @@ export default {
           }
 
           if (e.point && i === coordinates.length-2) {
-            // console.log('quitting loop: triggered by click and', i, " = ", coordinates.length-2);
+            // if (import.meta.env.VITE_DEBUG == 'true') console.log('quitting loop: triggered by click and', i, " = ", coordinates.length-2);
             break;
           }
         } // end of loop
       }
 
-      console.log('near end of getDrawDistances, currentArea:', currentArea, 'distancesArray.length:', distancesArray.length, 'distancesArray:', distancesArray, 'features:', features);
+      if (import.meta.env.VITE_DEBUG == 'true') console.log('near end of getDrawDistances, currentArea:', currentArea, 'distancesArray.length:', distancesArray.length, 'distancesArray:', distancesArray, 'features:', features);
 
       if (distancesArray.length) {
         let theSet = {};
         if (shapeId) {
-          console.log('if inside if is running, currentArea:', currentArea, 'distancesArray[distancesArray.length-1].distance:', distancesArray[distancesArray.length-1].distance, 'distancesArray:', distancesArray);
+          if (import.meta.env.VITE_DEBUG == 'true') console.log('if inside if is running, currentArea:', currentArea, 'distancesArray[distancesArray.length-1].distance:', distancesArray[distancesArray.length-1].distance, 'distancesArray:', distancesArray);
           theSet = {
             id: shapeId,
             'area': currentArea,
@@ -292,12 +291,12 @@ export default {
           };
 
           let location = this.labelLayers.filter(set => set.id === shapeId)[0];
-          // console.log('first try on location:', location);
+          // if (import.meta.env.VITE_DEBUG == 'true') console.log('first try on location:', location);
 
           if (!location) {
             this.labelLayers.push(theSet);
             location = this.labelLayers.filter(set => set.id === shapeId)[0];
-            // console.log('second try on location:', location);
+            // if (import.meta.env.VITE_DEBUG == 'true') console.log('second try on location:', location);
           }
           location.area = currentArea;
           location.distances = distancesArray;
@@ -310,7 +309,7 @@ export default {
     },
 
     handleDrawModeChange(e){
-      console.log('handleDrawModeChange is running, e:', e, 'e.mode:', e.mode);
+      if (import.meta.env.VITE_DEBUG == 'true') console.log('handleDrawModeChange is running, e:', e, 'e.mode:', e.mode);
       this.$data.mode = e.mode;
       if (e.mode === 'draw_polygon') {
         this.$data.toggledOn = true;
@@ -326,11 +325,11 @@ export default {
     },
 
     handleDrawCancel(){
-      // console.log('handleDrawCancel is running, e:', e, 'this.currentShape:', this.$data.currentShape);
+      // if (import.meta.env.VITE_DEBUG == 'true') console.log('handleDrawCancel is running, e:', e, 'this.currentShape:', this.$data.currentShape);
       const MapStore = useMapStore();
       // draw.mode = 'simple_select';
       let shapeId = this.currentShape;
-      console.log('handleDrawCancel is running, shapeId:', shapeId);
+      if (import.meta.env.VITE_DEBUG == 'true') console.log('handleDrawCancel is running, shapeId:', shapeId);
       if (shapeId) {
         let index = this.$data.labelLayers.indexOf(this.$data.labelLayers.filter(set => set.id === shapeId)[0]);
         this.$data.labelLayers.splice(index, 1);
@@ -347,11 +346,11 @@ export default {
       let currentShape = this.$data.currentShape;
       // let currentPoints = [];
       let fetchedPoints = this.$data.labelLayers.filter(set => set.id === this.currentShape)[0].distances;
-      console.log('MapPanel.vue handleDrawFinish 1 is running, MapStore.draw.getMode():', MapStore.draw.getMode(), 'currentShape:', currentShape, 'fetchedPoints:', fetchedPoints);
+      if (import.meta.env.VITE_DEBUG == 'true') console.log('MapPanel.vue handleDrawFinish 1 is running, MapStore.draw.getMode():', MapStore.draw.getMode(), 'currentShape:', currentShape, 'fetchedPoints:', fetchedPoints);
 
       let currentPoints = [];
       for (let point of fetchedPoints) {
-        // console.log('in loop, point:', point, 'point.firstPoint:', point.firstPoint);
+        // if (import.meta.env.VITE_DEBUG == 'true') console.log('in loop, point:', point, 'point.firstPoint:', point.firstPoint);
         currentPoints.push(point.firstPoint);
       }
       if (currentPoints.length > 1) {
@@ -397,20 +396,20 @@ export default {
         MapStore.draw.trash();
         this.handleDrawCancel();
       }
-      console.log('MapPanel.vue handleDrawFinish 2 is running, MapStore.draw.getMode():', MapStore.draw.getMode(), 'currentShape:', currentShape, 'fetchedPoints:', fetchedPoints);
+      if (import.meta.env.VITE_DEBUG == 'true') console.log('MapPanel.vue handleDrawFinish 2 is running, MapStore.draw.getMode():', MapStore.draw.getMode(), 'currentShape:', currentShape, 'fetchedPoints:', fetchedPoints);
     },
 
     handleDrawSelectionChange(e){
-      // console.log('handleDrawSelectionChange is running, e:', e);
+      // if (import.meta.env.VITE_DEBUG == 'true') console.log('handleDrawSelectionChange is running, e:', e);
       const MapStore = useMapStore();
       let draw = MapStore.draw;
       let val = draw.getSelectedIds();
-      console.log('handleDrawSelectionChange, e:', e, 'val:', val);
+      if (import.meta.env.VITE_DEBUG == 'true') console.log('handleDrawSelectionChange, e:', e, 'val:', val);
       if (e.features[0]) {
-        console.log('there are features');
+        if (import.meta.env.VITE_DEBUG == 'true') console.log('there are features');
         this.$data.selected = val[0];
       } else {
-        console.log('there are no features');
+        if (import.meta.env.VITE_DEBUG == 'true') console.log('there are no features');
         this.$data.selected = null;
       }
       // this.$data.selected = val[0];

@@ -16,15 +16,15 @@ const $emit = defineEmits(['updateCameraYaw', 'updateCameraLngLat', 'updateCamer
 watch(
   () => MapStore.currentAddressCoords,
   newLngLat => {
-    console.log('CyclomediaPanel.vue watch cyclomediaLngLat, newLngLat:', newLngLat);
-      setNewLocation(newLngLat);
+    if (import.meta.env.VITE_DEBUG == 'true') console.log('CyclomediaPanel.vue watch cyclomediaLngLat, newLngLat:', newLngLat);
+    setNewLocation(newLngLat);
   }
 )
 
 watch(
   () => MapStore.cyclomediaOn,
   newCyclomediaOn => {
-    console.log('CyclomediaPanel.vue watch cyclomediaOn, newCyclomediaOn:', newCyclomediaOn);
+    if (import.meta.env.VITE_DEBUG == 'true') console.log('CyclomediaPanel.vue watch cyclomediaOn, newCyclomediaOn:', newCyclomediaOn);
     if (newCyclomediaOn) {
       setNewLocation(MapStore.currentAddressCoords);
     }
@@ -34,8 +34,8 @@ watch(
 const navBarExpanded = ref(false);
 
 const setNewLocation = async (coords) => {
-  console.log('CyclomediaPanel.vue setNewLocation, coords:', coords);
-  console.log(coords);
+  if (import.meta.env.VITE_DEBUG == 'true') console.log('CyclomediaPanel.vue setNewLocation, coords:', coords);
+  if (import.meta.env.VITE_DEBUG == 'true') console.log(coords);
   const coords2272 = proj4(projection4326, projection2272, coords);
   const response = await StreetSmartApi.open(coords2272[0] + ',' + coords2272[1], {
     viewerType: StreetSmartApi.ViewerType.PANORAMA,
@@ -59,7 +59,7 @@ const setNewLocation = async (coords) => {
   }
 
   viewer.on('VIEW_CHANGE', function(e) {
-    console.log('on VIEW_CHANGE fired, type:', e.type, 'detail:', e.detail, 'viewer.props.orientation.xyz:', viewer.props.orientation.xyz, 'MapStore.cyclomediaCameraXyz:', MapStore.cyclomediaCameraXyz);
+    if (import.meta.env.VITE_DEBUG == 'true') console.log('on VIEW_CHANGE fired, type:', e.type, 'detail:', e.detail, 'viewer.props.orientation.xyz:', viewer.props.orientation.xyz, 'MapStore.cyclomediaCameraXyz:', MapStore.cyclomediaCameraXyz);
     if (MapStore.cyclomediaOn) {
       MapStore.cyclomediaCameraYaw = e.detail.yaw;
       MapStore.cyclomediaCameraHFov = e.detail.hFov;
@@ -74,15 +74,15 @@ const setNewLocation = async (coords) => {
   });
 
   viewer.on('VIEW_LOAD_END', function(e) {
-    console.log('on VIEW_LOAD_END fired, type:', e.type, 'e:', e, 'viewer.props.orientation:', viewer.props.orientation);
+    if (import.meta.env.VITE_DEBUG == 'true') console.log('on VIEW_LOAD_END fired, type:', e.type, 'e:', e, 'viewer.props.orientation:', viewer.props.orientation);
     const orientation = viewer.getOrientation();
-    console.log('orientation:', orientation);
+    if (import.meta.env.VITE_DEBUG == 'true') console.log('orientation:', orientation);
     if (viewer.props.orientation.xyz !== MapStore.cyclomediaCameraXyz) {
       const lngLat = proj4(projection2272, projection4326, [ viewer.props.orientation.xyz[0], viewer.props.orientation.xyz[1] ]);
       MapStore.setCyclomediaCameraLngLat(lngLat, viewer.props.orientation.xyz);
       $emit('updateCameraLngLat', lngLat);
       const orientation = viewer.getOrientation();
-      console.log('orientation:', orientation);
+      if (import.meta.env.VITE_DEBUG == 'true') console.log('orientation:', orientation);
       $emit('updateCameraYaw', orientation.yaw);
       $emit('updateCameraHFov', orientation.hFov, orientation.yaw);
     }
@@ -92,7 +92,7 @@ const setNewLocation = async (coords) => {
 watch(
   () => MapStore.clickedCyclomediaRecordingCoords,
   newClickedCyclomediaRecordingCoords => {
-    console.log('CyclomediaPanel.vue watch clickedCyclomediaRecordingCoords, newClickedCyclomediaRecordingCoords:', newClickedCyclomediaRecordingCoords);
+    if (import.meta.env.VITE_DEBUG == 'true') console.log('CyclomediaPanel.vue watch clickedCyclomediaRecordingCoords, newClickedCyclomediaRecordingCoords:', newClickedCyclomediaRecordingCoords);
     if (newClickedCyclomediaRecordingCoords) {
       setNewLocation(newClickedCyclomediaRecordingCoords);
     }

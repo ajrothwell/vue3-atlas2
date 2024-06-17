@@ -1,7 +1,7 @@
 <script setup>
 
 import $config from '@/config';
-console.log('Map.vue $config:', $config);
+if (import.meta.env.VITE_DEBUG == 'true') console.log('Map.vue $config:', $config);
 
 import { ref, onMounted, watch, watchEffect, computed } from 'vue';
 
@@ -65,7 +65,7 @@ const cameraSrc = computed(() => {
 })
 
 onMounted(async () => {
-  // console.log('Map.vue onMounted route.params.topic:', route.params.topic, 'route.params.address:', route.params.address);
+  // if (import.meta.env.VITE_DEBUG == 'true') console.log('Map.vue onMounted route.params.topic:', route.params.topic, 'route.params.address:', route.params.address);
   
   // create the maplibre map
   let currentTopicMapStyle = route.params.topic ? $config.topicStyles[route.params.topic] : 'pwdDrawnMapStyle';
@@ -101,7 +101,7 @@ onMounted(async () => {
 
   // whenever the map moves, check whether the cyclomedia recording circles are on and update them if so
   map.on('moveend', () => {
-    // console.log('map moveend event, e:', e, 'map.getZoom()', map.getZoom(), 'map.getStyle().layers:', map.getStyle().layers, 'map.getStyle().sources:', map.getStyle().sources);
+    // if (import.meta.env.VITE_DEBUG == 'true') console.log('map moveend event, e:', e, 'map.getZoom()', map.getZoom(), 'map.getStyle().layers:', map.getStyle().layers, 'map.getStyle().sources:', map.getStyle().sources);
     if (MapStore.cyclomediaOn) {
       map.getZoom() > 16.5 ? MapStore.cyclomediaRecordingsOn = true : MapStore.cyclomediaRecordingsOn = false;
       if (MapStore.cyclomediaRecordingsOn) {
@@ -122,7 +122,7 @@ onMounted(async () => {
 
   // if the L&I topic is selected, and a building footrprint is clicked, set the selected building number in the LiStore
   map.on('click', 'liBuildingFootprints', (e) => {
-    // console.log('liBuildingFootprints click, e:', e);
+    // if (import.meta.env.VITE_DEBUG == 'true') console.log('liBuildingFootprints click, e:', e);
     e.clickOnLayer = true;
     LiStore.selectedLiBuildingNumber = e.features[0].properties.id;
   });
@@ -139,7 +139,7 @@ onMounted(async () => {
 
   // if a cyclomedia recording circle is clicked, set its coordinates in the MapStore
   map.on('click', 'cyclomediaRecordings', (e) => {
-    // console.log('cyclomediaRecordings click, e:', e, 'e.features[0]:', e.features[0]);
+    // if (import.meta.env.VITE_DEBUG == 'true') console.log('cyclomediaRecordings click, e:', e, 'e.features[0]:', e.features[0]);
     e.clickOnLayer = true;
     MapStore.clickedCyclomediaRecordingCoords = [ e.lngLat.lng, e.lngLat.lat ];
   });
@@ -161,7 +161,7 @@ onMounted(async () => {
     const infoField = NearbyActivityStore.dataFields[properties.type].info_field;
     const type = NearbyActivityStore[properties.type].rows;
     const row = NearbyActivityStore[properties.type].rows.filter(row => row[idField] === properties.id)[0];
-    console.log('nearby click, e:', e, 'properties:', properties, 'idField:', idField, 'e.features[0]:', e.features[0], 'type:', type, 'row:', row);
+    if (import.meta.env.VITE_DEBUG == 'true') console.log('nearby click, e:', e, 'properties:', properties, 'idField:', idField, 'e.features[0]:', e.features[0], 'type:', type, 'row:', row);
     e.clickOnLayer = true;
     MainStore.clickedMarkerId = e.features[0].properties.id;
     // MainStore.hoveredStateId = e.features[0].properties.id;
@@ -182,7 +182,7 @@ onMounted(async () => {
 
   map.on('mouseenter', 'nearby', (e) => {
     if (e.features.length > 0) {
-      // console.log('map.getSource(nearby):', map.getSource('nearby'), 'map.getStyle().sources:', map.getStyle().sources);
+      // if (import.meta.env.VITE_DEBUG == 'true') console.log('map.getSource(nearby):', map.getSource('nearby'), 'map.getStyle().sources:', map.getStyle().sources);
       map.getCanvas().style.cursor = 'pointer'
       MainStore.hoveredStateId = e.features[0].properties.id;
     }
@@ -202,7 +202,7 @@ onMounted(async () => {
     }
     // router.push({ name: 'search', query: { lng: e.lngLat.lng, lat: e.lngLat.lat }})
     let drawLayers = map.queryRenderedFeatures(e.point).filter(feature => [ 'mapbox-gl-draw-cold', 'mapbox-gl-draw-hot' ].includes(feature.source));
-    // console.log('Map.vue handleMapClick, e:', e, 'drawLayers:', drawLayers, 'drawMode:', drawMode, 'e:', e, 'map.getStyle():', map.getStyle(), 'MapStore.drawStart:', MapStore.drawStart);
+    // if (import.meta.env.VITE_DEBUG == 'true') console.log('Map.vue handleMapClick, e:', e, 'drawLayers:', drawLayers, 'drawMode:', drawMode, 'e:', e, 'map.getStyle():', map.getStyle(), 'MapStore.drawStart:', MapStore.drawStart);
     if (!drawLayers.length && draw.getMode() !== 'draw_polygon') {
       MainStore.lastClickCoords = [e.lngLat.lng, e.lngLat.lat];
       router.push({ name: 'search', query: { lng: e.lngLat.lng, lat: e.lngLat.lat }})
@@ -238,7 +238,7 @@ onMounted(async () => {
 watch(
   () => GeocodeStore.aisData,
   async newAddress => {
-    console.log('MapStore aisData watch, newAddress:', newAddress);
+    if (import.meta.env.VITE_DEBUG == 'true') console.log('MapStore aisData watch, newAddress:', newAddress);
     if (newAddress.features && newAddress.features[0].geometry.coordinates.length) {
       const newCoords = newAddress.features[0].geometry.coordinates;
       if (MainStore.lastSearchMethod === 'address') {
@@ -267,7 +267,7 @@ const pwdCoordinates = computed(() => {
 watch(
   () => pwdCoordinates.value,
   newCoords => {
-  console.log('Map pwdCoordinates watch, newCoords:', newCoords, 'MapStore.addressMarker:', MapStore.addressMarker);
+  if (import.meta.env.VITE_DEBUG == 'true') console.log('Map pwdCoordinates watch, newCoords:', newCoords, 'MapStore.addressMarker:', MapStore.addressMarker);
   if (newCoords.length) {
     const address = point(newCoords);
     map.getSource('addressMarker').setData(address);
@@ -277,10 +277,10 @@ watch(
 // watch dor parcel coordinates for moving dor parcel
 const selectedParcelId = computed(() => { return MainStore.selectedParcelId; });
 const dorCoordinates = computed(() => {
-  // console.log('computed dorCoordinates, selectedParcelId.value:', selectedParcelId.value, 'ParcelsStore.dor', ParcelsStore.dor);
+  // if (import.meta.env.VITE_DEBUG == 'true') console.log('computed dorCoordinates, selectedParcelId.value:', selectedParcelId.value, 'ParcelsStore.dor', ParcelsStore.dor);
   if (selectedParcelId.value && ParcelsStore.dor.features && ParcelsStore.dor.features.filter(parcel => parcel.id === selectedParcelId.value)[0]) {
     const parcel = ParcelsStore.dor.features.filter(parcel => parcel.id === selectedParcelId.value)[0];
-    // console.log('computed, not watch, selectedParcelId.value:', selectedParcelId.value, 'ParcelsStore.dor.features.filter(parcel => parcel.id === selectedParcelId.value)[0]:', ParcelsStore.dor.features.filter(parcel => parcel.id === selectedParcelId.value)[0]);
+    // if (import.meta.env.VITE_DEBUG == 'true') console.log('computed, not watch, selectedParcelId.value:', selectedParcelId.value, 'ParcelsStore.dor.features.filter(parcel => parcel.id === selectedParcelId.value)[0]:', ParcelsStore.dor.features.filter(parcel => parcel.id === selectedParcelId.value)[0]);
     if (parcel.geometry.type === 'Polygon') {
       return parcel.geometry.coordinates[0];
     } else if (parcel.geometry.type === 'MultiPolygon') {
@@ -294,7 +294,7 @@ const dorCoordinates = computed(() => {
 watch(
   () => dorCoordinates.value,
   newCoords => {
-  console.log('Map dorCoordinates watch, newCoords:', newCoords);
+  if (import.meta.env.VITE_DEBUG == 'true') console.log('Map dorCoordinates watch, newCoords:', newCoords);
   let newParcel;
   if (newCoords.length > 3) {
     newParcel = polygon([ newCoords ]);
@@ -310,7 +310,7 @@ watch(
 watch(
   () => route.params.topic,
   async newTopic => {
-    // console.log('Map route.params.topic watch, newTopic:', newTopic);
+    // if (import.meta.env.VITE_DEBUG == 'true') console.log('Map route.params.topic watch, newTopic:', newTopic);
     if (newTopic) {
       const popup = document.getElementsByClassName('maplibregl-popup');
       if (popup.length) {
@@ -325,8 +325,8 @@ watch(
       const addressMarker = map.getSource('addressMarker');
       const dorParcel = map.getSource('dorParcel');
       if (addressMarker && dorParcel && pwdCoordinates.value.length) {
-        console.log('pwdCoordinates.value:', pwdCoordinates.value);
-        // console.log('1 map.layers:', map.getStyle().layers, map.getStyle().sources);
+        if (import.meta.env.VITE_DEBUG == 'true') console.log('pwdCoordinates.value:', pwdCoordinates.value);
+        // if (import.meta.env.VITE_DEBUG == 'true') console.log('1 map.layers:', map.getStyle().layers, map.getStyle().sources);
         addressMarker.setData(point(pwdCoordinates.value));
         if ($config.parcelLayerForTopic[newTopic] == 'dor') {
           let newParcel;
@@ -338,7 +338,7 @@ watch(
             map.getSource('dorParcel').setData(newParcel);
           }
         }
-        console.log('2 map.layers:', map.getStyle().layers, map.getStyle().sources);
+        if (import.meta.env.VITE_DEBUG == 'true') console.log('2 map.layers:', map.getStyle().layers, map.getStyle().sources);
       }
       if (newTopic === 'Licenses & Inspections') {
         if (selectedLiBuildingNumber.value) {
@@ -365,11 +365,11 @@ watch(
       const addressMarker = map.getSource('addressMarker');
       const dorParcel = map.getSource('dorParcel');
       if (addressMarker && dorParcel) {
-        // console.log('1 map.layers:', map.getStyle().layers, map.getStyle().sources);
+        // if (import.meta.env.VITE_DEBUG == 'true') console.log('1 map.layers:', map.getStyle().layers, map.getStyle().sources);
         if (pwdCoordinates.value.length) {
           addressMarker.setData(point(pwdCoordinates.value));
         }
-        console.log('dorCoordinates.value:', dorCoordinates.value);
+        if (import.meta.env.VITE_DEBUG == 'true') console.log('dorCoordinates.value:', dorCoordinates.value);
         let newParcel;
         if ($config.parcelLayerForTopic[newTopic] == 'dor') {
           if (dorCoordinates.value.length > 3) {
@@ -380,7 +380,7 @@ watch(
             map.getSource('dorParcel').setData(newParcel);
           }
         }
-        console.log('2 map.layers:', map.getStyle().layers, map.getStyle().sources);
+        if (import.meta.env.VITE_DEBUG == 'true') console.log('2 map.layers:', map.getStyle().layers, map.getStyle().sources);
       }
     }
   }
@@ -392,13 +392,13 @@ const imagerySelected = computed(() => {
 })
 
 const toggleImagery = () => {
-  // console.log('toggleImagery, map.getStyle:', map.getStyle());
+  // if (import.meta.env.VITE_DEBUG == 'true') console.log('toggleImagery, map.getStyle:', map.getStyle());
   if (!MapStore.imageryOn) {
     MapStore.imageryOn = true;
     map.addLayer($config.mapLayers[imagerySelected.value], 'cyclomediaRecordings')
     map.addLayer($config.mapLayers.imageryLabels, 'cyclomediaRecordings')
   } else {
-    console.log('map.getStyle().layers:', map.getStyle().layers);
+    if (import.meta.env.VITE_DEBUG == 'true') console.log('map.getStyle().layers:', map.getStyle().layers);
     MapStore.imageryOn = false;
     map.removeLayer(imagerySelected.value);
     map.removeLayer('imageryLabels');
@@ -416,7 +416,7 @@ const setImagery = async (newImagery) => {
   if (oldLayer == newImagery) {
     return;
   }
-  // console.log('setImagery, newImagery:', newImagery, 'oldLayer:', oldLayer, 'imagerySelected.value:', imagerySelected.value);
+  // if (import.meta.env.VITE_DEBUG == 'true') console.log('setImagery, newImagery:', newImagery, 'oldLayer:', oldLayer, 'imagerySelected.value:', imagerySelected.value);
   MapStore.imagerySelected = newImagery;
   await map.addLayer($config.mapLayers[imagerySelected.value], 'cyclomediaRecordings')
   map.removeLayer(oldLayer);
@@ -427,9 +427,9 @@ const selectedRegmap = computed(() => { return MapStore.selectedRegmap; });
 watch(
   () => selectedRegmap.value,
   (newRegmap, oldRegmap) => {
-    console.log('addRegmapLayer, newRegmap:', newRegmap, 'oldRegmap:', oldRegmap);
+    if (import.meta.env.VITE_DEBUG == 'true') console.log('addRegmapLayer, newRegmap:', newRegmap, 'oldRegmap:', oldRegmap);
     if (newRegmap == null) {
-      // console.log('remove old regmap');
+      // if (import.meta.env.VITE_DEBUG == 'true') console.log('remove old regmap');
       if (map.getLayer('regmap')) {
         map.removeLayer('regmap');
         map.removeSource('regmap');
@@ -439,7 +439,7 @@ watch(
       if (map.getSource('regmap')) {
         map.removeSource('regmap');
       }
-      console.log('add newRegmap:', newRegmap);
+      if (import.meta.env.VITE_DEBUG == 'true') console.log('add newRegmap:', newRegmap);
       const tiles =  `https://ags-regmaps.phila.gov/arcgis/rest/services/RegMaps/MapServer/export?dpi=96&layerDefs=0:NAME='g${newRegmap.toLowerCase()}.tif'&transparent=true&format=png24&bbox={bbox-epsg-3857}&bboxSR=3857&imageSR=3857&size=700,700&f=image&layers=show%3A0`;
       $config.dorDrawnMapStyle.sources.regmap = {
         type: 'raster',
@@ -499,7 +499,7 @@ const selectedLiBuildingNumber = computed(() => { return LiStore.selectedLiBuild
 watch(
   () => selectedLiBuildingNumber.value,
   newSelectedLiBuildingNumber => {
-    console.log('Map.vue watch newSelectedLiBuildingNumber:', newSelectedLiBuildingNumber, 'selectedLiBuildingNumber.value:', selectedLiBuildingNumber.value);
+    if (import.meta.env.VITE_DEBUG == 'true') console.log('Map.vue watch newSelectedLiBuildingNumber:', newSelectedLiBuildingNumber, 'selectedLiBuildingNumber.value:', selectedLiBuildingNumber.value);
     if (newSelectedLiBuildingNumber == null) {
       map.setPaintProperty(
         'liBuildingFootprints',
@@ -553,7 +553,7 @@ const clickedRow = computed(() => { return MainStore.clickedRow; })
 watch(
   () => clickedRow.value,
   newClickedRow => {
-    console.log('Map.vue clickedRow watch, newClickedRow:', newClickedRow);
+    if (import.meta.env.VITE_DEBUG == 'true') console.log('Map.vue clickedRow watch, newClickedRow:', newClickedRow);
     if (newClickedRow) {
       map.flyTo({ center: newClickedRow.lngLat });
     }
@@ -562,7 +562,7 @@ watch(
     const row = NearbyActivityStore[newClickedRow.type].rows.filter(row => {
       return row[idField] === newClickedRow.id;
     })[0];
-    console.log('nearby click, idField:', idField, 'row:', row);
+    if (import.meta.env.VITE_DEBUG == 'true') console.log('nearby click, idField:', idField, 'row:', row);
     if (row.properties) {
       row[infoField] = row.properties[infoField];
     }
@@ -583,17 +583,17 @@ const hoveredStateId = computed(() => { return MainStore.hoveredStateId; })
 watch(
   () => hoveredStateId.value,
   newHoveredStateId => {
-    // console.log('Map.vue hoveredStateId watch, newHoveredStateId:', newHoveredStateId, 'map.getStyle().sources.nearby.data.features:', map.getStyle().sources.nearby.data.features);
+    // if (import.meta.env.VITE_DEBUG == 'true') console.log('Map.vue hoveredStateId watch, newHoveredStateId:', newHoveredStateId, 'map.getStyle().sources.nearby.data.features:', map.getStyle().sources.nearby.data.features);
     if (newHoveredStateId) {
-      // console.log('map.getStyle().sources.nearby.data.features', map.getStyle().sources.nearby.data.features, 'newHoveredStateId:', newHoveredStateId);
+      // if (import.meta.env.VITE_DEBUG == 'true') console.log('map.getStyle().sources.nearby.data.features', map.getStyle().sources.nearby.data.features, 'newHoveredStateId:', newHoveredStateId);
       const feature = map.getStyle().sources.nearby.data.features.filter(feature => feature.properties.id === newHoveredStateId)[0];
       const index = map.getStyle().sources.nearby.data.features.indexOf(feature);
-      // console.log('feature:', feature, 'index:', index, 'map.getStyle().sources.nearby.data.features:', map.getStyle().sources.nearby.data.features.filter(feature => feature.properties.id === newHoveredStateId)[0]);
+      // if (import.meta.env.VITE_DEBUG == 'true') console.log('feature:', feature, 'index:', index, 'map.getStyle().sources.nearby.data.features:', map.getStyle().sources.nearby.data.features.filter(feature => feature.properties.id === newHoveredStateId)[0]);
       map.getStyle().sources.nearby.data.features.splice(index, 1);
       map.getStyle().sources.nearby.data.features.push(feature);
       map.getSource('nearby').setData(map.getStyle().sources.nearby.data);
-      // console.log('map.getStyle().sources:', map.getStyle().sources.filter(source => source.id === 'nearby')[0]);
-      // console.log('there is a new hoveredStateId, setting paint property');
+      // if (import.meta.env.VITE_DEBUG == 'true') console.log('map.getStyle().sources:', map.getStyle().sources.filter(source => source.id === 'nearby')[0]);
+      // if (import.meta.env.VITE_DEBUG == 'true') console.log('there is a new hoveredStateId, setting paint property');
       map.setPaintProperty(
         'nearby',
         'circle-stroke-color',
@@ -676,19 +676,19 @@ const drawInfo = ref({
 })
 
 const drawCreate = (e) => {
-  console.log('drawCreate is running, e', e);
+  if (import.meta.env.VITE_DEBUG == 'true') console.log('drawCreate is running, e', e);
   distanceMeasureControlRef.value.getDrawDistances(e);
 }
 const drawSelectionChange = (e) => {
-  console.log('drawSelectionChange is running, e:', e);
+  if (import.meta.env.VITE_DEBUG == 'true') console.log('drawSelectionChange is running, e:', e);
   distanceMeasureControlRef.value.handleDrawSelectionChange(e);
 }
 const drawFinish = () => {
-  console.log('drawFinish is running');
+  if (import.meta.env.VITE_DEBUG == 'true') console.log('drawFinish is running');
   drawInfo.value.mode = 'simple_select';
 }
 const drawModeChange = (e) => {
-  console.log('drawModeChange is running, e', e);
+  if (import.meta.env.VITE_DEBUG == 'true') console.log('drawModeChange is running, e', e);
   if (e.mode === 'draw_polygon') {
     map.getCanvas().style.cursor = 'crosshair';
   } else {
@@ -717,7 +717,7 @@ const removeAllCyclomediaMapLayers = () => {
 
 // toggle cyclomedia on and off
 const toggleCyclomedia = async() => {
-  console.log('toggleCyclomedia, map.getStyle().sources:', map.getStyle().sources, 'map.getStyle().layers:', map.getStyle().layers);
+  if (import.meta.env.VITE_DEBUG == 'true') console.log('toggleCyclomedia, map.getStyle().sources:', map.getStyle().sources, 'map.getStyle().layers:', map.getStyle().layers);
   MapStore.cyclomediaOn = !MapStore.cyclomediaOn;
   if (MapStore.cyclomediaOn) {
     MapStore.eagleviewOn = false;
@@ -725,11 +725,11 @@ const toggleCyclomedia = async() => {
     if (zoom > 16.5) {
       await updateCyclomediaRecordings();
       if (MapStore.cyclomediaCameraLngLat) {
-        console.log('in toggleCyclomedia, calling updateCyclomediaCameraLngLat, MapStore.cyclomediaCameraLngLat:', MapStore.cyclomediaCameraLngLat);
+        if (import.meta.env.VITE_DEBUG == 'true') console.log('in toggleCyclomedia, calling updateCyclomediaCameraLngLat, MapStore.cyclomediaCameraLngLat:', MapStore.cyclomediaCameraLngLat);
         updateCyclomediaCameraLngLat(MapStore.cyclomediaCameraLngLat);
       }
       if (MapStore.cyclomediaCameraHFov && MapStore.cyclomediaCameraYaw) {
-        console.log('calling updateCyclomediaCameraViewcone');
+        if (import.meta.env.VITE_DEBUG == 'true') console.log('calling updateCyclomediaCameraViewcone');
         updateCyclomediaCameraViewcone(MapStore.cyclomediaCameraHFov, MapStore.cyclomediaCameraYaw);
       }
     }
@@ -747,7 +747,7 @@ let cyclomediaRecordingsClient = new CyclomediaRecordingsClient(
 );
 
 const updateCyclomediaRecordings = async () => {
-  // console.log('updateCyclomediaRecordings is running');
+  // if (import.meta.env.VITE_DEBUG == 'true') console.log('updateCyclomediaRecordings is running');
   const bounds = map.getBounds();
   cyclomediaRecordingsClient.getRecordings(
     bounds,
@@ -771,7 +771,7 @@ const updateCyclomediaRecordings = async () => {
         })
       }
       geojson.features = features;
-      // console.log("map.getSource('cyclomediaRecordings'):", 'map.getStyle().layers:', map.getStyle().layers);
+      // if (import.meta.env.VITE_DEBUG == 'true') console.log("map.getSource('cyclomediaRecordings'):", 'map.getStyle().layers:', map.getStyle().layers);
       map.getSource('cyclomediaRecordings').setData(geojson);
       // I don't know why this works - maybe because the mergeDeep is still running
       $config.dorDrawnMapStyle.sources.cyclomediaRecordings.data.features = features;
@@ -781,7 +781,7 @@ const updateCyclomediaRecordings = async () => {
 
 // everything for adding, moving, and orienting the cyclomedia camera icon and viewcone
 const updateCyclomediaCameraLngLat = (lngLat) => {
-  // console.log('updateCyclomediaCameraLngLat is running, lngLat:', lngLat);
+  // if (import.meta.env.VITE_DEBUG == 'true') console.log('updateCyclomediaCameraLngLat is running, lngLat:', lngLat);
   if (!MapStore.cyclomediaOn) {
     return;
   } else {
@@ -792,7 +792,7 @@ const updateCyclomediaCameraLngLat = (lngLat) => {
 }
 
 const updateCyclomediaCameraAngle = (newOrientation) => {
-  // console.log('updateCyclomediaCameraAngle is running, newOrientation:', newOrientation);
+  // if (import.meta.env.VITE_DEBUG == 'true') console.log('updateCyclomediaCameraAngle is running, newOrientation:', newOrientation);
   if (!newOrientation) {
     newOrientation = MapStore.cyclomediaCameraYaw;
   }
@@ -803,7 +803,7 @@ const updateCyclomediaCameraViewcone = (cycloHFov, cycloYaw) => {
   const halfAngle = cycloHFov / 2.0;
   let angle1 = cycloYaw - halfAngle;
   let angle2 = cycloYaw + halfAngle;
-  console.log('updateCyclomediaCameraViewcone, cycloHFov:', cycloHFov, 'halfAngle:', halfAngle, 'angle1:', angle1, 'cycloYaw:', cycloYaw, 'angle2:', angle2);
+  if (import.meta.env.VITE_DEBUG == 'true') console.log('updateCyclomediaCameraViewcone, cycloHFov:', cycloHFov, 'halfAngle:', halfAngle, 'angle1:', angle1, 'cycloYaw:', cycloYaw, 'angle2:', angle2);
   const watchedZoom = map.getZoom();
   let distance;
   if (watchedZoom < 9) {
@@ -835,10 +835,10 @@ const updateCyclomediaCameraViewcone = (cycloHFov, cycloYaw) => {
   const cyclomediaCameraLngLat = MapStore.cyclomediaCameraLngLat;
   let options = { units: 'feet' };
   if (!cyclomediaCameraLngLat) {
-    console.log('no cyclomediaCameraLngLat');
+    if (import.meta.env.VITE_DEBUG == 'true') console.log('no cyclomediaCameraLngLat');
     return;
   }
-  console.log('cyclomediaCameraLngLat:', cyclomediaCameraLngLat);
+  if (import.meta.env.VITE_DEBUG == 'true') console.log('cyclomediaCameraLngLat:', cyclomediaCameraLngLat);
 
   var destination1 = destination([ cyclomediaCameraLngLat[0], cyclomediaCameraLngLat[1] ], distance, angle1, options);
   var destination2 = destination([ cyclomediaCameraLngLat[0], cyclomediaCameraLngLat[1] ], distance, angle2, options);
@@ -861,7 +861,7 @@ const updateCyclomediaCameraViewcone = (cycloHFov, cycloYaw) => {
 
 // toggle eagleview on and off
 const toggleEagleview = () => {
-  console.log('toggleEagleview');
+  if (import.meta.env.VITE_DEBUG == 'true') console.log('toggleEagleview');
   MapStore.eagleviewOn = !MapStore.eagleviewOn;
   if (MapStore.eagleviewOn) {
     MapStore.cyclomediaOn = false;

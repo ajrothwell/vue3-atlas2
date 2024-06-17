@@ -18,7 +18,7 @@ import useRouting from '@/composables/useRouting';
 const { routeApp } = useRouting();
 
 const getGeocodeAndPutInStore = async(address) => {
-  console.log('getGeocodeAndPutInStore is running, address:', address);
+  if (import.meta.env.VITE_DEBUG == 'true') console.log('getGeocodeAndPutInStore is running, address:', address);
   const MainStore = useMainStore();
   MainStore.clearDataSourcesLoadedArray();
 
@@ -63,8 +63,8 @@ const getParcelsAndPutInStore = async(lng, lat) => {
     return;
   }
   const addressField = parcelLayer === 'pwd' ? 'ADDRESS' : 'ADDR_SOURCE';
-  console.log('parcelLayer:', parcelLayer);
-  // console.log('ParcelsStore[parcelLayer].features:', ParcelsStore[parcelLayer].features);
+  if (import.meta.env.VITE_DEBUG == 'true') console.log('parcelLayer:', parcelLayer);
+  // if (import.meta.env.VITE_DEBUG == 'true') console.log('ParcelsStore[parcelLayer].features:', ParcelsStore[parcelLayer].features);
   if (ParcelsStore[parcelLayer].features) {
     for (let i = 0; i < ParcelsStore[parcelLayer].features.length; i++) {
       if (ParcelsStore[parcelLayer].features[i].properties[addressField] !== ' ') {
@@ -73,12 +73,12 @@ const getParcelsAndPutInStore = async(lng, lat) => {
       }
     }
   }
-  console.log('getParcelAndPutInStore, currentAddress:', currentAddress, 'parcelLayer:', parcelLayer, 'addressField', addressField, 'ParcelsStore[parcelLayer].features[0].properties:', ParcelsStore[parcelLayer].features[0].properties, 'ParcelsStore[parcelLayer].features[0].properties[addressField]:', ParcelsStore[parcelLayer].features[0].properties[addressField]);
+  if (import.meta.env.VITE_DEBUG == 'true') console.log('getParcelAndPutInStore, currentAddress:', currentAddress, 'parcelLayer:', parcelLayer, 'addressField', addressField, 'ParcelsStore[parcelLayer].features[0].properties:', ParcelsStore[parcelLayer].features[0].properties, 'ParcelsStore[parcelLayer].features[0].properties[addressField]:', ParcelsStore[parcelLayer].features[0].properties[addressField]);
   MainStore.setCurrentAddress(currentAddress);
 }
 
 const dataFetch = async(to, from) => {
-  console.log('dataFetch is starting, to:', to, 'from:', from, 'to.params.address:', to.params.address, 'from.params.address:', from.params.address);
+  if (import.meta.env.VITE_DEBUG == 'true') console.log('dataFetch is starting, to:', to, 'from:', from, 'to.params.address:', to.params.address, 'from.params.address:', from.params.address);
   const MainStore = useMainStore();
   const GeocodeStore = useGeocodeStore();
   const ParcelsStore = useParcelsStore();
@@ -96,13 +96,13 @@ const dataFetch = async(to, from) => {
   if (to.params.address) { address = to.params.address } else if (to.query.address) { address = to.query.address }
   if (to.params.topic) { topic = to.params.topic }
 
-  console.log('address:', address, 'to.params.address:', to.params.address, 'from.params.address:', from.params.address, 'GeocodeStore.aisData.normalized:', GeocodeStore.aisData.normalized);
+  if (import.meta.env.VITE_DEBUG == 'true') console.log('address:', address, 'to.params.address:', to.params.address, 'from.params.address:', from.params.address, 'GeocodeStore.aisData.normalized:', GeocodeStore.aisData.normalized);
   
   let aisNeeded = to.params.address !== from.params.address;
   if (aisNeeded && !address) {
-    console.log('aisNeeded:', aisNeeded, 'address:', address, 'typeof address:', typeof address);
+    if (import.meta.env.VITE_DEBUG == 'true') console.log('aisNeeded:', aisNeeded, 'address:', address, 'typeof address:', typeof address);
     if (ParcelsStore.dor.features) {
-      // console.log('ParcelsStore.dor.features[0].properties.BASEREG:', ParcelsStore.dor.features[0].properties.BASEREG);
+      // if (import.meta.env.VITE_DEBUG == 'true') console.log('ParcelsStore.dor.features[0].properties.BASEREG:', ParcelsStore.dor.features[0].properties.BASEREG);
       await ParcelsStore.fillParcelDataByLngLat(MainStore.lastClickCoords.lng, MainStore.lastClickCoords.lat, 'pwd')
       await getGeocodeAndPutInStore(ParcelsStore.pwd.features[0].properties.PARCELID);
     }
@@ -111,11 +111,11 @@ const dataFetch = async(to, from) => {
   } else if (to.params.topic !== 'Nearby Activity' && dataSourcesLoadedArray.includes(topic)) {
     return;
   } else if (to.params.topic === 'Nearby Activity' && dataSourcesLoadedArray.includes(to.params.data)) {
-    console.log('dataFetch is still going, MainStore.currentNearbyDataType:', MainStore.currentNearbyDataType, 'to.params.data:', to.params.data);
+    if (import.meta.env.VITE_DEBUG == 'true') console.log('dataFetch is still going, MainStore.currentNearbyDataType:', MainStore.currentNearbyDataType, 'to.params.data:', to.params.data);
     return;
   }
   
-  console.log('dataFetch is still going after address, aisNeeded:', aisNeeded);
+  if (import.meta.env.VITE_DEBUG == 'true') console.log('dataFetch is still going after address, aisNeeded:', aisNeeded);
   if (!MainStore.initialDatafetchComplete && aisNeeded || to.params.data === from.params.data && aisNeeded || to.params.topic === 'Condominiums' && aisNeeded) {
     // GET PARCELS AND DATA FOR TOPIC
     if (MainStore.lastSearchMethod === 'address') { 
@@ -145,7 +145,7 @@ const dataFetch = async(to, from) => {
 }
 
 const topicDataFetch = async (topic, data) => {
-  console.log('topicDataFetch is running, topic:', topic);
+  if (import.meta.env.VITE_DEBUG == 'true') console.log('topicDataFetch is running, topic:', topic);
   
   if (topic === 'Property') {
     const OpaStore = useOpaStore();
@@ -227,7 +227,7 @@ const router = createRouter({
       name: 'search',
       component: App,
       beforeEnter: async (to, from) => {
-        console.log('search route beforeEnter, to.query:', to.query, 'from:', from);
+        if (import.meta.env.VITE_DEBUG == 'true') console.log('search route beforeEnter, to.query:', to.query, 'from:', from);
         const { address, lat, lng } = to.query;
         const MainStore = useMainStore();
         if (address) {
@@ -244,7 +244,7 @@ const router = createRouter({
 })
 
 router.afterEach(async (to, from) => {
-  console.log('router afterEach to:', to, 'from:', from);
+  if (import.meta.env.VITE_DEBUG == 'true') console.log('router afterEach to:', to, 'from:', from);
   if (to.name !== 'not-found' && to.name !== 'search') {
     await dataFetch(to, from);
   } else if (to.name == 'not-found') {

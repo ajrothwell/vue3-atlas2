@@ -1,4 +1,5 @@
 <script setup>
+if (import.meta.env.VITE_DEBUG == 'true') console.log('App.vue setup is running in debug mode');
 
 import isMobileDevice from './util/is-mobile-device';
 import isMac from './util/is-mac';
@@ -12,7 +13,7 @@ if (!import.meta.env.VITE_PUBLICPATH) {
 } else {
   MainStore.publicPath = import.meta.env.VITE_PUBLICPATH;
 }
-console.log('import.meta.env.VITE_PUBLICPATH:', import.meta.env.VITE_PUBLICPATH, 'MainStore.publicPath:', MainStore.publicPath);
+if (import.meta.env.VITE_DEBUG == 'true') console.log('import.meta.env.VITE_PUBLICPATH:', import.meta.env.VITE_PUBLICPATH, 'MainStore.publicPath:', MainStore.publicPath);
 // import { getCurrentInstance } from 'vue'
 // const app = getCurrentInstance()
 // const $config = app.appContext.config.globalProperties.$config;
@@ -33,7 +34,7 @@ onMounted(async () => {
   MainStore.isMobileDevice = isMobileDevice();
   MainStore.isMac = isMac();
   await router.isReady()
-  console.log('App onMounted, route.params.topic:', route.params.topic, 'route.params.address:', route.params.address);
+  if (import.meta.env.VITE_DEBUG == 'true') console.log('App onMounted, route.params.topic:', route.params.topic, 'route.params.address:', route.params.address);
   if (route.name === 'not-found') {
     router.push({ name: 'home' });
   }
