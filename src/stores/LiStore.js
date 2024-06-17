@@ -12,13 +12,19 @@ export const useLiStore = defineStore('LiStore', {
       liBuildingFootprints: {},
       liBuildingCertSummary: {},
       liBuildingCerts: {},
+      loadingLiBuildingCerts: false,
       liPermits: {},
       loadingLiPermits: false,
       liAisZoningDocs: {},
+      loadingLiAisZoningDocs: false,
       liEclipseZoningDocs: {},
+      loadingLiEclipseZoningDocs: false,
       liInspections: {},
+      loadingLiInspections: true,
       liViolations: {},
+      loadingLiViolations: true,
       liBusinessLicenses: {},
+      loadingLiBusinessLicenses: true,
       loadingLiData: true,
     };
   },
@@ -42,14 +48,20 @@ export const useLiStore = defineStore('LiStore', {
       this.liBuildingCertSummary = {};
       this.liBuildingCerts = {};
       this.liPermits = {};
+      this.loadingLiPermits = true;
       this.liAisZoningDocs = {};
+      this.loadingLiAisZoningDocs = true;
       this.liEclipseZoningDocs = {};
+      this.loadingLiEclipseZoningDocs = true;
       this.liInspections = {};
+      this.loadingLiInspections = true;
       this.liViolations = {};
+      this.loadingLiViolations = true;
       this.liBusinessLicenses = {};
+      this.loadingLiBusinessLicenses = true;
     },
     async fillLiBuildingFootprints() {
-      console.log('fillLiBuildingFootprints is running');
+      // console.log('fillLiBuildingFootprints is running');
       try {
         const GeocodeStore = useGeocodeStore();
         const feature = GeocodeStore.aisData.features[0].properties.bin.split('|');
@@ -70,7 +82,7 @@ export const useLiStore = defineStore('LiStore', {
           data = feature.properties.li_parcel_id;
           where = "PARCEL_ID_NUM = '" + data + "'";
         }
-        console.log('where:', where);
+        // console.log('where:', where);
         const params = {
           where: where,
           outFields: '*',
@@ -88,7 +100,7 @@ export const useLiStore = defineStore('LiStore', {
       }
     },
     async fillLiBuildingCertSummary() {
-      console.log('fillLiBuildingCertSummary is running');
+      // console.log('fillLiBuildingCertSummary is running');
       try {
         const GeocodeStore = useGeocodeStore();
         const feature = GeocodeStore.aisData.features[0].properties.bin.split('|');
@@ -120,7 +132,7 @@ export const useLiStore = defineStore('LiStore', {
       }
     },
     async fillLiBuildingCerts() {
-      console.log('fillLiBuildingCerts is running');
+      // console.log('fillLiBuildingCerts is running');
       try {
         const GeocodeStore = useGeocodeStore();
         const feature = GeocodeStore.aisData.features[0].properties.bin.split('|');
@@ -152,8 +164,7 @@ export const useLiStore = defineStore('LiStore', {
 
     async fillLiPermits() {
       try {
-        console.log('fillLiPermits is running');
-        this.loadingLiPermits = true;
+        // console.log('fillLiPermits is running');
         const GeocodeStore = useGeocodeStore();
         const feature = GeocodeStore.aisData.features[0];
         let baseUrl = 'https://phl.carto.com/api/v2/sql?q=';
@@ -178,9 +189,11 @@ export const useLiStore = defineStore('LiStore', {
           this.liPermits = data;
           this.loadingLiPermits = false;
         } else {
+          this.loadingLiPermits = false;
           console.warn('permits - await resolved but HTTP status was not successful')
         }
       } catch {
+        this.loadingLiPermits = false;
         console.error('permits - await never resolved, failed to fetch address data')
       }
     },
@@ -239,10 +252,13 @@ export const useLiStore = defineStore('LiStore', {
           const data = await response.json();
           let addedData = this.addDataToZoningDocs(data);
           this.liAisZoningDocs = addedData;
+          this.loadingLiAisZoningDocs = false;
         } else {
+          this.loadingLiAisZoningDocs = false;
           console.warn('aisZoningDocs - await resolved but HTTP status was not successful')
         }
       } catch {
+        this.loadingLiAisZoningDocs = false;
         console.error('aisZoningDocs - await never resolved, failed to fetch address data')
       }
     },
@@ -271,10 +287,13 @@ export const useLiStore = defineStore('LiStore', {
           const data = await response.json();
           let addedData = this.addDataToZoningDocs(data);
           this.liEclipseZoningDocs = addedData;
+          this.loadingLiEclipseZoningDocs = false;
         } else {
+          this.loadingLiEclipseZoningDocs = false;
           console.warn('eclipseZoningDocs - await resolved but HTTP status was not successful')
         }
       } catch {
+        this.loadingLiEclipseZoningDocs = false;
         console.error('eclipseZoningDocs - await never resolved, failed to fetch address data')
       }
     },
@@ -306,10 +325,13 @@ export const useLiStore = defineStore('LiStore', {
             item.link = "<a target='_blank' href='https://li.phila.gov/Property-History/search/Violation-Detail?address="+encodeURIComponent(address)+"&Id="+item.casenumber+"'>"+item.casenumber+" <i class='fa fa-external-link-alt'></i></a>";
           });
           this.liInspections = data;
+          this.loadingLiInspections = false;
         } else {
+          this.loadingLiInspections = false;
           console.warn('liInspections - await resolved but HTTP status was not successful')
         }
       } catch {
+        this.loadingLiInspections = false;
         console.error('liInspections - await never resolved, failed to fetch address data')
       }
     },
@@ -347,10 +369,13 @@ export const useLiStore = defineStore('LiStore', {
             item.link = "<a target='_blank' href='https://li.phila.gov/Property-History/search/Violation-Detail?address="+encodeURIComponent(address)+"&Id="+item.casenumber+"'>"+item.casenumber+" <i class='fa fa-external-link-alt'></i></a>";
           });
           this.liViolations = data;
+          this.loadingLiViolations = false;
         } else {
+          this.loadingLiViolations = false;
           console.warn('liViolations - await resolved but HTTP status was not successful')
         }
       } catch {
+        this.loadingLiViolations = false;
         console.error('liViolations - await never resolved, failed to fetch address data')
       }
     },
@@ -390,10 +415,13 @@ export const useLiStore = defineStore('LiStore', {
             item.link = "<a target='_blank' href='https://li.phila.gov/Property-History/search/Business-License-Detail?address="+encodeURIComponent(address)+"&Id="+item.licensenum+"'>"+item.licensenum+" <i class='fa fa-external-link-alt'></i></a>";
           });
           this.liBusinessLicenses = data;
+          this.loadingLiBusinessLicenses = false;
         } else {
+          this.loadingLiBusinessLicenses = false;
           console.warn('liBusinessLicenses - await resolved but HTTP status was not successful')
         }
       } catch {
+        this.loadingLiBusinessLicenses = false;
         console.error('liBusinessLicenses - await never resolved, failed to fetch address data')
       }
     }

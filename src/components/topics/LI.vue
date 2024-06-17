@@ -1,5 +1,4 @@
 <script setup>
-console.log('LI.vue setup');
 import { ref, computed, watch, onMounted } from 'vue';
 import { polygon, featureCollection } from '@turf/helpers';
 
@@ -19,7 +18,6 @@ import useTransforms from '@/composables/useTransforms';
 const { integer, prettyNumber } = useTransforms();
 
 onMounted(async () => {
-  console.log('Li.vue onMounted');
   if (LiStore.liBuildingFootprints.features) {
     await setLiBuildingFootprints(LiStore.liBuildingFootprints);
   }
@@ -54,7 +52,9 @@ const setLiBuildingFootprints = async(footprints) => {
   let geojson = featureCollection(features);
   // console.log('geojson:', geojson, 'map.getSource("liBuildingFootprints"):', map.getSource('liBuildingFootprints'), 'map.getLayer("liBuildingFootprints"):', map.getLayer('liBuildingFootprints'));
   const map = MapStore.map;
-  await map.getSource('liBuildingFootprints').setData(geojson);
+  if (map.getSource) {
+    await map.getSource('liBuildingFootprints').setData(geojson)
+  };
 };
 
 const selectedLiBuildingNumber = computed(() => LiStore.selectedLiBuildingNumber);
@@ -388,11 +388,13 @@ const businessLicensesTableData = computed(() => {
     <!-- Li Permits Table -->
     <div class="data-section">
       <h5 class="subtitle is-5 table-title">
-        Permits (<font-awesome-icon
+        Permits
+        <font-awesome-icon
           v-if="LiStore.loadingLiPermits"
           icon="fa-solid fa-spinner"
           spin
-        />{{ permitsLength }})
+        />
+        <span v-else>({{ permitsLength }})</span>
       </h5>
       <div
         v-if="permitsTableData.rows"
@@ -427,7 +429,13 @@ const businessLicensesTableData = computed(() => {
     <!-- liAisZoningDocs and liEclipseZoningDocs Table-->
     <div class="data-section">
       <h5 class="subtitle is-5 table-title">
-        Zoning Permit Documents ({{ zoningDocsTableData.rows.length }})
+        Zoning Permit Documents
+        <font-awesome-icon
+          v-if="LiStore.loadingLiAisZoningDocs || LiStore.loadingLiEclipseZoningDocs"
+          icon="fa-solid fa-spinner"
+          spin
+        />
+        <span v-else>({{ zoningDocsTableData.rows.length }})</span>
       </h5>
       <h6 class="subtitle is-6 table-subtitle">
         Formerly "Zoning Archive"
@@ -461,7 +469,13 @@ const businessLicensesTableData = computed(() => {
     <!-- Li Inspections Table -->
     <div class="data-section">
       <h5 class="subtitle is-5 table-title">
-        Inspections ({{ inspectionsLength }})
+        Inspections
+        <vue-fontawesome
+          v-if="LiStore.loadingLiInspections"
+          icon="fa-solid fa-spinner"
+          spin
+        />
+        <span v-else>({{ inspectionsLength }})</span>
       </h5>
       <div
         v-if="inspectionsTableData.rows"
@@ -496,7 +510,13 @@ const businessLicensesTableData = computed(() => {
     <!-- Li Violations Table -->
     <div class="data-section">
       <h5 class="subtitle is-5 table-title">
-        Violations ({{ violationsLength }})
+        Violations
+        <vue-fontawesome
+          v-if="LiStore.loadingLiViolations"
+          icon="fa-solid fa-spinner"
+          spin
+        />
+        <span>({{ violationsLength }})</span>
       </h5>
       <div
         v-if="violationsTableData.rows"
@@ -531,7 +551,13 @@ const businessLicensesTableData = computed(() => {
     <!-- Li Business Licenses Table -->
     <div class="data-section">
       <h5 class="subtitle is-5 table-title">
-        Business Licenses ({{ businessLicensesLength }})
+        Business Licenses
+        <vue-fontawesome
+          v-if="LiStore.loadingLiBusinessLicenses"
+          icon="fa-solid fa-spinner"
+          spin
+        />
+        <span>({{ businessLicensesLength }})</span>
       </h5>
       <div
         v-if="businessLicensesTableData"

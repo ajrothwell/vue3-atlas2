@@ -268,7 +268,11 @@ const dorDocsTableData = computed(() => {
       <!-- DOR Docs Table -->
       <div class="mt-4">
         <h5 class="subtitle is-5">
-          Documents ({{ selectedDocsLength }})
+          Documents <font-awesome-icon
+          v-if="DorStore.loadingDorData"
+          icon="fa-solid fa-spinner"
+          spin
+        /><span v-else>({{ selectedDocsLength }})</span>
         </h5>
         <div class="horizontal-table">
           <vue-good-table
