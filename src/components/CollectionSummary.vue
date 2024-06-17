@@ -58,13 +58,13 @@ export default {
       return summary;
     },
     contextSingular() {
-      // console.log('contextSingular is running');
+      // if (import.meta.env.VITE_DEBUG == 'true') console.log('contextSingular is running');
       const context = this.$data.context;
       return context.singular || context;
     },
     contextPlural() {
       const context = this.$data.context;
-      // console.log('contextPlural, context.plural:', context.plural);
+      // if (import.meta.env.VITE_DEBUG == 'true') console.log('contextPlural, context.plural:', context.plural);
       return context.plural || context;
     },
     descriptorSingular() {
@@ -80,7 +80,7 @@ export default {
     naturalList() {
       const valueQuantities = this.valueQuantities;
       const items = this.naturalizeQuantities(valueQuantities);
-      // console.log('in naturalList, items:', items);
+      // if (import.meta.env.VITE_DEBUG == 'true') console.log('in naturalList, items:', items);
       const len = items.length;
       if (Array.isArray(items) && len > 0) {
         if (len === 1) {
@@ -99,7 +99,7 @@ export default {
       const ParcelsStore = useParcelsStore();
       const items = ParcelsStore.dor.features;
       // const items = this.slots.items(this.$store.state);
-      // console.log('valueQuantities, items:', items);
+      // if (import.meta.env.VITE_DEBUG == 'true') console.log('valueQuantities, items:', items);
       if (!items) {
         return;
       }
@@ -107,7 +107,7 @@ export default {
 
       // make an object of value => quantity
       const valueQuantities = items.reduce((obj, item) => {
-        // console.log('in reduce, obj:', obj, 'item:', item);
+        // if (import.meta.env.VITE_DEBUG == 'true') console.log('in reduce, obj:', obj, 'item:', item);
         const val = item.properties[this.$props.value];
         obj[val] = obj[val] || 0;
         obj[val]++;

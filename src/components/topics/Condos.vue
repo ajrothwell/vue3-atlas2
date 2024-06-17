@@ -37,7 +37,7 @@ watch (
 
 onMounted( () => {
   CondosStore.lastPageUsed = parseInt(route.params.data);
-  console.log('Condos.vue onMounted, CondosStore.lastPageUsed:', CondosStore.lastPageUsed);
+  if (import.meta.env.VITE_DEBUG == 'true') console.log('Condos.vue onMounted, CondosStore.lastPageUsed:', CondosStore.lastPageUsed);
 });
 
 const condos = computed(() => {
@@ -45,7 +45,7 @@ const condos = computed(() => {
     return [];
   }
   let features = [];
-  console.log('Object.keys(CondosStore.condosData.pages).sort():', Object.keys(CondosStore.condosData.pages).sort());
+  if (import.meta.env.VITE_DEBUG == 'true') console.log('Object.keys(CondosStore.condosData.pages).sort():', Object.keys(CondosStore.condosData.pages).sort());
   for (let dataPage of Object.keys(CondosStore.condosData.pages).sort()) {
     features = features.concat(CondosStore.condosData.pages[dataPage].features);
   }

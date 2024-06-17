@@ -21,7 +21,7 @@ const textSearch = ref('');
 const nearbyVacantIndicatorPoints = computed(() => {
   if (NearbyActivityStore.nearbyVacantIndicatorPoints.rows) {
     let data = [ ...NearbyActivityStore.nearbyVacantIndicatorPoints.rows].filter(item => {
-      // console.log('item.properties.ADDRESS:', item.properties.ADDRESS, 'textSearch.value:', textSearch.value);
+      // if (import.meta.env.VITE_DEBUG == 'true') console.log('item.properties.ADDRESS:', item.properties.ADDRESS, 'textSearch.value:', textSearch.value);
       return item.properties.ADDRESS.toLowerCase().includes(textSearch.value.toLowerCase()) || item.properties.VACANT_FLAG.toLowerCase().includes(textSearch.value.toLowerCase());
     });
     data.sort((a, b) => a.distance_ft - b.distance_ft)

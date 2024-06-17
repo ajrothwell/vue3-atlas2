@@ -14,7 +14,7 @@ export default function useTransforms() {
   const date = (value) => {
     if (!value) return;
     let valueTransformed;
-    // console.log('date transform running, value:', value, 'typeof value:', typeof value);
+    // if (import.meta.env.VITE_DEBUG == 'true') console.log('date transform running, value:', value, 'typeof value:', typeof value);
     if (typeof value === 'string') {
       valueTransformed = format(parseISO(value), 'MM/dd/yyyy');
     } else {
@@ -41,7 +41,7 @@ export default function useTransforms() {
   }
 
   const nth = (n) => {
-    console.log('nth transform, n:', n, 'n%100>>3^1&&n%10:', n%100>>3^1&&n%10);
+    if (import.meta.env.VITE_DEBUG == 'true') console.log('nth transform, n:', n, 'n%100>>3^1&&n%10:', n%100>>3^1&&n%10);
     return n + ([ 'th', 'st','nd','rd' ][n%100>>3^1&&n%10]||'th');
   }
   const phoneNumber = (value) => {
@@ -146,7 +146,7 @@ export default function useTransforms() {
   // },
   // nth: {
   //   transform: function(n) {
-  //     console.log('nth transform, n:', n, 'n%100>>3^1&&n%10:', n%100>>3^1&&n%10);
+  //     if (import.meta.env.VITE_DEBUG == 'true') console.log('nth transform, n:', n, 'n%100>>3^1&&n%10:', n%100>>3^1&&n%10);
   //     return n + ([ 'th', 'st','nd','rd' ][n%100>>3^1&&n%10]||'th');
   //   },
   // },
@@ -176,7 +176,7 @@ export default function useTransforms() {
   // i18nSubstitute: {
   //   transform: function(str) {
   //     let test = str.split('$t(');
-  //     console.log('i18nSubstitute is running, str:', str, 'test:', test, 'this.$config.i18n', this.$config.i18n);
+  //     if (import.meta.env.VITE_DEBUG == 'true') console.log('i18nSubstitute is running, str:', str, 'test:', test, 'this.$config.i18n', this.$config.i18n);
   //     return voting.topic.accessibilityCodes.informationNotAvailable;
   //   },
   // },

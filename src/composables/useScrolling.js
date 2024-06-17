@@ -3,7 +3,7 @@ import { useMainStore } from '@/stores/MainStore';
 export default function useScrolling() {
 
   const handleRowClick = (e, id, type) => {
-    console.log('handleRowClick, e:', e, 'e.row.lat:', e.row.lat, 'id:', id);
+    if (import.meta.env.VITE_DEBUG == 'true') console.log('handleRowClick, e:', e, 'e.row.lat:', e.row.lat, 'id:', id);
     let clickedRow = {
       type: type,
       id: e.row[id],
@@ -19,7 +19,7 @@ export default function useScrolling() {
   }
 
   const handleRowMouseover = (e, id) => {
-    // console.log('handleRowMouseover, e:', e, 'id:', id);
+    // if (import.meta.env.VITE_DEBUG == 'true') console.log('handleRowMouseover, e:', e, 'id:', id);
     const MainStore = useMainStore();
     let hoveredStateId = parseInt(e.row[id]);
     if (isNaN(hoveredStateId)) {
@@ -33,9 +33,9 @@ export default function useScrolling() {
   }
 
   const isElementInViewport = (el) => {
-    // console.log('isElementInViewport, el:', el);
+    // if (import.meta.env.VITE_DEBUG == 'true') console.log('isElementInViewport, el:', el);
     const rect = el.getBoundingClientRect();
-    // console.log('bounding box', rect);
+    // if (import.meta.env.VITE_DEBUG == 'true') console.log('bounding box', rect);
     const visibility = {
       // TODO the 108 below is account for the combined height of the
       // app header and address header. this is not a good long-term

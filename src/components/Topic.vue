@@ -37,12 +37,12 @@ const handleTopicClick = () => {
   } else {
     MainStore.currentTopic = props.topicName;
   }
-  console.log('topic clicked:', props.topicName);
+  if (import.meta.env.VITE_DEBUG == 'true') console.log('topic clicked:', props.topicName);
   routeApp(router);
 
   setTimeout(() => {
     const element = document.getElementById(props.topicName+'-topic');
-    console.log('element:', element);
+    if (import.meta.env.VITE_DEBUG == 'true') console.log('element:', element);
     element.scrollIntoView();//{behavior: 'smooth'});
   }, '100');
 }

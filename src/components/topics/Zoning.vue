@@ -34,7 +34,7 @@ const zoningAppeals = computed(() => {
 });
 
 onBeforeMount(() => {
-  // console.log('Zoning.vue onBeforeMount');
+  // if (import.meta.env.VITE_DEBUG == 'true') console.log('Zoning.vue onBeforeMount');
   if (ParcelsStore.dor.features && ParcelsStore.dor.features.length > 0) {
     MainStore.selectedParcelId = ParcelsStore.dor.features[0].properties.OBJECTID;
   }

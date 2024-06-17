@@ -19,7 +19,7 @@ const buttonX = ref(0);
 watch(
   () => MainStore.windowDimensions,
   newWindowDimensions => {
-    // console.log('newWindowDimensions.height:', newWindowDimensions.height);
+    // if (import.meta.env.VITE_DEBUG == 'true') console.log('newWindowDimensions.height:', newWindowDimensions.height);
     setYPosition(newWindowDimensions.height);
     setXPosition(newWindowDimensions.width);
   }
@@ -42,7 +42,7 @@ const eagleviewActive = computed(() => {
 });
 
 const picOrCycloActive = computed(() => {
-  // console.log('cyclomediaActive:', cyclomediaActive, 'eagleviewActive:', eagleviewActive);
+  // if (import.meta.env.VITE_DEBUG == 'true') console.log('cyclomediaActive:', cyclomediaActive, 'eagleviewActive:', eagleviewActive);
   if (cyclomediaActive.value || eagleviewActive.value) {
     return true;
   }
@@ -52,7 +52,7 @@ const picOrCycloActive = computed(() => {
 watch (
   () => picOrCycloActive.value,
   () => {
-    // console.log('newPicOrCycloActive:', newPicOrCycloActive);
+    // if (import.meta.env.VITE_DEBUG == 'true') console.log('newPicOrCycloActive:', newPicOrCycloActive);
     setYPosition(MainStore.windowDimensions.height);
     setXPosition(MainStore.windowDimensions.width);
   }
@@ -66,7 +66,7 @@ const currentIcon = computed(() => {
 });
   
 const setYPosition = (dim) => {
-  // console.log('setYPosition dim:', dim, typeof dim);
+  // if (import.meta.env.VITE_DEBUG == 'true') console.log('setYPosition dim:', dim, typeof dim);
   if (!picOrCycloActive.value) {
     buttonY.value = (dim-48)/2 + 'px';
   } else {
@@ -75,7 +75,7 @@ const setYPosition = (dim) => {
 }
 
 const setXPosition = async (dim) => {
-  // console.log('setXPosition dim:', dim, typeof dim);
+  // if (import.meta.env.VITE_DEBUG == 'true') console.log('setXPosition dim:', dim, typeof dim);
   if (fullScreenMapEnabled.value) {
     buttonX.value = '0px';
   } else {

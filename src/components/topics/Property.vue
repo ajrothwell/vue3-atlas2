@@ -1,5 +1,5 @@
 <script setup>
-console.log('Property.vue setup');
+if (import.meta.env.VITE_DEBUG == 'true') console.log('Property.vue setup');
 
 import { computed } from 'vue';
 

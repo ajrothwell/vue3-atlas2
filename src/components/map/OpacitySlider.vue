@@ -16,12 +16,12 @@ export default {
     return data;
   },
   mounted() {
-    // console.log('OpacitySlider mounted is running, this.$props.initialOpacity:', this.$props.initialOpacity);
+    // if (import.meta.env.VITE_DEBUG == 'true') console.log('OpacitySlider mounted is running, this.$props.initialOpacity:', this.$props.initialOpacity);
     this.$data.value = this.$props.initialOpacity * 100;
   },
   methods: {
     handleSliderValueChange(e) {
-      // console.log('handleSliderValueChange is running, e:', e, 'e.target.value:', e.target.value);
+      // if (import.meta.env.VITE_DEBUG == 'true') console.log('handleSliderValueChange is running, e:', e, 'e.target.value:', e.target.value);
       this.$data.value = e.target.value;
       this.$emit('opacityChange', e.target.value);
     },

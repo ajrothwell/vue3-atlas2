@@ -40,7 +40,7 @@ const setDataTypeInRouter = (newDataType) => {
 const selectedDataType = ref('nearby311');
 
 watch(() => selectedDataType.value, (newDataType) => {
-  console.log('watch selectedDataType.value, newDataType:', newDataType);
+  if (import.meta.env.VITE_DEBUG == 'true') console.log('watch selectedDataType.value, newDataType:', newDataType);
   setDataTypeInRouter(newDataType);
   MainStore.currentNearbyDataType = newDataType;
   const popup = document.getElementsByClassName('maplibregl-popup');
@@ -62,7 +62,7 @@ watch(() => clickedMarkerId.value, (newClickedMarkerId) => {
 });
 
 onMounted( () => {
-  // console.log('NearbyActivity.vue onMounted is running, route.params.data:', route.params.data);
+  // if (import.meta.env.VITE_DEBUG == 'true') console.log('NearbyActivity.vue onMounted is running, route.params.data:', route.params.data);
   selectedDataType.value = route.params.data;
   if (!currentNearbyDataType.value) {
     MainStore.currentNearbyDataType = selectedDataType.value;

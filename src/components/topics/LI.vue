@@ -35,7 +35,7 @@ const liBuildingFootprintsLength = computed(() => {
 
 watch (liBuildingFootprints,
   async (newLiBuildingFootprints) => {
-    console.log('watch newLiBuildingFootprints.features:', newLiBuildingFootprints.features);
+    if (import.meta.env.VITE_DEBUG == 'true') console.log('watch newLiBuildingFootprints.features:', newLiBuildingFootprints.features);
     if (newLiBuildingFootprints.features) {
       setLiBuildingFootprints(newLiBuildingFootprints);
     }
@@ -50,7 +50,7 @@ const setLiBuildingFootprints = async(footprints) => {
     features.push(polygon([item.geometry.rings[0]], { id: item.attributes.BIN, type: 'liBuildingFootprints' }));
   }
   let geojson = featureCollection(features);
-  // console.log('geojson:', geojson, 'map.getSource("liBuildingFootprints"):', map.getSource('liBuildingFootprints'), 'map.getLayer("liBuildingFootprints"):', map.getLayer('liBuildingFootprints'));
+  // if (import.meta.env.VITE_DEBUG == 'true') console.log('geojson:', geojson, 'map.getSource("liBuildingFootprints"):', map.getSource('liBuildingFootprints'), 'map.getLayer("liBuildingFootprints"):', map.getLayer('liBuildingFootprints'));
   const map = MapStore.map;
   if (map.getSource) {
     await map.getSource('liBuildingFootprints').setData(geojson)

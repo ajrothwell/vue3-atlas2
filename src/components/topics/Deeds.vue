@@ -31,7 +31,7 @@ const selectedParcel = computed(() => {
 });
 const selectedDocs = computed(() => {
   if (selectedParcelId.value && DorStore.dorDocuments[selectedParcelId.value]) {
-    // console.log('selectedParcelId.value:', selectedParcelId.value);
+    // if (import.meta.env.VITE_DEBUG == 'true') console.log('selectedParcelId.value:', selectedParcelId.value);
     let data = [];
     for (let feature of DorStore.dorDocuments[selectedParcelId.value].features) {
       data.push({
@@ -68,7 +68,7 @@ const regmaps = computed(() => {
 });
 
 onBeforeMount(() => {
-  console.log('Deeds.vue onBeforeMount');
+  if (import.meta.env.VITE_DEBUG == 'true') console.log('Deeds.vue onBeforeMount');
   if (ParcelsStore.dor.features && ParcelsStore.dor.features.length > 0) {
     MainStore.selectedParcelId = ParcelsStore.dor.features[0].properties.OBJECTID;
   }
@@ -101,7 +101,7 @@ const deededCondosExist = computed(() => {
 });
 
 const getAddress = (address) => {
-  console.log('address:', address, address.length);
+  if (import.meta.env.VITE_DEBUG == 'true') console.log('address:', address, address.length);
   if (address && address.length > 2) {
     return address;
   } else {

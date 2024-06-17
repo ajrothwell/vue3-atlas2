@@ -33,7 +33,7 @@ const textSearch = ref('');
 const nearbyZoningAppeals = computed(() => {
   if (NearbyActivityStore.nearbyZoningAppeals) {
     let data = [ ...NearbyActivityStore.nearbyZoningAppeals.rows]
-    // console.log(new Date(data[0].scheduleddate));
+    // if (import.meta.env.VITE_DEBUG == 'true') console.log(new Date(data[0].scheduleddate));
     if (timeIntervalSelected.value < 0) {
       data = data.filter(item => {
         let timeDiff = new Date() - new Date(item.scheduleddate);
@@ -47,13 +47,13 @@ const nearbyZoningAppeals = computed(() => {
         return daysDiff <= timeIntervalSelected.value;
       })
     }
-    console.log('data 1:', data);
+    if (import.meta.env.VITE_DEBUG == 'true') console.log('data 1:', data);
     data = data.filter(item => {
-      console.log('item.address:', item.address, 'item.appealgrounds', item.appealgrounds, 'textSearch.value:', textSearch.value, 'item.address.toLowerCase().includes(textSearch.value.toLowerCase()) || item.appealgrounds.toLowerCase().includes(textSearch.value.toLowerCase()):', item.address.toLowerCase().includes(textSearch.value.toLowerCase()) || item.appealgrounds.toLowerCase().includes(textSearch.value.toLowerCase()));
+      if (import.meta.env.VITE_DEBUG == 'true') console.log('item.address:', item.address, 'item.appealgrounds', item.appealgrounds, 'textSearch.value:', textSearch.value, 'item.address.toLowerCase().includes(textSearch.value.toLowerCase()) || item.appealgrounds.toLowerCase().includes(textSearch.value.toLowerCase()):', item.address.toLowerCase().includes(textSearch.value.toLowerCase()) || item.appealgrounds.toLowerCase().includes(textSearch.value.toLowerCase()));
       return item.address.toLowerCase().includes(textSearch.value.toLowerCase()) || item.appealgrounds.toLowerCase().includes(textSearch.value.toLowerCase());
       // return false;
     })
-    console.log('data 2:', data);
+    if (import.meta.env.VITE_DEBUG == 'true') console.log('data 2:', data);
     data.sort((a, b) => timeReverseFn(a, b, 'scheduleddate'))
     return data;
   }
