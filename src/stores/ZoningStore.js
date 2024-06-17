@@ -129,10 +129,13 @@ export const useZoningStore = defineStore('ZoningStore', {
               row.link = `<a target='_blank' href='${row.code_section_link}'>${row.code_section}<i class='fas fa-external-link-alt'></i></a>`
             });
             this.zoningOverlays[feature.properties.OBJECTID] = data;
+            this.loadingZoningOverlays = false;
           } else {
+            this.loadingZoningOverlays = false;
             console.warn('fillZoningOverlays - await resolved but HTTP status was not successful');
           }
         } catch {
+          this.loadingZoningOverlays = false;
           console.error('fillZoningOverlays - await never resolved, failed to fetch data');
         }
       }
@@ -204,10 +207,13 @@ export const useZoningStore = defineStore('ZoningStore', {
         if (response.ok) {
           let data = await response.json();
           this.zoningAppeals = data;
+          this.loadingZoningAppeals = false;
         } else {
+          this.loadingZoningAppeals = false;
           console.warn('fillZoningAppeals - await resolved but HTTP status was not successful');
         }
       } catch {
+        this.loadingZoningAppeals = false;
         console.error('fillZoningAppeals - await never resolved, failed to fetch data');
       }
     },
@@ -238,10 +244,13 @@ export const useZoningStore = defineStore('ZoningStore', {
             item.properties.contact = `${rcoPrimaryContact(item.properties.PRIMARY_NAME)}<br>${phoneNumber(item.properties.PRIMARY_PHONE)}<br><a target='_blank' href='mailto:${item.properties.PRIMARY_EMAIL}'>${item.properties.PRIMARY_EMAIL}</a>`;
           })
           this.rcos = data;
+          this.loadingRcos = false;
         } else {
+          this.loadingRcos = false;
           console.warn('fillRcos - await resolved but HTTP status was not successful');
         }
       } catch {
+        this.loadingRcos = false;
         console.error('fillRcos - await never resolved, failed to fetch data');
       }
     }

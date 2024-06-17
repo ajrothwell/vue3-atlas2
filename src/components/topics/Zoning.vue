@@ -353,12 +353,13 @@ const rcosTableData = computed(() => {
   </div>
 
   <h5 class="subtitle is-5 table-title">
+    Registered Community Organizations (RCOs)
     <font-awesome-icon
       v-if="ZoningStore.loadingRcos"
       icon="fa-solid fa-spinner"
       spin
     />
-    <span v-else>Registered Community Organizations (RCOs) ({{ rcosTableData.rows.length }})</span>
+    <span v-else>({{ rcosTableData.rows.length }})</span>
   </h5>
   <div
     id="rcos"
