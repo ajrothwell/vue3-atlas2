@@ -92,6 +92,7 @@ const handleFullScreenMapToggleButtonClick = () => {
   } else {
     buttonX.value = MainStore.windowDimensions.width/2 + 'px';
   }
+  window.dispatchEvent(new Event('resize'));
 }
 
 </script>
