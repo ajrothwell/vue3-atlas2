@@ -108,7 +108,13 @@ const nearbyDemolitionPermitsTableData = computed(() => {
 
   <div class="mt-5">
     <h5 class="subtitle is-5">
-      Demolition Permits ({{ nearbyDemolitionPermitsTableData.rows.length }})
+      Demolition Permits
+      <font-awesome-icon
+        v-if="loadingData"
+        icon="fa-solid fa-spinner"
+        spin
+      />
+      <span v-else>({{ nearbyDemolitionPermitsTableData.rows.length }})</span>
     </h5>
     <div class="horizontal-table">
       <vue-good-table

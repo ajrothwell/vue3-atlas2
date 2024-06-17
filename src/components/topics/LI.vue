@@ -346,7 +346,13 @@ const businessLicensesTableData = computed(() => {
 
           <!-- Building Certs Table -->
           <h5 class="subtitle is-5 table-title">
-            Building Certifications ({{ buildingCertsTableData.rows.length }})
+            Building Certifications
+            <font-awesome-icon
+              v-if="LiStore.loadingLiBuildingCerts"
+              icon="fa-solid fa-spinner"
+              spin
+            />
+            <span v-else>({{ buildingCertsTableData.rows.length }})</span>
           </h5>
           <div
             v-if="selectedBuildingCerts"
@@ -360,7 +366,7 @@ const businessLicensesTableData = computed(() => {
               style-class="table"
             >
               <template #emptystate>
-                <div v-if="LiStore.loadingLiData">
+                <div v-if="LiStore.loadingLiBuildingCerts">
                   Loading building certifications... <font-awesome-icon
                     icon="fa-solid fa-spinner"
                     spin
@@ -452,7 +458,7 @@ const businessLicensesTableData = computed(() => {
           style-class="table"
         >
           <template #emptystate>
-            <div v-if="LiStore.loadingLiData">
+            <div v-if="LiStore.loadingLiAisZoningDocs || LiStore.loadingLiEclipseZoningDocs">
               Loading zoning permit documents... <font-awesome-icon
                 icon="fa-solid fa-spinner"
                 spin
@@ -470,7 +476,7 @@ const businessLicensesTableData = computed(() => {
     <div class="data-section">
       <h5 class="subtitle is-5 table-title">
         Inspections
-        <vue-fontawesome
+        <font-awesome-icon
           v-if="LiStore.loadingLiInspections"
           icon="fa-solid fa-spinner"
           spin
@@ -489,7 +495,7 @@ const businessLicensesTableData = computed(() => {
           style-class="table"
         >
           <template #emptystate>
-            <div v-if="LiStore.loadingLiData">
+            <div v-if="LiStore.loadingLiInspections">
               Loading inspections... <font-awesome-icon
                 icon="fa-solid fa-spinner"
                 spin
@@ -511,12 +517,12 @@ const businessLicensesTableData = computed(() => {
     <div class="data-section">
       <h5 class="subtitle is-5 table-title">
         Violations
-        <vue-fontawesome
+        <font-awesome-icon
           v-if="LiStore.loadingLiViolations"
           icon="fa-solid fa-spinner"
           spin
         />
-        <span>({{ violationsLength }})</span>
+        <span v-else>({{ violationsLength }})</span>
       </h5>
       <div
         v-if="violationsTableData.rows"
@@ -530,7 +536,7 @@ const businessLicensesTableData = computed(() => {
           style-class="table"
         >
           <template #emptystate>
-            <div v-if="LiStore.loadingLiData">
+            <div v-if="LiStore.loadingLiViolations">
               Loading violations... <font-awesome-icon
                 icon="fa-solid fa-spinner"
                 spin
@@ -552,12 +558,12 @@ const businessLicensesTableData = computed(() => {
     <div class="data-section">
       <h5 class="subtitle is-5 table-title">
         Business Licenses
-        <vue-fontawesome
+        <font-awesome-icon
           v-if="LiStore.loadingLiBusinessLicenses"
           icon="fa-solid fa-spinner"
           spin
         />
-        <span>({{ businessLicensesLength }})</span>
+        <span v-else>({{ businessLicensesLength }})</span>
       </h5>
       <div
         v-if="businessLicensesTableData"
@@ -571,7 +577,7 @@ const businessLicensesTableData = computed(() => {
           style-class="table"
         >
           <template #emptystate>
-            <div v-if="LiStore.loadingLiData">
+            <div v-if="LiStore.loadingLiBusinessLicenses">
               Loading business licenses... <font-awesome-icon
                 icon="fa-solid fa-spinner"
                 spin

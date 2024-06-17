@@ -109,7 +109,13 @@ const nearbyImminentlyDangerousTableData = computed(() => {
 
   <div class="mt-5">
     <h5 class="subtitle is-5">
-      Imminently Dangerous ({{ nearbyImminentlyDangerousTableData.rows.length }})
+      Imminently Dangerous
+      <font-awesome-icon
+        v-if="loadingData"
+        icon="fa-solid fa-spinner"
+        spin
+      />
+      <span v-else>({{ nearbyImminentlyDangerousTableData.rows.length }})</span>
     </h5>
     <div class="horizontal-table">
       <vue-good-table

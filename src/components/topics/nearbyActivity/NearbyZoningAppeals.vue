@@ -119,7 +119,13 @@ const nearbyZoningAppealsTableData = computed(() => {
 
   <div class="mt-5">
     <h5 class="subtitle is-5">
-      Zoning Appeals ({{ nearbyZoningAppealsTableData.rows.length }})
+      Zoning Appeals
+      <font-awesome-icon
+        v-if="loadingData"
+        icon="fa-solid fa-spinner"
+        spin
+      />
+      <span v-else>({{ nearbyZoningAppealsTableData.rows.length }})</span>
     </h5>
     <div class="horizontal-table">
       <vue-good-table

@@ -11,10 +11,15 @@ export const useZoningStore = defineStore('ZoningStore', {
   state: () => {
     return {
       zoningBase: {},
+      loadingZoningBase: false,
       zoningOverlays: {},
+      loadingZoningOverlays: false,
       pendingBills: {},
+      loadingPendingBills: false,
       zoningAppeals: {},
+      loadingZoningAppeals: false,
       rcos: {},
+      loadingRcos: false,
       loadingZoningData: true,
     };
   },
@@ -28,59 +33,75 @@ export const useZoningStore = defineStore('ZoningStore', {
     },
     async clearAllZoningData() {
       this.zoningBase = {};
+      this.loadingZoningBase = true;
       this.zoningOverlays = {};
+      this.loadingZoningOverlays = true;
       this.pendingBills = {};
+      this.loadingPendingBills = true;
       this.zoningAppeals = {};
+      this.loadingZoningAppeals = true;
       this.rcos = {};
+      this.loadingRcos = true;
       this.loadingZoningData = true;
     },
     async fillZoningBase() {
-      const ParcelsStore = useParcelsStore();
-      const features = ParcelsStore.dor.features;
-      if (!features) return;
-      for (let feature of features) {
-        let baseUrl = 'https://phl.carto.com/api/v2/sql?q=';
-        const mapreg = feature.properties.MAPREG;
-        const query = "\
-          WITH all_zoning AS \
-            ( \
-              SELECT * \
-              FROM   phl.zoning_basedistricts \
-            ), \
-          parcel AS \
-            ( \
-              SELECT * \
-              FROM   phl.dor_parcel \
-              WHERE  dor_parcel.mapreg = '" + mapreg + "' \
-            ), \
-          zp AS \
-            ( \
-              SELECT all_zoning.* \
-              FROM   all_zoning, parcel \
-              WHERE  St_intersects(parcel.the_geom, all_zoning.the_geom) \
-            ), \
-          combine AS \
-            ( \
-              SELECT zp.objectid, \
-              zp.long_code, \
-              zp.pending, \
-              zp.pendingbill, \
-              zp.pendingbillurl, \
-              St_area(St_intersection(zp.the_geom, parcel.the_geom)) / St_area(parcel.the_geom) AS overlap_area \
-              FROM zp, parcel \
-            ), \
-          total AS \
-            ( \
-              SELECT long_code, pending, pendingbill, pendingbillurl, sum(overlap_area) as sum_overlap_area \
-              FROM combine \
-              GROUP BY long_code, pending, pendingbill, pendingbillurl \
-            ) \
-          SELECT * \
-          FROM total \
-          WHERE sum_overlap_area >= 0.01";
-        const url = baseUrl += query;
-        const response = await fetch(url);
-        this.zoningBase[feature.properties.OBJECTID] = await response.json();
+      try {
+        const ParcelsStore = useParcelsStore();
+        const features = ParcelsStore.dor.features;
+        if (!features) return;
+        for (let feature of features) {
+          let baseUrl = 'https://phl.carto.com/api/v2/sql?q=';
+          const mapreg = feature.properties.MAPREG;
+          const query = "\
+            WITH all_zoning AS \
+              ( \
+                SELECT * \
+                FROM   phl.zoning_basedistricts \
+              ), \
+            parcel AS \
+              ( \
+                SELECT * \
+                FROM   phl.dor_parcel \
+                WHERE  dor_parcel.mapreg = '" + mapreg + "' \
+              ), \
+            zp AS \
+              ( \
+                SELECT all_zoning.* \
+                FROM   all_zoning, parcel \
+                WHERE  St_intersects(parcel.the_geom, all_zoning.the_geom) \
+              ), \
+            combine AS \
+              ( \
+                SELECT zp.objectid, \
+                zp.long_code, \
+                zp.pending, \
+                zp.pendingbill, \
+                zp.pendingbillurl, \
+                St_area(St_intersection(zp.the_geom, parcel.the_geom)) / St_area(parcel.the_geom) AS overlap_area \
+                FROM zp, parcel \
+              ), \
+            total AS \
+              ( \
+                SELECT long_code, pending, pendingbill, pendingbillurl, sum(overlap_area) as sum_overlap_area \
+                FROM combine \
+                GROUP BY long_code, pending, pendingbill, pendingbillurl \
+              ) \
+            SELECT * \
+            FROM total \
+            WHERE sum_overlap_area >= 0.01";
+          const url = baseUrl += query;
+          const response = await fetch(url);
+          if (response.ok) {
+            this.zoningBase[feature.properties.OBJECTID] = await response.json();
+            this.loadingZoningBase = false;
+          } else {
+            this.loadingZoningBase = false;
+            console.warn('fillZoningBase - await resolved but HTTP status was not successful');
+          }
+        }
+      } catch {
+        this.loadingZoningBase = false;
+        console.error('fillZoningBase - await never resolved, failed to fetch data');
       }
     },
     async fillZoningOverlays() {
@@ -119,7 +140,10 @@ export const useZoningStore = defineStore('ZoningStore', {
     async fillPendingBills() {
       const ParcelsStore = useParcelsStore();
       const features = ParcelsStore.dor.features;
-      if (!features) return;
+      if (!features) {
+        this.loadingPendingBills = false;
+        return;
+      }
       for (let feature of features) {
         let featureId = feature.properties.OBJECTID,
           target = this.zoningBase[featureId] || {},
@@ -155,6 +179,7 @@ export const useZoningStore = defineStore('ZoningStore', {
         const zoningAndOverlays = rowsFilteredWithType.concat(overlayRowsFilteredWithType);
         this.pendingBills[featureId] = zoningAndOverlays;
       }
+      this.loadingPendingBills = false;
     },
     async fillZoningAppeals() {
       try {

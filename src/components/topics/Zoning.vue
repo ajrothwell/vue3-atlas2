@@ -34,7 +34,7 @@ const zoningAppeals = computed(() => {
 });
 
 onBeforeMount(() => {
-  console.log('Zoning.vue onBeforeMount');
+  // console.log('Zoning.vue onBeforeMount');
   if (ParcelsStore.dor.features && ParcelsStore.dor.features.length > 0) {
     MainStore.selectedParcelId = ParcelsStore.dor.features[0].properties.OBJECTID;
   }
@@ -253,7 +253,13 @@ const rcosTableData = computed(() => {
 
       <div class="data-section">
         <h5 class="subtitle is-5 table-title">
-          Pending Bills ({{ pendingBillsTableData.rows.length }})
+          Pending Bills
+          <font-awesome-icon
+            v-if="ZoningStore.loadingPendingBills"
+            icon="fa-solid fa-spinner"
+            spin
+          />
+          <span v-else>({{ pendingBillsTableData.rows.length }})</span>
         </h5>
         <div class="horizontal-table">
           <vue-good-table
@@ -264,7 +270,7 @@ const rcosTableData = computed(() => {
             style-class="table"
           >
             <template #emptystate>
-              <div v-if="ZoningStore.loadingZoningData">
+              <div v-if="ZoningStore.loadingPendingBills">
                 Loading pending bills... <font-awesome-icon
                   icon="fa-solid fa-spinner"
                   spin
@@ -280,7 +286,13 @@ const rcosTableData = computed(() => {
 
       <div class="data-section">
         <h5 class="subtitle is-5 table-title">
-          Overlays ({{ overlaysTableData.rows.length }})
+          Overlays
+          <font-awesome-icon
+            v-if="ZoningStore.loadingZoningOverlays"
+            icon="fa-solid fa-spinner"
+            spin
+          />
+          <span v-else>({{ overlaysTableData.rows.length }})</span>
         </h5>
         <vue-good-table
           id="overlays"
@@ -290,7 +302,7 @@ const rcosTableData = computed(() => {
           style-class="table"
         >
           <template #emptystate>
-            <div v-if="ZoningStore.loadingZoningData">
+            <div v-if="ZoningStore.loadingZoningOverlays">
               Loading overlays... <font-awesome-icon
                 icon="fa-solid fa-spinner"
                 spin
@@ -306,7 +318,13 @@ const rcosTableData = computed(() => {
   </div>
 
   <h5 class="subtitle is-5 table-title">
-    Appeals ({{ zoningAppeals.length }})
+    Appeals
+    <font-awesome-icon
+      v-if="ZoningStore.loadingZoningAppeals"
+      icon="fa-solid fa-spinner"
+      spin
+    />
+    <span v-else>({{ zoningAppeals.length }})</span>
   </h5>
   <div class="horizontal-table">
     <vue-good-table
@@ -317,7 +335,7 @@ const rcosTableData = computed(() => {
       style-class="table"
     >
       <template #emptystate>
-        <div v-if="ZoningStore.loadingZoningData">
+        <div v-if="ZoningStore.loadingZoningAppeals">
           Loading appeals... <font-awesome-icon
             icon="fa-solid fa-spinner"
             spin
@@ -335,7 +353,12 @@ const rcosTableData = computed(() => {
   </div>
 
   <h5 class="subtitle is-5 table-title">
-    Registered Community Organizations (RCOs) ({{ rcosTableData.rows.length }})
+    <font-awesome-icon
+      v-if="ZoningStore.loadingRcos"
+      icon="fa-solid fa-spinner"
+      spin
+    />
+    <span v-else>Registered Community Organizations (RCOs) ({{ rcosTableData.rows.length }})</span>
   </h5>
   <div
     id="rcos"
@@ -349,7 +372,7 @@ const rcosTableData = computed(() => {
       style-class="table"
     >
       <template #emptystate>
-        <div v-if="ZoningStore.loadingZoningData">
+        <div v-if="ZoningStore.loadingRcos">
           Loading RCOs... <font-awesome-icon
             icon="fa-solid fa-spinner"
             spin
