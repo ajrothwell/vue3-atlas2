@@ -22,7 +22,7 @@ export const useParcelsStore = defineStore('ParcelsStore', {
       const aisData = AddressLoaded[0];
       const pwdParcelNumber = aisData.properties.pwd_parcel_id;
       if (!pwdParcelNumber) {
-        console.log('no pwd parcel in AIS')
+        if (import.meta.env.VITE_DEBUG == 'true') console.log('no pwd parcel in AIS')
         await this.fillParcelDataByLngLat(aisData.geometry.coordinates[0], aisData.geometry.coordinates[1], 'pwd');
         return;
       }
@@ -45,7 +45,7 @@ export const useParcelsStore = defineStore('ParcelsStore', {
       const aisData = AddressLoaded[0];
       const dorParcelId = aisData.properties.dor_parcel_id;
       if (!dorParcelId) {
-        console.log('no dor parcel in AIS')
+        if (import.meta.env.VITE_DEBUG == 'true') console.log('no dor parcel in AIS')
         await this.fillParcelDataByLngLat(aisData.geometry.coordinates[0], aisData.geometry.coordinates[1], 'dor');
         return;
       }
@@ -82,7 +82,7 @@ export const useParcelsStore = defineStore('ParcelsStore', {
       try {
         const response = await axios(parcelQuery, { params });
         if (response.status === 200) {
-          console.log('response', response);
+          if (import.meta.env.VITE_DEBUG == 'true') console.log('response', response);
           const originalJson = await response.data;
           const processedData = await processParcels(originalJson);
           const MainStore = useMainStore();
@@ -97,7 +97,7 @@ export const useParcelsStore = defineStore('ParcelsStore', {
     },
 
     async fillParcelDataByLngLat(lng, lat, parcelLayer) {
-      console.log('fillParcelDataByLngLat, lng:', lng, 'lat:', lat, 'parcelLayer:', parcelLayer);
+      if (import.meta.env.VITE_DEBUG == 'true') console.log('fillParcelDataByLngLat, lng:', lng, 'lat:', lat, 'parcelLayer:', parcelLayer);
       let ESRILayer = parcelLayer === 'pwd' ? 'PWD_PARCELS' : 'DOR_Parcel';
       let params = {
         'where': '1=1',
@@ -127,7 +127,7 @@ export const useParcelsStore = defineStore('ParcelsStore', {
           }
           this[parcelLayer] = processedData;
         } else {
-          console.log('in else, parcelLayer:', parcelLayer, '$config.parcelLayerForTopic[MainStore.currentTopic]:', $config.parcelLayerForTopic[MainStore.currentTopic]);
+          if (import.meta.env.VITE_DEBUG == 'true') console.log('in else, parcelLayer:', parcelLayer, '$config.parcelLayerForTopic[MainStore.currentTopic]:', $config.parcelLayerForTopic[MainStore.currentTopic]);
           if (parcelLayer === 'dor' && $config.parcelLayerForTopic[MainStore.currentTopic] === 'pwd') {
             this[parcelLayer] = {};
           }

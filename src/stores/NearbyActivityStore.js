@@ -14,7 +14,7 @@ const evaluateParams = (feature, dataSource) => {
   if (!dataSource.options.params) {
     return params; 
   }
-  // console.log("dataSource: ", dataSource);
+  // if (import.meta.env.VITE_DEBUG == 'true') console.log("dataSource: ", dataSource);
   const paramEntries = Object.entries(dataSource.options.params);
 
   for (let [ key, valOrGetter ] of paramEntries) {
@@ -27,7 +27,7 @@ const evaluateParams = (feature, dataSource) => {
     }
     params[key] = val;
   }
-  // console.log("params: ", params)
+  // if (import.meta.env.VITE_DEBUG == 'true') console.log("params: ", params)
   return params;
 }
 
@@ -41,10 +41,10 @@ const fetchNearby = (feature, dataSource) => {
   // returns a sql statement
   const dateMinNum = options.dateMinNum || null;
   const dateMinType = options.dateMinType || null;
-  // console.log('dateMinType:', dateMinType);
+  // if (import.meta.env.VITE_DEBUG == 'true') console.log('dateMinType:', dateMinType);
   const dateField = options.dateField || null;
   const distances = options.distances || 250;
-  // console.log('fetchNearby distances:', distances);
+  // if (import.meta.env.VITE_DEBUG == 'true') console.log('fetchNearby distances:', distances);
   const extraWhere = options.where || null;
 
   const groupby = options.groupby || null;
@@ -178,7 +178,7 @@ export const useNearbyActivityStore = defineStore('NearbyActivityStore', {
       this.nearbyImminentlyDangerous = null;
     },
     async fetchData(dataType) {
-      console.log("fetchData is runnning, dataType:", dataType);
+      if (import.meta.env.VITE_DEBUG == 'true') console.log("fetchData is runnning, dataType:", dataType);
       if (dataType === 'nearby311') {
         await this.fillNearby311();
       } else if (dataType === 'nearbyCrimeIncidents') {

@@ -124,7 +124,7 @@ export const useZoningStore = defineStore('ZoningStore', {
           const response = await fetch(url);
           if (response.ok) {
             const data = await response.json();
-            console.log('data:', data);
+            if (import.meta.env.VITE_DEBUG == 'true') console.log('data:', data);
             data.rows.forEach(row => {
               row.link = `<a target='_blank' href='${row.code_section_link}'>${row.code_section}<i class='fas fa-external-link-alt'></i></a>`
             });

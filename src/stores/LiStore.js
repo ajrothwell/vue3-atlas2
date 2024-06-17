@@ -61,7 +61,7 @@ export const useLiStore = defineStore('LiStore', {
       this.loadingLiBusinessLicenses = true;
     },
     async fillLiBuildingFootprints() {
-      // console.log('fillLiBuildingFootprints is running');
+      // if (import.meta.env.VITE_DEBUG == 'true') console.log('fillLiBuildingFootprints is running');
       try {
         const GeocodeStore = useGeocodeStore();
         const feature = GeocodeStore.aisData.features[0].properties.bin.split('|');
@@ -77,12 +77,12 @@ export const useLiStore = defineStore('LiStore', {
             }
           }
           where = "BIN IN ('" + bin + "')";
-          // console.log('after loop, bin:', bin);
+          // if (import.meta.env.VITE_DEBUG == 'true') console.log('after loop, bin:', bin);
         } else {
           data = feature.properties.li_parcel_id;
           where = "PARCEL_ID_NUM = '" + data + "'";
         }
-        // console.log('where:', where);
+        // if (import.meta.env.VITE_DEBUG == 'true') console.log('where:', where);
         const params = {
           where: where,
           outFields: '*',
@@ -100,13 +100,13 @@ export const useLiStore = defineStore('LiStore', {
       }
     },
     async fillLiBuildingCertSummary() {
-      // console.log('fillLiBuildingCertSummary is running');
+      // if (import.meta.env.VITE_DEBUG == 'true') console.log('fillLiBuildingCertSummary is running');
       try {
         const GeocodeStore = useGeocodeStore();
         const feature = GeocodeStore.aisData.features[0].properties.bin.split('|');
         let baseUrl = 'https://phl.carto.com/api/v2/sql?q=';
         let bin = "";
-        // console.log('li-building-cert-summary, feature:', feature);
+        // if (import.meta.env.VITE_DEBUG == 'true') console.log('li-building-cert-summary, feature:', feature);
         if (feature.length) {
           for (let i=0;i<feature.length;i++) {
             bin += feature[i];
@@ -114,7 +114,7 @@ export const useLiStore = defineStore('LiStore', {
               bin += "', '";
             }
           }
-          // console.log('after loop, bin:', bin);
+          // if (import.meta.env.VITE_DEBUG == 'true') console.log('after loop, bin:', bin);
         } else if (this.liBuildingFootprints.data.features.length) {
           bin = this.liBuildingFootprints.data.features[0].attributes.BIN;//.replace(/\|/g, "', '");
         } else {
@@ -132,7 +132,7 @@ export const useLiStore = defineStore('LiStore', {
       }
     },
     async fillLiBuildingCerts() {
-      // console.log('fillLiBuildingCerts is running');
+      // if (import.meta.env.VITE_DEBUG == 'true') console.log('fillLiBuildingCerts is running');
       try {
         const GeocodeStore = useGeocodeStore();
         const feature = GeocodeStore.aisData.features[0].properties.bin.split('|');
@@ -164,7 +164,7 @@ export const useLiStore = defineStore('LiStore', {
 
     async fillLiPermits() {
       try {
-        // console.log('fillLiPermits is running');
+        // if (import.meta.env.VITE_DEBUG == 'true') console.log('fillLiPermits is running');
         const GeocodeStore = useGeocodeStore();
         const feature = GeocodeStore.aisData.features[0];
         let baseUrl = 'https://phl.carto.com/api/v2/sql?q=';

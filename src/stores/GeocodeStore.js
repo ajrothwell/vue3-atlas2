@@ -12,13 +12,13 @@ export const useGeocodeStore = defineStore("GeocodeStore", {
     async fillaisData(address) {
       // const MainStore = useMainStore();
       try {
-        console.log('Address - fillaisData is running, address:', address)
+        if (import.meta.env.VITE_DEBUG == 'true') console.log('Address - fillaisData is running, address:', address)
         // const aisDataLoadedFlag = false;
         // on a new address search, clear all of the loaded data sources
         // const dataSourcesLoadedArray.value = [];
         const response = await fetch(`https://api.phila.gov/ais/v1/search/${encodeURIComponent(address)}?include_units=false`)
         if (response.ok) {
-          console.log('Address - await resolved and HTTP status is successful')
+          if (import.meta.env.VITE_DEBUG == 'true') console.log('Address - await resolved and HTTP status is successful')
           this.aisData = await response.json()
           // if (!aisData.features) {
           //   router.push({ name: 'not-found' });
@@ -30,7 +30,7 @@ export const useGeocodeStore = defineStore("GeocodeStore", {
           // set the aisDataLoadedFlag value to true
           // aisDataLoadedFlag = true;
         } else {
-          console.log('Address - await resolved but HTTP status was not successful')
+          if (import.meta.env.VITE_DEBUG == 'true') console.log('Address - await resolved but HTTP status was not successful')
           this.aisData = {}
           const MainStore = useMainStore();
           MainStore.currentAddress = "";

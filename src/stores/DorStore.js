@@ -9,7 +9,7 @@ import useTransforms from '@/composables/useTransforms';
 const { date } = useTransforms();
 
 const cleanDorAttribute = function(attr) {
-  // console.log('cleanDorAttribute is running with attr', attr);
+  // if (import.meta.env.VITE_DEBUG == 'true') console.log('cleanDorAttribute is running with attr', attr);
   // trim leading and trailing whitespace
   var cleanAttr = attr ? String(attr) : '';
   cleanAttr = cleanAttr.replace(/\s+/g, '');
@@ -24,13 +24,13 @@ const cleanDorAttribute = function(attr) {
     return '';
   }
 
-  // console.log('cleanDorAttribute cleanAttr result:', cleanAttr);
+  // if (import.meta.env.VITE_DEBUG == 'true') console.log('cleanDorAttribute cleanAttr result:', cleanAttr);
   return cleanAttr;
 }
 
 // TODO put this in base config transforms
 const concatDorAddress = function(parcel, includeUnit) {
-  console.log('concatDorAddress is running, parcel:', parcel);
+  if (import.meta.env.VITE_DEBUG == 'true') console.log('concatDorAddress is running, parcel:', parcel);
   includeUnit = !!includeUnit;
   var STREET_FIELDS = [ 'STDIR', 'STNAM', 'STDES', 'STDESSUF' ];
   var props = parcel.properties;
@@ -74,11 +74,11 @@ const concatDorAddress = function(parcel, includeUnit) {
   // remove nulls and concat
   address = comps.filter(Boolean).join(' ');
 
-  // console.log('concatDorAddress address result:', address);
+  // if (import.meta.env.VITE_DEBUG == 'true') console.log('concatDorAddress address result:', address);
   if (address === '') {
     address = 'Parcel has no address';
   }
-  console.log('concatDorAddress address result:', address);
+  if (import.meta.env.VITE_DEBUG == 'true') console.log('concatDorAddress address result:', address);
   return address;
 }
 
@@ -110,19 +110,19 @@ export const useDorStore = defineStore("DorStore", {
       return new Promise((resolve, reject) => {
         (async () => {
           this.dorCondos = {};
-          console.log('fillRegmaps is running');
+          if (import.meta.env.VITE_DEBUG == 'true') console.log('fillRegmaps is running');
           const ParcelsStore = useParcelsStore();
           const parcels = ParcelsStore.dor.features;
           if (!parcels) return;
           let baseUrl = 'https://phl.carto.com/api/v2/sql?q=';
           parcels.forEach(async(feature) => {
             try {
-              console.log('feature:', feature);
+              if (import.meta.env.VITE_DEBUG == 'true') console.log('feature:', feature);
               const url = baseUrl + `select * from condominium where mapref = '${ feature.properties.MAPREG }' and status in (1,3)`;
               const response = await fetch(url);
               if (response.ok) {
                 const data = await response.json();
-                console.log('fillDorCondos data:', data);
+                if (import.meta.env.VITE_DEBUG == 'true') console.log('fillDorCondos data:', data);
                 for (let row of data.rows) {
                   row.condo_parcel = row.recmap + '-' + row.condoparcel;
                   row.unit_number = 'Unit #' + row.condounit;
@@ -144,7 +144,7 @@ export const useDorStore = defineStore("DorStore", {
     async fillRegmaps() {
       return new Promise((resolve, reject) => {
         (async () => {
-          console.log('fillRegmaps is running');
+          if (import.meta.env.VITE_DEBUG == 'true') console.log('fillRegmaps is running');
           this.regmaps = {};
           const ParcelsStore = useParcelsStore();
           const parcels = ParcelsStore.dor.features;
@@ -208,7 +208,7 @@ export const useDorStore = defineStore("DorStore", {
           var bbox = [ xMin, yMin, xMax, yMax ];
           var bounds = bboxPolygon(bbox).geometry;
 
-          console.log('regmaps.js, bounds:', bounds);
+          if (import.meta.env.VITE_DEBUG == 'true') console.log('regmaps.js, bounds:', bounds);
 
           let url = '//services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/MASTERMAPINDEX/FeatureServer/0/query'; //+ [relationship](targetGeom);
           let params = {
@@ -242,7 +242,7 @@ export const useDorStore = defineStore("DorStore", {
     async fillDorDocuments() {
       return new Promise((resolve, reject) => {
         (async () => {
-          console.log('fillDorDocuments is running');
+          if (import.meta.env.VITE_DEBUG == 'true') console.log('fillDorDocuments is running');
 
           this.dorDocuments = {};
           const ParcelsStore = useParcelsStore();
@@ -250,7 +250,7 @@ export const useDorStore = defineStore("DorStore", {
           const url = `//services.arcgis.com/fLeGjb7u4uXqeF9q/ArcGIS/rest/services/RTT_SUMMARY/FeatureServer/0/query`;
           
           const where = function(feature) {
-            console.log('where function is running, feature:', feature);
+            if (import.meta.env.VITE_DEBUG == 'true') console.log('where function is running, feature:', feature);
             // METHOD 1: via address
             var parcelBaseAddress = concatDorAddress(feature);
             var geocode = GeocodeStore.aisData.features[0].properties;
@@ -332,7 +332,7 @@ export const useDorStore = defineStore("DorStore", {
                 sqlFormat: 'standard',
               }
 
-              // console.log('params:', params);
+              // if (import.meta.env.VITE_DEBUG == 'true') console.log('params:', params);
               const response = await axios(url, { params });
               if (response.status === 200) {
                 const data = response.data;

@@ -40,7 +40,7 @@ export const useMapStore = defineStore("MapStore", {
       this.cyclomediaCameraLngLat = lngLat;
     },
     setMap(map) {
-      console.log('MapStore.setMap is running, map:', map);
+      if (import.meta.env.VITE_DEBUG == 'true') console.log('MapStore.setMap is running, map:', map);
       this.map = map;
     },
     setMapStyle(style) {
@@ -53,7 +53,7 @@ export const useMapStore = defineStore("MapStore", {
 
       const coords2272 = proj4(projection4326, projection2272, [ lng, lat ]);
 
-      console.log('fillBufferForAddress is running, lng:', lng, 'lat:', lat);
+      if (import.meta.env.VITE_DEBUG == 'true') console.log('fillBufferForAddress is running, lng:', lng, 'lat:', lat);
       const bufferUrl = 'https://citygeo-geocoder-pub.databridge.phila.gov/arcgis/rest/services/Utilities/Geometry/GeometryServer/buffer';
 
       const params = {

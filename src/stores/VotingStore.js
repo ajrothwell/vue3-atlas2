@@ -30,7 +30,7 @@ export const useVotingStore = defineStore("VotingStore", {
       this.nextElection = {};
     },
     async fillDivisions() {
-      console.log('fillDivisions is running');
+      if (import.meta.env.VITE_DEBUG == 'true') console.log('fillDivisions is running');
       const GeocodeStore = useGeocodeStore();
       const feature = GeocodeStore.aisData.features[0];
       let url = '//services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/Political_Divisions/FeatureServer/0/query';
@@ -51,7 +51,7 @@ export const useVotingStore = defineStore("VotingStore", {
       this.divisions = await response.data;
     },
     async fillPollingPlaces() {
-      console.log('fillPollingPlaces is running');
+      if (import.meta.env.VITE_DEBUG == 'true') console.log('fillPollingPlaces is running');
       const GeocodeStore = useGeocodeStore();
       const feature = GeocodeStore.aisData.features[0];
       let baseUrl = 'https://phl.carto.com/api/v2/sql?q=';
@@ -60,7 +60,7 @@ export const useVotingStore = defineStore("VotingStore", {
       this.pollingPlaces = await response.json();
     },
     async fillElectedOfficials() {
-      console.log('fillElectedOfficials is running');
+      if (import.meta.env.VITE_DEBUG == 'true') console.log('fillElectedOfficials is running');
       const GeocodeStore = useGeocodeStore();
       const feature = GeocodeStore.aisData.features[0];
       let baseUrl = 'https://phl.carto.com/api/v2/sql?q=';
@@ -76,7 +76,7 @@ export const useVotingStore = defineStore("VotingStore", {
       this.electedOfficials = await response.json();
     },
     async fillNextElection() {
-      console.log('fillNextElection is running');
+      if (import.meta.env.VITE_DEBUG == 'true') console.log('fillNextElection is running');
       const url = 'https://admin-vote.phila.gov/wp-json/votes/v1/election';
       const response = await fetch(url);
       this.nextElection = await response.json();
