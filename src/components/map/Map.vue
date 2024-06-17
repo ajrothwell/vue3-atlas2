@@ -413,6 +413,9 @@ const toggleImagery = () => {
 
 const setImagery = async (newImagery) => {
   const oldLayer = imagerySelected.value;
+  if (oldLayer == newImagery) {
+    return;
+  }
   // console.log('setImagery, newImagery:', newImagery, 'oldLayer:', oldLayer, 'imagerySelected.value:', imagerySelected.value);
   MapStore.imagerySelected = newImagery;
   await map.addLayer($config.mapLayers[imagerySelected.value], 'cyclomediaRecordings')
