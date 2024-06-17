@@ -219,6 +219,8 @@ const imageryInfo = {
 const pwdDrawnMapStyle = mergeDeep(imageryInfo,{
   version: 8,
   name: 'pwdDrawnMap',
+  // glyphs: "mapbox://fonts/mapbox/{fontstack}/{range}.pbf",
+  glyphs: '//fonts.openmaptiles.org/{fontstack}/{range}.pbf',
   sources: {
     pwd: {
       tiles: [
@@ -254,6 +256,13 @@ const pwdDrawnMapStyle = mergeDeep(imageryInfo,{
         }
       }
     },
+    // labelLayer: {
+    //   type: 'geojson',
+    //   data: {
+    //     'type': 'FeatureCollection',
+    //     'features': [],
+    //   },
+    // },
   },
   layers: [
     {
@@ -314,6 +323,22 @@ const pwdDrawnMapStyle = mergeDeep(imageryInfo,{
         "text-allow-overlap": true,
       },
     },
+    // {
+    //   id: null,
+    //   'type': 'symbol',
+    //   'source': 'labelLayer',
+    //   'paint': {
+    //     'text-color': 'red',
+    //   },
+    //   'layout': {
+    //     'text-size': 12,
+    //     'text-font': [ 'Open Sans Regular' ],
+    //     'text-field': [ 'get', 'description' ],
+    //     'text-variable-anchor': [ 'center' ],
+    //     'text-radial-offset': 0.5,
+    //     'text-justify': 'center',
+    //   },
+    // },
   ],
 });
 

@@ -29,6 +29,7 @@ export const useMapStore = defineStore("MapStore", {
       selectedRegmap: null,
       regmapOpacity: 0.5,
       zoningOpacity: 1,
+      labelLayers: [],
     };
   },
   actions: {

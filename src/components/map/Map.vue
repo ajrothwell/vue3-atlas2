@@ -224,9 +224,11 @@ onMounted(async () => {
   map.addControl(draw, 'bottom-right');
 
   map.on('draw.create', drawCreate);
+  map.on('draw.update', drawUpdate);
   map.on('draw.selectionchange', drawSelectionChange);
   map.on('draw.finish', drawFinish);
   map.on('draw.modechange', drawModeChange);
+  // map.on('draw.delete', drawDelete);
 
   map.resize();
 
@@ -679,6 +681,10 @@ const drawCreate = (e) => {
   if (import.meta.env.VITE_DEBUG == 'true') console.log('drawCreate is running, e', e);
   distanceMeasureControlRef.value.getDrawDistances(e);
 }
+const drawUpdate = (e) => {
+  if (import.meta.env.VITE_DEBUG == 'true') console.log('drawUpdate is running, e:', e);
+  distanceMeasureControlRef.value.getDrawDistances(e);
+}
 const drawSelectionChange = (e) => {
   if (import.meta.env.VITE_DEBUG == 'true') console.log('drawSelectionChange is running, e:', e);
   distanceMeasureControlRef.value.handleDrawSelectionChange(e);
@@ -697,6 +703,35 @@ const drawModeChange = (e) => {
   drawInfo.value.mode = e.mode;
   distanceMeasureControlRef.value.handleDrawModeChange(e);
 }
+
+const drawDelete = (e) => {
+  if (import.meta.env.VITE_DEBUG == 'true') console.log('drawDelete is running, e:', e);
+  // distanceMeasureControlRef.value.handleDrawDelete(e);
+  map.getSource(e).setData({ type: 'FeatureCollection', features: [] });
+
+}
+
+const labelLayers = computed(() => { return MapStore.labelLayers; });
+
+watch(
+  () => labelLayers,
+  (newLabelLayers, oldLabelLayers) => {
+    if (import.meta.env.VITE_DEBUG == 'true') console.log('Map.vue watch MapStore.labelLayers, newLabelLayers.value:', newLabelLayers.value, 'oldLabelLayers.value:', JSON.parse(JSON.stringify(oldLabelLayers.value)));
+    if (newLabelLayers.value.length) {
+      newLabelLayers.value.forEach(layer => {
+        console.log('watch, layer:', layer, 'layer.id:', layer.id, 'JSON.parse(JSON.stringify(layer.source)):', JSON.parse(JSON.stringify(layer.source)));
+        if (!map.getSource(layer.id)) {
+          map.addSource(layer.id, JSON.parse(JSON.stringify(layer.source)));
+          map.addLayer(layer.layer);
+        } else {
+          map.getSource(layer.id).setData(layer.source.data);
+        }
+      })
+    }
+    if (import.meta.env.VITE_DEBUG == 'true') console.log('watch, map.getStyle:', map.getStyle(), 'map.getStyle().layers:', map.getStyle().layers, 'map.getStyle().sources:', map.getStyle().sources);
+  },
+  { deep: true }
+)
 
 const removeAllCyclomediaMapLayers = () => {
   let recordingsGeojson = {
@@ -923,7 +958,10 @@ const legendData = ref({
       @opacity-change="handleZoningOpacityChange"
     />
     <!-- the distance measure control uses a ref, so that functions within the component can be called from this file -->
-    <DistanceMeasureControl ref="distanceMeasureControlRef" />
+    <DistanceMeasureControl
+      ref="distanceMeasureControlRef"
+      @drawDelete="drawDelete"
+    />
     <OverlayLegend
       v-show="!MapStore.imageryOn && ['Deeds', 'Zoning'].includes(MainStore.currentTopic)"
       :items="legendData"

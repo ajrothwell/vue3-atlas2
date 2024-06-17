@@ -1,6 +1,8 @@
 <script>
 
+import { useMainStore } from '@/stores/MainStore.js';
 import { useMapStore} from '@/stores/MapStore.js';
+
 
 // import mapbox-gl-draw-min.js, cloned from https://gist.github.com/godismyjudge95/a4ea43263db53b90b05511c911cd0034
 // this was recommended by a comment in https://github.com/mapbox/mapbox-gl-js/issues/9114
@@ -30,7 +32,7 @@ export default {
       toggledOn: false,
       currentShape: null,
       currentArea: null,
-      labelLayers: [],
+      // labelLayers: [],
     };
     return data;
   },
@@ -50,7 +52,8 @@ export default {
       return id;
     },
     newArea() {
-      let shape = this.$data.labelLayers.filter(layer => layer.id === this.currentOrSelectedShape);
+      const MapStore = useMapStore();
+      let shape = MapStore.labelLayers.filter(layer => layer.id === this.currentOrSelectedShape);
       if (import.meta.env.VITE_DEBUG == 'true') console.log('newArea is recalculating, shape:', shape, 'this.currentOrSelectedShape:', this.currentOrSelectedShape);
       let set;
       if (shape[0]) {
@@ -59,8 +62,9 @@ export default {
       return set;
     },
     currentDistances() {
+      const MapStore = useMapStore();
       if (import.meta.env.VITE_DEBUG == 'true') console.log('currentDistances is recalculating');
-      let shape = this.$data.labelLayers.filter(layer => layer.id === this.currentOrSelectedShape);
+      let shape = MapStore.labelLayers.filter(layer => layer.id === this.currentOrSelectedShape);
       let set;
       if (shape[0]) {
         set = shape[0].distances;
@@ -89,11 +93,17 @@ export default {
       return booleanTotal;
     },
   },
+  // mounted() {
+  //   let element = document.getElementsByClassName('mapbox-gl-draw_polygon')[0];
+  //   element.innerHTML='measure tool';
+  // },
   methods: {
     handleDeleteClick() {
       const MapStore = useMapStore();
-      let index = this.labelLayers.indexOf(this.labelLayers.filter(set => set.id === this.currentShape)[0]);
-      this.labelLayers.splice(index, 1);
+      this.$emit('drawDelete', this.selected);
+      let index = MapStore.labelLayers.indexOf(MapStore.labelLayers.filter(set => set.id === this.selected)[0]);
+      if (import.meta.env.VITE_DEBUG == 'true') console.log('handleDeleteClick is running, index:', index);
+      MapStore.labelLayers.splice(index, 1);
       MapStore.draw.delete(this.$data.selected);
       this.$data.selected = null;
     },
@@ -133,6 +143,7 @@ export default {
         shapeId = e.features[0].id;
         // if (import.meta.env.VITE_DEBUG == 'true') console.log('in else if, shapeId:', shapeId);
       }
+      if (import.meta.env.VITE_DEBUG == 'true') console.log('middle of getDrawDistances, draw:', draw, 'shapeId:', shapeId, 'e:', e, 'mode is draw_polygon, data:', data, 'coordinates:', coordinates);
 
       this.currentShape = shapeId;
       let feature;
@@ -290,22 +301,22 @@ export default {
             },
           };
 
-          let location = this.labelLayers.filter(set => set.id === shapeId)[0];
-          // if (import.meta.env.VITE_DEBUG == 'true') console.log('first try on location:', location);
+          let location = MapStore.labelLayers.filter(set => set.id === shapeId)[0];
+          if (import.meta.env.VITE_DEBUG == 'true') console.log('first try on location:', location);
 
           if (!location) {
-            this.labelLayers.push(theSet);
-            location = this.labelLayers.filter(set => set.id === shapeId)[0];
-            // if (import.meta.env.VITE_DEBUG == 'true') console.log('second try on location:', location);
+            MapStore.labelLayers.push(theSet);
+            location = MapStore.labelLayers.filter(set => set.id === shapeId)[0];
+            if (import.meta.env.VITE_DEBUG == 'true') console.log('second try on location:', location);
           }
           location.area = currentArea;
           location.distances = distancesArray;
           location.source.data.features = features;
         }
       }
-      // if (e && !e.point) {
-      //   this.currentShape = null;
-      // }
+      if (e && !e.point) {
+        this.currentShape = null;
+      }
     },
 
     handleDrawModeChange(e){
@@ -331,8 +342,8 @@ export default {
       let shapeId = this.currentShape;
       if (import.meta.env.VITE_DEBUG == 'true') console.log('handleDrawCancel is running, shapeId:', shapeId);
       if (shapeId) {
-        let index = this.$data.labelLayers.indexOf(this.$data.labelLayers.filter(set => set.id === shapeId)[0]);
-        this.$data.labelLayers.splice(index, 1);
+        let index = MapStore.labelLayers.indexOf(MapStore.labelLayers.filter(set => set.id === shapeId)[0]);
+        MapStore.labelLayers.splice(index, 1);
         // this.$data.selected = null;
         MapStore.draw.delete(this.currentShape);
         this.$data.currentShape = null;
@@ -345,7 +356,7 @@ export default {
       const MapStore = useMapStore();
       let currentShape = this.$data.currentShape;
       // let currentPoints = [];
-      let fetchedPoints = this.$data.labelLayers.filter(set => set.id === this.currentShape)[0].distances;
+      let fetchedPoints = MapStore.labelLayers.filter(set => set.id === this.currentShape)[0].distances;
       if (import.meta.env.VITE_DEBUG == 'true') console.log('MapPanel.vue handleDrawFinish 1 is running, MapStore.draw.getMode():', MapStore.draw.getMode(), 'currentShape:', currentShape, 'fetchedPoints:', fetchedPoints);
 
       let currentPoints = [];
@@ -455,7 +466,7 @@ export default {
       <div
         v-if="currentDistances"
       >
-        <table>
+        <table class="distance-table">
           <tr>
             <th>lat</th>
             <th>lng</th>
@@ -586,6 +597,25 @@ export default {
 table {
   margin-top: 0px;
   margin-bottom: 0px;
+}
+
+.distance-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th {
+    background-color: rgb(68, 68, 68);
+    color: white;
+  }
+
+  td {
+    margin-right: 5px !important;
+
+  }
+
+  th, td {
+    text-align: center !important;
+  }
 }
 
 td {
