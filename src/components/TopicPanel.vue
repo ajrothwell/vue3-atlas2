@@ -114,6 +114,7 @@ const zipCode = computed(() => {
       :topic-name="'Property'"
       :topic-icon="'fa-solid fa-home'"
       :loading="!dataSourcesLoadedArray.includes('Property')"
+      :topic-index="1"
     >
       <Property />
     </topic>
@@ -123,6 +124,7 @@ const zipCode = computed(() => {
       :topic-name="'Condominiums'"
       :topic-icon="'fa-solid fa-building'"
       :loading="!dataSourcesLoadedArray.includes('Condominiums')"
+      :topic-index="2"
     >
       <Condos v-if="dataSourcesLoadedArray.includes('Condominiums')" />
     </topic>
@@ -131,6 +133,7 @@ const zipCode = computed(() => {
       :topic-name="'Deeds'"
       :topic-icon="'fa-solid fa-book'"
       :loading="!dataSourcesLoadedArray.includes('Deeds')"
+      :topic-index="2"
     >
       <Deeds />
     </topic>
@@ -139,6 +142,7 @@ const zipCode = computed(() => {
       :topic-name="'Licenses & Inspections'"
       :topic-icon="'fa-solid fa-wrench'"
       :loading="!dataSourcesLoadedArray.includes('Licenses & Inspections')"
+      :topic-index="3"
     >
       <LI />
     </topic>
@@ -147,6 +151,7 @@ const zipCode = computed(() => {
       :topic-name="'Zoning'"
       :topic-icon="'fa-solid fa-university'"
       :loading="!dataSourcesLoadedArray.includes('Zoning')"
+      :topic-index="4"
     >
       <Zoning />
     </topic>
@@ -155,6 +160,7 @@ const zipCode = computed(() => {
       :topic-name="'Voting'"
       :topic-icon="'fa-solid fa-gavel'"
       :loading="!dataSourcesLoadedArray.includes('Voting')"
+      :topic-index="5"
     >
       <Voting />
     </topic>
@@ -163,6 +169,7 @@ const zipCode = computed(() => {
       :topic-name="'Nearby Activity'"
       :topic-icon="'fa-solid fa-map-marker-alt'"
       :loading="!dataSourcesLoadedArray.includes('Nearby Activity')"
+      :topic-index="6"
     >
       <KeepAlive>
         <NearbyActivity />

@@ -18,6 +18,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  topicIndex: {
+    type: Number,
+    default: 1,
+  }
 });
 
 import { useRoute, useRouter } from 'vue-router';
@@ -43,7 +47,16 @@ const handleTopicClick = () => {
   setTimeout(() => {
     const element = document.getElementById(props.topicName+'-topic');
     if (import.meta.env.VITE_DEBUG == 'true') console.log('element:', element);
-    element.scrollIntoView();//{behavior: 'smooth'});
+    let panel = null;
+    if (MainStore.isMobileDevice || MainStore.windowDimensions.width < 760) {
+      panel = document.getElementById('main');
+      const scrollValue = 315 + props.topicIndex * 62;
+      panel.scrollTo({
+        top: scrollValue,
+      });
+    } else {
+      element.scrollIntoView();//{behavior: 'smooth'});
+    }
   }, '100');
 }
 
