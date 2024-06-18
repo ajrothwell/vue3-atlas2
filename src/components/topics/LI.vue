@@ -96,7 +96,7 @@ const inspectionsLength = computed(() => { if (LiStore.liInspections.rows) retur
 // VIOLATIONS
 const violationsCompareFn = (a, b) => new Date(b.casecreateddate) - new Date(a.casecreateddate);
 const violations = computed(() => { if (LiStore.liViolations.rows) return [ ...LiStore.liViolations.rows ].sort(violationsCompareFn) });
-const violationsLength = computed(() => { if (LiStore.liViolations.rows) return LiStore.liViolations.rows.length });
+const violationsLength = computed(() => violations.length ? violations.length : 0);
 
 // BUSINESS LICENSES
 const businessLicensesCompareFn = (a, b) => new Date(b.initialissuedate) - new Date(a.initialissuedate);
