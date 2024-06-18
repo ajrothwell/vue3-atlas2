@@ -219,7 +219,7 @@ const imageryInfo = {
 const pwdDrawnMapStyle = mergeDeep(imageryInfo,{
   version: 8,
   name: 'pwdDrawnMap',
-  glyphs: 'http://fonts.openmaptiles.org/{fontstack}/{range}.pbf',
+  glyphs: '//fonts.openmaptiles.org/{fontstack}/{range}.pbf',
   sources: {
     pwd: {
       tiles: [
