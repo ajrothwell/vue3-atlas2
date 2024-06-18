@@ -15,7 +15,9 @@ export default function useScrolling() {
       clickedRow.lngLat = e.row.geometry.coordinates;
     }
     const MainStore = useMainStore();
-    MainStore.clickedRow = clickedRow;
+    if (!MainStore.isMobileDevice && MainStore.windowDimensions.width >=760) {
+      MainStore.clickedRow = clickedRow;
+    }
   }
 
   const handleRowMouseover = (e, id) => {
