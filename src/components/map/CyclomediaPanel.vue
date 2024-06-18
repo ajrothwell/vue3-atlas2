@@ -37,14 +37,20 @@ const setNewLocation = async (coords) => {
   if (import.meta.env.VITE_DEBUG == 'true') console.log('CyclomediaPanel.vue setNewLocation, coords:', coords);
   if (import.meta.env.VITE_DEBUG == 'true') console.log(coords);
   const coords2272 = proj4(projection4326, projection2272, coords);
-  const response = await StreetSmartApi.open(coords2272[0] + ',' + coords2272[1], {
-    viewerType: StreetSmartApi.ViewerType.PANORAMA,
-    srs: 'EPSG:2272',
-    panoramaViewer: {
-      closable: false,
-      maximizable: false,
+  const response = await StreetSmartApi.open(
+    {
+      coordinate: [coords2272[0],coords2272[1]],
+      dateRange: {from: '2017-01-01', to: '2017-12-01'},
     },
-  })
+    {
+      viewerType: StreetSmartApi.ViewerType.PANORAMA,
+      srs: 'EPSG:2272',
+      panoramaViewer: {
+        closable: false,
+        maximizable: false,
+      },
+    }
+  )
   let viewer = response[0];
   viewer.toggleNavbarExpanded(navBarExpanded.value);
   viewer.toggleButtonEnabled('panorama.elevation', false);
