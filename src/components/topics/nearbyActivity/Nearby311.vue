@@ -81,7 +81,8 @@ const nearby311TableData = computed(() => {
       },
       {
         label: 'Type',
-        field: 'service_name',
+        field: 'link',
+        html: true,
       },
       {
         label: 'Distance',

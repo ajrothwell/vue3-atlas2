@@ -215,6 +215,11 @@ export const useNearbyActivityStore = defineStore('NearbyActivityStore', {
           const data = response.data;
           data.rows.forEach(row => {
             row.distance_ft = (row.distance * 3.28084).toFixed(0) + ' ft';
+            if (row.media_url) {
+              row.link = `<a target='_blank' href=${row.media_url}>${row.service_name}</a>`;
+            } else {
+              row.link = row.service_name;
+            }
           });
           this.nearby311 = data;
           this.setLoadingData(false);
