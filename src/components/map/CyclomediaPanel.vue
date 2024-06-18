@@ -141,6 +141,15 @@ onMounted( async() => {
   width: 100%;
 }
 
+
+@media 
+only screen and (max-width: 760px),
+(min-device-width: 768px) and (max-device-width: 1024px)  {
+  .cyclomedia-panel {
+    height: 150px;
+  }
+}
+
 .panoramaViewerWindow {
   display: block;
   width: 100%;

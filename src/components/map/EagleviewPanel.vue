@@ -107,6 +107,15 @@ onMounted( async() => {
   width: 100%;
 }
 
+@media 
+only screen and (max-width: 760px),
+(min-device-width: 768px) and (max-device-width: 1024px)  {
+  .eagleview-div {
+    height: 150px;
+  }
+}
+
+
 .ev-embedded-explorer_container {
   height: 100%;
   width: 100%;
