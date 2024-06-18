@@ -407,6 +407,7 @@ export default {
         MapStore.draw.trash();
         this.handleDrawCancel();
       }
+      MapStore.map.getCanvas().style.cursor = ''
       if (import.meta.env.VITE_DEBUG == 'true') console.log('MapPanel.vue handleDrawFinish 2 is running, MapStore.draw.getMode():', MapStore.draw.getMode(), 'currentShape:', currentShape, 'fetchedPoints:', fetchedPoints);
     },
 

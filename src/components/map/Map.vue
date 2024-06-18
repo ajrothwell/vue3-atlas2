@@ -226,9 +226,7 @@ onMounted(async () => {
   map.on('draw.create', drawCreate);
   map.on('draw.update', drawUpdate);
   map.on('draw.selectionchange', drawSelectionChange);
-  map.on('draw.finish', drawFinish);
   map.on('draw.modechange', drawModeChange);
-  // map.on('draw.delete', drawDelete);
 
   map.resize();
 
@@ -665,7 +663,6 @@ watch(
   }
 )
 
-
 // the distance measure control is added in the template with a ref, so that functions within the component can be called from this file
 const distanceMeasureControlRef = ref(null)
 
@@ -689,10 +686,6 @@ const drawSelectionChange = (e) => {
   if (import.meta.env.VITE_DEBUG == 'true') console.log('drawSelectionChange is running, e:', e);
   distanceMeasureControlRef.value.handleDrawSelectionChange(e);
 }
-const drawFinish = () => {
-  if (import.meta.env.VITE_DEBUG == 'true') console.log('drawFinish is running');
-  drawInfo.value.mode = 'simple_select';
-}
 const drawModeChange = (e) => {
   if (import.meta.env.VITE_DEBUG == 'true') console.log('drawModeChange is running, e', e);
   if (e.mode === 'draw_polygon') {
@@ -703,12 +696,10 @@ const drawModeChange = (e) => {
   drawInfo.value.mode = e.mode;
   distanceMeasureControlRef.value.handleDrawModeChange(e);
 }
-
 const drawDelete = (e) => {
   if (import.meta.env.VITE_DEBUG == 'true') console.log('drawDelete is running, e:', e);
   // distanceMeasureControlRef.value.handleDrawDelete(e);
   map.getSource(e).setData({ type: 'FeatureCollection', features: [] });
-
 }
 
 const labelLayers = computed(() => { return MapStore.labelLayers; });
