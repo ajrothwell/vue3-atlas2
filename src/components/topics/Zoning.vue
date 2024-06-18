@@ -181,7 +181,7 @@ const rcosTableData = computed(() => {
         <button
           v-for="parcel in ParcelsStore.dor.features"
           :key="parcel.properties.OBJECTID"
-          class="dor-parcel-select column is-3 add-borders has-text-centered p-2"
+          class="dor-parcel-select column is-one-quarter-desktop is-half-mobile has-text-centered add-borders p-2"
           :class="{ 'is-selected': parcel.properties.OBJECTID === selectedParcelId }"
           @click="MainStore.selectedParcelId = parcel.properties.OBJECTID"
         >

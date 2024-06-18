@@ -344,6 +344,7 @@ const pwdDrawnMapStyle = mergeDeep(imageryInfo,{
 const liDrawnMapStyle = mergeDeep(imageryInfo,{
   version: 8,
   name: 'liDrawnMap',
+  glyphs: '//fonts.openmaptiles.org/{fontstack}/{range}.pbf',
   sources: {
     pwd: {
       tiles: [
@@ -470,6 +471,7 @@ const liDrawnMapStyle = mergeDeep(imageryInfo,{
 const dorDrawnMapStyle = mergeDeep(imageryInfo,{
   version: 8,
   name: 'dorDrawnMap',
+  glyphs: '//fonts.openmaptiles.org/{fontstack}/{range}.pbf',
   sources: {
     dor: {
       tiles: [
@@ -579,6 +581,7 @@ const dorDrawnMapStyle = mergeDeep(imageryInfo,{
 const zoningDrawnMapStyle = mergeDeep(imageryInfo,{
   version: 8,
   name: 'dorDrawnMap',
+  glyphs: '//fonts.openmaptiles.org/{fontstack}/{range}.pbf',
   sources: {
     dor: {
       tiles: [
@@ -712,6 +715,7 @@ const zoningDrawnMapStyle = mergeDeep(imageryInfo,{
 const votingDrawnMapStyle = mergeDeep(imageryInfo,{
   version: 8,
   name: 'votingDrawnMap',
+  glyphs: '//fonts.openmaptiles.org/{fontstack}/{range}.pbf',
   sources: {
     pwd: {
       tiles: [
@@ -866,8 +870,7 @@ const votingDrawnMapStyle = mergeDeep(imageryInfo,{
 const nearbyDrawnMapStyle = mergeDeep(imageryInfo,{
   version: 8,
   name: 'nearbyDrawnMap',
-  // "sprite": 'https://docs.mapbox.com/mapbox-gl-js/assets/custom_marker.png',
-  // "glyphs": 'mapbox://fonts/mapbox/{fontstack}/{range}.pbf',
+  glyphs: '//fonts.openmaptiles.org/{fontstack}/{range}.pbf',
   sources: {
     pwd: {
       tiles: [
