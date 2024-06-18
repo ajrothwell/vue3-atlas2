@@ -48,7 +48,7 @@ const handleTopicClick = () => {
     const element = document.getElementById(props.topicName+'-topic');
     if (import.meta.env.VITE_DEBUG == 'true') console.log('element:', element);
     let panel = null;
-    if (MainStore.isMobileDevice || MainStore.windowDimensions.width < 760) {
+    if (MainStore.isMobileDevice || MainStore.windowDimensions.width <= 760) {
       panel = document.getElementById('main');
       const scrollValue = 315 + props.topicIndex * 62;
       panel.scrollTo({
