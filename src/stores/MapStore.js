@@ -24,6 +24,7 @@ export const useMapStore = defineStore("MapStore", {
       cyclomediaCameraHFov: null,
       cyclomediaCameraXyz: null,
       cyclomediaCameraLngLat: null,
+      cyclomediaYear: null,
       clickedCyclomediaRecordingCoords: null,
       eagleviewOn: false,
       selectedRegmap: null,
