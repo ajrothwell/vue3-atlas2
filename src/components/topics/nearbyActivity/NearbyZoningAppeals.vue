@@ -64,7 +64,7 @@ const nearbyZoningAppealsGeojson = computed(() => {
 })
 watch (() => nearbyZoningAppealsGeojson.value, (newGeojson) => {
   const map = MapStore.map;
-  map.getSource('nearby').setData(featureCollection(newGeojson));
+  if (map.getSource) map.getSource('nearby').setData(featureCollection(newGeojson));
 });
 
 const hoveredStateId = computed(() => { return MainStore.hoveredStateId; });
@@ -133,7 +133,7 @@ const nearbyZoningAppealsTableData = computed(() => {
         :columns="nearbyZoningAppealsTableData.columns"
         :rows="nearbyZoningAppealsTableData.rows"
         :row-style-class="row => hoveredStateId === row.objectid ? 'active-hover ' + row.objectid : 'inactive ' + row.objectid"
-        style-class="table"
+        style-class="table nearby-table"
         @row-mouseenter="handleRowMouseover($event, 'objectid')"
         @row-mouseleave="handleRowMouseleave"
         @row-click="handleRowClick($event, 'objectid', 'nearbyZoningAppeals')"

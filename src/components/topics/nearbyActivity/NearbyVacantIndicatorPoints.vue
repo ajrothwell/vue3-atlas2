@@ -34,7 +34,7 @@ const nearbyVacantIndicatorPointsGeojson = computed(() => {
 })
 watch (() => nearbyVacantIndicatorPointsGeojson.value, (newGeojson) => {
   const map = MapStore.map;
-  map.getSource('nearby').setData(featureCollection(newGeojson));
+  if (map.getSource) map.getSource('nearby').setData(featureCollection(newGeojson));
 });
 
 const hoveredStateId = computed(() => { return MainStore.hoveredStateId; });
@@ -92,7 +92,7 @@ const nearbyVacantIndicatorsTableData = computed(() => {
         :columns="nearbyVacantIndicatorsTableData.columns"
         :rows="nearbyVacantIndicatorsTableData.rows"
         :row-style-class="row => hoveredStateId === row.id ? 'active-hover ' + row.id : 'inactive ' + row.id"
-        style-class="table"
+        style-class="table nearby-table"
         @row-mouseenter="handleRowMouseover($event, 'id')"
         @row-mouseleave="handleRowMouseleave"
         @row-click="handleRowClick($event, 'id', 'nearbyVacantIndicatorPoints')"

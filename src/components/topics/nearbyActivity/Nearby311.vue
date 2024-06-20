@@ -51,7 +51,7 @@ const nearby311Geojson = computed(() => {
 })
 watch (() => nearby311Geojson.value, async(newGeojson) => {
   const map = MapStore.map;
-  map.getSource('nearby').setData(featureCollection(newGeojson));
+  if (map.getSource) map.getSource('nearby').setData(featureCollection(newGeojson));
 });
 
 const hoveredStateId = computed(() => { return MainStore.hoveredStateId; });
@@ -121,7 +121,7 @@ const nearby311TableData = computed(() => {
         :columns="nearby311TableData.columns"
         :rows="nearby311TableData.rows"
         :row-style-class="row => hoveredStateId === row.service_request_id ? 'active-hover ' + row.service_request_id : 'inactive ' + row.service_request_id"
-        style-class="table"
+        style-class="table nearby-table"
         @row-mouseenter="handleRowMouseover($event, 'service_request_id')"
         @row-mouseleave="handleRowMouseleave"
         @row-click="handleRowClick($event, 'service_request_id', 'nearby311')"

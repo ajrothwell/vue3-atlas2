@@ -53,7 +53,7 @@ const nearbyImminentlyDangerousGeojson = computed(() => {
 })
 watch (() => nearbyImminentlyDangerousGeojson.value, (newGeojson) => {
   const map = MapStore.map;
-  map.getSource('nearby').setData(featureCollection(newGeojson));
+  if (map.getSource) map.getSource('nearby').setData(featureCollection(newGeojson));
 });
 
 const hoveredStateId = computed(() => { return MainStore.hoveredStateId; });
@@ -123,7 +123,7 @@ const nearbyImminentlyDangerousTableData = computed(() => {
         :columns="nearbyImminentlyDangerousTableData.columns"
         :rows="nearbyImminentlyDangerousTableData.rows"
         :row-style-class="row => hoveredStateId === row.casenumber ? 'active-hover ' + row.casenumber : 'inactive ' + row.casenumber"
-        style-class="table"
+        style-class="table nearby-table"
         @row-mouseenter="handleRowMouseover($event, 'casenumber')"
         @row-mouseleave="handleRowMouseleave"
         @row-click="handleRowClick($event, 'casenumber', 'nearbyImminentlyDangerous')"

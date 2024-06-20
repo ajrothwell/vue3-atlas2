@@ -53,7 +53,7 @@ const nearbyDemolitionPermitsGeojson = computed(() => {
 })
 watch (() => nearbyDemolitionPermitsGeojson.value, (newGeojson) => {
   const map = MapStore.map;
-  map.getSource('nearby').setData(featureCollection(newGeojson));
+  if (map.getSource) map.getSource('nearby').setData(featureCollection(newGeojson));
 });
 
 const hoveredStateId = computed(() => { return MainStore.hoveredStateId; });
@@ -122,7 +122,7 @@ const nearbyDemolitionPermitsTableData = computed(() => {
         :columns="nearbyDemolitionPermitsTableData.columns"
         :rows="nearbyDemolitionPermitsTableData.rows"
         :row-style-class="row => hoveredStateId === row.objectid ? 'active-hover ' + row.objectid : 'inactive ' + row.objectid"
-        style-class="table"
+        style-class="table nearby-table"
         @row-mouseenter="handleRowMouseover($event, 'objectid')"
         @row-mouseleave="handleRowMouseleave"
         @row-click="handleRowClick($event, 'objectid', 'nearbyDemolitionPermits')"
