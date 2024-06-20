@@ -164,6 +164,7 @@ onMounted(async () => {
     if (import.meta.env.VITE_DEBUG == 'true') console.log('nearby click, e:', e, 'properties:', properties, 'idField:', idField, 'e.features[0]:', e.features[0], 'type:', type, 'row:', row);
     e.clickOnLayer = true;
     MainStore.clickedMarkerId = e.features[0].properties.id;
+    MainStore.hoveredStateId = e.features[0].properties.id;
     // MainStore.hoveredStateId = e.features[0].properties.id;
     if (row.properties) {
       row[infoField] = row.properties[infoField];
