@@ -165,7 +165,6 @@ onMounted(async () => {
     e.clickOnLayer = true;
     MainStore.clickedMarkerId = e.features[0].properties.id;
     MainStore.hoveredStateId = e.features[0].properties.id;
-    // MainStore.hoveredStateId = e.features[0].properties.id;
     if (row.properties) {
       row[infoField] = row.properties[infoField];
     }
