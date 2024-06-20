@@ -46,6 +46,7 @@ const imageryOn = computed(() => {
 button {
   background-color: transparent;
   border: none;
+  cursor: pointer;
 }
 
 .imagery-toggle {

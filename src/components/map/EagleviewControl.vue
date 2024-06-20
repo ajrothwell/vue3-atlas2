@@ -45,6 +45,7 @@ const eagleviewOn = computed(() => {
 button {
   background-color: transparent;
   border: none;
+  cursor: pointer;
 }
 
 .eagleview-toggle {
@@ -58,7 +59,7 @@ button {
   border-radius: 5px;
   border-style: solid;
   border-width: 2px;
-  border-color: rgb(167, 166, 166)
+  border-color: rgb(167, 166, 166);
 }
 
 .img-src {

@@ -46,6 +46,7 @@ const cyclomediaOn = computed(() => {
 button {
   background-color: transparent;
   border: none;
+  cursor: pointer;
 }
 
 .cyclomedia-toggle {
