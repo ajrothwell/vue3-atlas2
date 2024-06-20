@@ -351,6 +351,7 @@ const dorDocsTableData = computed(() => {
   color: #444444;
   font-size: 1rem;
   background-color: white;
+  cursor: pointer;
 }
 
 .dor-parcel-select:hover {
