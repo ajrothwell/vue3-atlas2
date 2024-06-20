@@ -83,6 +83,14 @@ const fullScreenMapEnabled = computed(() => {
   return MainStore.fullScreenMapEnabled;
 });
 
+const appTitle = computed(() => {
+  let version = 'Atlas';
+  if (import.meta.env.VITE_VERSION == 'cityatlas'){
+    version = 'CityAtlas';
+  }
+  return version;
+})
+
 </script>
 
 <template>
@@ -92,7 +100,7 @@ const fullScreenMapEnabled = computed(() => {
   >Skip to main content</a>
 
   <app-header
-    app-title="Atlas"
+    :app-title="appTitle"
     app-link="/"
     :is-sticky="true"
     :is-fluid="true"

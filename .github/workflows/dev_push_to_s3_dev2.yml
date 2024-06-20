@@ -21,12 +21,13 @@ jobs:
       with:
         node-version: '20.x'
 
-    - name: npm install, and build
+    - name: Atlas - npm install and build
       run: |
         printf "@fortawesome:registry=https://npm.fontawesome.com/\n//npm.fontawesome.com/:_authToken=${FA_AUTH_TOKEN}" >> ~/.npmrc
         npm install
         npm run build-dev
       env:
+        VITE_VERSION: 'atlas'
         FA_AUTH_TOKEN: ${{ secrets.FA_AUTH_TOKEN }}
         VITE_GATEKEEPER_KEY: ${{ secrets.VITE_GATEKEEPER_KEY }}
         VITE_CYCLOMEDIA_API_KEY: ${{ secrets.VITE_CYCLOMEDIA_API_KEY }}
@@ -46,3 +47,29 @@ jobs:
         aws s3 sync dist s3://$AWS_S3_BUCKET --region us-east-1 --delete
         aws s3 cp s3://$AWS_S3_BUCKET s3://$AWS_S3_BUCKET --recursive --exclude "*" --include "*.html" --metadata-directive REPLACE --acl public-read --cache-control max-age=0,no-cache,no-store,must-revalidate,proxy-revalidate,public --expires "0" --content-type "text/html; charset=utf-8"
         aws cloudfront create-invalidation --distribution-id $AWS_CLOUDFRONT_DISTRIBUTION --paths "/*"
+
+        
+    - name: CityAtlas - npm install and build
+      run: |
+        printf "@fortawesome:registry=https://npm.fontawesome.com/\n//npm.fontawesome.com/:_authToken=${FA_AUTH_TOKEN}" >> ~/.npmrc
+        npm install
+        npm run build-dev
+      env:
+        VITE_VERSION: 'cityatlas'
+        FA_AUTH_TOKEN: ${{ secrets.FA_AUTH_TOKEN }}
+        VITE_GATEKEEPER_KEY: ${{ secrets.VITE_GATEKEEPER_KEY }}
+        VITE_CYCLOMEDIA_API_KEY: ${{ secrets.VITE_CYCLOMEDIA_API_KEY }}
+        VITE_CYCLOMEDIA_PASSWORD: ${{ secrets.VITE_CYCLOMEDIA_PASSWORD }}
+        VITE_CYCLOMEDIA_USERNAME: ${{ secrets.VITE_CYCLOMEDIA_USERNAME }}
+        VITE_EAGLEVIEW_CLIENT_ID: ${{ secrets.VITE_EAGLEVIEW_CLIENT_ID }}
+        VITE_EAGLEVIEW_CLIENT_SECRET: ${{ secrets.VITE_EAGLEVIEW_CLIENT_SECRET }}
+
+    - name: Deploy to Dev s3, Set index headers, and Invalidate Cloudfront
+      env:
+        AWS_DEFAULT_REGION: 'us-east-1'
+        AWS_S3_BUCKET: cityatlas-dev.phila.gov
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      run: |
+        aws s3 sync dist s3://$AWS_S3_BUCKET --region us-east-1 --delete
+        aws s3 cp s3://$AWS_S3_BUCKET s3://$AWS_S3_BUCKET --recursive --exclude "*" --include "*.html" --metadata-directive REPLACE --acl public-read --cache-control max-age=0,no-cache,no-store,must-revalidate,proxy-revalidate,public --expires "0" --content-type "text/html; charset=utf-8"
