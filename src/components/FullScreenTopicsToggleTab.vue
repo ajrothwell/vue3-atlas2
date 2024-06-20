@@ -106,7 +106,7 @@ const handleFullScreenTopicsToggleButtonClick = () => {
   <button
     v-if="!isMobileOrTablet"
     id="topics-toggle-tab"
-    :title="fullScreenTopicsEnabled ? 'Reduce Topics Panel' : 'Expand Topics Panel'"
+    :title="fullScreenTopicsEnabled ? 'Show Map Panel' : 'Hide Map Panel'"
     :style="{ top: buttonY, right: buttonX }"
     class="toggle-tab"
     tabindex="0"
