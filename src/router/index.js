@@ -227,17 +227,21 @@ const router = createRouter({
       name: 'search',
       component: App,
       beforeEnter: async (to, from) => {
-        if (import.meta.env.VITE_DEBUG == 'true') console.log('search route beforeEnter, to.query:', to.query, 'from:', from);
         const { address, lat, lng } = to.query;
+        if (import.meta.env.VITE_DEBUG == 'true') console.log('search route beforeEnter, to.query:', to.query, 'from:', from, 'address:', address);
         const MainStore = useMainStore();
-        if (address) {
+        if (address && address !== '') {
+          if (import.meta.env.VITE_DEBUG == 'true') console.log('search route beforeEnter, address:', address);
           MainStore.setLastSearchMethod('address');
           await getGeocodeAndPutInStore(address);
+          routeApp(router);
         } else if (lat && lng) {
           MainStore.setLastSearchMethod('mapClick');
           await getParcelsAndPutInStore(lng, lat);
+          routeApp(router);
+        } else {
+          return false;
         }
-        routeApp(router);
       },
     }
   ]
