@@ -121,6 +121,7 @@ const handleFullScreenMapToggleButtonClick = () => {
   .toggle-tab {
     display: none;
     padding-top: 9px;
+    cursor: pointer;
   }
 
   .align-span {
