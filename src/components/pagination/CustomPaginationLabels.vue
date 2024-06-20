@@ -8,7 +8,7 @@
         <label
           :for="id"
           class="footer__row-count__label"
-        >{{ rowsPerPageText }}:</label>
+        >{{ rowsPerPageText }}</label>
         <select
           :id="id"
           v-model="currentPerPage"
@@ -59,7 +59,7 @@
           class="chevron"
           :class="{ 'left': !rtl, 'right': rtl }"
         />
-        <span>{{ prevText }}</span>
+        <!-- <span>{{ prevText }}</span> -->
       </button>
 
       <button
@@ -70,7 +70,7 @@
         :class="{ disabled: !nextIsPossible }"
         @click.prevent.stop="nextPage"
       >
-        <span>{{ nextText }}</span>
+        <!-- <span>{{ nextText }}</span> -->
         <span
           aria-hidden="true"
           class="chevron"
@@ -107,7 +107,7 @@ export default {
     // text options
     nextText: { default: 'Next' },
     prevText: { default: 'Prev' },
-    rowsPerPageText: { default: 'Rows per page:' },
+    rowsPerPageText: { default: '# rows' },
     ofText: { default: 'of' },
     pageText: { default: 'page' },
     allText: { default: 'All' },
@@ -186,6 +186,7 @@ export default {
 
     // Go to next page
     nextPage() {
+      if (import.meta.env.VITE_DEBUG == 'true') console.log('nextPage is running, this.nextIsPossible:', this.nextIsPossible, 'this.currentPage:', this.currentPage);
       if (this.nextIsPossible) {
         this.prevPage = this.currentPage;
         ++this.currentPage;

@@ -2,6 +2,7 @@
 import { ref, computed, watch, onMounted } from 'vue';
 import { polygon, featureCollection } from '@turf/helpers';
 
+import CustomPaginationLabels from '@/components/pagination/CustomPaginationLabels.vue';
 import useTables from '@/composables/useTables';
 const { paginationOptions } = useTables();
 
@@ -376,6 +377,16 @@ const businessLicensesTableData = computed(() => {
                   No building certifications found
                 </div>
               </template>
+              <template #pagination-top="props">
+                <custom-pagination-labels
+                  :mode="'pages'"
+                  :total="props.total"
+                  :perPage="5"
+                  @page-changed="props.pageChanged"
+                  @per-page-changed="props.perPageChanged"
+                >
+                </custom-pagination-labels>
+              </template>
             </vue-good-table>
           </div>
           <div
@@ -424,6 +435,16 @@ const businessLicensesTableData = computed(() => {
               No permits found
             </div>
           </template>
+          <template #pagination-top="props">
+            <custom-pagination-labels
+              :mode="'pages'"
+              :total="props.total"
+              :perPage="5"
+              @page-changed="props.pageChanged"
+              @per-page-changed="props.perPageChanged"
+            >
+            </custom-pagination-labels>
+          </template>
         </vue-good-table>
       </div>
       <a
@@ -468,6 +489,16 @@ const businessLicensesTableData = computed(() => {
               No zoning permit documents found
             </div>
           </template>
+          <template #pagination-top="props">
+            <custom-pagination-labels
+              :mode="'pages'"
+              :total="props.total"
+              :perPage="5"
+              @page-changed="props.pageChanged"
+              @per-page-changed="props.perPageChanged"
+            >
+            </custom-pagination-labels>
+          </template>
         </vue-good-table>
       </div>
     </div>
@@ -504,6 +535,16 @@ const businessLicensesTableData = computed(() => {
             <div v-else>
               No inspections found
             </div>
+          </template>
+          <template #pagination-top="props">
+            <custom-pagination-labels
+              :mode="'pages'"
+              :total="props.total"
+              :perPage="5"
+              @page-changed="props.pageChanged"
+              @per-page-changed="props.perPageChanged"
+            >
+            </custom-pagination-labels>
           </template>
         </vue-good-table>
       </div>
@@ -546,6 +587,16 @@ const businessLicensesTableData = computed(() => {
               No violations found
             </div>
           </template>
+          <template #pagination-top="props">
+            <custom-pagination-labels
+              :mode="'pages'"
+              :total="props.total"
+              :perPage="5"
+              @page-changed="props.pageChanged"
+              @per-page-changed="props.perPageChanged"
+            >
+            </custom-pagination-labels>
+          </template>
         </vue-good-table>
       </div>
       <a
@@ -586,6 +637,16 @@ const businessLicensesTableData = computed(() => {
             <div v-else>
               No business licenses found
             </div>
+          </template>
+          <template #pagination-top="props">
+            <custom-pagination-labels
+              :mode="'pages'"
+              :total="props.total"
+              :perPage="5"
+              @page-changed="props.pageChanged"
+              @per-page-changed="props.perPageChanged"
+            >
+            </custom-pagination-labels>
           </template>
         </vue-good-table>
       </div>

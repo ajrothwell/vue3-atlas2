@@ -5,8 +5,7 @@ import { ref, computed, onBeforeMount } from 'vue';
 import useTransforms from '@/composables/useTransforms';
 const { date, integer, prettyNumber } = useTransforms();
 
-// import VgtPaginationLabels from '@/components/pagination/VgtPaginationLabels.vue';
-
+import CustomPaginationLabels from '@/components/pagination/CustomPaginationLabels.vue';
 import useTables from '@/composables/useTables';
 const { paginationOptions } = useTables();
 
@@ -250,7 +249,18 @@ const dorDocsTableData = computed(() => {
           :rows="condosTableData.rows"
           :pagination-options="paginationOptions"
           style-class="table"
-        />
+        >
+          <template #pagination-top="props">
+            <custom-pagination-labels
+              :mode="'pages'"
+              :total="props.total"
+              :perPage="5"
+              @page-changed="props.pageChanged"
+              @per-page-changed="props.perPageChanged"
+            >
+            </custom-pagination-labels>
+          </template>
+        </vue-good-table>
       </div>
 
       <div class="box mt-4 mb-6">
@@ -279,8 +289,8 @@ const dorDocsTableData = computed(() => {
             id="dor-documents"
             :columns="dorDocsTableData.columns"
             :rows="dorDocsTableData.rows"
-            :pagination-options="paginationOptions"
             style-class="table"
+            :pagination-options="paginationOptions"
           >
             <template #emptystate>
               <div v-if="DorStore.loadingDorData">
@@ -293,18 +303,16 @@ const dorDocsTableData = computed(() => {
                 No DOR Documents found
               </div>
             </template>
-          <!-- <template #pagination-top="props">
-            <vgt-pagination-labels
-              :mode="'pages'"
-              :total="props.total"
-              :pageChanged="props.pageChanged"
-              :perPageChanged="props.perPageChanged"
-              :nextText="''"
-              :prevText="''"
-              :perPage="5"
-            >
-          </vgt-pagination-labels>
-        </template> -->
+            <template #pagination-top="props">
+              <custom-pagination-labels
+                :mode="'pages'"
+                :total="props.total"
+                :perPage="5"
+                @page-changed="props.pageChanged"
+                @per-page-changed="props.perPageChanged"
+              >
+              </custom-pagination-labels>
+            </template>
           </vue-good-table>
         </div>
       </div>

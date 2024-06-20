@@ -280,6 +280,16 @@ const rcosTableData = computed(() => {
                 No pending bills found
               </div>
             </template>
+            <template #pagination-top="props">
+              <custom-pagination-labels
+                :mode="'pages'"
+                :total="props.total"
+                :perPage="5"
+                @page-changed="props.pageChanged"
+                @per-page-changed="props.perPageChanged"
+              >
+              </custom-pagination-labels>
+            </template>
           </vue-good-table>
         </div>
       </div>
@@ -311,6 +321,16 @@ const rcosTableData = computed(() => {
             <div v-else>
               No overlays found
             </div>
+          </template>
+          <template #pagination-top="props">
+            <custom-pagination-labels
+              :mode="'pages'"
+              :total="props.total"
+              :perPage="5"
+              @page-changed="props.pageChanged"
+              @per-page-changed="props.perPageChanged"
+            >
+            </custom-pagination-labels>
           </template>
         </vue-good-table>
       </div>
@@ -344,6 +364,16 @@ const rcosTableData = computed(() => {
         <div v-else>
           No appeals found
         </div>
+      </template>
+      <template #pagination-top="props">
+        <custom-pagination-labels
+          :mode="'pages'"
+          :total="props.total"
+          :perPage="5"
+          @page-changed="props.pageChanged"
+          @per-page-changed="props.perPageChanged"
+        >
+        </custom-pagination-labels>
       </template>
     </vue-good-table>
   </div>
@@ -382,6 +412,16 @@ const rcosTableData = computed(() => {
         <div v-else>
           No RCOs found
         </div>
+      </template>
+      <template #pagination-top="props">
+        <custom-pagination-labels
+          :mode="'pages'"
+          :total="props.total"
+          :perPage="5"
+          @page-changed="props.pageChanged"
+          @per-page-changed="props.perPageChanged"
+        >
+        </custom-pagination-labels>
       </template>
     </vue-good-table>
   </div>
