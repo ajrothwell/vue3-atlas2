@@ -37,6 +37,8 @@ const liBuildingFootprintsLength = computed(() => {
 watch (liBuildingFootprints,
   async (newLiBuildingFootprints) => {
     if (import.meta.env.VITE_DEBUG == 'true') console.log('watch newLiBuildingFootprints.features:', newLiBuildingFootprints.features);
+    const map = MapStore.map;
+    await map.getSource('liBuildingFootprints').setData(featureCollection([]));
     if (newLiBuildingFootprints.features) {
       setLiBuildingFootprints(newLiBuildingFootprints);
     }
