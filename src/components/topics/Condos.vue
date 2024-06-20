@@ -7,7 +7,7 @@ const route = useRoute();
 import { useCondosStore } from '@/stores/CondosStore';
 const CondosStore = useCondosStore();
 
-import CustomPaginationCondos from '@/components/pagination/CustomPaginationCondos.vue';
+import CustomPaginationLabelsCondos from '@/components/pagination/CustomPaginationLabelsCondos.vue';
 
 const totalSize = computed(() => CondosStore.condosData.total_size);
 
@@ -111,7 +111,7 @@ const condosTableData = computed(() => {
           </div>
         </template>
         <template #pagination-top="props">
-          <custom-pagination-condos
+          <custom-pagination-labels-condos
             :mode="'pages'"
             :total="props.total"
             :page-changed="props.pageChanged"
