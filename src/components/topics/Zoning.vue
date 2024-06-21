@@ -48,14 +48,14 @@ const longCode = computed(() => {
 
 const hexForLongCode = computed(() => {
   if (ZoningStore.zoningBase[selectedParcelId.value] && ZoningStore.zoningBase[selectedParcelId.value].rows) {
-    const longCode = ZoningStore.zoningBase[selectedParcelId.value].rows[0].long_code.replace('-', '');
-    return $config.zoningColors[longCode];
+    const longCode = ZoningStore.zoningBase[selectedParcelId.value].rows[0].long_code;
+    return $config.ZONING_CODE_MAP[longCode].color;
   }
 });
 
 const description = computed(() => {
   if (ZoningStore.zoningBase[selectedParcelId.value] && ZoningStore.zoningBase[selectedParcelId.value].rows) {
-    return $config.ZONING_CODE_MAP[ZoningStore.zoningBase[selectedParcelId.value].rows[0].long_code]
+    return $config.ZONING_CODE_MAP[ZoningStore.zoningBase[selectedParcelId.value].rows[0].long_code].description;
   }
 })
 

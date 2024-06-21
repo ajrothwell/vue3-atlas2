@@ -2,48 +2,6 @@ import mergeDeep from './util/merge-deep.js';
 
 const cityCenterCoords = [-75.163471, 39.953338];
 
-const zoningColors = {
-  'CA1': '#FCD1CC',
-  'CA2': '#FCD1CC',
-  'CMX1': '#FF7070',
-  'CMX2': '#FF7070',
-  'CMX2.5': '#FF7070',
-  'CMX3': '#EB0000',
-  'CMX4': '#850000',
-  'CMX5': '#850000',
-  'I1': '#C37FF0',
-  'I2': '#9B27D9',
-  'I3': '#41009C',
-  'ICMX': '#C300E6',
-  'IP': '#7C7AC4',
-  'IRMX': '#EC8EF5',
-  'RM1': '#FFA72B',
-  'RM2': '#FFA72B',
-  'RM3': '#FFA72B',
-  'RM4': '#FFA72B',
-  'RMX1': '#FF8138',
-  'RMX2': '#FF8138',
-  'RMX3': '#FF8138',
-  'RSA1': '#FFFF0F',
-  'RSA2': '#FFFF0F',
-  'RSA3': '#FFFF0F',
-  'RSA4': '#FFFF0F',
-  'RSA5': '#FFFF0F',
-  'RSD1': '#FFF4C4',
-  'RSD2': '#FFF4C4',
-  'RSD3': '#FFF4C4',
-  'RTA1': '#D4D40D',
-  'SPAIR': '#B1B3B5',
-  'SPENT': '#805624',
-  'SPINS': '#63BEFF',
-  'SPPOA': '#138C00',
-  'SPPOP': '#118E00',
-  'SPSTA': '#8ACC66',
-  'RSA6': '#FFFF0F',
-  'SPCIV': '#63BEFF',
-  'null': '#828282',
-}
-
 const imageryInfo = {
   sources: {
     imageryLabels: {
@@ -1177,51 +1135,204 @@ const $config = {
   },
 }
 
+const ZONING_COLOR_MAP = {
+  'CA1': '#FCD1CC',
+  'CA2': '#FCD1CC',
+  'CMX1': '#FF7070',
+  'CMX2': '#FF7070',
+  'CMX2.5': '#FF7070',
+  'CMX3': '#EB0000',
+  'CMX4': '#850000',
+  'CMX5': '#850000',
+  'I1': '#C37FF0',
+  'I2': '#9B27D9',
+  'I3': '#41009C',
+  'ICMX': '#C300E6',
+  'IP': '#7C7AC4',
+  'IRMX': '#EC8EF5',
+  'RM1': '#FFA72B',
+  'RM2': '#FFA72B',
+  'RM3': '#FFA72B',
+  'RM4': '#FFA72B',
+  'RMX1': '#FF8138',
+  'RMX2': '#FF8138',
+  'RMX3': '#FF8138',
+  'RSA1': '#FFFF0F',
+  'RSA2': '#FFFF0F',
+  'RSA3': '#FFFF0F',
+  'RSA4': '#FFFF0F',
+  'RSA5': '#FFFF0F',
+  'RSD1': '#FFF4C4',
+  'RSD2': '#FFF4C4',
+  'RSD3': '#FFF4C4',
+  'RTA1': '#D4D40D',
+  'SPAIR': '#B1B3B5',
+  'SPENT': '#805624',
+  'SPINS': '#63BEFF',
+  'SPPOA': '#138C00',
+  'SPPOP': '#118E00',
+  'SPSTA': '#8ACC66',
+  'RSA6': '#FFFF0F',
+  'SPCIV': '#63BEFF',
+  'null': '#828282',
+}
+
 const ZONING_CODE_MAP = {
-  'RSD-1': 'Residential Single Family Detached-1',
-  'RSD-2': 'Residential Single Family Detached-2',
-  'RSD-3': 'Residential Single Family Detached-3',
-  'RSA-1': 'Residential Single Family Attached-1',
-  'RSA-2': 'Residential Single Family Attached-2',
-  'RSA-3': 'Residential Single Family Attached-3',
-  'RSA-4': 'Residential Single Family Attached-4',
-  'RSA-5': 'Residential Single Family Attached-5',
-  'RSA-6': 'Residential Single-Family Attached-6',
-  'RTA-1': 'Residential Two-Family Attached-1',
-  'RM-1': 'Residential Multi-Family-1',
-  'RM-2': 'Residential Multi-Family-2',
-  'RM-3': 'Residential Multi-Family-3',
-  'RM-4': 'Residential Multi-Family-4',
-  'RMX-1': 'Residential Mixed-Use-1',
-  'RMX-2': 'Residential Mixed-Use-2',
-  'RMX-3': 'Residential (Center City) Mixed-Use-3',
-  'CA-1': 'Auto-Oriented Commercial-1',
-  'CA-2': 'Auto-Oriented Commercial-2',
-  'CMX-1': 'Neighborhood Commercial Mixed-Use-1',
-  'CMX-2': 'Neighborhood Commercial Mixed-Use-2',
-  'CMX-2.5': 'Neighborhood Commercial Mixed-Use-2.5',
-  'CMX-3': 'Community Commercial Mixed-Use',
-  'CMX-4': 'Center City Commercial Mixed-Use',
-  'CMX-5': 'Center City Core Commercial Mixed-Use',
-  'I-1': 'Light Industrial',
-  'I-2': 'Medium Industrial',
-  'I-3': 'Heavy Industrial',
-  'IP': 'Port Industrial',
-  'ICMX': 'Industrial Commercial Mixed-Use',
-  'IRMX': 'Industrial Residential Mixed-Use',
-  'SPENT': 'Commercial Entertainment (Casinos)',
-  'SPAIR': 'Airport',
-  'SPINS': 'Institutional Development',
-  'SP-INS': 'Institutional Development',
-  'SPSTA': 'Stadium',
-  'SPPOA': 'Recreation',
-  'SP-PO-A': 'Recreation',
-  'SPPOP': 'Recreation',
-  'SP-CIV': 'SP-CIV, Civic, Educational, and Medical (Special Purpose) District',
+  'RSD-1': {
+    description: 'Residential Single Family Detached-1',
+    color: '#FFF4C4',
+  },
+  'RSD-2': {
+    description: 'Residential Single Family Detached-2',
+    color: '#FFF4C4',
+  },
+  'RSD-3': {
+    description: 'Residential Single Family Detached-3',
+    color: '#FFF4C4',
+  },
+  'RSA-1': {
+    description: 'Residential Single Family Attached-1',
+    color: '#FFFF0F',
+  },
+  'RSA-2': {
+    description: 'Residential Single Family Attached-2',
+    color: '#FFFF0F',
+  },
+  'RSA-3': {
+    description: 'Residential Single Family Attached-3',
+    color: '#FFFF0F',
+  },
+  'RSA-4': {
+    description: 'Residential Single Family Attached-4',
+    color: '#FFFF0F',
+  },
+  'RSA-5': {
+    description: 'Residential Single Family Attached-5',
+    color: '#FFFF0F',
+  },
+  'RSA-6': {
+    description: 'Residential Single Family Attached-6',
+    color: '#FFFF0F',
+  },
+  'RTA-1': {
+    description: 'Residential Two-Family Attached-1',
+    color: '#D4D40D',
+  },
+  'RM-1': {
+    description: 'Residential Multi-Family-1',
+    color: '#FFA72B',
+  },
+  'RM-2': {
+    description: 'Residential Multi-Family-2',
+    color: '#FFA72B',
+  },
+  'RM-3': {
+    description: 'Residential Multi-Family-3',
+    color: '#FFA72B',
+  },
+  'RM-4': {
+    description: 'Residential Multi-Family-4',
+    color: '#FFA72B',
+  },
+  'RMX-1': {
+    description: 'Residential Mixed-Use-1',
+    color: '#FF8138',
+  },
+  'RMX-2': {
+    description: 'Residential Mixed-Use-2',
+    color: '#FF8138',
+  },
+  'RMX-3': {
+    description: 'Residential (Center City) Mixed-Use-3',
+    color: '#FF8138',
+  },
+  'CA-1': {
+    description: 'Auto-Oriented Commercial-1',
+    color: '#FCD1CC',
+  },
+  'CA-2': {
+    description: 'Auto-Oriented Commercial-2',
+    color: '#FCD1CC',
+  },
+  'CMX-1': {
+    description: 'Neighborhood Commercial Mixed-Use-1',
+    color: '#FF7070',
+  },
+  'CMX-2': {
+    description: 'Neighborhood Commercial Mixed-Use-2',
+    color: '#FF7070'
+  },
+  'CMX-2.5': {
+    description: 'Neighborhood Commercial Mixed-Use-2.5',
+    color: '#FF7070',
+  },
+  'CMX-3': {
+    description: 'Community Commercial Mixed-Use',
+    color: '#EB0000',
+  },
+  'CMX-4': {
+    description: 'Center City Commercial Mixed-Use',
+    color: '#850000',
+  },
+  'CMX-5': {
+    description: 'Center City Core Commercial Mixed-Use',
+    color: '#850000',
+  },
+  'I-1': {
+    description: 'Light Industrial',
+    color: '#C37FF0',
+  },
+  'I-2': {
+    description: 'Medium Industrial',
+    color: '#9B27D9',
+  },
+  'I-3': {
+    description: 'Heavy Industrial',
+    color: '#41009C',
+  },
+  'I-P': {
+    description: 'Port Industrial',
+    color: '#7C7AC4',
+  },
+  'ICMX': {
+    description: 'Industrial Commercial Mixed-Use',
+    color: '#C300E6',
+  },
+  'IRMX': {
+    description: 'Industrial Residential Mixed-Use',
+    color: '#EC8EF5',
+  },  
+  'SP-ENT': {
+    description: 'Commercial Entertainment (Casinos)', // should this be "Entertainment"?
+    color: '#805624',
+  },
+  'SP-AIR': {
+    description: 'Airport',
+    color: '#B1B3B5',
+  },
+  'SP-INS': {
+    description: 'Institutional Development',
+    color: '#63BEFF',
+  },
+  'SP-STA': {
+    description: 'Stadium',
+    color: '#8ACC66',
+  },
+  'SP-PO-A': {
+    description: 'Recreation',
+    color: '#138C00',
+  },
+  'SP-PO-P': {
+    description: 'Recreation',
+    color: '#118E00',
+  },
+  'SP-CIV': {
+    description: 'Civic, Educational, and Medical',
+    color: '#63BEFF',
+  },
 };
 
 $config['cityCenterCoords'] = cityCenterCoords;
-$config['zoningColors'] = zoningColors;
 $config['pwdDrawnMapStyle'] = pwdDrawnMapStyle;
 $config['dorDrawnMapStyle'] = dorDrawnMapStyle;
 $config['liDrawnMapStyle'] = liDrawnMapStyle;
