@@ -133,7 +133,7 @@ const zipCode = computed(() => {
   </div>
 
   <div
-    v-if="route.name !== 'home' && route.name !== 'not-found' && address"
+    v-if="route.name !== 'home' && route.name !== 'not-found'"
     id="topic-panel-content"
     class="topics"
   >

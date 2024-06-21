@@ -80,7 +80,7 @@ const selectedBuildingCerts = computed(() => {
 // PERMITS
 const permitsCompareFn = (a, b) => new Date(b.permitissuedate) - new Date(a.permitissuedate);
 const permits = computed(() => { if (LiStore.liPermits.rows) return [ ...LiStore.liPermits.rows ].sort(permitsCompareFn) });
-const permitsLength = computed(() => { if (LiStore.liPermits.rows) return LiStore.liPermits.rows.length });
+const permitsLength = computed(() => permits.length ? permits.length : 0);
 
 // ZONING DOCS
 const liZoningDocsCompareFn = (a, b) => new Date(b.scan_date || a.issue_date) - new Date(a.scan_date || a.issue_date);
@@ -94,7 +94,7 @@ const liAllZoningDocs = computed(() => {
 // INSPECTIONS
 const inspectionsCompareFn = (a, b) => new Date(b.investigationcompleted) - new Date(a.investigationcompleted);
 const inspections = computed(() => { if (LiStore.liInspections.rows) return [ ...LiStore.liInspections.rows ].sort(inspectionsCompareFn) });
-const inspectionsLength = computed(() => { if (LiStore.liInspections.rows) return LiStore.liInspections.rows.length});
+const inspectionsLength = computed(() => inspections.length ? inspections.length : 0);
 
 // VIOLATIONS
 const violationsCompareFn = (a, b) => new Date(b.casecreateddate) - new Date(a.casecreateddate);
@@ -104,7 +104,7 @@ const violationsLength = computed(() => violations.length ? violations.length : 
 // BUSINESS LICENSES
 const businessLicensesCompareFn = (a, b) => new Date(b.initialissuedate) - new Date(a.initialissuedate);
 const businessLicenses = computed(() => { if (LiStore.liBusinessLicenses.rows) return [ ...LiStore.liBusinessLicenses.rows ].sort(businessLicensesCompareFn) });
-const businessLicensesLength = computed(() => { if (LiStore.liBusinessLicenses.rows) return LiStore.liBusinessLicenses.rows.length });
+const businessLicensesLength = computed(() => businessLicenses.length ? businessLicenses.length : 0);
 
 // TABLES
 
@@ -318,7 +318,7 @@ const businessLicensesTableData = computed(() => {
     </div>
 
     <h5 class="subtitle is-5">
-      There {{ liBuildingFootprintsLength > 1 ? 'are' : 'is' }} {{ liBuildingFootprintsLength }} {{ liBuildingFootprintsLength > 1 ? 'buildings' : 'building' }} at this address
+      There {{ liBuildingFootprintsLength > 1 || liBuildingFootprintsLength == 0 ? 'are' : 'is' }} {{ liBuildingFootprintsLength }} {{ liBuildingFootprintsLength > 1 || liBuildingFootprintsLength == 0 ? 'buildings' : 'building' }} at this address
     </h5>
     <!-- Li Building Footprints Section -->
     <div

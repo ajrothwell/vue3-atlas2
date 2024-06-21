@@ -32,8 +32,8 @@ export const useGeocodeStore = defineStore("GeocodeStore", {
         } else {
           if (import.meta.env.VITE_DEBUG == 'true') console.log('Address - await resolved but HTTP status was not successful')
           this.aisData = {}
-          const MainStore = useMainStore();
-          MainStore.currentAddress = "";
+          // const MainStore = useMainStore();
+          // MainStore.currentAddress = "";
         }
       } catch {
         console.error('Address - await never resolved, failed to fetch address data')

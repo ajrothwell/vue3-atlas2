@@ -35,16 +35,19 @@ export const useOpaStore = defineStore('OpaStore', {
   // through for a horizontal table
   getters: {
     getMarketValue: (state) => {
-      if (!state.opaData.rows[0]) return null;
-      return currency(state.opaData.rows[0].market_value || null);
+      if (state.opaData.rows && state.opaData.rows[0]) {
+        return currency(state.opaData.rows[0].market_value || null);
+      }
     },
     getSaleDate: (state) =>  {
-      if (!state.opaData.rows[0]) return null;
-      return date(state.opaData.rows[0].sale_date);
+      if (state.opaData.rows && state.opaData.rows[0]) {
+        return date(state.opaData.rows[0].sale_date);
+      }
     },
     getSalePrice: (state) => {
-      if (!state.opaData.rows[0]) return null;
-      return currency(state.opaData.rows[0].sale_price);
-    }
+      if (state.opaData.rows && state.opaData.rows[0]) {
+        return currency(state.opaData.rows[0].sale_price);
+      }
+    },
   },
 })

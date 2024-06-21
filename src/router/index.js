@@ -41,7 +41,7 @@ const getGeocodeAndPutInStore = async(address) => {
   const GeocodeStore = useGeocodeStore();
   await GeocodeStore.fillaisData(address);
   if (!GeocodeStore.aisData.features) {
-    router.push({ name: 'not-found' });
+    // router.push({ name: 'not-found' });
     return;
   }
   // if there is a value, add the value for the street_address in the MainStore
@@ -50,6 +50,7 @@ const getGeocodeAndPutInStore = async(address) => {
 }
 
 const getParcelsAndPutInStore = async(lng, lat) => {
+  if (import.meta.env.VITE_DEBUG == 'true') console.log('getParcelsAndPutInStore is running');
   let currentAddress;
   const MainStore = useMainStore();
   let currentTopic = MainStore.currentTopic;
@@ -73,8 +74,8 @@ const getParcelsAndPutInStore = async(lng, lat) => {
       }
     }
   }
-  if (import.meta.env.VITE_DEBUG == 'true') console.log('getParcelAndPutInStore, currentAddress:', currentAddress, 'parcelLayer:', parcelLayer, 'addressField', addressField, 'ParcelsStore[parcelLayer].features[0].properties:', ParcelsStore[parcelLayer].features[0].properties, 'ParcelsStore[parcelLayer].features[0].properties[addressField]:', ParcelsStore[parcelLayer].features[0].properties[addressField]);
-  MainStore.setCurrentAddress(currentAddress);
+  if (import.meta.env.VITE_DEBUG == 'true') console.log('end of getParcelAndPutInStore, currentAddress:', currentAddress, 'parcelLayer:', parcelLayer, 'addressField', addressField, 'ParcelsStore[parcelLayer].features[0].properties:', ParcelsStore[parcelLayer].features[0].properties, 'ParcelsStore[parcelLayer].features[0].properties[addressField]:', ParcelsStore[parcelLayer].features[0].properties[addressField]);
+  if (currentAddress) MainStore.setCurrentAddress(currentAddress);
 }
 
 const dataFetch = async(to, from) => {
