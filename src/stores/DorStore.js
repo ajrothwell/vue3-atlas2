@@ -287,7 +287,7 @@ export const useDorStore = defineStore("DorStore", {
               }
           
               if (geocode.address_low_suffix == '') {
-                where += " AND ADDRESS_LOW_SUFFIX = ''";
+                where += " AND (ADDRESS_LOW_SUFFIX = '' OR ADDRESS_LOW_SUFFIX = null)";
               }
           
               // this is hardcoded right now to handle dor address suffixes that are actually fractions
@@ -302,16 +302,28 @@ export const useDorStore = defineStore("DorStore", {
               // check for unit num
               var unitNum = cleanDorAttribute(feature.properties.UNIT),
                 unitNum2 = geocode.unit_num;
+              // if (import.meta.env.VITE_DEBUG == 'true') console.log('unitNum:', unitNum, 'unitNum2:', unitNum2);
           
               if (unitNum) {
                 where += " AND UNIT_NUM = '" + unitNum + "'";
               } else if (unitNum2 !== '') {
                 where += " AND UNIT_NUM = '" + unitNum2 + "'";
               }
-          
-              where += ") or MATCHED_REGMAP = '" + ParcelsStore.dor.features[0].properties.BASEREG + "'";
-              where += " or REG_MAP_ID = '" + ParcelsStore.dor.features[0].properties.BASEREG + "'";
+              
+              where += ")";
+              // where += ") or MATCHED_REGMAP = '" + ParcelsStore.dor.features[0].properties.BASEREG + "'";
+              // where += " or REG_MAP_ID = '" + ParcelsStore.dor.features[0].properties.BASEREG + "'";
             }
+
+            if (import.meta.env.VITE_DEBUG == 'true') console.log('address_low:', address_low, 'address_floor:', address_floor,
+              'address_remainder:', address_remainder, 'addressHigh:', addressHigh,
+              'addressCeil:', addressCeil, 'geocode.street_predir:', geocode.street_predir,
+              'geocode.address_low_suffix:', geocode.address_low_suffix,
+              'geocode.address_low_frac:', geocode.address_low_frac,
+              'geocode.street_postdir:', geocode.street_postdir, 'unitNum:', unitNum,
+              'unitNum2:', unitNum2, 'ParcelsStore.dor.features[0].properties.BASEREG:', ParcelsStore.dor.features[0].properties.BASEREG,
+              'where:', where
+            )
           
             return where;
           }
@@ -325,7 +337,8 @@ export const useDorStore = defineStore("DorStore", {
                 
               const params = {
                 where: theWhere,
-                outFields: "DOCUMENT_ID, DISPLAY_DATE, DOCUMENT_TYPE, GRANTORS, GRANTEES",
+                // outFields: '*',
+                outFields: "DOCUMENT_ID, DISPLAY_DATE, DOCUMENT_TYPE, GRANTORS, GRANTEES, UNIT_NUM, MATCHED_REGMAP, REG_MAP_ID",
                 returnDistinctValues: 'true',
                 returnGeometry: 'false',
                 f: 'json',
