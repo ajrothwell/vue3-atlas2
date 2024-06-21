@@ -96,14 +96,22 @@ const nearby311TableData = computed(() => {
 </script>
 
 <template>
-  <IntervalDropdown
-    :time-intervals="timeIntervals"
-    @set-time-interval="setTimeInterval"
-  />
+  <div class="columns">
+    <div class="column is-6 is-12-small">
+      <IntervalDropdown
+        :time-intervals="timeIntervals"
+        @set-time-interval="setTimeInterval"
+      />
+    </div>
+    <div class="column is-6 is-12-small">
+        <TextFilter
+        v-model="textSearch"
+      />
+    </div>
 
-  <TextFilter
-    v-model="textSearch"
-  />
+  </div>
+
+  
 
   <div class="mt-5">
     <h5 class="subtitle is-5">
