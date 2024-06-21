@@ -30,7 +30,7 @@ export const useCondosStore = defineStore('CondosStore', {
           opa_only: true,
           page: page,
         };
-        const response = await axios(`https://api.phila.gov/ais/v1/search/${address}`, { params });
+        const response = await axios(`https://api.phila.gov/ais/v1/search/${encodeURIComponent(address)}`, { params });
         // if (import.meta.env.VITE_DEBUG == 'true') console.log('condos response:', response);
         if (response.status === 200) {
           if (import.meta.env.VITE_DEBUG == 'true') console.log('Condos - await resolved and HTTP status is successful')

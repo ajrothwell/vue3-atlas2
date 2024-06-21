@@ -22,39 +22,45 @@ onMounted(() => {
   // main.scrollTo(0, mainScrollTop - 80);
 });
 
-const vertTableData = computed(() => [
-  {
-    label: 'OPA Account #',
-    value: GeocodeStore.aisData.features[0].properties.opa_account_num,
-  },
-  {
-    label: 'OPA Address',
-    value: GeocodeStore.aisData.features[0].properties.opa_address,
-  },
-  {
-    label: 'Owners',
-    value: GeocodeStore.getOpaOwners,
-  },
-  {
-    label: 'Assessed Value',
-    value: OpaStore.getMarketValue,
-  },
-  {
-    label: 'Sale Date',
-    value: OpaStore.getSaleDate || 'none',
-  },
-  {
-    label: 'Sale Price',
-    value: OpaStore.getSalePrice,
-  },
-]);
+const vertTableData = computed(() => {
+  if(GeocodeStore.aisData.features && GeocodeStore.aisData.features.length || OpaStore.rows && OpaStore.rows.length) {
+    return [
+      {
+        label: 'OPA Account #',
+        value: GeocodeStore.aisData.features[0].properties.opa_account_num,
+      },
+      {
+        label: 'OPA Address',
+        value: GeocodeStore.aisData.features[0].properties.opa_address,
+      },
+      {
+        label: 'Owners',
+        value: GeocodeStore.getOpaOwners,
+      },
+      {
+        label: 'Assessed Value',
+        value: OpaStore.getMarketValue,
+      },
+      {
+        label: 'Sale Date',
+        value: OpaStore.getSaleDate || 'none',
+      },
+      {
+        label: 'Sale Price',
+        value: OpaStore.getSalePrice,
+      },
+    ]
+  } else {
+    return []
+  }
+});
 
 const shouldShowTable = computed(() => {
   if (OpaStore.opaData.rows) {
     if (!CondosStore.condosData.pages.page_1.features) {
-      return OpaStore.opaData.rows.length;
+      return OpaStore.opaData.rows.length > 0;
     } else {
-      return OpaStore.opaData.rows.length && !CondosStore.condosData.pages.page_1.features.length;
+      return OpaStore.opaData.rows.length > 0 && !CondosStore.condosData.pages.page_1.features.length > 0;
     }
   }
 });
@@ -69,8 +75,12 @@ const shouldShowCondosMessage = computed(() => {
   if (OpaStore.opaData.rows) {
     if (!CondosStore.condosData.pages.page_1.features) {
       return false;
+    } else if (CondosStore.condosData.pages.page_1.features.length == 1) {
+      if (CondosStore.condosData.pages.page_1.features[0].match_type == 'has_base_no_suffix_unit_child') {
+        return false;
+      }
     } else {
-      return CondosStore.condosData.pages.page_1.features.length;
+      return CondosStore.condosData.pages.page_1.features.length > 1;
     }
   }
 });
@@ -91,8 +101,9 @@ const hasNoData = computed(() => {
       Property assessment and sale information for this address. Source: Office of Property Assessments (OPA). OPA was formerly a part of the Bureau of Revision of Taxes (BRT) and some City records may still use that name.
     </div>
 
+    <!-- v-if="shouldShowTable" -->
     <vertical-table
-      v-if="shouldShowTable"
+      v-if="!shouldShowCondosMessage"
       table-id="opaTable"
       :data="vertTableData"
     />

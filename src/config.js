@@ -1212,6 +1212,7 @@ const ZONING_CODE_MAP = {
   'SPENT': 'Commercial Entertainment (Casinos)',
   'SPAIR': 'Airport',
   'SPINS': 'Institutional Development',
+  'SP-INS': 'Institutional Development',
   'SPSTA': 'Stadium',
   'SPPOA': 'Recreation',
   'SP-PO-A': 'Recreation',
