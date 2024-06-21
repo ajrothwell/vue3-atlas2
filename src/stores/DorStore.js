@@ -310,9 +310,9 @@ export const useDorStore = defineStore("DorStore", {
                 where += " AND UNIT_NUM = '" + unitNum2 + "'";
               }
               
-              where += ")";
-              // where += ") or MATCHED_REGMAP = '" + ParcelsStore.dor.features[0].properties.BASEREG + "'";
-              // where += " or REG_MAP_ID = '" + ParcelsStore.dor.features[0].properties.BASEREG + "'";
+              // where += ")";
+              where += ") or MATCHED_REGMAP = '" + ParcelsStore.dor.features[0].properties.BASEREG + "'";
+              where += " or REG_MAP_ID = '" + ParcelsStore.dor.features[0].properties.BASEREG + "'";
             }
 
             if (import.meta.env.VITE_DEBUG == 'true') console.log('address_low:', address_low, 'address_floor:', address_floor,
