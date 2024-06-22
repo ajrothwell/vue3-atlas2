@@ -41,11 +41,13 @@ const selectedDataType = ref('nearby311');
 
 watch(() => selectedDataType.value, (newDataType) => {
   if (import.meta.env.VITE_DEBUG == 'true') console.log('watch selectedDataType.value, newDataType:', newDataType);
-  setDataTypeInRouter(newDataType);
-  MainStore.currentNearbyDataType = newDataType;
-  const popup = document.getElementsByClassName('maplibregl-popup');
-  if (popup.length) {
-    popup[0].remove();
+  if (MainStore.currentAddress) {
+    setDataTypeInRouter(newDataType);
+    MainStore.currentNearbyDataType = newDataType;
+    const popup = document.getElementsByClassName('maplibregl-popup');
+    if (popup.length) {
+      popup[0].remove();
+    }
   }
 })
 
@@ -74,6 +76,34 @@ onMounted( () => {
   // main.scrollTo(0, mainScrollTop - 80);
 })
 
+import TextFilter from '@/components/topics/nearbyActivity/TextFilter.vue';
+
+const timeIntervalSelected = ref(30);
+const timeIntervals = computed(() => {
+  let values;
+  if (['nearby311', 'nearbyConstructionPermits', 'nearbyDemolitionPermits', 'nearbyImminentlyDangerous'].includes(currentNearbyDataType.value)) {
+    values = {
+      30: 'last 30 days',
+      90: 'last 90 days',
+      365: 'last 1 year',
+    };
+  } else if (currentNearbyDataType.value == 'nearbyCrimeIncidents') {
+    values = {
+      30: 'last 30 days',
+      90: 'last 90 days',
+    };
+  } else if (currentNearbyDataType.value == 'nearbyZoningAppeals') {
+    values = {
+      '0': 'any time',
+      '-90': 'last 90 days',
+      '90': 'next 90 days',
+    }
+  }
+  return values;
+})
+
+const textSearch = ref('');
+
 </script>
 
 <template>
@@ -87,11 +117,8 @@ onMounted( () => {
 
     <!-- DATA DROPDOWN-->
 
-    <div class="filter-div columns is-mobile">
-      <!-- <div class="column is-3 small-is-4 pt-0 pb-0">
-        <label class="filter-label" for="data-dropdown">Select activity:</label>
-      </div> -->
-      <div class="dropdown column is-10 small-is-9 pt-0 pb-0"> 
+    <div class="filter-div columns">
+      <div class="dropdown nearby-dropdown column is-4 pt-0 pb-0"> 
         <dropdown
           id="data-dropdown"
           v-model="selectedDataType"
@@ -99,18 +126,52 @@ onMounted( () => {
           :options="dataTypes"
         />
       </div>
+
+      <div
+        v-if="selectedDataType != 'nearbyVacantIndicatorPoints'"
+        class="dropdown nearby-dropdown column is-3 pt-0 pb-0"
+      >
+        <dropdown
+          id="time-interval-dropdown"
+          v-model="timeIntervalSelected"
+          label="Select time interval"
+          :options="timeIntervals"
+        />
+      </div>
+      <div class="column is-4">
+        <TextFilter
+          v-model="textSearch"
+        />
+      </div>
     </div>
 
-    <Nearby311 v-if="currentNearbyDataType == 'nearby311'" />
-    <NearbyCrimeIncidents v-if="currentNearbyDataType == 'nearbyCrimeIncidents'" />
-    <NearbyZoningAppeals v-if="currentNearbyDataType == 'nearbyZoningAppeals'" />
-    <NearbyVacantIndicatorPoints v-if="currentNearbyDataType == 'nearbyVacantIndicatorPoints'" />
-    <NearbyConstructionPermits v-if="currentNearbyDataType == 'nearbyConstructionPermits'" />
-    <NearbyDemolitionPermits v-if="currentNearbyDataType == 'nearbyDemolitionPermits'" />
-    <NearbyImminentlyDangerous v-if="currentNearbyDataType == 'nearbyImminentlyDangerous'" />
+
+    <Nearby311 v-if="currentNearbyDataType == 'nearby311'" :time-interval-selected="timeIntervalSelected" :text-search="textSearch" />
+    <NearbyCrimeIncidents v-if="currentNearbyDataType == 'nearbyCrimeIncidents'" :time-interval-selected="timeIntervalSelected" :text-search="textSearch" />
+    <NearbyZoningAppeals v-if="currentNearbyDataType == 'nearbyZoningAppeals'" :time-interval-selected="timeIntervalSelected" :text-search="textSearch" />
+    <NearbyVacantIndicatorPoints v-if="currentNearbyDataType == 'nearbyVacantIndicatorPoints'" :time-interval-selected="timeIntervalSelected" :text-search="textSearch" />
+    <NearbyConstructionPermits v-if="currentNearbyDataType == 'nearbyConstructionPermits'" :time-interval-selected="timeIntervalSelected" :text-search="textSearch" />
+    <NearbyDemolitionPermits v-if="currentNearbyDataType == 'nearbyDemolitionPermits'" :time-interval-selected="timeIntervalSelected" :text-search="textSearch" />
+    <NearbyImminentlyDangerous v-if="currentNearbyDataType == 'nearbyImminentlyDangerous'" :time-interval-selected="timeIntervalSelected" :text-search="textSearch" />
   </section>
 </template>
 
-<style scoped>
+<style>
+
+.nearby-dropdown {
+  padding: 0px;
+}
+
+#dd-data-dropdown {
+  font-size: 14px;
+}
+
+#dd-time-interval-dropdown {
+  font-size: 14px;
+}
+
+#tb-searchBar {
+  font-size: 14px;
+}
 
 </style>

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, computed, watch, onMounted, onBeforeUnmount } from 'vue';
+import { computed, watch, onMounted, onBeforeUnmount } from 'vue';
 import { point, featureCollection } from '@turf/helpers';
 
 import { useNearbyActivityStore } from '@/stores/NearbyActivityStore';
@@ -9,8 +9,6 @@ const MainStore = useMainStore();
 import { useMapStore } from '@/stores/MapStore';
 const MapStore = useMapStore();
 
-import TextFilter from '@/components/topics/nearbyActivity/TextFilter.vue';
-import IntervalDropdown from '@/components/topics/nearbyActivity/IntervalDropdown.vue';
 import useTransforms from '@/composables/useTransforms';
 const { timeReverseFn } = useTransforms();
 import useScrolling from '@/composables/useScrolling';
@@ -18,34 +16,34 @@ const { handleRowClick, handleRowMouseover, handleRowMouseleave } = useScrolling
 
 const loadingData = computed(() => NearbyActivityStore.loadingData );
 
-const timeIntervalSelected = ref(30);
-const timeIntervals = reactive(
-  {
-    30: 'the last 30 days',
-    90: 'the last 90 days',
-    365: '1 year',
-  }
-)
-const setTimeInterval = (e) => timeIntervalSelected.value = e;
-
-const textSearch = ref('');
+const props = defineProps({
+  timeIntervalSelected: {
+    type: Number,
+    default: 30,
+  },
+  textSearch: {
+    type: String,
+    default: '',
+  },
+})
 
 const nearbyDemolitionPermits = computed(() => {
+  let data;
   if (NearbyActivityStore.nearbyDemolitionPermits) {
-    let data = [ ...NearbyActivityStore.nearbyDemolitionPermits.rows]
+    data = [ ...NearbyActivityStore.nearbyDemolitionPermits.rows]
       .filter(item => {
       let itemDate = new Date(item.permitissuedate);
       let now = new Date();
       let timeDiff = now - itemDate;
       let daysDiff = timeDiff / (1000 * 60 * 60 * 24);
-      return daysDiff <= timeIntervalSelected.value;
+      return daysDiff <= props.timeIntervalSelected;
     }).filter(item => {
-      // if (import.meta.env.VITE_DEBUG == 'true') console.log('item.address:', item.address, 'textSearch.value:', textSearch.value);
-      return item.address.toLowerCase().includes(textSearch.value.toLowerCase()) || item.typeofwork.toLowerCase().includes(textSearch.value.toLowerCase());
+      // if (import.meta.env.VITE_DEBUG == 'true') console.log('item.address:', item.address, 'props.textSearch:', props.textSearch);
+      return item.address.toLowerCase().includes(props.textSearch.toLowerCase()) || item.typeofwork.toLowerCase().includes(props.textSearch.toLowerCase());
     });
     data.sort((a, b) => timeReverseFn(a, b, 'permitissuedate'))
-    return data;
   }
+  return data;
 });
 const nearbyDemolitionPermitsGeojson = computed(() => {
   if (!nearbyDemolitionPermits.value) return [point([0,0])];
@@ -97,14 +95,6 @@ const nearbyDemolitionPermitsTableData = computed(() => {
 </script>
 
 <template>
-  <IntervalDropdown
-    :time-intervals="timeIntervals"
-    @set-time-interval="setTimeInterval"
-  />
-
-  <TextFilter
-    v-model="textSearch"
-  />
 
   <div class="mt-5">
     <h5 class="subtitle is-5">

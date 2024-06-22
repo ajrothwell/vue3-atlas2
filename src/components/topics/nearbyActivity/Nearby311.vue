@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, computed, watch, onMounted, onBeforeUnmount } from 'vue';
+import { computed, watch, onMounted, onBeforeUnmount } from 'vue';
 import { point, featureCollection } from '@turf/helpers';
 
 import { useNearbyActivityStore } from '@/stores/NearbyActivityStore';
@@ -9,8 +9,6 @@ const MainStore = useMainStore();
 import { useMapStore } from '@/stores/MapStore';
 const MapStore = useMapStore();
 
-import TextFilter from '@/components/topics/nearbyActivity/TextFilter.vue';
-import IntervalDropdown from '@/components/topics/nearbyActivity/IntervalDropdown.vue';
 import useTransforms from '@/composables/useTransforms';
 const { timeReverseFn } = useTransforms();
 import useScrolling from '@/composables/useScrolling';
@@ -18,32 +16,32 @@ const { handleRowClick, handleRowMouseover, handleRowMouseleave } = useScrolling
 
 const loadingData = computed(() => NearbyActivityStore.loadingData );
 
-const timeIntervalSelected = ref(30);
-const timeIntervals = reactive(
-  {
-    30: 'the last 30 days',
-    90: 'the last 90 days',
-    365: '1 year',
-  }
-)
-const setTimeInterval = (e) => timeIntervalSelected.value = e;
-
-const textSearch = ref('');
+const props = defineProps({
+  timeIntervalSelected: {
+    type: Number,
+    default: 30,
+  },
+  textSearch: {
+    type: String,
+    default: '',
+  },
+})
 
 const nearby311 = computed(() => {
+  let data;
   if (NearbyActivityStore.nearby311.rows) {
-    let data = [ ...NearbyActivityStore.nearby311.rows]
+    data = [ ...NearbyActivityStore.nearby311.rows]
       .filter(item => {
       let timeDiff = new Date() - new Date(item.requested_datetime);
       let daysDiff = timeDiff / (1000 * 60 * 60 * 24);
-      return daysDiff <= timeIntervalSelected.value;
+      return daysDiff <= props.timeIntervalSelected;
     }).filter(item => {
       // if (import.meta.env.VITE_DEBUG == 'true') console.log('item.address:', item.address, 'textSearch.value:', textSearch.value);
-      return item.address.toLowerCase().includes(textSearch.value.toLowerCase()) || item.service_name.toLowerCase().includes(textSearch.value.toLowerCase());
+      return item.address.toLowerCase().includes(props.textSearch.toLowerCase()) || item.service_name.toLowerCase().includes(props.textSearch.toLowerCase());
     });
     data.sort((a, b) => timeReverseFn(a, b, 'requested_datetime'))
-    return data;
   }
+  return data;
 });
 const nearby311Geojson = computed(() => {
   if (!nearby311.value) return [point([0,0])];
@@ -96,22 +94,6 @@ const nearby311TableData = computed(() => {
 </script>
 
 <template>
-  <div class="columns">
-    <div class="column is-6 is-12-small">
-      <IntervalDropdown
-        :time-intervals="timeIntervals"
-        @set-time-interval="setTimeInterval"
-      />
-    </div>
-    <div class="column is-6 is-12-small">
-        <TextFilter
-        v-model="textSearch"
-      />
-    </div>
-
-  </div>
-
-  
 
   <div class="mt-5">
     <h5 class="subtitle is-5">

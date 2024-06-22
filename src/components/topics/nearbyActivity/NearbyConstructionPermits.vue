@@ -18,35 +18,47 @@ const { handleRowClick, handleRowMouseover, handleRowMouseleave } = useScrolling
 
 const loadingData = computed(() => NearbyActivityStore.loadingData );
 
-const timeIntervalSelected = ref(30);
+const props = defineProps({
+  timeIntervalSelected: {
+    type: Number,
+    default: 30,
+  },
+  textSearch: {
+    type: String,
+    default: '',
+  },
+})
 
-const timeIntervals = reactive(
-  {
-    30: 'the last 30 days',
-    90: 'the last 90 days',
-    365: '1 year',
-  }
-)
+// const timeIntervalSelected = ref(30);
 
-const setTimeInterval = (e) => timeIntervalSelected.value = e;
+// const timeIntervals = reactive(
+//   {
+//     30: 'the last 30 days',
+//     90: 'the last 90 days',
+//     365: '1 year',
+//   }
+// )
 
-const textSearch = ref('');
+// const setTimeInterval = (e) => timeIntervalSelected.value = e;
+
+// const textSearch = ref('');
 
 const nearbyConstructionPermits = computed(() => {
+  let data;
   if (NearbyActivityStore.nearbyConstructionPermits) {
-    let data = [ ...NearbyActivityStore.nearbyConstructionPermits.rows]
+    data = [ ...NearbyActivityStore.nearbyConstructionPermits.rows]
       .filter(item => {
       let itemDate = new Date(item.permitissuedate);
       let now = new Date();
       let timeDiff = now - itemDate;
       let daysDiff = timeDiff / (1000 * 60 * 60 * 24);
-      return daysDiff <= timeIntervalSelected.value;
+      return daysDiff <= props.timeIntervalSelected;
     }).filter(item => {
-      return item.address.toLowerCase().includes(textSearch.value.toLowerCase()) || item.typeofwork.toLowerCase().includes(textSearch.value.toLowerCase());
+      return item.address.toLowerCase().includes(props.textSearch.toLowerCase()) || item.typeofwork.toLowerCase().includes(props.textSearch.toLowerCase());
     })
     data.sort((a, b) => timeReverseFn(a, b, 'permitissuedate'))
-    return data;
   }
+  return data;
 });
 const nearbyConstructionPermitsGeojson = computed(() => {
   if (!nearbyConstructionPermits.value) return [point([0,0])];
@@ -98,15 +110,6 @@ const nearbyConstructionPermitsTableData = computed(() => {
 </script>
 
 <template>
-  <IntervalDropdown
-    :time-intervals="timeIntervals"
-    @set-time-interval="setTimeInterval"
-  />
-
-  <TextFilter
-    v-model="textSearch"
-  />
-
   <div class="mt-5">
     <h5 class="subtitle is-5">
       Construction Permits
