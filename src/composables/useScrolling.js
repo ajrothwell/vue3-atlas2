@@ -15,6 +15,10 @@ export default function useScrolling() {
       clickedRow.lngLat = e.row.geometry.coordinates;
     }
     const MainStore = useMainStore();
+    const popup = document.getElementsByClassName('maplibregl-popup');
+    if (popup.length) {
+      popup[0].remove();
+    }
     if (!MainStore.isMobileDevice && MainStore.windowDimensions.width > 760) {
       MainStore.clickedRow = clickedRow;
     }
