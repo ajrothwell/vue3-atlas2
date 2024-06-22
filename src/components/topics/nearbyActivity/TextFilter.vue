@@ -20,7 +20,7 @@ const clearText = () => model.value = '';
 
 <template>
   <div class="filter-div columns is-mobile">
-    <div class="column is-10 small-is-9 pr-0 pt-0 pb-0">
+    <div class="column textbox-div is-10 small-is-9 pr-0 pt-0 pb-0">
       <textbox
         id="searchBar"
         v-model="model"
@@ -48,7 +48,11 @@ const clearText = () => model.value = '';
 </template>
 
 <style scoped>
-  
+
+.textbox-div {
+  padding: 0px;
+}
+
 .clear-span {
   padding-left: 0px !important;
 }

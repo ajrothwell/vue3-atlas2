@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue';
+import { computed, watch, onMounted, onBeforeUnmount } from 'vue';
 import { point, featureCollection } from '@turf/helpers';
 
 import { useNearbyActivityStore } from '@/stores/NearbyActivityStore';
@@ -9,24 +9,28 @@ const MainStore = useMainStore();
 import { useMapStore } from '@/stores/MapStore';
 const MapStore = useMapStore();
 
-import TextFilter from '@/components/topics/nearbyActivity/TextFilter.vue';
-
 import useScrolling from '@/composables/useScrolling';
 const { handleRowClick, handleRowMouseover, handleRowMouseleave } = useScrolling();
 
 const loadingData = computed(() => NearbyActivityStore.loadingData );
 
-const textSearch = ref('');
+const props = defineProps({
+  textSearch: {
+    type: String,
+    default: '',
+  },
+})
 
 const nearbyVacantIndicatorPoints = computed(() => {
+  let data;
   if (NearbyActivityStore.nearbyVacantIndicatorPoints.rows) {
-    let data = [ ...NearbyActivityStore.nearbyVacantIndicatorPoints.rows].filter(item => {
-      // if (import.meta.env.VITE_DEBUG == 'true') console.log('item.properties.ADDRESS:', item.properties.ADDRESS, 'textSearch.value:', textSearch.value);
-      return item.properties.ADDRESS.toLowerCase().includes(textSearch.value.toLowerCase()) || item.properties.VACANT_FLAG.toLowerCase().includes(textSearch.value.toLowerCase());
+    data = [ ...NearbyActivityStore.nearbyVacantIndicatorPoints.rows].filter(item => {
+      // if (import.meta.env.VITE_DEBUG == 'true') console.log('item.properties.ADDRESS:', item.properties.ADDRESS, 'props.textSearch:', props.textSearch);
+      return item.properties.ADDRESS.toLowerCase().includes(props.textSearch.toLowerCase()) || item.properties.VACANT_FLAG.toLowerCase().includes(props.textSearch.toLowerCase());
     });
     data.sort((a, b) => a.distance_ft - b.distance_ft)
-    return data;
   }
+  return data;
 });
 const nearbyVacantIndicatorPointsGeojson = computed(() => {
   if (!nearbyVacantIndicatorPoints.value) return [point([0,0])];
@@ -71,9 +75,6 @@ const nearbyVacantIndicatorsTableData = computed(() => {
 </script>
 
 <template>
-  <TextFilter
-    v-model="textSearch"
-  />
 
   <div class="mt-5">
     <h5 class="subtitle is-5">

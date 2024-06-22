@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, computed, watch, onMounted, onBeforeUnmount } from 'vue';
+import { computed, watch, onMounted, onBeforeUnmount } from 'vue';
 import { point, featureCollection } from '@turf/helpers';
 
 import { useNearbyActivityStore } from '@/stores/NearbyActivityStore';
@@ -9,8 +9,6 @@ const MainStore = useMainStore();
 import { useMapStore } from '@/stores/MapStore';
 const MapStore = useMapStore();
 
-import TextFilter from '@/components/topics/nearbyActivity/TextFilter.vue';
-import IntervalDropdown from '@/components/topics/nearbyActivity/IntervalDropdown.vue';
 import useTransforms from '@/composables/useTransforms';
 const { timeReverseFn } = useTransforms();
 import useScrolling from '@/composables/useScrolling';
@@ -18,45 +16,45 @@ const { handleRowClick, handleRowMouseover, handleRowMouseleave } = useScrolling
 
 const loadingData = computed(() => NearbyActivityStore.loadingData );
 
-const timeIntervalSelected = ref(0);
-const timeIntervals = reactive(
-  {
-    '0': 'any time',
-    '-90': 'the last 90 days',
-    '90': 'the next 90 days',
-  }
-)
-const setTimeInterval = (e) => timeIntervalSelected.value = e;
-
-const textSearch = ref('');
+const props = defineProps({
+  timeIntervalSelected: {
+    type: Number,
+    default: 30,
+  },
+  textSearch: {
+    type: String,
+    default: '',
+  },
+})
 
 const nearbyZoningAppeals = computed(() => {
+  let data;
   if (NearbyActivityStore.nearbyZoningAppeals) {
-    let data = [ ...NearbyActivityStore.nearbyZoningAppeals.rows]
+    data = [ ...NearbyActivityStore.nearbyZoningAppeals.rows]
     // if (import.meta.env.VITE_DEBUG == 'true') console.log(new Date(data[0].scheduleddate));
-    if (timeIntervalSelected.value < 0) {
+    if (props.timeIntervalSelected < 0) {
       data = data.filter(item => {
         let timeDiff = new Date() - new Date(item.scheduleddate);
         let daysDiff = timeDiff / (1000 * 60 * 60 * 24);
-        return daysDiff >= timeIntervalSelected.value;
+        return daysDiff >= props.timeIntervalSelected;
       })
-    } else if (timeIntervalSelected.value > 0) {
+    } else if (props.timeIntervalSelected > 0) {
       data = data.filter(item => {
         let timeDiff = new Date() - new Date(item.scheduleddate);
         let daysDiff = timeDiff / (1000 * 60 * 60 * 24);
-        return daysDiff <= timeIntervalSelected.value;
+        return daysDiff <= props.timeIntervalSelected;
       })
     }
     if (import.meta.env.VITE_DEBUG == 'true') console.log('data 1:', data);
     data = data.filter(item => {
-      if (import.meta.env.VITE_DEBUG == 'true') console.log('item.address:', item.address, 'item.appealgrounds', item.appealgrounds, 'textSearch.value:', textSearch.value, 'item.address.toLowerCase().includes(textSearch.value.toLowerCase()) || item.appealgrounds.toLowerCase().includes(textSearch.value.toLowerCase()):', item.address.toLowerCase().includes(textSearch.value.toLowerCase()) || item.appealgrounds.toLowerCase().includes(textSearch.value.toLowerCase()));
-      return item.address.toLowerCase().includes(textSearch.value.toLowerCase()) || item.appealgrounds.toLowerCase().includes(textSearch.value.toLowerCase());
+      if (import.meta.env.VITE_DEBUG == 'true') console.log('item.address:', item.address, 'item.appealgrounds', item.appealgrounds, 'props.textSearch:', props.textSearch, 'item.address.toLowerCase().includes(props.textSearch.toLowerCase()) || item.appealgrounds.toLowerCase().includes(props.textSearch.toLowerCase()):', item.address.toLowerCase().includes(props.textSearch.toLowerCase()) || item.appealgrounds.toLowerCase().includes(props.textSearch.toLowerCase()));
+      return item.address.toLowerCase().includes(props.textSearch.toLowerCase()) || item.appealgrounds.toLowerCase().includes(props.textSearch.toLowerCase());
       // return false;
     })
     if (import.meta.env.VITE_DEBUG == 'true') console.log('data 2:', data);
     data.sort((a, b) => timeReverseFn(a, b, 'scheduleddate'))
-    return data;
   }
+  return data;
 });
 const nearbyZoningAppealsGeojson = computed(() => {
   if (!nearbyZoningAppeals.value) return [point([0,0])];
@@ -108,14 +106,6 @@ const nearbyZoningAppealsTableData = computed(() => {
 </script>
 
 <template>
-  <IntervalDropdown
-    :time-intervals="timeIntervals"
-    @set-time-interval="setTimeInterval"
-  />
-
-  <TextFilter
-    v-model="textSearch"
-  />
 
   <div class="mt-5">
     <h5 class="subtitle is-5">
