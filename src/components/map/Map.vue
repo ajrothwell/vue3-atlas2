@@ -277,18 +277,20 @@ watch(
 // watch dor parcel coordinates for moving dor parcel
 const selectedParcelId = computed(() => { return MainStore.selectedParcelId; });
 const dorCoordinates = computed(() => {
+  let value;
   // if (import.meta.env.VITE_DEBUG == 'true') console.log('computed dorCoordinates, selectedParcelId.value:', selectedParcelId.value, 'ParcelsStore.dor', ParcelsStore.dor);
   if (selectedParcelId.value && ParcelsStore.dor.features && ParcelsStore.dor.features.filter(parcel => parcel.id === selectedParcelId.value)[0]) {
     const parcel = ParcelsStore.dor.features.filter(parcel => parcel.id === selectedParcelId.value)[0];
     // if (import.meta.env.VITE_DEBUG == 'true') console.log('computed, not watch, selectedParcelId.value:', selectedParcelId.value, 'ParcelsStore.dor.features.filter(parcel => parcel.id === selectedParcelId.value)[0]:', ParcelsStore.dor.features.filter(parcel => parcel.id === selectedParcelId.value)[0]);
     if (parcel.geometry.type === 'Polygon') {
-      return parcel.geometry.coordinates[0];
+      value = parcel.geometry.coordinates[0];
     } else if (parcel.geometry.type === 'MultiPolygon') {
-      return parcel.geometry.coordinates;
+      value = parcel.geometry.coordinates;
     }
   } else {
-    return [[0,0], [0,1], [1,1], [1,0], [0,0]];
+    value = [[0,0], [0,1], [1,1], [1,0], [0,0]];
   }
+  return value;
 });
 
 watch(
@@ -305,6 +307,16 @@ watch(
   }
 });
 
+watch(
+  () => MainStore.currentNearbyTimeInterval,
+  () => {
+    if (import.meta.env.VITE_DEBUG == 'true') console.log('watch currentNearbyTimeIntervals is firing');
+    const popup = document.getElementsByClassName('maplibregl-popup');
+    if (popup.length) {
+      popup[0].remove();
+    }
+  }
+)
 
 // watch topic for changing map style
 watch(

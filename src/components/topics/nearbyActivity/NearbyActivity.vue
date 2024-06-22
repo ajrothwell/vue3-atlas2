@@ -63,6 +63,10 @@ const timeIntervals = computed(() => {
   return values;
 })
 
+watch(() => timeIntervalSelected.value, (newTimeIntervals) => {
+  MainStore.currentNearbyTimeInterval = newTimeIntervals;
+})
+
 watch(() => selectedDataType.value, (newDataType) => {
   if (import.meta.env.VITE_DEBUG == 'true') console.log('watch selectedDataType.value, newDataType:', newDataType);
   if (MainStore.currentAddress) {
