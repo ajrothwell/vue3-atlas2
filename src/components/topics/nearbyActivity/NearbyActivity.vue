@@ -39,6 +39,30 @@ const setDataTypeInRouter = (newDataType) => {
 
 const selectedDataType = ref('nearby311');
 
+const timeIntervalSelected = ref(30);
+const timeIntervals = computed(() => {
+  let values;
+  if (['nearby311', 'nearbyConstructionPermits', 'nearbyDemolitionPermits', 'nearbyImminentlyDangerous'].includes(currentNearbyDataType.value)) {
+    values = {
+      30: 'last 30 days',
+      90: 'last 90 days',
+      365: 'last 1 year',
+    };
+  } else if (currentNearbyDataType.value == 'nearbyCrimeIncidents') {
+    values = {
+      30: 'last 30 days',
+      90: 'last 90 days',
+    };
+  } else if (currentNearbyDataType.value == 'nearbyZoningAppeals') {
+    values = {
+      '0': 'any time',
+      '-90': 'last 90 days',
+      '90': 'next 90 days',
+    }
+  }
+  return values;
+})
+
 watch(() => selectedDataType.value, (newDataType) => {
   if (import.meta.env.VITE_DEBUG == 'true') console.log('watch selectedDataType.value, newDataType:', newDataType);
   if (MainStore.currentAddress) {
@@ -49,6 +73,7 @@ watch(() => selectedDataType.value, (newDataType) => {
       popup[0].remove();
     }
   }
+  timeIntervalSelected.value = Object.keys(timeIntervals.value)[0]
 })
 
 const clickedMarkerId = computed(() => { return MainStore.clickedMarkerId; });
@@ -77,30 +102,6 @@ onMounted( () => {
 })
 
 import TextFilter from '@/components/topics/nearbyActivity/TextFilter.vue';
-
-const timeIntervalSelected = ref(30);
-const timeIntervals = computed(() => {
-  let values;
-  if (['nearby311', 'nearbyConstructionPermits', 'nearbyDemolitionPermits', 'nearbyImminentlyDangerous'].includes(currentNearbyDataType.value)) {
-    values = {
-      30: 'last 30 days',
-      90: 'last 90 days',
-      365: 'last 1 year',
-    };
-  } else if (currentNearbyDataType.value == 'nearbyCrimeIncidents') {
-    values = {
-      30: 'last 30 days',
-      90: 'last 90 days',
-    };
-  } else if (currentNearbyDataType.value == 'nearbyZoningAppeals') {
-    values = {
-      '0': 'any time',
-      '-90': 'last 90 days',
-      '90': 'next 90 days',
-    }
-  }
-  return values;
-})
 
 const textSearch = ref('');
 
@@ -159,7 +160,7 @@ const textSearch = ref('');
 <style>
 
 .nearby-dropdown {
-  padding: 0px;
+  padding: 0px !important;
 }
 
 #dd-data-dropdown {
