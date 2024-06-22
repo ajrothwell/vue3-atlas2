@@ -117,28 +117,28 @@ const textSearch = ref('');
 
     <!-- DATA DROPDOWN-->
 
-    <div class="filter-div columns">
-      <div class="dropdown nearby-dropdown column is-4 pt-0 pb-0"> 
+    <div class="filter-div columns is-multiline">
+      <div class="dropdown nearby-dropdown column is-4 is-12-mobile pt-0 pb-0"> 
         <dropdown
           id="data-dropdown"
           v-model="selectedDataType"
-          label="Select activity"
+          label="Which activity?"
           :options="dataTypes"
         />
       </div>
 
       <div
         v-if="selectedDataType != 'nearbyVacantIndicatorPoints'"
-        class="dropdown nearby-dropdown column is-3 pt-0 pb-0"
+        class="dropdown nearby-dropdown column is-3 is-12-mobile pt-0 pb-0"
       >
         <dropdown
           id="time-interval-dropdown"
           v-model="timeIntervalSelected"
-          label="Select time interval"
+          label="When?"
           :options="timeIntervals"
         />
       </div>
-      <div class="column is-4">
+      <div class="column is-4 is-12-mobile">
         <TextFilter
           v-model="textSearch"
         />
