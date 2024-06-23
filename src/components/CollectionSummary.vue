@@ -37,6 +37,10 @@ export default {
           value: 3,
           label: 'remainder parcel',
         },
+        {
+          value: 9,
+          label: 'unknown status parcel'
+        }
       ],
     }
   },

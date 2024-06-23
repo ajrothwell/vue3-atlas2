@@ -77,6 +77,7 @@ const statusKey = {
   1: 'Active',
   2: 'Inactive',
   3: 'Remainder',
+  9: 'Unknown Status',
 }
 
 const addRegmapLayer = (regmap) => {
