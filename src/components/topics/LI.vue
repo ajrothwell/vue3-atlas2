@@ -80,7 +80,7 @@ const selectedBuildingCerts = computed(() => {
 // PERMITS
 const permitsCompareFn = (a, b) => new Date(b.permitissuedate) - new Date(a.permitissuedate);
 const permits = computed(() => { if (LiStore.liPermits.rows) return [ ...LiStore.liPermits.rows ].sort(permitsCompareFn) });
-const permitsLength = computed(() => permits.length ? permits.length : 0);
+const permitsLength = computed(() => permits.value && permits.value.length ? permits.value.length : 0);
 
 // ZONING DOCS
 const liZoningDocsCompareFn = (a, b) => new Date(b.scan_date || a.issue_date) - new Date(a.scan_date || a.issue_date);
@@ -94,17 +94,17 @@ const liAllZoningDocs = computed(() => {
 // INSPECTIONS
 const inspectionsCompareFn = (a, b) => new Date(b.investigationcompleted) - new Date(a.investigationcompleted);
 const inspections = computed(() => { if (LiStore.liInspections.rows) return [ ...LiStore.liInspections.rows ].sort(inspectionsCompareFn) });
-const inspectionsLength = computed(() => inspections.length ? inspections.length : 0);
+const inspectionsLength = computed(() => inspections.value && inspections.value.length ? inspections.value.length : 0);
 
 // VIOLATIONS
 const violationsCompareFn = (a, b) => new Date(b.casecreateddate) - new Date(a.casecreateddate);
 const violations = computed(() => { if (LiStore.liViolations.rows) return [ ...LiStore.liViolations.rows ].sort(violationsCompareFn) });
-const violationsLength = computed(() => violations.length ? violations.length : 0);
+const violationsLength = computed(() => violations.value && violations.value.length ? violations.value.length : 0);
 
 // BUSINESS LICENSES
 const businessLicensesCompareFn = (a, b) => new Date(b.initialissuedate) - new Date(a.initialissuedate);
 const businessLicenses = computed(() => { if (LiStore.liBusinessLicenses.rows) return [ ...LiStore.liBusinessLicenses.rows ].sort(businessLicensesCompareFn) });
-const businessLicensesLength = computed(() => businessLicenses.length ? businessLicenses.length : 0);
+const businessLicensesLength = computed(() => businessLicenses.value && businessLicenses.value.length ? businessLicenses.value.length : 0);
 
 // TABLES
 
