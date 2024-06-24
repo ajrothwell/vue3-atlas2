@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, computed, watch, onMounted, onBeforeUnmount } from 'vue';
+import { computed, watch, onMounted, onBeforeUnmount } from 'vue';
 import { point, featureCollection } from '@turf/helpers';
 
 import { useNearbyActivityStore } from '@/stores/NearbyActivityStore';
@@ -9,8 +9,6 @@ const MainStore = useMainStore();
 import { useMapStore } from '@/stores/MapStore';
 const MapStore = useMapStore();
 
-import TextFilter from '@/components/topics/nearbyActivity/TextFilter.vue';
-import IntervalDropdown from '@/components/topics/nearbyActivity/IntervalDropdown.vue';
 import useTransforms from '@/composables/useTransforms';
 const { timeReverseFn } = useTransforms();
 import useScrolling from '@/composables/useScrolling';
@@ -20,28 +18,14 @@ const loadingData = computed(() => NearbyActivityStore.loadingData );
 
 const props = defineProps({
   timeIntervalSelected: {
-    type: Number,
-    default: 30,
+    type: String,
+    default: '30',
   },
   textSearch: {
     type: String,
     default: '',
   },
 })
-
-// const timeIntervalSelected = ref(30);
-
-// const timeIntervals = reactive(
-//   {
-//     30: 'the last 30 days',
-//     90: 'the last 90 days',
-//     365: '1 year',
-//   }
-// )
-
-// const setTimeInterval = (e) => timeIntervalSelected.value = e;
-
-// const textSearch = ref('');
 
 const nearbyConstructionPermits = computed(() => {
   let data;

@@ -19,6 +19,9 @@ import NearbyConstructionPermits from './NearbyConstructionPermits.vue';
 import NearbyDemolitionPermits from './NearbyDemolitionPermits.vue';
 import NearbyImminentlyDangerous from './NearbyImminentlyDangerous.vue';
 
+import TextFilter from '@/components/TextFilter.vue';
+const textSearch = ref('');
+
 const dataTypes = {
   nearby311: '311 Requests',
   nearbyCrimeIncidents: 'Crime Incidents',
@@ -39,7 +42,7 @@ const setDataTypeInRouter = (newDataType) => {
 
 const selectedDataType = ref('nearby311');
 
-const timeIntervalSelected = ref(30);
+const timeIntervalSelected = ref('30');
 const timeIntervals = computed(() => {
   let values;
   if (['nearby311', 'nearbyConstructionPermits', 'nearbyDemolitionPermits', 'nearbyImminentlyDangerous'].includes(currentNearbyDataType.value)) {
@@ -113,10 +116,6 @@ onMounted( () => {
   // const mainScrollTop = main.scrollTop;
   // main.scrollTo(0, mainScrollTop - 80);
 })
-
-import TextFilter from '@/components/topics/nearbyActivity/TextFilter.vue';
-
-const textSearch = ref('');
 
 </script>
 

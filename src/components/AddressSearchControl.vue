@@ -61,7 +61,7 @@ const yPosition = computed(() => {
           v-model="MainStore.addressSearchValue"
           class="input address-input"
           type="text"
-          placeholder="Search an address or OPA number"
+          placeholder="Search an address, OPA, or DOR number"
           @keydown.enter="router.replace({ name: 'search', query: { address: MainStore.addressSearchValue }})"
         >
       </div>

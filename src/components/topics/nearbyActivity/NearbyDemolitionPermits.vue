@@ -18,8 +18,8 @@ const loadingData = computed(() => NearbyActivityStore.loadingData );
 
 const props = defineProps({
   timeIntervalSelected: {
-    type: Number,
-    default: 30,
+    type: String,
+    default: '30',
   },
   textSearch: {
     type: String,
