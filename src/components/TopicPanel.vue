@@ -185,6 +185,7 @@ const zipCode = computed(() => {
     </topic>
 
     <topic
+      v-if="MainStore.appVersion == 'atlas'"
       :topic-name="'Voting'"
       :topic-icon="'fa-solid fa-gavel'"
       :loading="!dataSourcesLoadedArray.includes('Voting')"
