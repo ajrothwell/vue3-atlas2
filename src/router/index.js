@@ -90,7 +90,9 @@ const dataFetch = async(to, from) => {
 
   if (to.name === 'address') {
     MainStore.currentTopic = '';
-  }
+  } //else {
+  //   MainStore.currentTopic = to.params.topic;
+  // }
   
   // GET PARAMS
   let address, topic;
