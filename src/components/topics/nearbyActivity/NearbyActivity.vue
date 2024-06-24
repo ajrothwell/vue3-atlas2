@@ -39,6 +39,14 @@ const setDataTypeInRouter = (newDataType) => {
 
 const selectedDataType = ref('nearby311');
 
+watch(
+  () => route.params.data,
+  newData => {
+    if (import.meta.env.VITE_DEBUG == 'true') console.log('newData:', newData);
+    selectedDataType.value = newData;
+  }
+)
+
 watch(() => selectedDataType.value, (newDataType) => {
   if (import.meta.env.VITE_DEBUG == 'true') console.log('watch selectedDataType.value, newDataType:', newDataType);
   setDataTypeInRouter(newDataType);

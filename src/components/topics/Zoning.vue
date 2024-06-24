@@ -10,6 +10,7 @@ import { useMainStore } from '@/stores/MainStore';
 const MainStore = useMainStore();
 import CollectionSummary from '@/components/CollectionSummary.vue';
 
+import CustomPaginationLabels from '@/components/pagination/CustomPaginationLabels.vue';
 import useTables from '@/composables/useTables';
 const { paginationOptions } = useTables();
 
