@@ -318,7 +318,13 @@ const businessLicensesTableData = computed(() => {
     </div>
 
     <h5 class="subtitle is-5">
-      There {{ liBuildingFootprintsLength > 1 || liBuildingFootprintsLength == 0 ? 'are' : 'is' }} {{ liBuildingFootprintsLength }} {{ liBuildingFootprintsLength > 1 || liBuildingFootprintsLength == 0 ? 'buildings' : 'building' }} at this address
+      <span v-if="liBuildingFootprintsLength > 0">There {{ liBuildingFootprintsLength > 1 || liBuildingFootprintsLength == 0 ? 'are' : 'is' }} {{ liBuildingFootprintsLength }} {{ liBuildingFootprintsLength > 1 || liBuildingFootprintsLength == 0 ? 'buildings' : 'building' }} at this address</span>
+      <span v-else>Loading buildings </span>
+      <font-awesome-icon
+        v-if="liBuildingFootprintsLength == 0"
+        icon="fa-solid fa-spinner"
+        spin
+      />
     </h5>
     <!-- Li Building Footprints Section -->
     <div
