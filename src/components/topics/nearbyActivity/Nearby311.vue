@@ -37,7 +37,8 @@ const nearby311 = computed(() => {
       return daysDiff <= props.timeIntervalSelected;
     }).filter(item => {
       // if (import.meta.env.VITE_DEBUG == 'true') console.log('item.address:', item.address, 'textSearch.value:', textSearch.value);
-      return item.address.toLowerCase().includes(props.textSearch.toLowerCase()) || item.service_name.toLowerCase().includes(props.textSearch.toLowerCase());
+      return item.address.toLowerCase().includes(props.textSearch.toLowerCase())
+      || item.service_name.toLowerCase().includes(props.textSearch.toLowerCase());
     });
     data.sort((a, b) => timeReverseFn(a, b, 'requested_datetime'))
   }

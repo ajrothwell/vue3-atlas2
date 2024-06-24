@@ -20,6 +20,9 @@ const MapStore = useMapStore();
 import CollectionSummary from '@/components/CollectionSummary.vue';
 import VerticalTable from '@/components/VerticalTable.vue';
 
+import TextFilter from '@/components/TextFilter.vue';
+const textSearch = ref('');
+
 let selectedParcelId = computed(() => { return MainStore.selectedParcelId });
 const selectedParcel = computed(() => {
   if (ParcelsStore.dor.features && ParcelsStore.dor.features.length > 0) {
@@ -33,9 +36,14 @@ const selectedDocs = computed(() => {
     // if (import.meta.env.VITE_DEBUG == 'true') console.log('selectedParcelId.value:', selectedParcelId.value);
     let data = [];
     for (let feature of DorStore.dorDocuments[selectedParcelId.value].features) {
-      data.push({
-        ...feature.attributes,
-      });
+      if (feature.attributes.GRANTORS.toLowerCase().includes(textSearch.value.toLowerCase())
+        || feature.attributes.GRANTEES.toLowerCase().includes(textSearch.value.toLowerCase())
+        || feature.attributes.UNIT_NUM != null && feature.attributes.UNIT_NUM.toLowerCase().includes(textSearch.value.toLowerCase())
+      ){
+        data.push({
+          ...feature.attributes,
+        });
+      }
     }
     data.sort((a, b) => new Date(b.DISPLAY_DATE) - new Date(a.DISPLAY_DATE));
     return data;
@@ -193,6 +201,10 @@ const dorDocsTableData = computed(() => {
         label: 'Grantee',
         field: 'GRANTEES',
       },
+      {
+        label: 'Unit',
+        field: 'UNIT_NUM',
+      }
     ],
     rows: selectedDocs.value || [],
   }
@@ -277,6 +289,11 @@ const dorDocsTableData = computed(() => {
       </div>
 
       <!-- DOR Docs Table -->
+      <TextFilter
+        v-model="textSearch"
+      />
+
+
       <div class="mt-4">
         <h5 class="subtitle is-5">
           Documents <font-awesome-icon
