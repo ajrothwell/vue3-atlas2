@@ -22,6 +22,14 @@ const stormwaterData = computed(() => {
   return data;
 })
 
+const parcelId = computed(() => {
+  let value;
+  if (StormwaterStore.stormwaterData && Object.keys(StormwaterStore.stormwaterData).length) {
+    value = StormwaterStore.stormwaterData.Parcel.ParcelID
+  }
+  return value;
+})
+
 const accounts = computed(() => {
   let data;
   if (StormwaterStore.stormwaterData && Object.keys(StormwaterStore.stormwaterData).length) {
@@ -130,24 +138,34 @@ const accountsTableData = computed(() => {
     Source: Philadelphia Water Department
   </div>
 
-  <div v-if="StormwaterStore.loadingStormwaterData">
-    <p>
-      Loading stormwater data... <font-awesome-icon
+  <div class="data-section">
+    <h5 class="subtitle is-5 table-title">
+      Parcel
+      <font-awesome-icon
+        v-if="StormwaterStore.loadingStormwaterData"
         icon="fa-solid fa-spinner"
         spin
       />
-    </p>
+    </h5>
+    <div v-if="StormwaterStore.loadingStormwaterData">
+      <p>
+        Loading stormwater data... <font-awesome-icon
+          icon="fa-solid fa-spinner"
+          spin
+        />
+      </p>
+    </div>
+    <div v-else-if="hasNoData">
+      <p>There is no stormwater data for this address.</p>
+    </div>
+    <!-- v-if="!shouldShowCondosMessage" -->
+    <vertical-table
+      table-id="stormwaterTable"
+      :data="vertTableData"
+    />
   </div>
-  <div v-else-if="hasNoData">
-    <p>There is no stormwater data for this address.</p>
-  </div>
-  <!-- v-if="!shouldShowCondosMessage" -->
-  <vertical-table
-    table-id="stormwaterTable"
-    :data="vertTableData"
-  />
 
-  <div class="data-section">
+  <!-- <div class="data-section"> -->
     <h5 class="subtitle is-5 table-title">
       Accounts
       <font-awesome-icon
@@ -194,9 +212,9 @@ const accountsTableData = computed(() => {
     </div>
     <a
       target="_blank"
-      :href="`https://stormwater.phila.gov/parcelviewer/parcel/${stormwaterData.Parcel.ParcelID}`"
+      :href="`https://stormwater.phila.gov/parcelviewer/parcel/${parcelId}`"
     >See more at Stormwater Billing <font-awesome-icon icon="fa-solid fa-external-link-alt" /></a>
 
-  </div>
+  <!-- </div> -->
 
 </template>
