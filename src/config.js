@@ -213,13 +213,6 @@ const pwdDrawnMapStyle = mergeDeep(imageryInfo,{
         }
       }
     },
-    // labelLayer: {
-    //   type: 'geojson',
-    //   data: {
-    //     'type': 'FeatureCollection',
-    //     'features': [],
-    //   },
-    // },
   },
   layers: [
     {
@@ -280,22 +273,6 @@ const pwdDrawnMapStyle = mergeDeep(imageryInfo,{
         "text-allow-overlap": true,
       },
     },
-    // {
-    //   id: null,
-    //   'type': 'symbol',
-    //   'source': 'labelLayer',
-    //   'paint': {
-    //     'text-color': 'red',
-    //   },
-    //   'layout': {
-    //     'text-size': 12,
-    //     'text-font': [ 'Open Sans Regular' ],
-    //     'text-field': [ 'get', 'description' ],
-    //     'text-variable-anchor': [ 'center' ],
-    //     'text-radial-offset': 0.5,
-    //     'text-justify': 'center',
-    //   },
-    // },
   ],
 });
 
@@ -538,7 +515,7 @@ const dorDrawnMapStyle = mergeDeep(imageryInfo,{
 
 const zoningDrawnMapStyle = mergeDeep(imageryInfo,{
   version: 8,
-  name: 'dorDrawnMap',
+  name: 'zoningDrawnMap',
   glyphs: '//fonts.openmaptiles.org/{fontstack}/{range}.pbf',
   sources: {
     dor: {
@@ -666,6 +643,129 @@ const zoningDrawnMapStyle = mergeDeep(imageryInfo,{
         'line-color': 'blue',
         'line-width': 2
       }
+    },
+  ],
+});
+
+const stormwaterDrawnMapStyle = mergeDeep(imageryInfo,{
+  version: 8,
+  name: 'stormwaterDrawnMap',
+  glyphs: '//fonts.openmaptiles.org/{fontstack}/{range}.pbf',
+  sources: {
+    pwd: {
+      tiles: [
+        'https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityBasemap/MapServer/tile/{z}/{y}/{x}',
+      ],
+      type: 'raster',
+      tileSize: 256,
+    },
+    pwdLabels: {
+      tiles: [
+        'https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityBasemap_Labels/MapServer/tile/{z}/{y}/{x}',
+      ],
+      type: 'raster',
+      tileSize: 256,
+    },
+    zoning: {
+      tiles: [
+        'https://stormwater.phila.gov/arcgis/rest/services/parcel_viewer/pv_data/MapServer/export?dpi=120\
+          &transparent=true\
+          &format=png32\
+          &bbox={bbox-epsg-3857}\
+          &bboxSR=3857\
+          &imageSR=3857\
+          &size=1024,1024\
+          &f=image\
+        ',
+      ],
+      type: 'raster',
+      tileSize: 1024,
+    },
+    addressMarker: {
+      type: 'geojson',
+      data: {
+        type: 'Feature',
+        geometry: {
+          type: 'Point',
+          coordinates: [],
+        }
+      }
+    },
+    dorParcel: {
+      type: 'geojson',
+      data: {
+        type: 'Feature',
+        geometry: {
+          type: 'Polygon',
+          coordinates: [[[]]],
+        }
+      }
+    },
+  },
+  layers: [
+    {
+      id: 'pwd',
+      source: 'pwd',
+      type: 'raster',
+    },
+    {
+      id: 'pwdLabels',
+      source: 'pwdLabels',
+      type: 'raster',
+    },
+    {
+      id: 'cyclomediaRecordings',
+      source: 'cyclomediaRecordings',
+      type: 'circle',
+      paint: {
+        'circle-radius': 6,
+        'circle-color': '#5b94c6',
+        'circle-stroke-width': 1,
+        'circle-stroke-color': '#a1a1a1',
+        'circle-opacity': 0.5,
+      }
+    },
+    {
+      id: 'zoning',
+      source: 'zoning',
+      type: 'raster',
+      paint: {
+        'raster-opacity': 1,
+      }
+    },
+    {
+      id: 'cyclomediaCamera',
+      source: 'cyclomediaCamera',
+      type: 'symbol',
+      layout: {
+        'icon-image': 'camera-icon',
+        'icon-anchor' : 'center',
+        'icon-size': 0.09,
+        'icon-rotate': 0,
+        'icon-rotation-alignment': 'map',
+        "icon-allow-overlap" : true,
+        "text-allow-overlap": true,
+      },
+    },
+    {
+      'id': 'cyclomediaViewcone',
+      'type': 'fill',
+      'source': 'cyclomediaViewcone',
+      'layout': {},
+      'paint': {
+        'fill-color': 'rgb(0,102,255)',
+        'fill-opacity': 0.2,
+      },
+    },
+    {
+      id: 'addressMarker',
+      source: 'addressMarker',
+      type: 'symbol',
+      layout: {
+        'icon-image': 'marker-blue',
+        'icon-anchor' : 'bottom',
+        'icon-size': .05,
+      },
     },
   ],
 });
@@ -969,6 +1069,7 @@ const $config = {
     'Licenses & Inspections': 'liDrawnMapStyle',
     Zoning: 'zoningDrawnMapStyle',
     Voting: 'votingDrawnMapStyle',
+    Stormwater: 'stormwaterDrawnMapStyle',
     'Nearby Activity': 'nearbyDrawnMapStyle',
   },
   parcelLayerForTopic: {
@@ -979,6 +1080,7 @@ const $config = {
     'Licenses & Inspections': 'pwd',
     Zoning: 'dor',
     Voting: 'pwd',
+    Stormwater: 'pwd',
     'Nearby Activity': 'pwd',
   },
   mapLayers: {
@@ -1133,48 +1235,6 @@ const $config = {
       type: 'raster',
     },
   },
-}
-
-const ZONING_COLOR_MAP = {
-  'CA1': '#FCD1CC',
-  'CA2': '#FCD1CC',
-  'CMX1': '#FF7070',
-  'CMX2': '#FF7070',
-  'CMX2.5': '#FF7070',
-  'CMX3': '#EB0000',
-  'CMX4': '#850000',
-  'CMX5': '#850000',
-  'I1': '#C37FF0',
-  'I2': '#9B27D9',
-  'I3': '#41009C',
-  'ICMX': '#C300E6',
-  'IP': '#7C7AC4',
-  'IRMX': '#EC8EF5',
-  'RM1': '#FFA72B',
-  'RM2': '#FFA72B',
-  'RM3': '#FFA72B',
-  'RM4': '#FFA72B',
-  'RMX1': '#FF8138',
-  'RMX2': '#FF8138',
-  'RMX3': '#FF8138',
-  'RSA1': '#FFFF0F',
-  'RSA2': '#FFFF0F',
-  'RSA3': '#FFFF0F',
-  'RSA4': '#FFFF0F',
-  'RSA5': '#FFFF0F',
-  'RSD1': '#FFF4C4',
-  'RSD2': '#FFF4C4',
-  'RSD3': '#FFF4C4',
-  'RTA1': '#D4D40D',
-  'SPAIR': '#B1B3B5',
-  'SPENT': '#805624',
-  'SPINS': '#63BEFF',
-  'SPPOA': '#138C00',
-  'SPPOP': '#118E00',
-  'SPSTA': '#8ACC66',
-  'RSA6': '#FFFF0F',
-  'SPCIV': '#63BEFF',
-  'null': '#828282',
 }
 
 const ZONING_CODE_MAP = {
@@ -1338,6 +1398,7 @@ $config['dorDrawnMapStyle'] = dorDrawnMapStyle;
 $config['liDrawnMapStyle'] = liDrawnMapStyle;
 $config['zoningDrawnMapStyle'] = zoningDrawnMapStyle;
 $config['votingDrawnMapStyle'] = votingDrawnMapStyle;
+$config['stormwaterDrawnMapStyle'] = stormwaterDrawnMapStyle;
 $config['nearbyDrawnMapStyle'] = nearbyDrawnMapStyle;
 $config['ZONING_CODE_MAP'] = ZONING_CODE_MAP;
 

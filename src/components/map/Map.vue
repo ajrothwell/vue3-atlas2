@@ -907,7 +907,7 @@ const toggleEagleview = () => {
   }
 }
 
-const legendData = ref({
+const dorLegendData = ref({
   // TODO give these an id instead of using the label as a key
   'Easements': {
     'border-color': 'rgb(255, 0, 197)',
@@ -932,6 +932,17 @@ const legendData = ref({
     'width': '12px',
     'height': '12px',
     'font-size': '10px',
+  },
+})
+
+const stormwaterLegendData = ref({
+  'Roof': {
+    'background-color': '#FEFF7F',
+    'font-size': '12px',
+  },
+  'Other Impervious Surface': {
+    'background-color': '#F2DCFF',
+    'font-size': '12px',
   },
 })
 
@@ -966,8 +977,13 @@ const legendData = ref({
       @drawDelete="drawDelete"
     />
     <OverlayLegend
+      v-show="!MapStore.imageryOn && ['Stormwater'].includes(MainStore.currentTopic)"
+      :items="stormwaterLegendData"
+      :options="{ shape: 'square' }"
+    />
+    <OverlayLegend
       v-show="!MapStore.imageryOn && ['Deeds', 'Zoning'].includes(MainStore.currentTopic)"
-      :items="legendData"
+      :items="dorLegendData"
       :options="{ shape: 'square' }"
     />
   </div>
