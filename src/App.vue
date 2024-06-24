@@ -31,6 +31,7 @@ import TopicPanel from '@/components/TopicPanel.vue';
 import MapPanel from '@/components/MapPanel.vue';
 
 onMounted(async () => {
+  MainStore.appVersion = import.meta.env.VITE_VERSION;
   MainStore.isMobileDevice = isMobileDevice();
   MainStore.isMac = isMac();
   await router.isReady()

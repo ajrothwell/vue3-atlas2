@@ -19,6 +19,7 @@ import LI from '@/components/topics/LI.vue';
 import Zoning from '@/components/topics/Zoning.vue';
 import Voting from '@/components/topics/Voting.vue';
 import NearbyActivity from '@/components/topics/nearbyActivity/NearbyActivity.vue';
+import Stormwater from '@/components/topics/cityAtlas/Stormwater.vue';
 
 import { useRoute } from 'vue-router';
 
@@ -190,6 +191,15 @@ const zipCode = computed(() => {
       :topic-index="5"
     >
       <Voting />
+    </topic>
+
+    <topic
+      v-if="MainStore.appVersion == 'cityatlas'"
+      :topic-name="'Stormwater'"
+      :topic-icon="'fa-solid fa-tint'"
+      :topic-index="7"
+    >
+      <Stormwater />
     </topic>
 
     <topic
