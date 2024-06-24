@@ -8,6 +8,7 @@ export const useMainStore = defineStore("MainStore", {
       isMobileDevice: null,
       isMac: null,
       lastSearchMethod: 'address',
+      addressSearchValue: '',
       lastClickCoords: [0,0],
       currentAddress: '',
       currentTopic: 'Property',

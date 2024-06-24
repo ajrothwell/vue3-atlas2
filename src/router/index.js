@@ -79,7 +79,7 @@ const getParcelsAndPutInStore = async(lng, lat) => {
 }
 
 const dataFetch = async(to, from) => {
-  if (import.meta.env.VITE_DEBUG == 'true') console.log('dataFetch is starting, to:', to, 'from:', from, 'to.params.address:', to.params.address, 'from.params.address:', from.params.address);
+  if (import.meta.env.VITE_DEBUG == 'true') console.log('dataFetch is starting, to:', to, 'from:', from, 'to.params.address:', to.params.address, 'from.params.address:', from.params.address, 'to.params.topic:', to.params.topic, 'from.params.topic:', from.params.topic);
   const MainStore = useMainStore();
   const GeocodeStore = useGeocodeStore();
   const ParcelsStore = useParcelsStore();
@@ -90,9 +90,11 @@ const dataFetch = async(to, from) => {
 
   if (to.name === 'address') {
     MainStore.currentTopic = '';
-  } //else {
-  //   MainStore.currentTopic = to.params.topic;
-  // }
+  } else {
+    if (!MainStore.currentTopic) {
+      MainStore.currentTopic = to.params.topic;
+    }
+  }
   
   // GET PARAMS
   let address, topic;

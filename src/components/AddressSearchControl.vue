@@ -14,11 +14,9 @@ defineProps({
   },
 });
 
-const inputAddress = ref('');
-
 const clearAddress = () => {
   if (import.meta.env.VITE_DEBUG == 'true') console.log('clearAddress is running');
-  inputAddress.value = '';
+  MainStore.addressSearchValue = '';
 }
 
 const fullScreenTopicsEnabled = computed(() => {
@@ -60,16 +58,16 @@ const yPosition = computed(() => {
         >Search an address or OPA number</label>
         <input
           :id="inputId"
-          v-model="inputAddress"
+          v-model="MainStore.addressSearchValue"
           class="input address-input"
           type="text"
           placeholder="Search an address or OPA number"
-          @keydown.enter="router.replace({ name: 'search', query: { address: inputAddress }})"
+          @keydown.enter="router.replace({ name: 'search', query: { address: MainStore.addressSearchValue }})"
         >
       </div>
       <div class="control">
         <button
-          v-if="inputAddress != ''"
+          v-if="MainStore.addressSearchValue != ''"
           class="button is-info address-clear-button"
           title="Clear Address Button"
           @click="clearAddress"
@@ -85,7 +83,7 @@ const yPosition = computed(() => {
           class="button is-info address-search-button"
           type="submit"
           title="Address Search Button"
-          @click="router.replace({ name: 'search', query: { address: inputAddress }})"
+          @click="router.replace({ name: 'search', query: { address: MainStore.addressSearchValue }})"
         >
           <font-awesome-icon
             :icon="['fas', 'search']"
