@@ -9,7 +9,7 @@ import { useCondosStore } from '@/stores/CondosStore.js'
 const CondosStore = useCondosStore();
 
 import FullScreenTopicsToggleTab from '@/components/FullScreenTopicsToggleTab.vue';
-import AddressSearchControl from '@/components/map/AddressSearchControl.vue';
+import AddressSearchControl from '@/components/AddressSearchControl.vue';
 
 import Topic from '@/components/Topic.vue';
 import Property from '@/components/topics/Property.vue';

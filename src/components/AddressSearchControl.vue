@@ -66,9 +66,12 @@ const yPosition = computed(() => {
           placeholder="Search an address or OPA number"
           @keydown.enter="router.replace({ name: 'search', query: { address: inputAddress }})"
         >
+      </div>
+      <div class="control">
         <button
           v-if="inputAddress != ''"
-          class="clear-button icon is-small is-right"
+          class="button is-info address-clear-button"
+          title="Clear Address Button"
           @click="clearAddress"
         >
           <font-awesome-icon
@@ -77,33 +80,24 @@ const yPosition = computed(() => {
           />
         </button>
       </div>
-    <!-- </div> -->
       <div class="control">
-          <button
-            class="button is-info address-input-button"
-            type="submit"
-            title="Address Search Button"
-            @click="router.replace({ name: 'search', query: { address: inputAddress }})"
-          >
-            <i class="fas fa-search"></i>
-            <!-- <font-awesome-icon
-              :icon="['fas', 'search']"
-              size="l"
-            /> -->
-          </button>
-        <!-- </p> -->
+        <button
+          class="button is-info address-search-button"
+          type="submit"
+          title="Address Search Button"
+          @click="router.replace({ name: 'search', query: { address: inputAddress }})"
+        >
+          <font-awesome-icon
+            :icon="['fas', 'search']"
+            size="xl"
+          />
+        </button>
       </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-
-.clear-button {
-  background-color: transparent;
-  border-style: none;
-  z-index: 1000000;
-}
 
 .search-label {
   /* display: none !important */
@@ -135,30 +129,23 @@ const yPosition = computed(() => {
   z-index: 2;
 }
 
-.address-input-button {
-  height: 2.5em !important;
-  border-top-right-radius: 4px !important;
-  border-bottom-right-radius: 4px !important;
-  z-index: 2;
-}
-
 .address-input:hover {
   border-color: #0f4d90;
 }
 
-/* .address-input-button {
-  height: 40px !important;
-  width: 40px;
+.address-clear-button {
+  height: 2.5em !important;
   z-index: 2;
-  background-color: #0f4d90;
-  color: white;
-  padding-left: 6px;
-  padding-top: 10px;
-} */
-
-.address-input-button:hover {
-  color: white;
+  border-right: solid 2px white !important;
 }
 
+.address-search-button {
+  height: 2.5em !important;
+  padding-left: 10px !important;
+  padding-right: 10px !important;
+  border-top-right-radius: 4px !important;
+  border-bottom-right-radius: 4px !important;
+  z-index: 2;
+}
 
 </style>

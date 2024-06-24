@@ -39,7 +39,7 @@ const route = useRoute();
 const router = useRouter();
 
 // COMPONENTS
-import AddressSearchControl from '@/components/map/AddressSearchControl.vue';
+import AddressSearchControl from '@/components/AddressSearchControl.vue';
 import DistanceMeasureControl from '@/components/map/DistanceMeasureControl.vue';
 import ImageryToggleControl from '@/components/map/ImageryToggleControl.vue';
 import ImageryDropdownControl from '@/components/map/ImageryDropdownControl.vue';
