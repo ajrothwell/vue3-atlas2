@@ -67,6 +67,12 @@ export default function useTransforms() {
   const timeReverseFn = (a, b, fieldName) => new Date(b[fieldName]) - new Date(a[fieldName]);
   const timeFn  = (a, b, fieldName) => new Date(a[fieldName]) - new Date(b[fieldName]);
   
+  const thousandsPlace = (value) => {
+    var number = String(value).match(/\d+/)[0].replace(/(.)(?=(\d{3})+$)/g,'$1,');
+    var label = String(value).replace(/[0-9]/g, '') || '';
+    return number + ' ' + label;
+  }
+
   return {
     bold,
     currency,
@@ -79,6 +85,7 @@ export default function useTransforms() {
     integer,
     timeReverseFn,
     timeFn,
+    thousandsPlace,
   };
 
   // booleanToYesNo: {
@@ -86,13 +93,7 @@ export default function useTransforms() {
   //     return value ? 'Yes' : 'No';
   //   },
   // },
-  // thousandsPlace: {
-  //   transform: function(value) {
-  //     var number = String(value).match(/\d+/)[0].replace(/(.)(?=(\d{3})+$)/g,'$1,');
-  //     var label = String(value).replace(/[0-9]/g, '') || '';
-  //     return number + ' ' + label;
-  //   },
-  // },
+  
   
   // dayofweek: {
   //   // a list of global objects this transform depends on

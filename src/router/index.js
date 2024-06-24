@@ -10,6 +10,7 @@ import { useLiStore } from '@/stores/LiStore.js'
 import { useDorStore } from '@/stores/DorStore.js'
 import { useZoningStore } from '@/stores/ZoningStore.js'
 import { useVotingStore } from '@/stores/VotingStore.js'
+import { useStormwaterStore } from '@/stores/StormwaterStore.js'
 import { useNearbyActivityStore } from '@/stores/NearbyActivityStore.js'
 import { useMainStore } from '@/stores/MainStore.js'
 
@@ -32,6 +33,8 @@ const getGeocodeAndPutInStore = async(address) => {
   ZoningStore.clearAllZoningData();
   const VotingStore = useVotingStore();
   VotingStore.clearAllVotingData();
+  const StormwaterStore = useStormwaterStore();
+  StormwaterStore.clearAllStormwaterData();
   const NearbyActivityStore = useNearbyActivityStore();
   NearbyActivityStore.clearAllNearbyActivityData();
 
@@ -185,6 +188,13 @@ const topicDataFetch = async (topic, data) => {
     const VotingStore = useVotingStore();
     await VotingStore.fillAllVotingData();
     VotingStore.loadingVotingData = false;
+  }
+
+  if (topic === 'Stormwater') {
+    const StormwaterStore = useStormwaterStore();
+    await StormwaterStore.fillStormwaterData();
+    await StormwaterStore.fillStormwaterCapData();
+    StormwaterStore.loadingStormwaterData = false;
   }
 
   if (topic === 'Nearby Activity') {
