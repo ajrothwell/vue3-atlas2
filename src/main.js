@@ -52,6 +52,7 @@ import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons';
 import { faCaretLeft } from '@fortawesome/free-solid-svg-icons';
 import { faCaretRight } from '@fortawesome/free-solid-svg-icons';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 
 // import { faBars } from '@fortawesome/free-solid-svg-icons';
 library.add(
@@ -68,6 +69,7 @@ library.add(
   faAngleDown,
   faCaretLeft,
   faCaretRight,
+  faTimes,
   // faBars,
 );
 
