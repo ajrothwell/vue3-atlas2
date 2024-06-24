@@ -1071,6 +1071,7 @@ const $config = {
     Voting: 'votingDrawnMapStyle',
     Stormwater: 'stormwaterDrawnMapStyle',
     'Nearby Activity': 'nearbyDrawnMapStyle',
+    Districts: 'pwdDrawnMapStyle',
   },
   parcelLayerForTopic: {
     undefined: 'pwd',
@@ -1082,6 +1083,7 @@ const $config = {
     Voting: 'pwd',
     Stormwater: 'pwd',
     'Nearby Activity': 'pwd',
+    Districts: 'pwd',
   },
   mapLayers: {
     pwdBasemap: {

@@ -20,6 +20,7 @@ import Zoning from '@/components/topics/Zoning.vue';
 import Voting from '@/components/topics/Voting.vue';
 import NearbyActivity from '@/components/topics/nearbyActivity/NearbyActivity.vue';
 import Stormwater from '@/components/topics/cityAtlas/Stormwater.vue';
+import Districts from '@/components/topics/cityAtlas/Districts.vue';
 
 import { useRoute } from 'vue-router';
 
@@ -212,6 +213,15 @@ const zipCode = computed(() => {
       <KeepAlive>
         <NearbyActivity />
       </KeepAlive>
+    </topic>
+
+    <topic
+      v-if="MainStore.appVersion == 'cityatlas'"
+      :topic-name="'Districts'"
+      :topic-icon="'fa-solid fa-clone'"
+      :topic-index="7"
+    >
+      <Districts />
     </topic>
   </div>
 </template>
