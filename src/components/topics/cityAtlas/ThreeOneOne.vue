@@ -38,11 +38,11 @@ const nearby311 = computed(() => {
       let timeDiff = new Date() - new Date(item.properties.REQUESTED_DATETIME);
       let daysDiff = timeDiff / (1000 * 60 * 60 * 24);
       return daysDiff <= timeIntervalSelected.value;
-    })//.filter(item => {
-      // if (import.meta.env.VITE_DEBUG == 'true') console.log('item.address:', item.address, 'textSearch.value:', textSearch.value);
-    //   return item.address.toLowerCase().includes(textSearch.value.toLowerCase())
-    //   || item.service_name.toLowerCase().includes(textSearch.value.toLowerCase());
-    // });
+    }).filter(item => {
+      if (import.meta.env.VITE_DEBUG == 'true') console.log('item.properties.ADDRESS:', item.properties.ADDRESS, 'textSearch.value:', textSearch.value);
+      return item.properties.ADDRESS.toLowerCase().includes(textSearch.value.toLowerCase())
+      || item.properties.SUBJECT.toLowerCase().includes(textSearch.value.toLowerCase());
+    });
     data.sort((a, b) => timeReverseFn(a, b, 'properties.REQUESTED_DATETIME'))
   }
   return data;
@@ -112,20 +112,22 @@ const nearby311TableData = computed(() => {
 
 <template>
 
-  <div
-    class="dropdown nearby-dropdown column is-3 is-12-mobile pt-0 pb-0"
-  >
-    <dropdown
-      id="time-interval-dropdown"
-      v-model="timeIntervalSelected"
-      label="When?"
-      :options="timeIntervals"
-    />
-  </div>
-  <div class="column is-4 is-12-mobile">
-    <TextFilter
-      v-model="textSearch"
-    />
+  <div class="filter-div columns is-multiline">
+    <div
+      class="dropdown nearby-dropdown column is-3 is-12-mobile pt-0 pb-0"
+    >
+      <dropdown
+        id="time-interval-dropdown"
+        v-model="timeIntervalSelected"
+        label="When?"
+        :options="timeIntervals"
+      />
+    </div>
+    <div class="column is-8 is-12-mobile">
+      <TextFilter
+        v-model="textSearch"
+      />
+    </div>
   </div>
 
   <div class="mt-5">
