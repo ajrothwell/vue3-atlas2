@@ -134,7 +134,7 @@ const yPosition = computed(() => {
 .address-clear-button {
   height: 2.5em !important;
   z-index: 2;
-  border-right: solid 2px white !important;
+  border-right: solid 3px white !important;
 }
 
 .address-search-button {
