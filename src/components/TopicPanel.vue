@@ -100,13 +100,15 @@ const zipCode = computed(() => {
   <div
     v-if="route.name == 'not-found'"
     id="topic-panel-set-content"
+    class="container"
   >
     <div v-if="MainStore.fullScreenTopicsEnabled">
       <address-search-control :input-id="'address-bar-search-input'" />
     </div>
-    <p>We couldn't find that address. Are you sure everything was spelled correctly?</p>
+    <h1 class="subtitle is-3">We couldn't find that address.</h1>
+    <p class="subtitle is-4">Are you sure everything was spelled correctly?</p>
     <p>Here are some examples of things you can search for:</p>
-    <ul>
+    <ul class="bullet-list">
       <li>1234 Market St</li>
       <li>1001 Pine Street #201</li>
       <li>12th & Market</li>
