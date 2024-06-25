@@ -39,7 +39,7 @@ const accounts = computed(() => {
 })
 
 const accountsLength = computed(() => {
-  let value;
+  let value = 0;
   if (StormwaterStore.stormwaterData && Object.keys(StormwaterStore.stormwaterData).length) {
     value = StormwaterStore.stormwaterData.Accounts.length;
   }

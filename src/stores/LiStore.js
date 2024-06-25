@@ -10,6 +10,7 @@ export const useLiStore = defineStore('LiStore', {
     return {
       selectedLiBuildingNumber: null,
       liBuildingFootprints: {},
+      loadingLiBuildingFootprints: false,
       liBuildingCertSummary: {},
       liBuildingCerts: {},
       loadingLiBuildingCerts: false,
@@ -45,6 +46,7 @@ export const useLiStore = defineStore('LiStore', {
       this.loadingLiData = true;
       this.selectedLiBuildingNumber = null;
       this.liBuildingFootprints = {};
+      this.loadingLiBuildingFootprints = true;
       this.liBuildingCertSummary = {};
       this.liBuildingCerts = {};
       this.liPermits = {};
@@ -92,11 +94,14 @@ export const useLiStore = defineStore('LiStore', {
         const response = await axios.get(baseUrl, { params });
         if (response.status === 200) {
           this.liBuildingFootprints = await response.data;
+          this.loadingLiBuildingFootprints = false;
         } else {
           console.warn('liBuildingFootprints - await resolved but HTTP status was not successful')
+          this.loadingLiBuildingFootprints = false;
         }
       } catch {
         console.error('liBuildingFootprints - await never resolved, failed to fetch address data')
+        this.loadingLiBuildingFootprints = false;
       }
     },
     async fillLiBuildingCertSummary() {
