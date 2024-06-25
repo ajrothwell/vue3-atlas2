@@ -10,6 +10,7 @@ import qs from 'qs';
 
 import { format } from 'date-fns';
 
+console.log('import.meta.env.VITE_AGO_USERNAME:', import.meta.env.VITE_AGO_USERNAME, 'import.meta.env.VITE_AGO_PASSWORD:', import.meta.env.VITE_AGO_PASSWORD);
 
 export const use311Store = defineStore('311Store', {
   state: () => {
