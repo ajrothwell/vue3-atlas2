@@ -96,6 +96,10 @@ const nearby311TableData = computed(() => {
         html: true,
       },
       {
+        label: 'Description (not shared with the public)',
+        field: 'properties.DESCRIPTION',
+      },
+      {
         label: 'Distance',
         field: 'properties.distance_ft',
       }
