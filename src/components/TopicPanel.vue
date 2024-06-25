@@ -75,6 +75,7 @@ const zipCode = computed(() => {
   <div
     v-if="route.name == 'home' && version == 'cityatlas'"
     id="topic-panel-set-content"
+    class="container"
   >
     <div v-if="MainStore.fullScreenTopicsEnabled">
       <address-search-control :input-id="'address-bar-search-input'" />
