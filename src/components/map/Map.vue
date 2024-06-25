@@ -367,9 +367,6 @@ watch(
         }
       }
       MapStore.selectedRegmap = null;
-      if (MapStore.cyclomediaOn) {
-        updateCyclomediaCameraAngle();
-      }
     } else {
       if (!MapStore.imageryOn) {
         map.setStyle($config.pwdDrawnMapStyle);
@@ -394,6 +391,9 @@ watch(
         }
         if (import.meta.env.VITE_DEBUG == 'true') console.log('2 map.layers:', map.getStyle().layers, map.getStyle().sources);
       }
+    }
+    if (MapStore.cyclomediaOn) {
+      updateCyclomediaCameraAngle();
     }
   }
 )
