@@ -110,8 +110,8 @@ const zipCode = computed(() => {
       <li>1234 Market St</li>
       <li>1001 Pine Street #201</li>
       <li>12th & Market</li>
-      <li>12th & Market</li>
       <li>883309050 (an OPA number with no hyphens or other characters)</li>
+      <li>001S070144 (a DOR number with no hyphens of other characters)</li>
     </ul>
   </div>
 

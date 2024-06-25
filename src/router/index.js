@@ -43,8 +43,12 @@ const getGeocodeAndPutInStore = async(address) => {
   CondosStore.condosData.pages = { page_1: { features: [] } };
   const GeocodeStore = useGeocodeStore();
   await GeocodeStore.fillaisData(address);
-  if (!GeocodeStore.aisData.features) {
-    // router.push({ name: 'not-found' });
+  if (MainStore.lastSearchMethod == 'address' && !GeocodeStore.aisData.features) {
+    MainStore.currentAddress = null;
+    if (import.meta.env.VITE_DEBUG == 'true') console.log('getGeocodeAndPutInStore, calling not-found');
+    router.push({ name: 'not-found' });
+    return;
+  } else if (!GeocodeStore.aisData.features) {
     return;
   }
   // if there is a value, add the value for the street_address in the MainStore
@@ -63,6 +67,7 @@ const getParcelsAndPutInStore = async(lng, lat) => {
   await ParcelsStore.fillParcelDataByLngLat(lng, lat, 'dor');
   if (!ParcelsStore.pwd.features[0] && !ParcelsStore.dor.features[0]) {
     MainStore.selectedParcelId = null;
+    if (import.meta.env.VITE_DEBUG == 'true') console.log('getParcelsAndPutInStore, calling not-found');
     router.push({ name: 'not-found' });
     return;
   }
