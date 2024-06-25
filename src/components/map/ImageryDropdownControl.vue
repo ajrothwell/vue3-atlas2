@@ -24,12 +24,12 @@ const emitValue = (value) => {
   >
     <div class="dropdown-trigger">
       <button
-        class="button"
+        class="button imagery-dropdown-button"
         aria-haspopup="true"
         aria-controls="dropdown-menu"
       >
-        <span>{{ dropdownValue }}</span>
-        <span class="icon is-small">
+        <span class="imagery-dropdown-value">{{ dropdownValue }}</span>
+        <span class="icon is-small imagery-dropdown-icon">
           <font-awesome-icon
             icon="fa-solid fa-angle-down"
             aria-hidden="true"
@@ -128,9 +128,24 @@ const emitValue = (value) => {
 
 .imagery-dropdown {
   position: absolute !important;
-  top: 10px;
-  right: 70px;
+  top: 11px;
+  right: 50px;
   z-index: 2;
+}
+
+.imagery-dropdown-button {
+  padding-left: 0px !important;
+  padding-right: 0px !important;
+  padding-top: 3px !important;
+  padding-bottom: 3px !important;
+}
+
+.imagery-dropdown-value {
+  padding-left: 4px !important;
+}
+
+.imagery-dropdown-icon {
+  margin-left: 0px !important;
 }
 
 @media 
@@ -138,8 +153,13 @@ only screen and (max-width: 760px),
 (min-device-width: 768px) and (max-device-width: 1024px)  {
   
   .imagery-dropdown {
-    top: 50px;
+    top: 54px;
     right: 50px;
+  }
+
+  .imagery-dropdown-button {
+    padding-top: 1px !important;
+    padding-bottom: 1px !important;
   }
 }
 
