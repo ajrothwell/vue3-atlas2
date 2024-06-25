@@ -32,6 +32,8 @@ import { useVotingStore } from '@/stores/VotingStore.js'
 const VotingStore = useVotingStore();
 import { useNearbyActivityStore } from '@/stores/NearbyActivityStore';
 const NearbyActivityStore = useNearbyActivityStore();
+import { use311Store } from '@/stores/311Store';
+const Nearby311Store = use311Store();
 
 // ROUTER
 import { useRouter, useRoute } from 'vue-router';
@@ -157,11 +159,24 @@ onMounted(async () => {
   // if a nearby circle marker is clicked or hovered on, set its id in the MainStore as the hoveredStateId
   map.on('click', 'nearby', (e) => {
     const properties = e.features[0].properties;
-    const idField = NearbyActivityStore.dataFields[properties.type].id_field;
-    const infoField = NearbyActivityStore.dataFields[properties.type].info_field;
-    const type = NearbyActivityStore[properties.type].rows;
-    const row = NearbyActivityStore[properties.type].rows.filter(row => row[idField] === properties.id)[0];
-    if (import.meta.env.VITE_DEBUG == 'true') console.log('nearby click, e:', e, 'properties:', properties, 'idField:', idField, 'e.features[0]:', e.features[0], 'type:', type, 'row:', row);
+    let idField, infoField, type, row;
+    // const idField = NearbyActivityStore.dataFields[properties.type].id_field;
+    // const infoField = NearbyActivityStore.dataFields[properties.type].info_field;
+    if (MainStore.currentTopic == 'Nearby Activity') {
+      idField = NearbyActivityStore.dataFields[properties.type].id_field;
+      infoField = NearbyActivityStore.dataFields[properties.type].info_field;
+      type = NearbyActivityStore[properties.type].rows;
+      row = NearbyActivityStore[properties.type].rows.filter(row => row[idField] === properties.id)[0];
+    } else if (MainStore.currentTopic == '311') {
+      idField = Nearby311Store.dataFields[properties.type].id_field;
+      infoField = Nearby311Store.dataFields[properties.type].info_field;
+      row = Nearby311Store[properties.type].rows.filter(row => {
+        // if (import.meta.env.VITE_DEBUG == 'true') console.log('nearby click, idField:', idField, 'row:', row);
+        return row[idField] === properties.id;
+      })[0];
+    }
+    if (import.meta.env.VITE_DEBUG == 'true') console.log('nearby click, e:', e, 'properties:', properties, 'idField:', idField, 'infoField:', infoField, 'e.features[0]:', e.features[0], 'row:', row);
+    // if (import.meta.env.VITE_DEBUG == 'true') console.log('nearby click, e:', e, 'properties:', properties, 'idField:', idField, 'e.features[0]:', e.features[0], 'type:', type, 'row:', row);
     e.clickOnLayer = true;
     MainStore.clickedMarkerId = e.features[0].properties.id;
     MainStore.hoveredStateId = e.features[0].properties.id;
@@ -181,6 +196,7 @@ onMounted(async () => {
   });
 
   map.on('mouseenter', 'nearby', (e) => {
+    // if (import.meta.env.VITE_DEBUG == 'true') console.log('mouseenter, e:', e);
     if (e.features.length > 0) {
       // if (import.meta.env.VITE_DEBUG == 'true') console.log('map.getSource(nearby):', map.getSource('nearby'), 'map.getStyle().sources:', map.getStyle().sources);
       map.getCanvas().style.cursor = 'pointer'
@@ -578,11 +594,21 @@ watch(
     if (newClickedRow) {
       map.flyTo({ center: newClickedRow.lngLat });
     }
-    const idField = NearbyActivityStore.dataFields[newClickedRow.type].id_field;
-    const infoField = NearbyActivityStore.dataFields[newClickedRow.type].info_field;
-    const row = NearbyActivityStore[newClickedRow.type].rows.filter(row => {
-      return row[idField] === newClickedRow.id;
-    })[0];
+    let idField, infoField, row;
+    if (MainStore.currentTopic == 'Nearby Activity') {
+      idField = NearbyActivityStore.dataFields[newClickedRow.type].id_field;
+      infoField = NearbyActivityStore.dataFields[newClickedRow.type].info_field;
+      row = NearbyActivityStore[newClickedRow.type].rows.filter(row => {
+        return row[idField] === newClickedRow.id;
+      })[0];
+    } else if (MainStore.currentTopic == '311') {
+      idField = Nearby311Store.dataFields[newClickedRow.type].id_field;
+      infoField = Nearby311Store.dataFields[newClickedRow.type].info_field;
+      row = Nearby311Store[newClickedRow.type].rows.filter(row => {
+        if (import.meta.env.VITE_DEBUG == 'true') console.log('nearby click, idField:', idField, 'row:', row);
+        return row[idField] === newClickedRow.id;
+      })[0];
+    }
     if (import.meta.env.VITE_DEBUG == 'true') console.log('nearby click, idField:', idField, 'row:', row);
     if (row.properties) {
       row[infoField] = row.properties[infoField];
@@ -606,7 +632,7 @@ watch(
   newHoveredStateId => {
     // if (import.meta.env.VITE_DEBUG == 'true') console.log('Map.vue hoveredStateId watch, newHoveredStateId:', newHoveredStateId, 'map.getStyle().sources.nearby.data.features:', map.getStyle().sources.nearby.data.features);
     if (newHoveredStateId) {
-      // if (import.meta.env.VITE_DEBUG == 'true') console.log('map.getStyle().sources.nearby.data.features', map.getStyle().sources.nearby.data.features, 'newHoveredStateId:', newHoveredStateId);
+      if (import.meta.env.VITE_DEBUG == 'true') console.log('map.getStyle().sources.nearby.data.features', map.getStyle().sources.nearby.data.features, 'newHoveredStateId:', newHoveredStateId);
       const feature = map.getStyle().sources.nearby.data.features.filter(feature => feature.properties.id === newHoveredStateId)[0];
       const index = map.getStyle().sources.nearby.data.features.indexOf(feature);
       // if (import.meta.env.VITE_DEBUG == 'true') console.log('feature:', feature, 'index:', index, 'map.getStyle().sources.nearby.data.features:', map.getStyle().sources.nearby.data.features.filter(feature => feature.properties.id === newHoveredStateId)[0]);

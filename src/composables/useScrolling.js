@@ -25,7 +25,7 @@ export default function useScrolling() {
   }
 
   const handleRowMouseover = (e, id) => {
-    // if (import.meta.env.VITE_DEBUG == 'true') console.log('handleRowMouseover, e:', e, 'id:', id);
+    if (import.meta.env.VITE_DEBUG == 'true') console.log('handleRowMouseover, e:', e, 'id:', id);
     const MainStore = useMainStore();
     let hoveredStateId = parseInt(e.row[id]);
     if (isNaN(hoveredStateId)) {
@@ -39,9 +39,9 @@ export default function useScrolling() {
   }
 
   const isElementInViewport = (el) => {
-    // if (import.meta.env.VITE_DEBUG == 'true') console.log('isElementInViewport, el:', el);
+    if (import.meta.env.VITE_DEBUG == 'true') console.log('isElementInViewport, el:', el);
     const rect = el.getBoundingClientRect();
-    // if (import.meta.env.VITE_DEBUG == 'true') console.log('bounding box', rect);
+    if (import.meta.env.VITE_DEBUG == 'true') console.log('bounding box', rect);
     const visibility = {
       // TODO the 108 below is account for the combined height of the
       // app header and address header. this is not a good long-term
