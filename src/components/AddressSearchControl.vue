@@ -19,6 +19,10 @@ const clearAddress = () => {
   MainStore.addressSearchValue = '';
 }
 
+const hasAddress = computed(() => {
+  return MainStore.currentAddress != '';
+});
+
 const fullScreenTopicsEnabled = computed(() => {
   return MainStore.fullScreenTopicsEnabled;
 });
