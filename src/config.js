@@ -666,7 +666,7 @@ const stormwaterDrawnMapStyle = mergeDeep(imageryInfo,{
       type: 'raster',
       tileSize: 256,
     },
-    zoning: {
+    stormwater: {
       tiles: [
         'https://stormwater.phila.gov/arcgis/rest/services/parcel_viewer/pv_data/MapServer/export?dpi=120\
           &transparent=true\
@@ -726,8 +726,8 @@ const stormwaterDrawnMapStyle = mergeDeep(imageryInfo,{
       }
     },
     {
-      id: 'zoning',
-      source: 'zoning',
+      id: 'stormwater',
+      source: 'stormwater',
       type: 'raster',
       paint: {
         'raster-opacity': 1,

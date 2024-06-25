@@ -62,8 +62,8 @@ export default {
   top: 0;
   left: 0;
   padding: 10px;
-  margin-top: 74px;
-  margin-left: 20px;
+  margin-top: 50px;
+  margin-left: 0px;
   z-index: 12;
 }
 

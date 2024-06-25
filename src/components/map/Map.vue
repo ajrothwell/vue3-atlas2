@@ -506,6 +506,15 @@ const handleZoningOpacityChange = (opacity) => {
   );
 }
 
+const handleStormwaterOpacityChange = (opacity) => {
+  MapStore.stormwaterOpacity = opacity/100;
+  map.setPaintProperty(
+    'stormwater',
+    'raster-opacity',
+    opacity/100,
+  );
+}
+
 // for L&I topic, watch selected building for changing building footprint color
 const selectedLiBuildingNumber = computed(() => { return LiStore.selectedLiBuildingNumber; });
 watch(
@@ -970,6 +979,11 @@ const stormwaterLegendData = ref({
       v-if="MainStore.currentTopic == 'Zoning'"
       :initial-opacity="MapStore.zoningOpacity"
       @opacity-change="handleZoningOpacityChange"
+    />
+    <OpacitySlider
+      v-if="MainStore.currentTopic == 'Stormwater'"
+      :initial-opacity="MapStore.stormwaterOpacity"
+      @opacity-change="handleStormwaterOpacityChange"
     />
     <!-- the distance measure control uses a ref, so that functions within the component can be called from this file -->
     <DistanceMeasureControl
