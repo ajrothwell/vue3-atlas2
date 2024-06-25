@@ -7,8 +7,16 @@ const GeocodeStore = useGeocodeStore();
 
 import VerticalTable from '@/components/VerticalTable.vue';
 
-const geocode = computed(() => {
+const hasData = computed(() => {
   if (GeocodeStore.aisData.features && GeocodeStore.aisData.features.length > 0) {
+    return true;
+  } else {
+    return false;
+  }
+})
+
+const geocode = computed(() => {
+  if (hasData.value) {
     return GeocodeStore.aisData.features[0].properties;
   } else {
     return null;
@@ -16,7 +24,7 @@ const geocode = computed(() => {
 })
 
 const districtsVertTableData = computed(() => {
-  if (GeocodeStore.aisData.features && GeocodeStore.aisData.features.length > 0) {
+  if (hasData.value) {
     return [
       {
         label: 'Planning',
@@ -37,12 +45,6 @@ const districtsVertTableData = computed(() => {
       {
         label: 'Commercial Corridor',
         value: geocode.value.commercial_corridor || 'n/a',
-        // value: function(state) {
-        //   if(geocode.value.commercial_corridor.length > 0) {
-        //     return geocode.value.commercial_corridor;
-        //   } 
-        //   return "n/a";
-        // }(),
       },
       {
         label: 'Sanitation District',
@@ -51,6 +53,60 @@ const districtsVertTableData = computed(() => {
       {
         label: 'Sanitation Convenience Center',
         value: geocode.value.sanitation_convenience_center,
+      },
+    ]
+  } else {
+    return []
+  }
+})
+
+const publicSafetyVertTableData = computed(() => {
+  if (hasData.value) {
+    return [
+      {
+        label: 'Police District',
+        value: geocode.value.police_district,
+      },
+      {
+        label: 'Police Public Service Area',
+        value: geocode.value.police_service_area,
+      },
+      {
+        label: 'Police Division',
+        value: geocode.value.police_division,
+      },
+    ]
+  } else {
+    return []
+  }
+})
+
+const streetsVertTableData = computed(() => {
+  if (hasData.value) {
+    return [
+      {
+        label: 'Highway District',
+        value: geocode.value.highway_district,
+      },
+      {
+        label: 'Highway Section',
+        value: geocode.value.highway_section,
+      },
+      {
+        label: 'Highway Subsection',
+        value: geocode.value.highway_subsection,
+      },
+      {
+        label: 'Street Light Routes',
+        value: geocode.value.street_light_route,
+      },
+      {
+        label: 'Traffic District',
+        value: geocode.value.traffic_district,
+      },
+      {
+        label: 'Traffic PM District',
+        value: geocode.value.traffic_pm_district,
       },
     ]
   } else {
@@ -68,32 +124,40 @@ const districtsVertTableData = computed(() => {
   >
     Districts related to police, L&I, city planning, streets, census, and commerce for this address. Sources: Department of Streets, Licenses and Inspections, Planning and Development, & Philadelphia Police Dept.
   </div>
-
-  <div class="data-section">
-    <h5 class="subtitle is-5 table-title">
-      Districts
-      <!-- <font-awesome-icon
-        v-if="GeocodeStore.loadingStormwaterData"
-        icon="fa-solid fa-spinner"
-        spin
-      /> -->
-    </h5>
-    <!-- <div v-if="StormwaterStore.loadingStormwaterData">
-      <p>
-        Loading districts data... <font-awesome-icon
-          icon="fa-solid fa-spinner"
-          spin
-        />
-      </p>
-    </div> -->
-    <!-- <div v-else-if="hasNoData">
-      <p>There is no districts data for this address.</p>
-    </div> -->
-    <!-- v-if="!shouldShowCondosMessage" -->
-    <vertical-table
-      table-id="districtsTable"
-      :data="districtsVertTableData"
-    />
+  <div v-if="!hasData">
+    There is no district data available for this address.
+  </div>
+  <div v-if="hasData">
+  
+    <div class="data-section">
+      <h5 class="subtitle is-5 table-title">
+        Districts
+      </h5>
+      <vertical-table
+        table-id="districtsTable"
+        :data="districtsVertTableData"
+      />
+    </div>
+  
+    <div class="data-section">
+      <h5 class="subtitle is-5 table-title">
+        Public Safety
+      </h5>
+      <vertical-table
+        table-id="publicSafetyTable"
+        :data="publicSafetyVertTableData"
+      />
+    </div>
+  
+    <div class="data-section">
+      <h5 class="subtitle is-5 table-title">
+        Streets
+      </h5>
+      <vertical-table
+        table-id="streetsTable"
+        :data="streetsVertTableData"
+      />
+    </div>
   </div>
 
 </template>
