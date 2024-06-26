@@ -165,6 +165,7 @@ const topicDataFetch = async (topic, data) => {
   if (topic === 'Property') {
     const OpaStore = useOpaStore();
     await OpaStore.fillOpaData();
+    await OpaStore.fillAssessmentHistory();
     OpaStore.loadingOpaData = false;
   }
 

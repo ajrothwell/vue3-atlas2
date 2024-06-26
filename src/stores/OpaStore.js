@@ -8,6 +8,7 @@ export const useOpaStore = defineStore('OpaStore', {
   state: () => {
     return {
       opaData: {},
+      assessmentHistory: {},
       loadingOpaData: true,
     };
   },
@@ -15,6 +16,7 @@ export const useOpaStore = defineStore('OpaStore', {
     async clearAllOpaData() {
       this.loadingOpaData = true;
       this.opaData = {};
+      this.assessmentHistory = {};
     },
     async fillOpaData() {
       try {
@@ -30,6 +32,20 @@ export const useOpaStore = defineStore('OpaStore', {
         console.error('opaData - await never resolved, failed to fetch address data')
       }
     },
+    async fillAssessmentHistory() {
+      try {
+        const GeocodeStore = useGeocodeStore();
+        const OpaNum = GeocodeStore.aisData.features[0].properties.opa_account_num;
+        const response = await fetch(`https://phl.carto.com/api/v2/sql?q=select+*+from+assessments+where+parcel_number+%3D+%27${OpaNum}%27`);
+        if (response.ok) {
+          this.assessmentHistory = await response.json();
+        } else {
+          console.warn('assessmentHistory - await resolved but HTTP status was not successful')
+        }
+      } catch {
+        console.error('assessmentHistory - await never resolved, failed to fetch address data')
+      }
+    }
   },
   // keeping formatting getters here in the store only works if the data is not looped
   // through for a horizontal table

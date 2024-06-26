@@ -1,6 +1,11 @@
 <script setup>
 
 import { computed } from 'vue';
+
+import CustomPaginationLabels from '@/components/pagination/CustomPaginationLabels.vue';
+import useTables from '@/composables/useTables';
+const { paginationOptions } = useTables();
+
 import { useMainStore } from '@/stores/MainStore';
 const MainStore = useMainStore();
 import { useGeocodeStore } from '@/stores/GeocodeStore';
@@ -11,7 +16,7 @@ import { useCondosStore } from '@/stores/CondosStore';
 const CondosStore = useCondosStore();
 
 import useTransforms from '@/composables/useTransforms';
-const { titleCase } = useTransforms();
+const { titleCase, currency } = useTransforms();
 
 import VerticalTable from '@/components/VerticalTable.vue';
 
@@ -165,6 +170,60 @@ const hasNoData = computed(() => {
   return !OpaStore.opaData.rows || !OpaStore.opaData.rows.length;
 });
 
+const valuationHistory = computed(() => {
+  let data;
+  if (OpaStore.assessmentHistory.rows && OpaStore.assessmentHistory.rows.length > 0) {
+    data = OpaStore.assessmentHistory.rows.map(row => {
+      return {
+        year: row.year,
+        market_value: row.market_value ? currency(row.market_value) : "$0",
+        taxable_land: row.taxable_land ? currency(row.taxable_land) : "$0",
+        taxable_building: row.taxable_building ? currency(row.taxable_building) : "$0",
+        exempt_land: row.exempt_land ? currency(row.exempt_land) : "$0",
+        exempt_building: row.exempt_building ? currency(row.exempt_building) : "$0",
+      }
+    });
+  }
+  return data;
+  // return OpaStore.assessmentHistory.rows;
+})
+
+const valuationHistoryLength = computed(() => {
+  return valuationHistory.value.length;
+})
+
+const valuationHistoryTableData = computed(() => {
+  return {
+    columns: [
+      {
+        label: 'Year',
+        field: 'year',
+      },
+      {
+        label: 'Market Value',
+        field: 'market_value'
+      },
+      {
+        label: 'Taxable Land',
+        field: 'taxable_land',
+      },
+      {
+        label: 'Taxable Improvement',
+        field: 'taxable_building',
+      },
+      {
+        label: 'Exempt Land',
+        field: 'exempt_land',
+      },
+      {
+        label: 'Exempt Improvement',
+        field: 'exempt_building',
+      },
+    ],
+    rows: valuationHistory.value || [],
+  }
+})
+
 </script>
 
 <template>
@@ -211,9 +270,55 @@ const hasNoData = computed(() => {
         :data="cityatlasVertTable3Data"
       />
       <br>
-      <h5 class="subtitle is-5 table-title">
-        Valuation History
-      </h5>
+      <div class="data-section">
+        <h5 class="subtitle is-5 table-title">
+          Valuation History
+          <font-awesome-icon
+            v-if="OpaStore.loadingOpaData"
+            icon="fa-solid fa-spinner"
+            spin
+          />
+          <span v-else>({{ valuationHistoryLength }})</span>
+        </h5>
+        <div
+          v-if="valuationHistoryTableData.rows"
+          class="horizontal-table"
+        >
+          <vue-good-table
+            id="permits"
+            :columns="valuationHistoryTableData.columns"
+            :rows="valuationHistoryTableData.rows"
+            :pagination-options="paginationOptions"
+            style-class="table"
+          >
+            <template #emptystate>
+              <div v-if="OpaStore.loadingOpaData">
+                Loading valuation history... <font-awesome-icon
+                  icon="fa-solid fa-spinner"
+                  spin
+                />
+              </div>
+              <div v-else>
+                No valuation history found
+              </div>
+            </template>
+            <template #pagination-top="props">
+              <custom-pagination-labels
+                :mode="'pages'"
+                :total="props.total"
+                :perPage="5"
+                @page-changed="props.pageChanged"
+                @per-page-changed="props.perPageChanged"
+              >
+              </custom-pagination-labels>
+            </template>
+          </vue-good-table>
+        </div>
+        <!-- <a
+          target="_blank"
+          :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`"
+        >See all {{ valuationHistoryLength }} permits at L&I Property History <font-awesome-icon icon="fa-solid fa-external-link-alt" /></a> -->
+      </div>
       
       <br>
 
