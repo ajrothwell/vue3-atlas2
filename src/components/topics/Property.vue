@@ -185,10 +185,10 @@ const valuationHistory = computed(() => {
     });
   }
   return data;
-  // return OpaStore.assessmentHistory.rows;
 })
 
 const valuationHistoryLength = computed(() => {
+  if (!valuationHistory.value) return 0;
   return valuationHistory.value.length;
 })
 
@@ -236,19 +236,19 @@ const valuationHistoryTableData = computed(() => {
       Property assessment and sale information for this address. Source: Office of Property Assessments (OPA). OPA was formerly a part of the Bureau of Revision of Taxes (BRT) and some City records may still use that name.
     </div>
 
-    <div v-if="!shouldShowCondosMessage && MainStore.appVersion == 'atlas'">
+    <div v-if="!shouldShowCondosMessage && MainStore.appVersion == 'atlas' && !hasNoData">
       <vertical-table
         table-id="opaTable"
         :data="atlasVertTableData"
       />
       <a
-        v-if="!shouldShowCondosMessage && !hasNoData"
+        v-if="!shouldShowCondosMessage"
         target="_blank"
         :href="`https://property.phila.gov/?p=${opaAccountNumber}`"
       >See more at Property Search <font-awesome-icon icon="fa-solid fa-external-link-alt" /></a>
     </div>
 
-    <div v-if="!shouldShowCondosMessage && MainStore.appVersion == 'cityatlas'">
+    <div v-if="!shouldShowCondosMessage && MainStore.appVersion == 'cityatlas' && !hasNoData">
       <vertical-table
         table-id="cityatlasTable1"
         :data="cityatlasVertTable1Data"

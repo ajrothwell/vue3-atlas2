@@ -46,6 +46,7 @@ watch (liBuildingFootprints,
 )
 
 const setLiBuildingFootprints = async(footprints) => {
+  if (!footprints.features.length) return;
   LiStore.selectedLiBuildingNumber = footprints.features[0].attributes.BIN;
     
   let features = [];
