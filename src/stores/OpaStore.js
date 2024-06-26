@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import { useGeocodeStore } from '@/stores/GeocodeStore.js'
 
 import useTransforms from '@/composables/useTransforms';
-const { currency, date } = useTransforms();
+const { titleCase, prettyNumber, currency, date } = useTransforms();
 
 export const useOpaStore = defineStore('OpaStore', {
   state: () => {
@@ -47,6 +47,45 @@ export const useOpaStore = defineStore('OpaStore', {
     getSalePrice: (state) => {
       if (state.opaData.rows && state.opaData.rows[0]) {
         return currency(state.opaData.rows[0].sale_price);
+      }
+    },
+    getHomesteadExemption: (state) => {
+      if (state.opaData.rows && state.opaData.rows[0]) {
+        return state.opaData.rows[0].homestead_exemption > 0 ? state.opaData.rows[0].homestead_exemption : 'No';
+      }
+    },
+    getDescription: (state) => {
+      if (state.opaData.rows && state.opaData.rows[0]) {
+        return titleCase(state.opaData.rows[0].building_code_description);
+      }
+    },
+    getCondition: (state) => {
+      if (state.opaData.rows && state.opaData.rows[0]) {
+        const exterior = state.opaData.rows[0].exterior_condition;
+        const condition =  exterior  == 0 ? 'Not Applicable' :
+          exterior == 2 ? 'Newer Construction / Rehabbed' :
+            exterior == 3 ? 'Above Average' :
+              exterior == 4 ? 'Average' :
+                exterior == 5 ? 'Below Average' :
+                  exterior == 6 ? 'Vacant' :
+                    exterior == 7 ? 'Sealed / Structurally Compromised, Open to the Weather' :
+                      'Not available';
+        return condition;
+      }
+    },
+    getBeginningPoint: (state) => {
+      if (state.opaData.rows && state.opaData.rows[0]) {
+        return titleCase(state.opaData.rows[0].beginning_point);
+      }
+    },
+    getLandArea: (state) => {
+      if (state.opaData.rows && state.opaData.rows[0]) {
+        return prettyNumber(state.opaData.rows[0].total_area) + ' sq ft';
+      }
+    },
+    getImprovementArea: (state) => {
+      if (state.opaData.rows && state.opaData.rows[0]) {
+        return prettyNumber(state.opaData.rows[0].total_livable_area) + ' sq ft';
       }
     },
   },
