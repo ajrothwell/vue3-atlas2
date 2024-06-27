@@ -339,11 +339,11 @@ watch(
   () => route.params.topic,
   async newTopic => {
     // if (import.meta.env.VITE_DEBUG == 'true') console.log('Map route.params.topic watch, newTopic:', newTopic);
+    const popup = document.getElementsByClassName('maplibregl-popup');
+    if (popup.length) {
+      popup[0].remove();
+    }
     if (newTopic) {
-      const popup = document.getElementsByClassName('maplibregl-popup');
-      if (popup.length) {
-        popup[0].remove();
-      }
       // setMapStyleForTopic(newTopic);
       map.setStyle($config[$config.topicStyles[newTopic]]);
       if (MapStore.imageryOn) {
