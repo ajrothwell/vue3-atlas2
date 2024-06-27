@@ -332,7 +332,6 @@ export default {
     handleDrawFinish(){
       if (import.meta.env.VITE_DEBUG == 'true') console.log('handleDrawFinish is running');
       const MapStore = useMapStore();
-      // let currentShape = this.$data.currentShape;
       let currentShape;
       if (this.$data.currentShape) {
         currentShape = this.$data.currentShape;
