@@ -32,7 +32,6 @@ export default {
       toggledOn: false,
       currentShape: null,
       currentArea: null,
-      // labelLayers: [],
     };
     return data;
   },
@@ -40,7 +39,6 @@ export default {
     publicPath() {
       const MainStore = useMainStore();
       return MainStore.publicPath;
-      // return import.meta.env.VITE_PUBLICPATH;
     },
     currentOrSelectedShape() {
       let id;
@@ -79,7 +77,6 @@ export default {
         }
       }
       return total.toFixed(2) + ' Ft';
-      // return 4.453;
     },
     shouldShowDistanceBox() {
       let booleanMode = this.$data.mode !== 'simple_select';
@@ -107,7 +104,6 @@ export default {
     },
     deleteDrawDistances(shapeId){
       // if (import.meta.env.VITE_DEBUG == 'true') console.log('deleteDrawDistances is running, shapeId:', shapeId);
-      // let shapeId = e.features[0].id;
       let index = this.currentShape.indexOf(this.currentShape.filter(set => set.id === shapeId)[0]);
       // if (import.meta.env.VITE_DEBUG == 'true') console.log('deleteDrawDistances is running, index:', index);
       this.currentShape.splice(index, 1);
@@ -337,7 +333,6 @@ export default {
       if (import.meta.env.VITE_DEBUG == 'true') console.log('handleDrawFinish is running');
       const MapStore = useMapStore();
       let currentShape = this.$data.currentShape;
-      // let currentPoints = [];
       let fetchedPoints = MapStore.labelLayers.filter(set => set.id === this.currentShape)[0].distances;
       if (import.meta.env.VITE_DEBUG == 'true') console.log('MapPanel.vue handleDrawFinish 1 is running, MapStore.draw.getMode():', MapStore.draw.getMode(), 'currentShape:', currentShape, 'fetchedPoints:', fetchedPoints);
 
@@ -390,7 +385,7 @@ export default {
         this.handleDrawCancel();
       }
       MapStore.map.getCanvas().style.cursor = ''
-      if (import.meta.env.VITE_DEBUG == 'true') console.log('MapPanel.vue handleDrawFinish 2 is running, MapStore.draw.getMode():', MapStore.draw.getMode(), 'currentShape:', currentShape, 'fetchedPoints:', fetchedPoints);
+      if (import.meta.env.VITE_DEBUG == 'true') console.log('handleDrawFinish 2 is running, MapStore.draw.getMode():', MapStore.draw.getMode(), 'currentShape:', currentShape, 'fetchedPoints:', fetchedPoints);
     },
 
     async handleDrawSelectionChange(e){
@@ -406,7 +401,6 @@ export default {
         if (import.meta.env.VITE_DEBUG == 'true') console.log('there are no features');
         this.$data.selected = null;
       }
-      // this.$data.selected = val[0];
     }
   }
 };
@@ -430,7 +424,6 @@ export default {
         </div>
         <hr class="popup-line">
         <div>
-          <!-- :src="'images/cancel.png'" -->
           <img
             :src="publicPath + 'images/cancel.png'"
             class="img-class"
@@ -484,7 +477,6 @@ export default {
           v-if="mode === 'simple_select'"
           class="drawn-shape-actions"
         >
-          <!-- :src="'images/trash.png'" -->
           <img
             :src="publicPath + 'images/trash.png'"
             class="img-class"
@@ -503,7 +495,6 @@ export default {
           v-if="mode !== 'simple_select'"
           class="draw-actions"
         >
-          <!-- :src="'images/cancel.png'" -->
           <img
             :src="publicPath + 'images/cancel.png'"
             class="img-class"
@@ -516,7 +507,6 @@ export default {
           >
             Cancel
           </div>
-          <!-- :src="'images/check.png'" -->
           <img
             :src="publicPath + 'images/check.png'"
             class="img-class"
