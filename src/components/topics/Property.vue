@@ -312,14 +312,15 @@ const valuationHistoryTableData = computed(() => {
             </template>
           </vue-good-table>
         </div>
-        <!-- <a
-          target="_blank"
-          :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`"
-        >See all {{ valuationHistoryLength }} permits at L&I Property History <font-awesome-icon icon="fa-solid fa-external-link-alt" /></a> -->
+      </div>
+      <div class="box">
+        Corrections to or questions about this property?<br>
+        <a target="_blank" href="http://opa.phila.gov/opa.apps/Help/CitizenMain.aspx?sch=Ctrl2&s=1&url=search&id=3172000144">Submit an Official Inquiry</a> to the Office of Property Assessment
+      </div>
+      <div class="box">
+        You can download the property assessment dataset in bulk, and get more information about this data at <a target="_blank" href="https://metadata.phila.gov/#home/datasetdetails/5543865f20583086178c4ee5/">metadata.phila.gov</a>
       </div>
       
-      <br>
-
     </div>
 
     <div v-if="shouldShowCondosMessage">
