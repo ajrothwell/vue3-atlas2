@@ -73,8 +73,10 @@ export default {
     },
     currentTotalLength() {
       let total = 0;
-      for (let distance of this.currentDistances) {
-        total = total + distance.distance;
+      if (this.currentDistances && this.currentDistances.length) {
+        for (let distance of this.currentDistances) {
+          total = total + distance.distance;
+        }
       }
       return total.toFixed(2) + ' Ft';
       // return 4.453;
@@ -93,10 +95,6 @@ export default {
       return booleanTotal;
     },
   },
-  // mounted() {
-  //   let element = document.getElementsByClassName('mapbox-gl-draw_polygon')[0];
-  //   element.innerHTML='measure tool';
-  // },
   methods: {
     handleDeleteClick() {
       const MapStore = useMapStore();
@@ -107,16 +105,6 @@ export default {
       MapStore.draw.delete(this.$data.selected);
       this.$data.selected = null;
     },
-    // handleCancelClick(e) {
-    //   if (import.meta.env.VITE_DEBUG == 'true') console.log('handleCancelClick is running');
-    //   this.$data.toggledOn = false;
-    //   this.$emit('drawCancel', e);
-    // },
-    // handleFinishClick(e) {
-    //   if (import.meta.env.VITE_DEBUG == 'true') console.log('handleFinishClick is running e:', e);
-    //   this.$emit('drawFinish', e);
-    //   this.$data.mode = 'simple_select';
-    // },
     deleteDrawDistances(shapeId){
       // if (import.meta.env.VITE_DEBUG == 'true') console.log('deleteDrawDistances is running, shapeId:', shapeId);
       // let shapeId = e.features[0].id;
@@ -324,35 +312,29 @@ export default {
       this.$data.mode = e.mode;
       if (e.mode === 'draw_polygon') {
         this.$data.toggledOn = true;
-      } //else {
-      //   this.$data.toggledOn = false;
-      // }
-      // const MapStore = useMapStore();
-      // let currentShape = this.currentShape;
-
-      // if (e.mode === 'simple_select' && this.$data.currentShape) {
-      //   this.handleDrawFinish();
-      // }
+      }
     },
 
-    handleDrawCancel(){
-      // if (import.meta.env.VITE_DEBUG == 'true') console.log('handleDrawCancel is running, e:', e, 'this.currentShape:', this.$data.currentShape);
+    handleDrawCancel(e){
+      if (import.meta.env.VITE_DEBUG == 'true') console.log('handleDrawCancel is running, this.currentShape:', this.$data.currentShape);
       const MapStore = useMapStore();
-      // draw.mode = 'simple_select';
+      this.$emit('drawCancel', this.currentShape);
       let shapeId = this.currentShape;
       if (import.meta.env.VITE_DEBUG == 'true') console.log('handleDrawCancel is running, shapeId:', shapeId);
       if (shapeId) {
         let index = MapStore.labelLayers.indexOf(MapStore.labelLayers.filter(set => set.id === shapeId)[0]);
+        
         MapStore.labelLayers.splice(index, 1);
-        // this.$data.selected = null;
         MapStore.draw.delete(this.currentShape);
         this.$data.currentShape = null;
       }
       MapStore.draw.changeMode('simple_select');
-      this.$data.toggledOn = false;
+      this.$data.mode = 'simple_select';
+      if (import.meta.env.VITE_DEBUG == 'true') console.log('handleDrawCancel is still running, shapeId:', shapeId);
     },
 
     handleDrawFinish(){
+      if (import.meta.env.VITE_DEBUG == 'true') console.log('handleDrawFinish is running');
       const MapStore = useMapStore();
       let currentShape = this.$data.currentShape;
       // let currentPoints = [];
@@ -411,8 +393,8 @@ export default {
       if (import.meta.env.VITE_DEBUG == 'true') console.log('MapPanel.vue handleDrawFinish 2 is running, MapStore.draw.getMode():', MapStore.draw.getMode(), 'currentShape:', currentShape, 'fetchedPoints:', fetchedPoints);
     },
 
-    handleDrawSelectionChange(e){
-      // if (import.meta.env.VITE_DEBUG == 'true') console.log('handleDrawSelectionChange is running, e:', e);
+    async handleDrawSelectionChange(e){
+      if (import.meta.env.VITE_DEBUG == 'true') console.log('handleDrawSelectionChange is running, e:', e);
       const MapStore = useMapStore();
       let draw = MapStore.draw;
       let val = draw.getSelectedIds();

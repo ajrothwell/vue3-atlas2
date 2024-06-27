@@ -713,14 +713,6 @@ watch(
 // the distance measure control is added in the template with a ref, so that functions within the component can be called from this file
 const distanceMeasureControlRef = ref(null)
 
-const drawInfo = ref({
-  mode: null,
-  selection: null,
-  currentShape: null,
-  labelLayers: [],
-  currentArea: null,
-})
-
 const drawCreate = (e) => {
   if (import.meta.env.VITE_DEBUG == 'true') console.log('drawCreate is running, e', e);
   distanceMeasureControlRef.value.getDrawDistances(e);
@@ -740,13 +732,22 @@ const drawModeChange = (e) => {
   } else {
     map.getCanvas().style.cursor = ''
   }
-  drawInfo.value.mode = e.mode;
   distanceMeasureControlRef.value.handleDrawModeChange(e);
 }
 const drawDelete = (e) => {
   if (import.meta.env.VITE_DEBUG == 'true') console.log('drawDelete is running, e:', e);
   // distanceMeasureControlRef.value.handleDrawDelete(e);
-  map.getSource(e).setData({ type: 'FeatureCollection', features: [] });
+  if (map.getSource(e)) {
+    map.getSource(e).setData({ type: 'FeatureCollection', features: [] });
+  }
+}
+
+const drawCancel = (e) => {
+  if (import.meta.env.VITE_DEBUG == 'true') console.log('drawCancel is running e:', e);
+  if (map.getSource(e)) {
+    map.getSource(e).setData({ type: 'FeatureCollection', features: [] });
+  }
+  map.getCanvas().style.cursor = ''
 }
 
 const labelLayers = computed(() => { return MapStore.labelLayers; });
@@ -757,16 +758,17 @@ watch(
     if (import.meta.env.VITE_DEBUG == 'true') console.log('Map.vue watch MapStore.labelLayers, newLabelLayers.value:', newLabelLayers.value, 'oldLabelLayers.value:', JSON.parse(JSON.stringify(oldLabelLayers.value)));
     if (newLabelLayers.value.length) {
       newLabelLayers.value.forEach(layer => {
-        console.log('watch, layer:', layer, 'layer.id:', layer.id, 'JSON.parse(JSON.stringify(layer.source)):', JSON.parse(JSON.stringify(layer.source)));
         if (!map.getSource(layer.id)) {
+          // console.log('Map.vue watch MapStore.labelLayers, NOT THERE, layer:', layer, 'layer.id:', layer.id, 'JSON.parse(JSON.stringify(layer.source)):', JSON.parse(JSON.stringify(layer.source)));
           map.addSource(layer.id, JSON.parse(JSON.stringify(layer.source)));
           map.addLayer(layer.layer);
         } else {
+          // console.log('Map.vue watch MapStore.labelLayers, YES THERE, layer:', layer, 'layer.id:', layer.id, 'JSON.parse(JSON.stringify(layer.source)):', JSON.parse(JSON.stringify(layer.source)));
           map.getSource(layer.id).setData(layer.source.data);
         }
       })
     }
-    if (import.meta.env.VITE_DEBUG == 'true') console.log('watch, map.getStyle:', map.getStyle(), 'map.getStyle().layers:', map.getStyle().layers, 'map.getStyle().sources:', map.getStyle().sources);
+    // if (import.meta.env.VITE_DEBUG == 'true') console.log('Map.vue watch MapStore.labelLayers, map.getStyle:', map.getStyle(), 'map.getStyle().layers:', map.getStyle().layers, 'map.getStyle().sources:', map.getStyle().sources);
   },
   { deep: true }
 )
@@ -1015,6 +1017,7 @@ const stormwaterLegendData = ref({
     <DistanceMeasureControl
       ref="distanceMeasureControlRef"
       @drawDelete="drawDelete"
+      @drawCancel="drawCancel"
     />
     <OverlayLegend
       v-show="!MapStore.imageryOn && ['Stormwater'].includes(MainStore.currentTopic)"
