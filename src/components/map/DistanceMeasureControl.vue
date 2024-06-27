@@ -332,8 +332,14 @@ export default {
     handleDrawFinish(){
       if (import.meta.env.VITE_DEBUG == 'true') console.log('handleDrawFinish is running');
       const MapStore = useMapStore();
-      let currentShape = this.$data.currentShape;
-      let fetchedPoints = MapStore.labelLayers.filter(set => set.id === this.currentShape)[0].distances;
+      // let currentShape = this.$data.currentShape;
+      let currentShape;
+      if (this.$data.currentShape) {
+        currentShape = this.$data.currentShape;
+      } else {
+        currentShape = this.$data.selected;
+      }
+      let fetchedPoints = MapStore.labelLayers.filter(set => set.id === currentShape)[0].distances;
       if (import.meta.env.VITE_DEBUG == 'true') console.log('MapPanel.vue handleDrawFinish 1 is running, MapStore.draw.getMode():', MapStore.draw.getMode(), 'currentShape:', currentShape, 'fetchedPoints:', fetchedPoints);
 
       let currentPoints = [];
@@ -396,6 +402,7 @@ export default {
       if (import.meta.env.VITE_DEBUG == 'true') console.log('handleDrawSelectionChange, e:', e, 'val:', val);
       if (e.features[0]) {
         if (import.meta.env.VITE_DEBUG == 'true') console.log('there are features');
+        this.$data.currentShape = val[0];
         this.$data.selected = val[0];
       } else {
         if (import.meta.env.VITE_DEBUG == 'true') console.log('there are no features');
