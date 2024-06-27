@@ -24,10 +24,10 @@ export const useStormwaterStore = defineStore('StormwaterStore', {
           const data = await response.json()
           this.stormwaterData = data[0]
         } else {
-          console.warn('stormwaterData - await resolved but HTTP status was not successful')
+          if (import.meta.env.VITE_DEBUG == 'true') console.warn('stormwaterData - await resolved but HTTP status was not successful')
         }
       } catch {
-        console.error('stormwaterData - await never resolved, failed to fetch data')
+        if (import.meta.env.VITE_DEBUG == 'true') console.error('stormwaterData - await never resolved, failed to fetch data')
       }
     },
     async fillStormwaterCapData() {
@@ -39,10 +39,10 @@ export const useStormwaterStore = defineStore('StormwaterStore', {
           const data = await response.json()
           this.stormwaterCapData = data[0]
         } else {
-          console.warn('stormwaterCapData - await resolved but HTTP status was not successful')
+          if (import.meta.env.VITE_DEBUG == 'true') console.warn('stormwaterCapData - await resolved but HTTP status was not successful')
         }
       } catch {
-        console.error('stormwaterCapData - await never resolved, failed to fetch data')
+        if (import.meta.env.VITE_DEBUG == 'true') console.error('stormwaterCapData - await never resolved, failed to fetch data')
       }
     }
   }

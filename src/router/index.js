@@ -177,11 +177,12 @@ const topicDataFetch = async (topic, data) => {
 
   if (topic === 'Deeds') {
     const DorStore = useDorStore();
-    // await DorStore.fillAllDorData();
+    if (import.meta.env.VITE_DEBUG == 'true') console.log('topic deeds before promise')
     await Promise.all([DorStore.fillDorDocuments(),
       DorStore.fillRegmaps(),
       DorStore.fillDorCondos()
     ]);
+    if (import.meta.env.VITE_DEBUG == 'true') console.log('topic deeds after promise')
     DorStore.loadingDorData = false;
   }
 

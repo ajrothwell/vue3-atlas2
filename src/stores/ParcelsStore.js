@@ -31,10 +31,10 @@ export const useParcelsStore = defineStore('ParcelsStore', {
         if (response.ok) {
           this.pwd = await response.json()
         } else {
-          console.warn('fillPwdParcelData - await resolved but HTTP status was not successful');
+          if (import.meta.env.VITE_DEBUG == 'true') console.warn('fillPwdParcelData - await resolved but HTTP status was not successful');
         }
       } catch {
-        console.error('fillPwdParcelData - await never resolved, failed to fetch parcel data');
+        if (import.meta.env.VITE_DEBUG == 'true') console.error('fillPwdParcelData - await never resolved, failed to fetch parcel data');
       }
     },
 
@@ -89,10 +89,10 @@ export const useParcelsStore = defineStore('ParcelsStore', {
           MainStore.selectedParcelId = processedData.features[0].properties.OBJECTID;
           this.dor = processedData;
         } else {
-          console.warn('fillDorParcelData - await resolved but HTTP status was not successful');
+          if (import.meta.env.VITE_DEBUG == 'true') console.warn('fillDorParcelData - await resolved but HTTP status was not successful');
         }
       } catch {
-        console.error('fillDorParcelData - await never resolved, failed to fetch parcel data');
+        if (import.meta.env.VITE_DEBUG == 'true') console.error('fillDorParcelData - await never resolved, failed to fetch parcel data');
       }
     },
 
@@ -113,7 +113,7 @@ export const useParcelsStore = defineStore('ParcelsStore', {
       try {
         const response = await axios(`https://services.arcgis.com/fLeGjb7u4uXqeF9q/ArcGIS/rest/services/${ESRILayer}/FeatureServer/0/query`, { params });
         if (response.status !== 200) {
-          console.warn('fillParcelDataByLngLat - await resolved but HTTP status was not successful')
+          if (import.meta.env.VITE_DEBUG == 'true') console.warn('fillParcelDataByLngLat - await resolved but HTTP status was not successful')
         }
         if (response.data.features.length > 0) {
           let data = await response.data;
@@ -133,7 +133,7 @@ export const useParcelsStore = defineStore('ParcelsStore', {
           }
         }
       } catch {
-        console.error(`fillParcelDataByLngLat await never resolved, failed to fetch ${parcelLayer} parcel data by lng/lat`)
+        if (import.meta.env.VITE_DEBUG == 'true') console.error(`fillParcelDataByLngLat await never resolved, failed to fetch ${parcelLayer} parcel data by lng/lat`)
         if (parcelLayer === 'dor' && $config.parcelLayerForTopic[MainStore.currentTopic] === 'pwd') {
           this[parcelLayer] = {};
         }

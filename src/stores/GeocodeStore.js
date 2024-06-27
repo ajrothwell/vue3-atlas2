@@ -36,7 +36,7 @@ export const useGeocodeStore = defineStore("GeocodeStore", {
           // MainStore.currentAddress = "";
         }
       } catch {
-        console.error('Address - await never resolved, failed to fetch address data')
+        if (import.meta.env.VITE_DEBUG == 'true') console.error('Address - await never resolved, failed to fetch address data')
       }
     },
   },

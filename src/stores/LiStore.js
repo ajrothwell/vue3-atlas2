@@ -96,11 +96,11 @@ export const useLiStore = defineStore('LiStore', {
           this.liBuildingFootprints = await response.data;
           this.loadingLiBuildingFootprints = false;
         } else {
-          console.warn('liBuildingFootprints - await resolved but HTTP status was not successful')
+          if (import.meta.env.VITE_DEBUG == 'true') console.warn('liBuildingFootprints - await resolved but HTTP status was not successful')
           this.loadingLiBuildingFootprints = false;
         }
       } catch {
-        console.error('liBuildingFootprints - await never resolved, failed to fetch address data')
+        if (import.meta.env.VITE_DEBUG == 'true') console.error('liBuildingFootprints - await never resolved, failed to fetch address data')
         this.loadingLiBuildingFootprints = false;
       }
     },
@@ -130,10 +130,10 @@ export const useLiStore = defineStore('LiStore', {
         if (response.ok) {
           this.liBuildingCertSummary = await response.json()
         } else {
-          console.warn('liBuildingCertSummary - await resolved but HTTP status was not successful')
+          if (import.meta.env.VITE_DEBUG == 'true') console.warn('liBuildingCertSummary - await resolved but HTTP status was not successful')
         }
       } catch {
-        console.error('liBuildingCertSummary - await never resolved, failed to fetch address data')
+        if (import.meta.env.VITE_DEBUG == 'true') console.error('liBuildingCertSummary - await never resolved, failed to fetch address data')
       }
     },
     async fillLiBuildingCerts() {
@@ -160,10 +160,10 @@ export const useLiStore = defineStore('LiStore', {
         if (response.ok) {
           this.liBuildingCerts = await response.json();
         } else {
-          console.warn('liBuildingCerts - await resolved but HTTP status was not successful')
+          if (import.meta.env.VITE_DEBUG == 'true') console.warn('liBuildingCerts - await resolved but HTTP status was not successful')
         }
       } catch {
-        console.error('liBuildingCerts - await never resolved, failed to fetch address data')
+        if (import.meta.env.VITE_DEBUG == 'true') console.error('liBuildingCerts - await never resolved, failed to fetch address data')
       }
     },
 
@@ -195,11 +195,11 @@ export const useLiStore = defineStore('LiStore', {
           this.loadingLiPermits = false;
         } else {
           this.loadingLiPermits = false;
-          console.warn('permits - await resolved but HTTP status was not successful')
+          if (import.meta.env.VITE_DEBUG == 'true') console.warn('permits - await resolved but HTTP status was not successful')
         }
       } catch {
         this.loadingLiPermits = false;
-        console.error('permits - await never resolved, failed to fetch address data')
+        if (import.meta.env.VITE_DEBUG == 'true') console.error('permits - await never resolved, failed to fetch address data')
       }
     },
     addDataToZoningDocs(data) {
@@ -260,11 +260,11 @@ export const useLiStore = defineStore('LiStore', {
           this.loadingLiAisZoningDocs = false;
         } else {
           this.loadingLiAisZoningDocs = false;
-          console.warn('aisZoningDocs - await resolved but HTTP status was not successful')
+          if (import.meta.env.VITE_DEBUG == 'true') console.warn('aisZoningDocs - await resolved but HTTP status was not successful')
         }
       } catch {
         this.loadingLiAisZoningDocs = false;
-        console.error('aisZoningDocs - await never resolved, failed to fetch address data')
+        if (import.meta.env.VITE_DEBUG == 'true') console.error('aisZoningDocs - await never resolved, failed to fetch address data')
       }
     },
     async fillLiEclipseZoningDocs() {
@@ -295,11 +295,11 @@ export const useLiStore = defineStore('LiStore', {
           this.loadingLiEclipseZoningDocs = false;
         } else {
           this.loadingLiEclipseZoningDocs = false;
-          console.warn('eclipseZoningDocs - await resolved but HTTP status was not successful')
+          if (import.meta.env.VITE_DEBUG == 'true') console.warn('eclipseZoningDocs - await resolved but HTTP status was not successful')
         }
       } catch {
         this.loadingLiEclipseZoningDocs = false;
-        console.error('eclipseZoningDocs - await never resolved, failed to fetch address data')
+        if (import.meta.env.VITE_DEBUG == 'true') console.error('eclipseZoningDocs - await never resolved, failed to fetch address data')
       }
     },
 
@@ -333,11 +333,11 @@ export const useLiStore = defineStore('LiStore', {
           this.loadingLiInspections = false;
         } else {
           this.loadingLiInspections = false;
-          console.warn('liInspections - await resolved but HTTP status was not successful')
+          if (import.meta.env.VITE_DEBUG == 'true') console.warn('liInspections - await resolved but HTTP status was not successful')
         }
       } catch {
         this.loadingLiInspections = false;
-        console.error('liInspections - await never resolved, failed to fetch address data')
+        if (import.meta.env.VITE_DEBUG == 'true') console.error('liInspections - await never resolved, failed to fetch address data')
       }
     },
 
@@ -377,11 +377,11 @@ export const useLiStore = defineStore('LiStore', {
           this.loadingLiViolations = false;
         } else {
           this.loadingLiViolations = false;
-          console.warn('liViolations - await resolved but HTTP status was not successful')
+          if (import.meta.env.VITE_DEBUG == 'true') console.warn('liViolations - await resolved but HTTP status was not successful')
         }
       } catch {
         this.loadingLiViolations = false;
-        console.error('liViolations - await never resolved, failed to fetch address data')
+        if (import.meta.env.VITE_DEBUG == 'true') console.error('liViolations - await never resolved, failed to fetch address data')
       }
     },
 
@@ -423,11 +423,11 @@ export const useLiStore = defineStore('LiStore', {
           this.loadingLiBusinessLicenses = false;
         } else {
           this.loadingLiBusinessLicenses = false;
-          console.warn('liBusinessLicenses - await resolved but HTTP status was not successful')
+          if (import.meta.env.VITE_DEBUG == 'true') console.warn('liBusinessLicenses - await resolved but HTTP status was not successful')
         }
       } catch {
         this.loadingLiBusinessLicenses = false;
-        console.error('liBusinessLicenses - await never resolved, failed to fetch address data')
+        if (import.meta.env.VITE_DEBUG == 'true') console.error('liBusinessLicenses - await never resolved, failed to fetch address data')
       }
     }
   },

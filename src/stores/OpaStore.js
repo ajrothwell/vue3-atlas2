@@ -26,10 +26,10 @@ export const useOpaStore = defineStore('OpaStore', {
         if (response.ok) {
           this.opaData = await response.json()
         } else {
-          console.warn('opaData - await resolved but HTTP status was not successful')
+          if (import.meta.env.VITE_DEBUG == 'true') console.warn('opaData - await resolved but HTTP status was not successful')
         }
       } catch {
-        console.error('opaData - await never resolved, failed to fetch address data')
+        if (import.meta.env.VITE_DEBUG == 'true') console.error('opaData - await never resolved, failed to fetch address data')
       }
     },
     async fillAssessmentHistory() {
@@ -40,10 +40,10 @@ export const useOpaStore = defineStore('OpaStore', {
         if (response.ok) {
           this.assessmentHistory = await response.json();
         } else {
-          console.warn('assessmentHistory - await resolved but HTTP status was not successful')
+          if (import.meta.env.VITE_DEBUG == 'true') console.warn('assessmentHistory - await resolved but HTTP status was not successful')
         }
       } catch {
-        console.error('assessmentHistory - await never resolved, failed to fetch address data')
+        if (import.meta.env.VITE_DEBUG == 'true') console.error('assessmentHistory - await never resolved, failed to fetch address data')
       }
     }
   },

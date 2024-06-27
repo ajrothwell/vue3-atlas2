@@ -96,12 +96,12 @@ export const useZoningStore = defineStore('ZoningStore', {
             this.loadingZoningBase = false;
           } else {
             this.loadingZoningBase = false;
-            console.warn('fillZoningBase - await resolved but HTTP status was not successful');
+            if (import.meta.env.VITE_DEBUG == 'true') console.warn('fillZoningBase - await resolved but HTTP status was not successful');
           }
         }
       } catch {
         this.loadingZoningBase = false;
-        console.error('fillZoningBase - await never resolved, failed to fetch data');
+        if (import.meta.env.VITE_DEBUG == 'true') console.error('fillZoningBase - await never resolved, failed to fetch data');
       }
     },
     async fillZoningOverlays() {
@@ -132,11 +132,11 @@ export const useZoningStore = defineStore('ZoningStore', {
             this.loadingZoningOverlays = false;
           } else {
             this.loadingZoningOverlays = false;
-            console.warn('fillZoningOverlays - await resolved but HTTP status was not successful');
+            if (import.meta.env.VITE_DEBUG == 'true') console.warn('fillZoningOverlays - await resolved but HTTP status was not successful');
           }
         } catch {
           this.loadingZoningOverlays = false;
-          console.error('fillZoningOverlays - await never resolved, failed to fetch data');
+          if (import.meta.env.VITE_DEBUG == 'true') console.error('fillZoningOverlays - await never resolved, failed to fetch data');
         }
       }
     },
@@ -210,11 +210,11 @@ export const useZoningStore = defineStore('ZoningStore', {
           this.loadingZoningAppeals = false;
         } else {
           this.loadingZoningAppeals = false;
-          console.warn('fillZoningAppeals - await resolved but HTTP status was not successful');
+          if (import.meta.env.VITE_DEBUG == 'true') console.warn('fillZoningAppeals - await resolved but HTTP status was not successful');
         }
       } catch {
         this.loadingZoningAppeals = false;
-        console.error('fillZoningAppeals - await never resolved, failed to fetch data');
+        if (import.meta.env.VITE_DEBUG == 'true') console.error('fillZoningAppeals - await never resolved, failed to fetch data');
       }
     },
 
@@ -247,11 +247,11 @@ export const useZoningStore = defineStore('ZoningStore', {
           this.loadingRcos = false;
         } else {
           this.loadingRcos = false;
-          console.warn('fillRcos - await resolved but HTTP status was not successful');
+          if (import.meta.env.VITE_DEBUG == 'true') console.warn('fillRcos - await resolved but HTTP status was not successful');
         }
       } catch {
         this.loadingRcos = false;
-        console.error('fillRcos - await never resolved, failed to fetch data');
+        if (import.meta.env.VITE_DEBUG == 'true') console.error('fillRcos - await never resolved, failed to fetch data');
       }
     }
   },

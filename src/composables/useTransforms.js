@@ -57,11 +57,21 @@ export default function useTransforms() {
   }
 
   const prettyNumber = (value) => {
-    return !isNaN(value) && value.toLocaleString();
+    let result;
+    // if (import.meta.env.VITE_DEBUG == 'true') console.log('value:', value, 'typeof value:', typeof value);
+    if (!isNaN(value) && typeof value !== 'object') {
+      result = value.toLocaleString();
+    }
+    return result;
   }
 
   const integer = (value) => {
-    return !isNaN(value) && parseInt(value);
+    let result;
+    // if (import.meta.env.VITE_DEBUG == 'true') console.log('value:', value, 'typeof value:', typeof value);
+    if (!isNaN(value) && typeof value !== 'object') {
+      result = parseInt(value)
+    }
+    return result;
   }
 
   const timeReverseFn = (a, b, fieldName) => new Date(b[fieldName]) - new Date(a[fieldName]);

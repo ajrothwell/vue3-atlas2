@@ -224,12 +224,12 @@ export const useNearbyActivityStore = defineStore('NearbyActivityStore', {
           this.nearby311 = data;
           this.setLoadingData(false);
         } else {
-          console.warn('nearby311 - await resolved but HTTP status was not successful');
+          if (import.meta.env.VITE_DEBUG == 'true') console.warn('nearby311 - await resolved but HTTP status was not successful');
           this.setLoadingData(false);
           this.setDataError(true);
         }
       } catch {
-        console.error('nearby311 - await never resolved, failed to fetch address data');
+        if (import.meta.env.VITE_DEBUG == 'true') console.error('nearby311 - await never resolved, failed to fetch address data');
         this.setLoadingData(false);
         this.setDataError(true);
       }
@@ -258,10 +258,10 @@ export const useNearbyActivityStore = defineStore('NearbyActivityStore', {
           this.nearbyCrimeIncidents = data;
           this.setLoadingData(false);
         } else {
-          console.warn('nearbyCrimeIncidents - await resolved but HTTP status was not successful');
+          if (import.meta.env.VITE_DEBUG == 'true') console.warn('nearbyCrimeIncidents - await resolved but HTTP status was not successful');
         }
       } catch {
-        console.error('nearbyCrimeIncidents - await never resolved, failed to fetch address data');
+        if (import.meta.env.VITE_DEBUG == 'true') console.error('nearbyCrimeIncidents - await never resolved, failed to fetch address data');
       }
     },
     async fillNearbyZoningAppeals() {
@@ -288,10 +288,10 @@ export const useNearbyActivityStore = defineStore('NearbyActivityStore', {
           this.nearbyZoningAppeals = data;
           this.setLoadingData(false);
         } else {
-          console.warn('nearbyZoningAppeals - await resolved but HTTP status was not successful');
+          if (import.meta.env.VITE_DEBUG == 'true') console.warn('nearbyZoningAppeals - await resolved but HTTP status was not successful');
         }
       } catch {
-        console.error('nearbyZoningAppeals - await never resolved, failed to fetch address data');
+        if (import.meta.env.VITE_DEBUG == 'true') console.error('nearbyZoningAppeals - await never resolved, failed to fetch address data');
       }
     },
 
@@ -362,10 +362,10 @@ export const useNearbyActivityStore = defineStore('NearbyActivityStore', {
           this.nearbyVacantIndicatorPoints.rows = features;
           this.setLoadingData(false);
         } else {
-          console.warn('nearbyVacantIndicatorPoints - await resolved but HTTP status was not successful');
+          if (import.meta.env.VITE_DEBUG == 'true') console.warn('nearbyVacantIndicatorPoints - await resolved but HTTP status was not successful');
         }
       } catch {
-        console.error('nearbyVacantIndicatorPoints - await never resolved, failed to fetch address data');
+        if (import.meta.env.VITE_DEBUG == 'true') console.error('nearbyVacantIndicatorPoints - await never resolved, failed to fetch address data');
       }
     },
 
@@ -394,10 +394,10 @@ export const useNearbyActivityStore = defineStore('NearbyActivityStore', {
           this.nearbyConstructionPermits = data;
           this.setLoadingData(false);
         } else {
-          console.warn('nearbyConstructionPermits - await resolved but HTTP status was not successful');
+          if (import.meta.env.VITE_DEBUG == 'true') console.warn('nearbyConstructionPermits - await resolved but HTTP status was not successful');
         }
       } catch {
-        console.error('nearbyConstructionPermits - await never resolved, failed to fetch address data');
+        if (import.meta.env.VITE_DEBUG == 'true') console.error('nearbyConstructionPermits - await never resolved, failed to fetch address data');
       }
     },
 
@@ -426,10 +426,10 @@ export const useNearbyActivityStore = defineStore('NearbyActivityStore', {
           this.nearbyDemolitionPermits = data;
           this.setLoadingData(false);
         } else {
-          console.warn('nearbyDemolitionPermits - await resolved but HTTP status was not successful');
+          if (import.meta.env.VITE_DEBUG == 'true') console.warn('nearbyDemolitionPermits - await resolved but HTTP status was not successful');
         }
       } catch {
-        console.error('nearbyDemolitionPermits - await never resolved, failed to fetch address data');
+        if (import.meta.env.VITE_DEBUG == 'true') console.error('nearbyDemolitionPermits - await never resolved, failed to fetch address data');
       }
     },
 
@@ -460,10 +460,10 @@ export const useNearbyActivityStore = defineStore('NearbyActivityStore', {
           this.nearbyImminentlyDangerous = data;
           this.setLoadingData(false);
         } else {
-          console.warn('nearbyImminentlyDangerous - await resolved but HTTP status was not successful');
+          if (import.meta.env.VITE_DEBUG == 'true') console.warn('nearbyImminentlyDangerous - await resolved but HTTP status was not successful');
         }
       } catch {
-        console.error('nearbyImminentlyDangerous - await never resolved, failed to fetch address data');
+        if (import.meta.env.VITE_DEBUG == 'true') console.error('nearbyImminentlyDangerous - await never resolved, failed to fetch address data');
       }
     },
   },

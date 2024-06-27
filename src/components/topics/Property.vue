@@ -144,8 +144,6 @@ const cityatlasVertTable3Data = computed(() => {
   }
 });
 
-
-
 const opaAccountNumber = computed(() => {
   if (GeocodeStore.aisData.features) {
     return GeocodeStore.aisData.features[0].properties.opa_account_num;

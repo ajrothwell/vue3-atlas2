@@ -61,7 +61,7 @@ export const useCondosStore = defineStore('CondosStore', {
           if (import.meta.env.VITE_DEBUG == 'true') console.log('Condos - await resolved but no data features')
         }
       } catch {
-        console.error('Condos - await never resolved, failed to fetch condo data')
+        if (import.meta.env.VITE_DEBUG == 'true') console.error('Condos - await never resolved, failed to fetch condo data')
       }
     },
   }

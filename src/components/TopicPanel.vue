@@ -207,7 +207,7 @@ const zipCode = computed(() => {
       v-if="MainStore.appVersion == 'cityatlas'"
       :topic-name="'311'"
       :topic-icon="'fa-solid fa-phone'"
-      :topic-index="7"
+      :topic-index="5"
     >
       <ThreeOneOne />
     </topic>
@@ -216,7 +216,7 @@ const zipCode = computed(() => {
       v-if="MainStore.appVersion == 'cityatlas'"
       :topic-name="'Stormwater'"
       :topic-icon="'fa-solid fa-tint'"
-      :topic-index="7"
+      :topic-index="6"
     >
       <Stormwater />
     </topic>
@@ -225,7 +225,7 @@ const zipCode = computed(() => {
       :topic-name="'Nearby Activity'"
       :topic-icon="'fa-solid fa-map-marker-alt'"
       :loading="!dataSourcesLoadedArray.includes('Nearby Activity')"
-      :topic-index="6"
+      :topic-index="7"
     >
       <KeepAlive>
         <NearbyActivity />
@@ -236,7 +236,7 @@ const zipCode = computed(() => {
       v-if="MainStore.appVersion == 'cityatlas'"
       :topic-name="'Districts'"
       :topic-icon="'fa-solid fa-clone'"
-      :topic-index="7"
+      :topic-index="8"
     >
       <Districts />
     </topic>

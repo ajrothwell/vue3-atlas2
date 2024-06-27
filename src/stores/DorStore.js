@@ -99,6 +99,7 @@ export const useDorStore = defineStore("DorStore", {
       this.fillDorDocuments();
       this.fillRegmaps();
       this.fillDorCondos();
+      console.log('fillAllDorData is ending');
     },
     async clearAllDorData() {
       this.loadingDorData = true;
@@ -113,7 +114,7 @@ export const useDorStore = defineStore("DorStore", {
           if (import.meta.env.VITE_DEBUG == 'true') console.log('fillRegmaps is running');
           const ParcelsStore = useParcelsStore();
           const parcels = ParcelsStore.dor.features;
-          if (!parcels) return;
+          if (!parcels) return resolve();
           let baseUrl = 'https://phl.carto.com/api/v2/sql?q=';
           parcels.forEach(async(feature) => {
             try {
@@ -130,11 +131,11 @@ export const useDorStore = defineStore("DorStore", {
                 this.dorCondos[feature.properties.OBJECTID] = data;
                 return resolve();
               } else {
-                console.warn('fillDorCondos - await resolved but HTTP status was not successful');
+                if (import.meta.env.VITE_DEBUG == 'true') console.warn('fillDorCondos - await resolved but HTTP status was not successful');
                 return resolve();
               }
             } catch {
-              console.error('fillDorCondos - await never resolved, failed to fetch data');
+              if (import.meta.env.VITE_DEBUG == 'true') console.error('fillDorCondos - await never resolved, failed to fetch data');
               return resolve();
             }
           });
@@ -151,7 +152,7 @@ export const useDorStore = defineStore("DorStore", {
           var xVals = [], yVals = [];
 
           // loop over parcels
-          if (!parcels) return;
+          if (!parcels) return resolve();
           parcels.forEach(function (parcel) {
             var geom = parcel.geometry,
               parts = geom.coordinates;
@@ -229,11 +230,11 @@ export const useDorStore = defineStore("DorStore", {
               this.regmaps = response;
               return resolve();
             } else {
-              console.warn('fillRegmaps - await resolved but HTTP status was not successful');
+              if (import.meta.env.VITE_DEBUG == 'true') console.warn('fillRegmaps - await resolved but HTTP status was not successful');
               return resolve();
             }
           } catch {
-            console.error('fillRegmaps - await never resolved, failed to fetch data');
+            if (import.meta.env.VITE_DEBUG == 'true') console.error('fillRegmaps - await never resolved, failed to fetch data');
             return resolve();
           }
         })();
@@ -329,7 +330,7 @@ export const useDorStore = defineStore("DorStore", {
           }
 
           if (!ParcelsStore.dor.features) {
-            return;
+            return resolve();
           }
           for (let feature of ParcelsStore.dor.features) {
             try {
@@ -356,11 +357,11 @@ export const useDorStore = defineStore("DorStore", {
                 this.dorDocuments[feature.properties.OBJECTID] = data;
                 return resolve();
               } else {
-                console.warn('dorDocs - await resolved but HTTP status was not successful')
+                if (import.meta.env.VITE_DEBUG == 'true') console.warn('dorDocs - await resolved but HTTP status was not successful')
                 return resolve();
               }
             } catch {
-              console.error('dorDocs - await never resolved, failed to fetch data')
+              if (import.meta.env.VITE_DEBUG == 'true') console.error('dorDocs - await never resolved, failed to fetch data')
               return resolve();
             }
           }

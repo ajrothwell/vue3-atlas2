@@ -10,7 +10,7 @@ import qs from 'qs';
 
 import { format } from 'date-fns';
 
-console.log('import.meta.env.VITE_AGO_USERNAME:', import.meta.env.VITE_AGO_USERNAME, 'import.meta.env.VITE_AGO_PASSWORD:', import.meta.env.VITE_AGO_PASSWORD);
+if (import.meta.env.VITE_DEBUG == 'true') console.log('import.meta.env.VITE_AGO_USERNAME:', import.meta.env.VITE_AGO_USERNAME, 'import.meta.env.VITE_AGO_PASSWORD:', import.meta.env.VITE_AGO_PASSWORD);
 
 export const use311Store = defineStore('311Store', {
   state: () => {
@@ -143,10 +143,10 @@ export const use311Store = defineStore('311Store', {
           this.nearby311.rows = features;
           this.loadingNearby311 = false;
         } else {
-          console.warn('311 - await resolved but HTTP status was not successful');
+          if (import.meta.env.VITE_DEBUG == 'true') console.warn('311 - await resolved but HTTP status was not successful');
         }
       } catch {
-        console.error('311 - await never resolved, failed to fetch address data');
+        if (import.meta.env.VITE_DEBUG == 'true') console.error('311 - await never resolved, failed to fetch address data');
       }
     },
   },
