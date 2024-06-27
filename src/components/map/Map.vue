@@ -344,7 +344,6 @@ watch(
       popup[0].remove();
     }
     if (newTopic) {
-      // setMapStyleForTopic(newTopic);
       map.setStyle($config[$config.topicStyles[newTopic]]);
       if (MapStore.imageryOn) {
         map.addLayer($config.mapLayers[imagerySelected.value], 'cyclomediaRecordings')
@@ -410,6 +409,9 @@ watch(
     }
     if (MapStore.cyclomediaOn) {
       updateCyclomediaCameraAngle();
+    }
+    if (MapStore.labelLayers.length && MapStore.labelLayers.length > 0) {
+      setLabelLayers(MapStore.labelLayers);
     }
   }
 )
@@ -754,24 +756,28 @@ const labelLayers = computed(() => { return MapStore.labelLayers; });
 
 watch(
   () => labelLayers,
-  (newLabelLayers, oldLabelLayers) => {
-    if (import.meta.env.VITE_DEBUG == 'true') console.log('Map.vue watch MapStore.labelLayers, newLabelLayers.value:', newLabelLayers.value, 'oldLabelLayers.value:', JSON.parse(JSON.stringify(oldLabelLayers.value)));
-    if (newLabelLayers.value.length) {
-      newLabelLayers.value.forEach(layer => {
+  (newLabelLayers) => {
+    setLabelLayers(newLabelLayers.value);
+  },
+  { deep: true }
+)
+
+const setLabelLayers = (newLabelLayers) => {
+  if (import.meta.env.VITE_DEBUG == 'true') console.log('Map.vue setLabelLayers, newLabelLayers:', newLabelLayers);
+    if (newLabelLayers.length) {
+      newLabelLayers.forEach(layer => {
         if (!map.getSource(layer.id)) {
-          // console.log('Map.vue watch MapStore.labelLayers, NOT THERE, layer:', layer, 'layer.id:', layer.id, 'JSON.parse(JSON.stringify(layer.source)):', JSON.parse(JSON.stringify(layer.source)));
+          // if (import.meta.env.VITE_DEBUG == 'true') console.log('Map.vue setLabelLayers, NOT THERE, layer:', layer, 'layer.id:', layer.id, 'JSON.parse(JSON.stringify(layer.source)):', JSON.parse(JSON.stringify(layer.source)));
           map.addSource(layer.id, JSON.parse(JSON.stringify(layer.source)));
           map.addLayer(layer.layer);
         } else {
-          // console.log('Map.vue watch MapStore.labelLayers, YES THERE, layer:', layer, 'layer.id:', layer.id, 'JSON.parse(JSON.stringify(layer.source)):', JSON.parse(JSON.stringify(layer.source)));
+          // if (import.meta.env.VITE_DEBUG == 'true') console.log('Map.vue setLabelLayers, YES THERE, layer:', layer, 'layer.id:', layer.id, 'JSON.parse(JSON.stringify(layer.source)):', JSON.parse(JSON.stringify(layer.source)));
           map.getSource(layer.id).setData(layer.source.data);
         }
       })
     }
-    // if (import.meta.env.VITE_DEBUG == 'true') console.log('Map.vue watch MapStore.labelLayers, map.getStyle:', map.getStyle(), 'map.getStyle().layers:', map.getStyle().layers, 'map.getStyle().sources:', map.getStyle().sources);
-  },
-  { deep: true }
-)
+    // if (import.meta.env.VITE_DEBUG == 'true') console.log('Map.vue setLabelLayers, map.getStyle:', map.getStyle(), 'map.getStyle().layers:', map.getStyle().layers, 'map.getStyle().sources:', map.getStyle().sources);
+}
 
 const removeAllCyclomediaMapLayers = () => {
   let recordingsGeojson = {
