@@ -940,7 +940,6 @@ const updateCyclomediaCameraViewcone = (cycloHFov, cycloYaw) => {
   $config.dorDrawnMapStyle.sources.cyclomediaViewcone.data = data;
 }
 
-// toggle eagleview on and off
 const toggleEagleview = () => {
   if (import.meta.env.VITE_DEBUG == 'true') console.log('toggleEagleview');
   MapStore.eagleviewOn = !MapStore.eagleviewOn;
@@ -949,45 +948,6 @@ const toggleEagleview = () => {
     removeAllCyclomediaMapLayers();
   }
 }
-
-const dorLegendData = ref({
-  // TODO give these an id instead of using the label as a key
-  'Easements': {
-    'border-color': 'rgb(255, 0, 197)',
-    'border-style': 'solid',
-    'border-weight': '1px',
-    'width': '12px',
-    'height': '12px',
-    'font-size': '10px',
-  },
-  'Trans Parcels': {
-    'border-color': 'rgb(0, 168, 132)',
-    'border-style': 'solid',
-    'border-weight': '1px',
-    'width': '12px',
-    'height': '12px',
-    'font-size': '10px',
-  },
-  'Rights of Way': {
-    'border-color': 'rgb(249, 147, 0)',
-    'border-style': 'solid',
-    'border-weight': '1px',
-    'width': '12px',
-    'height': '12px',
-    'font-size': '10px',
-  },
-})
-
-const stormwaterLegendData = ref({
-  'Roof': {
-    'background-color': '#FEFF7F',
-    'font-size': '12px',
-  },
-  'Other Impervious Surface': {
-    'background-color': '#F2DCFF',
-    'font-size': '12px',
-  },
-})
 
 </script>
 
@@ -1027,12 +987,12 @@ const stormwaterLegendData = ref({
     />
     <OverlayLegend
       v-show="!MapStore.imageryOn && ['Stormwater'].includes(MainStore.currentTopic)"
-      :items="stormwaterLegendData"
+      :items="$config.stormwaterLegendData"
       :options="{ shape: 'square' }"
     />
     <OverlayLegend
       v-show="!MapStore.imageryOn && ['Deeds', 'Zoning'].includes(MainStore.currentTopic)"
-      :items="dorLegendData"
+      :items="$config.dorLegendData"
       :options="{ shape: 'square' }"
     />
   </div>

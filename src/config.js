@@ -1396,6 +1396,44 @@ const ZONING_CODE_MAP = {
   },
 };
 
+const dorLegendData = {
+  'Easements': {
+    'border-color': 'rgb(255, 0, 197)',
+    'border-style': 'solid',
+    'border-weight': '1px',
+    'width': '12px',
+    'height': '12px',
+    'font-size': '10px',
+  },
+  'Trans Parcels': {
+    'border-color': 'rgb(0, 168, 132)',
+    'border-style': 'solid',
+    'border-weight': '1px',
+    'width': '12px',
+    'height': '12px',
+    'font-size': '10px',
+  },
+  'Rights of Way': {
+    'border-color': 'rgb(249, 147, 0)',
+    'border-style': 'solid',
+    'border-weight': '1px',
+    'width': '12px',
+    'height': '12px',
+    'font-size': '10px',
+  },
+};
+
+const stormwaterLegendData = {
+  'Roof': {
+    'background-color': '#FEFF7F',
+    'font-size': '12px',
+  },
+  'Other Impervious Surface': {
+    'background-color': '#F2DCFF',
+    'font-size': '12px',
+  },
+}
+
 $config['cityCenterCoords'] = cityCenterCoords;
 $config['pwdDrawnMapStyle'] = pwdDrawnMapStyle;
 $config['dorDrawnMapStyle'] = dorDrawnMapStyle;
@@ -1405,5 +1443,7 @@ $config['votingDrawnMapStyle'] = votingDrawnMapStyle;
 $config['stormwaterDrawnMapStyle'] = stormwaterDrawnMapStyle;
 $config['nearbyDrawnMapStyle'] = nearbyDrawnMapStyle;
 $config['ZONING_CODE_MAP'] = ZONING_CODE_MAP;
+$config['dorLegendData'] = dorLegendData;
+$config['stormwaterLegendData'] = stormwaterLegendData;
 
 export default $config;
