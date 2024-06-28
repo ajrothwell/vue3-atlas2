@@ -202,7 +202,7 @@ const dorDocsTableData = computed(() => {
         field: 'GRANTEES',
       },
       {
-        label: 'Unit',
+        label: 'Unit #',
         field: 'UNIT_NUM',
       }
     ],
@@ -409,6 +409,7 @@ only screen and (max-width: 760px),
     td:nth-of-type(3):before { content: "Type"; }
     td:nth-of-type(4):before { content: "Grantor"; }
     td:nth-of-type(5):before { content: "Grantee"; }
+    td:nth-of-type(5):before { content: "Unit"; }
   }
 
 }
