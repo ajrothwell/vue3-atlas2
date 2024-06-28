@@ -289,19 +289,19 @@ const dorDocsTableData = computed(() => {
       </div>
 
       <!-- DOR Docs Table -->
-      <TextFilter
-        v-model="textSearch"
-      />
-
 
       <div class="mt-4">
-        <h5 class="subtitle is-5">
+        <h5 class="subtitle mb-3 is-5">
           Documents <font-awesome-icon
           v-if="DorStore.loadingDorData"
           icon="fa-solid fa-spinner"
           spin
         /><span v-else>({{ selectedDocsLength }})</span>
         </h5>
+        <TextFilter
+          class="dor-docs-filter"
+          v-model="textSearch"
+        />
         <div class="horizontal-table">
           <vue-good-table
             id="dor-documents"
@@ -364,6 +364,10 @@ const dorDocsTableData = computed(() => {
 </template>
 
 <style>
+
+.dor-docs-filter {
+  margin-left: -4px !important;
+}
 
 .dor-parcel-select {
   color: #444444;
