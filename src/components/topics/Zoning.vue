@@ -247,6 +247,7 @@ const rcosTableData = computed(() => {
           </div>
         </div>
         <a
+          class="table-link"
           target="_blank"
           href="https://www.phila.gov/media/20220909084529/ZONING-QUICK-GUIDE_PCPC_9_9_22.pdf"
         >See more info about zoning codes <font-awesome-icon icon="fa-solid fa-external-link-alt" /></a>
@@ -427,6 +428,7 @@ const rcosTableData = computed(() => {
     </vue-good-table>
   </div>
   <a
+    class="table-link"
     target="_blank"
     href="//www.phila.gov/documents/registered-community-organization-rco-materials/"
   >See a list of all RCOs in the city [PDF] <font-awesome-icon icon="fa-solid fa-external-link-alt" /></a>

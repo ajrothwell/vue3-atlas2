@@ -211,6 +211,7 @@ const accountsTableData = computed(() => {
       </vue-good-table>
     </div>
     <a
+      class="table-link"
       target="_blank"
       :href="`https://stormwater.phila.gov/parcelviewer/parcel/${parcelId}`"
     >See more at Stormwater Billing <font-awesome-icon icon="fa-solid fa-external-link-alt" /></a>

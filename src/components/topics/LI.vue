@@ -457,6 +457,7 @@ const businessLicensesTableData = computed(() => {
         </vue-good-table>
       </div>
       <a
+        class="table-link"
         target="_blank"
         :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`"
       >See all {{ permitsLength }} permits at L&I Property History <font-awesome-icon icon="fa-solid fa-external-link-alt" /></a>
@@ -558,6 +559,7 @@ const businessLicensesTableData = computed(() => {
         </vue-good-table>
       </div>
       <a
+        class="table-link"
         target="_blank"
         :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`"
       >See all {{ inspectionsLength }} inspections at L&I Property History <font-awesome-icon icon="fa-solid fa-external-link-alt" /></a>
@@ -609,6 +611,7 @@ const businessLicensesTableData = computed(() => {
         </vue-good-table>
       </div>
       <a
+        class="table-link"
         target="_blank"
         :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`"
       >See all {{ violationsLength }} violations at L&I Property History <font-awesome-icon icon="fa-solid fa-external-link-alt" /></a>
@@ -660,6 +663,7 @@ const businessLicensesTableData = computed(() => {
         </vue-good-table>
       </div>
       <a
+        class="table-link"
         target="_blank"
         :href="`https://li.phila.gov/Property-History/search?address=${encodeURIComponent(MainStore.currentAddress)}`"
       >See all {{ businessLicensesLength }} business licenses at L&I Property History <font-awesome-icon icon="fa-solid fa-external-link-alt" /></a>

@@ -241,6 +241,7 @@ const valuationHistoryTableData = computed(() => {
       />
       <a
         v-if="!shouldShowCondosMessage"
+        class="table-link"
         target="_blank"
         :href="`https://property.phila.gov/?p=${opaAccountNumber}`"
       >See more at Property Search <font-awesome-icon icon="fa-solid fa-external-link-alt" /></a>
