@@ -267,7 +267,8 @@ const pwdDrawnMapStyle = mergeDeep(imageryInfo,{
       type: 'symbol',
       layout: {
         'icon-image': 'marker-blue',
-        'icon-anchor' : 'bottom',
+        'icon-rotate': 180,
+        'icon-anchor': 'bottom',
         'icon-size': .05,
         "icon-allow-overlap" : true,
         "text-allow-overlap": true,
@@ -396,7 +397,8 @@ const liDrawnMapStyle = mergeDeep(imageryInfo,{
       type: 'symbol',
       layout: {
         'icon-image': 'marker-blue',
-        'icon-anchor' : 'bottom',
+        'icon-rotate': 180,
+        'icon-anchor': 'bottom',
         'icon-size': .05,
       },
     },
@@ -763,7 +765,8 @@ const stormwaterDrawnMapStyle = mergeDeep(imageryInfo,{
       type: 'symbol',
       layout: {
         'icon-image': 'marker-blue',
-        'icon-anchor' : 'bottom',
+        'icon-rotate': 180,
+        'icon-anchor': 'bottom',
         'icon-size': .05,
       },
     },
@@ -916,7 +919,8 @@ const votingDrawnMapStyle = mergeDeep(imageryInfo,{
       type: 'symbol',
       layout: {
         'icon-image': 'marker-blue',
-        'icon-anchor' : 'bottom',
+        'icon-rotate': 180,
+        'icon-anchor': 'bottom',
         'icon-size': .05,
         "icon-allow-overlap" : true,
         "text-allow-overlap": true,
@@ -1054,7 +1058,8 @@ const nearbyDrawnMapStyle = mergeDeep(imageryInfo,{
       type: 'symbol',
       layout: {
         'icon-image': 'marker-blue',
-        'icon-anchor' : 'bottom',
+        'icon-rotate': 180,
+        'icon-anchor': 'bottom',
         'icon-size': .05,
       }
     },

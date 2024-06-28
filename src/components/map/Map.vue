@@ -57,7 +57,7 @@ let map;
 
 // keep image sources as computed props so that the publicPath can used, for pushing the app to different environments
 const markerSrc = computed(() => {
-  return MainStore.publicPath + 'images/marker_blue.png';
+  return MainStore.publicPath + 'images/marker_blue_base_3.png';
 })
 const buildingColumnsSrc = computed(() => {
   return MainStore.publicPath + 'images/building-columns-solid.png';
@@ -91,6 +91,7 @@ onMounted(async () => {
 
   // add the address marker and camera icon sources
   const markerImage = await map.loadImage(markerSrc.value)
+  console.log('markerImage:', markerImage);
   map.addImage('marker-blue', markerImage.data);
   const buildingColumnsImage = await map.loadImage(buildingColumnsSrc.value)
   map.addImage('building-columns-solid', buildingColumnsImage.data);
