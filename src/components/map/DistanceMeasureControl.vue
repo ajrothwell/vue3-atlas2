@@ -405,6 +405,7 @@ export default {
         this.$data.selected = val[0];
       } else {
         if (import.meta.env.VITE_DEBUG == 'true') console.log('there are no features');
+        this.$data.currentShape = null;
         this.$data.selected = null;
       }
     }
