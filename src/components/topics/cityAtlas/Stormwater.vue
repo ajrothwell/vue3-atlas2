@@ -218,3 +218,28 @@ const accountsTableData = computed(() => {
   <!-- </div> -->
 
 </template>
+
+<style>
+
+@media 
+only screen and (max-width: 760px),
+(min-device-width: 768px) and (max-device-width: 1024px)  {
+
+  #accounts {
+
+    td:nth-of-type(4) {
+      min-height: 60px;
+    }
+
+    td:nth-of-type(1):before { content: "Account #"; }
+    td:nth-of-type(2):before { content: "Customer"; }
+    td:nth-of-type(3):before { content: "Status"; }
+    td:nth-of-type(4):before { content: "Service Type"; }
+    td:nth-of-type(5):before { content: "Size"; }
+    td:nth-of-type(6):before { content: "Stormwater"; }
+
+  }
+
+}
+
+</style>

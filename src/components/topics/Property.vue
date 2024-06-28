@@ -283,7 +283,7 @@ const valuationHistoryTableData = computed(() => {
           class="horizontal-table"
         >
           <vue-good-table
-            id="permits"
+            id="valuation-history"
             :columns="valuationHistoryTableData.columns"
             :rows="valuationHistoryTableData.rows"
             :pagination-options="paginationOptions"
@@ -344,29 +344,34 @@ const valuationHistoryTableData = computed(() => {
   </section>
 </template>
 
-<style scoped>
+<style>
 
-table {
-  border-collapse: separate;
-  border-spacing: 2px;
-  width: 100%;
-}
 
-th {
-  background-color: rgb(68, 68, 68);
-  color: white;
-  padding-left: 10px;
-  padding-right: 10px;
-  padding-top: 6px;
-  padding-bottom: 6px;
-  width: 30%;
-}
+@media 
+only screen and (max-width: 760px),
+(min-device-width: 768px) and (max-device-width: 1024px)  {
 
-td {
-  padding-left: 10px;
-  padding-right: 10px;
-  padding-top: 6px;
-  padding-bottom: 6px;
+  #valuation-history {
+
+    td {
+      padding-left: 120px !important;
+    }
+    td:before {
+      width: 115px !important;
+    }
+
+    td:nth-of-type(4) { min-height: 60px;}
+    td:nth-of-type(6) { min-height: 60px;}
+
+    td:nth-of-type(1):before { content: "Year"; }
+    td:nth-of-type(2):before { content: "Market Value"; }
+    td:nth-of-type(3):before { content: "Taxable Land"; }
+    td:nth-of-type(4):before { content: "Taxable Improvement"; }
+    td:nth-of-type(5):before { content: "Exempt Land"; }
+    td:nth-of-type(6):before { content: "Exempt Improvement"; }
+
+  }
+
 }
 
 </style>
