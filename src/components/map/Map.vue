@@ -57,7 +57,7 @@ let map;
 
 // keep image sources as computed props so that the publicPath can used, for pushing the app to different environments
 const markerSrc = computed(() => {
-  return MainStore.publicPath + 'images/marker_blue_base_3.png';
+  return MainStore.publicPath + 'images/marker_blue_base_5.png';
 })
 const buildingColumnsSrc = computed(() => {
   return MainStore.publicPath + 'images/building-columns-solid.png';
